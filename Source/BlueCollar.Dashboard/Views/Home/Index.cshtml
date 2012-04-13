@@ -1,0 +1,18 @@
+﻿@model HomeIndex
+
+@section script {
+<script type="text/javascript" src="@Url.Content("~/Static/bc.js")"></script>
+<script type="text/javascript">
+    function onLoad() {
+        $(function() {
+            new App('@Url.Content("~/")', {
+                jsonUrlRoot: '@Url.Content(BlueCollarSection.Section.Dashboard.HandlerUrl)',
+                stats: @Html.Raw(Model.StatsJson), 
+                testLink: true
+            });
+        });
+    }
+
+    google.setOnLoadCallback(onLoad);
+</script>
+}

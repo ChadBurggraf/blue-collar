@@ -1,0 +1,193 @@
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildProjectDirectory)\BlueCollar.targets"/>
+  <UsingTask TaskName="FxCop" AssemblyFile="Tools\FxCopTask\FxCopTask.dll"/>
+
+  <PropertyGroup>
+    <ArtifactDir>$(MSBuildProjectDirectory)\Artifacts</ArtifactDir>
+    <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\BlueCollar.snk</AssemblyOriginatorKeyFile>
+    <BuildDir>$(MSBuildProjectDirectory)\Build</BuildDir>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <ExamplesDir>$(MSBuildProjectDirectory)\Examples</ExamplesDir>
+    <InstallerDir>$(MSBuildProjectDirectory)\Source\Installer</InstallerDir>
+    <LibDir>$(MSBuildProjectDirectory)\Lib</LibDir>
+    <MsTestPath>$(MSBuildExtensionsPath32)\..\Microsoft Visual Studio 10.0\Common7\IDE\MSTest.exe</MsTestPath>
+    <SourceDir>$(MSBuildProjectDirectory)\Source</SourceDir>
+    <TempDir>$(MSBuildProjectDirectory)\Temp</TempDir>
+    <ToolsDir>$(MSBuildProjectDirectory)\Tools</ToolsDir>
+    <WixDir>$(MSBuildExtensionsPath32)\..\Windows Installer XML v3.5\bin</WixDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('$(AssemblyOriginatorKeyFile)') And '$(Configuration)' == 'Release'">
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  
+  <!-- "Private" properties. -->
+  <PropertyGroup>
+    <FrameworkTarget>4.0</FrameworkTarget>
+    <Platform>AnyCPU</Platform>
+    <Service>false</Service>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Service)' == 'false' And '$(FrameworkTarget)' != '3.5'">
+    <FinalOutputDir>$(BuildDir)\Reference Assemblies\2010</FinalOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Service)' == 'false' And '$(FrameworkTarget)' == '3.5'">
+    <FinalOutputDir>$(BuildDir)\Reference Assemblies\2008</FinalOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' != '3.5' And '$(Platform)' != 'x86'">
+    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\2010</FinalOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' == '3.5' And '$(Platform)' != 'x86'">
+    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\2008</FinalOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' != '3.5' And '$(Platform)' == 'x86'">
+    <FinalOutputDir>$(BuildDir)\Service\x86\2010</FinalOutputDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' == '3.5' And '$(Platform)' == 'x86'">
+    <FinalOutputDir>$(BuildDir)\Service\x86\2008</FinalOutputDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Dashboard\BlueCollar.Dashboard.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj"/>
+    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
+    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
+    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj"/>
+    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj"/>
+    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
+    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(FrameworkTarget)' != '3.5' And '$(Service)' != 'true'">
+    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(FrameworkTarget)' == '3.5' And '$(Service)' != 'true'">
+    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.2008.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.2008.csproj"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(FrameworkTarget)' != '3.5' And '$(Service)' == 'true'">
+    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
+  </ItemGroup>
+  <ItemGroup Condition="'$(FrameworkTarget)' == '3.5' And '$(Service)' == 'true'">
+    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.2008.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.2008.csproj"/>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(FrameworkTarget)' != '3.5'">
+    <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj</ConsoleProject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(FrameworkTarget)' == '3.5'">
+    <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.2008.csproj</ConsoleProject>
+  </PropertyGroup>
+
+  <Target Name="Build" DependsOnTargets="CleanAll">
+    <MakeDir Directories="$(BuildDir)"/>
+    <MakeDir Directories="$(BuildDir)\Reference Assemblies"/>
+    <MakeDir Directories="$(BuildDir)\Reference Assemblies\2010"/>
+    <MakeDir Directories="$(BuildDir)\Reference Assemblies\2008"/>
+    <MakeDir Directories="$(BuildDir)\Service"/>
+    <MakeDir Directories="$(BuildDir)\Service\AnyCPU"/>
+    <MakeDir Directories="$(BuildDir)\Service\AnyCPU\2010"/>
+    <MakeDir Directories="$(BuildDir)\Service\AnyCPU\2008"/>
+    <MakeDir Directories="$(BuildDir)\Service\x86"/>
+    <MakeDir Directories="$(BuildDir)\Service\x86\2010"/>
+    <MakeDir Directories="$(BuildDir)\Service\x86\2008"/>
+
+    <!-- Reference assemblies. -->
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile;CopyAssembliesToExampleProjects" Properties="FrameworkTarget=4.0"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile;CopyAssembliesToExampleProjects" Properties="FrameworkTarget=3.5"/>
+    
+    <!-- Service. -->
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=4.0;Service=true"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=3.5;Service=true"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=4.0;Service=true;Platform=x86"/>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=3.5;Service=true;Platform=x86"/>
+  </Target>
+
+  <Target Name="Clean">
+    <MSBuild Projects="@(SolutionProjects)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+    <MSBuild Projects="@(SolutionProjects2008)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
+  </Target>
+
+  <Target Name="CleanAll" DependsOnTargets="Clean">
+    <RemoveDir Directories="$(ArtifactDir)"/>
+    <RemoveDir Directories="$(BuildDir)"/>
+  </Target>
+
+  <Target Name="Compile">
+    <MSBuild Projects="@(CompileProjects)" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);PackageAssets=true;MergedLibraryOutputPath=$(FinalOutputDir);MergedSQLiteRepositoryOutputPath=$(FinalOutputDir)"/>
+    <MSBuild Projects="$(ConsoleProject)" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(FinalOutputDir)" Condition="'$(Service)' == 'true'"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedServiceOutputPath=$(BuildDir)\Service" Condition="'$(Service)' == 'true' And '$(Platform)' == 'AnyCPU' And '$(FrameworkTarget)' == '3.5'"/>
+  </Target>
+
+  <Target Name="CopyAssembliesToExampleProjects">
+    <ItemGroup>
+      <Assemblies Include="$(FinalOutputDir)\BlueCollar.dll;$(FinalOutputDir)\BlueCollar.pdb;$(FinalOutputDir)\BlueCollar.xml"/>
+      <Assemblies Include="$(FinalOutputDir)\BlueCollar.SQLiteRepository.dll;$(FinalOutputDir)\BlueCollar.SQLiteRepository.pdb;$(FinalOutputDir)\BlueCollar.SQLiteRepository.xml"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(Assemblies)" DestinationFolder="$(ExamplesDir)\BlueCollar.Examples.Mvc\BlueCollar.Examples.Mvc\bin" Condition="'$(FrameworkTarget)' == '4.0'"/>
+  </Target>
+
+  <Target Name="FxCop">
+    <MSBuild Projects="@(SolutionProjects)" Targets="Clean;Build" Properties="Configuration=Debug;PackageAssets=false"/>
+    
+    <ItemGroup>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar\bin\Debug\BlueCollar.dll"/>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar.Console\bin\Debug\BlueCollar.Console.dll"/>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar.Dashboard\bin\Debug\BlueCollar.Dashboard.dll"/>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar.Examples\bin\Debug\BlueCollar.Examples.dll"/>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar.Service\bin\Debug\BlueCollar.Service.dll"/>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar.SQLiteRepository\bin\Debug\BlueCollar.SQLiteRepository.dll"/>
+      <FxCopAssemblies Include="$(SourceDir)\BlueCollar.Test\bin\Debug\BlueCollar.Test.dll"/>
+    </ItemGroup>
+
+    <MakeDir Directories="$(ArtifactDir)"/>
+    <FxCop Assemblies="@(FxCopAssemblies)" Output="$(ArtifactDir)\FxCop.xml"/>
+  </Target>
+
+  <Target Name="Help" DependsOnTargets="Compile">
+    <MakeDir Directories="$(BuildDir)"/>
+    <PropertyGroup>
+      <DocsInputAssemblyPath>$(SourceDir)\BlueCollar\bin\$(Configuration)\BlueCollar.dll</DocsInputAssemblyPath>
+      <DocsInputCommentsPath>$(SourceDir)\BlueCollar\bin\$(Configuration)\BlueCollar.xml</DocsInputCommentsPath>
+      <DocsOutputPath>$(BuildDir)\BlueCollar.chm</DocsOutputPath>
+      <DocsProjectName>BlueCollar</DocsProjectName>
+      <DocsStagingDir>$(ArtifactDir)\Docs</DocsStagingDir>
+    </PropertyGroup>
+    <MSBuild Projects="BlueCollar.targets" Targets="GenerateDocs" Properties="DocsInputAssemblyPath=$(DocsInputAssemblyPath);DocsInputCommentsPath=$(DocsInputCommentsPath);DocsOutputPath=$(DocsOutputPath);DocsProjectName=$(DocsProjectName);DocsStagingDir=$(DocsStagingDir)"/>
+    <RemoveDir Directories="$(DocsStagingDir)"/>
+  </Target>
+
+  <Target Name="Package">
+    <RemoveDir Directories="$(TempDir)"/>
+    <Delete Files="$(BuildDir)\BlueCollar.msi"/>
+
+    <ItemGroup>
+      <BuildFiles Include="$(BuildDir)\**\*"/>
+      <InstallerFiles Include="$(SourceDir)\Installer\**\*"/>
+    </ItemGroup>
+
+    <MakeDir Directories="$(TempDir)"/>
+    <Copy SourceFiles="@(BuildFiles)" DestinationFiles="@(BuildFiles->'$(TempDir)\%(RecursiveDir)%(Filename)%(Extension)')"/>
+    <Copy SourceFiles="@(InstallerFiles)" DestinationFolder="$(TempDir)"/>
+
+    <Exec Command='"$(WixDir)\candle.exe" "$(TempDir)\BlueCollar.wxs"' WorkingDirectory="$(TempDir)"/>
+    <Exec Command='"$(WixDir)\light.exe" -ext WixUIExtension -ext WiXNetFxExtension -out BlueCollar.msi "$(TempDir)\BlueCollar.wixobj"' WorkingDirectory="$(TempDir)"/>
+    <Copy SourceFiles="$(TempDir)\BlueCollar.msi" DestinationFolder="$(BuildDir)"/>
+    <RemoveDir Directories="$(TempDir)"/>
+  </Target>
+
+  <Target Name="Test" Condition="Exists('$(MsTestPath)')">
+    <MakeDir Directories="$(ArtifactDir)"/>
+    <Delete Files="$(ArtifactDir)\Tests.trx"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj" Properties="Configuration=Debug"/>
+    <Exec Command='"$(MsTestPath)" /testcontainer:"$(SourceDir)\BlueCollar.Test\bin\Debug\BlueCollar.Test.dll" /resultsfile:"$(ArtifactDir)\Tests.trx"'/>
+    <RemoveDir Directories='$([System.IO.Directory]::GetDirectories("$(ArtifactDir)"))'/>
+  </Target>
+</Project>

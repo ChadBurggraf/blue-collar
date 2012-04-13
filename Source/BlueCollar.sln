@@ -1,0 +1,112 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar", "BlueCollar\BlueCollar.csproj", "{1269260A-4785-4C26-A442-B87D94B1B6EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Test", "BlueCollar.Test\BlueCollar.Test.csproj", "{996B312D-CED3-4AB0-A6EB-8403E2603BAD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05EC1799-1DD9-4C6C-8089-8B62763FCD9D}"
+	ProjectSection(SolutionItems) = preProject
+		..\BlueCollar.targets = ..\BlueCollar.targets
+		BlueCollar.vsmdi = BlueCollar.vsmdi
+		..\Build.proj = ..\Build.proj
+		JSPack.xml = JSPack.xml
+		Local.testsettings = Local.testsettings
+		Open.js.template = Open.js.template
+		SolutionInfo.cs = SolutionInfo.cs
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Console", "BlueCollar.Console\BlueCollar.Console.csproj", "{8B77CF15-E59A-49A1-BD4E-75B65C272496}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Dashboard", "BlueCollar.Dashboard\BlueCollar.Dashboard.csproj", "{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.SQLiteRepository", "BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj", "{12257995-43A3-4EDC-A577-514D0D6E3567}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Service", "BlueCollar.Service\BlueCollar.Service.csproj", "{44966C30-014E-41D4-B53D-77D944EB74F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlueCollar.IO", "BlueCollar.IO", "{7F89747B-1EBB-464E-880D-17CAB60D88D0}"
+	ProjectSection(SolutionItems) = preProject
+		BlueCollar.IO\FileSystemEventType.cs = BlueCollar.IO\FileSystemEventType.cs
+		BlueCollar.IO\FileSystemWatcher.cs = BlueCollar.IO\FileSystemWatcher.cs
+		BlueCollar.IO\FileSystemWatcherMode.cs = BlueCollar.IO\FileSystemWatcherMode.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Examples", "BlueCollar.Examples\BlueCollar.Examples.csproj", "{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{0F3D5445-1BB4-47FD-91F7-91441B9E0081}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\bannrbmp.bmp = Installer\bannrbmp.bmp
+		Installer\BlueCollar.wxs = Installer\BlueCollar.wxs
+		Installer\dlgbmp.bmp = Installer\dlgbmp.bmp
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = BlueCollar.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Debug|x86.Build.0 = Debug|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Release|x86.ActiveCfg = Release|Any CPU
+		{1269260A-4785-4C26-A442-B87D94B1B6EA}.Release|x86.Build.0 = Release|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Debug|x86.Build.0 = Debug|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{996B312D-CED3-4AB0-A6EB-8403E2603BAD}.Release|x86.Build.0 = Release|Any CPU
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Debug|x86.ActiveCfg = Debug|x86
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Debug|x86.Build.0 = Debug|x86
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Release|x86.ActiveCfg = Release|x86
+		{8B77CF15-E59A-49A1-BD4E-75B65C272496}.Release|x86.Build.0 = Release|x86
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Debug|x86.Build.0 = Debug|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Release|x86.ActiveCfg = Release|Any CPU
+		{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}.Release|x86.Build.0 = Release|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Debug|x86.Build.0 = Debug|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Release|x86.ActiveCfg = Release|Any CPU
+		{12257995-43A3-4EDC-A577-514D0D6E3567}.Release|x86.Build.0 = Release|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44966C30-014E-41D4-B53D-77D944EB74F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

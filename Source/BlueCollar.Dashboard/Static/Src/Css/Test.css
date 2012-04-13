@@ -1,0 +1,42 @@
+﻿h1 label 
+{
+    color: #8699a4;
+    margin-right: 6px;
+}
+
+input[type="checkbox"] 
+{
+    margin-right: 6px;
+}
+
+label 
+{
+    padding: 0;
+    float: none;
+    width: auto;
+    text-align: left;
+}
+
+table#layout td#main 
+{
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+table#layout td#forms 
+{
+    padding: 0;
+    width: auto;
+    background: transparent;
+    
+}
+
+.container-fluid > .content 
+{
+    background: transparent;
+    border: none;
+    -moz-box-shadow: 0 0 0;
+    -webkit-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+}

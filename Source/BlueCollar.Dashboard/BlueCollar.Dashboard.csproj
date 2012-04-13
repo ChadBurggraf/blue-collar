@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1EBC3C0B-4C16-436C-BD07-20AF6FC0B364}</ProjectGuid>
+    <ProjectTypeGuids>{E53F8FEA-EAE0-44A6-8774-FFD645390401};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BlueCollar.Dashboard</RootNamespace>
+    <AssemblyName>BlueCollar.Dashboard</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\BlueCollar.Dashboard.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;$(MSBuildProgramFiles32)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\BlueCollar.Dashboard.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;$(MSBuildProgramFiles32)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="Controllers\BlueCollarController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="default.aspx.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="default.aspx.designer.cs">
+      <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HomeIndex.cs" />
+    <Compile Include="Models\HomeTest.cs" />
+    <Compile Include="Models\IPageViewModel.cs" />
+    <Compile Include="Models\PageViewModelBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Static\bc.css" />
+    <Content Include="Static\bc.js" />
+    <Content Include="Static\html5.js" />
+    <Content Include="Static\iconic_stroke.svg" />
+    <Content Include="Static\Lib\backbone-0.5.3.js" />
+    <Content Include="Static\Lib\datejs\core.js" />
+    <Content Include="Static\Lib\datejs\en-US.js" />
+    <Content Include="Static\Lib\datejs\parser.js" />
+    <Content Include="Static\Lib\datejs\sugarpak.js" />
+    <Content Include="Static\Lib\datejs\time.js" />
+    <Content Include="Static\Lib\extend.js" />
+    <Content Include="Static\Lib\html5.js" />
+    <Content Include="Static\Lib\iconic_stroke.svg" />
+    <Content Include="Static\Lib\jquery-1.7.js" />
+    <Content Include="Static\Lib\jquery.tabby.js" />
+    <Content Include="Static\Lib\json2.js" />
+    <Content Include="Static\Lib\prettify.css" />
+    <Content Include="Static\Lib\prettify.js" />
+    <Content Include="Static\Lib\qunit-1.2.0pre.css" />
+    <Content Include="Static\Lib\qunit-1.2.0pre.js" />
+    <Content Include="Static\Lib\relative-date.js" />
+    <Content Include="Static\Lib\underscore-1.2.1.js" />
+    <Content Include="Static\loading-list.gif" />
+    <Content Include="Static\logo-header.png" />
+    <Content Include="Static\Src\Css\BlueCollar.css" />
+    <Content Include="Static\Lib\bootstrap-xtra-1.4.0.css" />
+    <Content Include="Static\Src\Css\Test.css" />
+    <Content Include="Static\Src\Img\loading-list.gif" />
+    <Content Include="Static\Src\Img\logo-header.png" />
+    <Content Include="Static\Src\Img\tc-badge.png" />
+    <Content Include="Static\Src\Js\App.js" />
+    <Content Include="Static\Src\Js\Close.js" />
+    <Content Include="Static\Src\Js\Controllers\BlueCollarController.js" />
+    <Content Include="Static\Src\Js\Controllers\DashboardController.js" />
+    <Content Include="Static\Src\Js\Controllers\HistoryController.js" />
+    <Content Include="Static\Src\Js\Controllers\QueuedController.js" />
+    <Content Include="Static\Src\Js\Controllers\ScheduleController.js" />
+    <Content Include="Static\Src\Js\Controllers\ScheduledJobController.js" />
+    <Content Include="Static\Src\Js\Controllers\WorkerController.js" />
+    <Content Include="Static\Src\Js\Controllers\WorkingController.js" />
+    <Content Include="Static\Src\Js\Dashboard.js" />
+    <Content Include="Static\Src\Js\FormSerializer.js" />
+    <Content Include="Static\Src\Js\Models\BlueCollarCollection.js" />
+    <Content Include="Static\Src\Js\Models\BlueCollarModel.js" />
+    <Content Include="Static\Src\Js\Models\History.js" />
+    <Content Include="Static\Src\Js\Models\NavigationItem.js" />
+    <Content Include="Static\Src\Js\Models\Pager.js" />
+    <Content Include="Static\Src\Js\Models\Queued.js" />
+    <Content Include="Static\Src\Js\Models\Schedule.js" />
+    <Content Include="Static\Src\Js\Models\ScheduledJob.js" />
+    <Content Include="Static\Src\Js\Models\Stats.js" />
+    <Content Include="Static\Src\Js\Models\Worker.js" />
+    <Content Include="Static\Src\Js\Models\Working.js" />
+    <Content Include="Static\Src\Js\Open.js" />
+    <Content Include="Static\Src\Js\Tests\AjaxTests.js" />
+    <Content Include="Static\Src\Js\Tests\ModelTests.js" />
+    <Content Include="Static\Src\Js\Tests\SerializerTests.js" />
+    <Content Include="Static\Src\Js\Tests\TestUtil.js" />
+    <Content Include="Static\Src\Js\Tests\UtilityTests.js" />
+    <Content Include="Static\Src\Js\Tests\ValidateTests.js" />
+    <Content Include="Static\Src\Js\Util.js" />
+    <Content Include="Static\Src\Js\Validate.js" />
+    <Content Include="Static\Src\Js\Views\DashboardView.js" />
+    <Content Include="Static\Src\Js\Views\FormView.js" />
+    <Content Include="Static\Src\Js\Views\HistoryDetailsView.js" />
+    <Content Include="Static\Src\Js\Views\HistoryListView.js" />
+    <Content Include="Static\Src\Js\Views\HistoryRowView.js" />
+    <Content Include="Static\Src\Js\Views\ListView.js" />
+    <Content Include="Static\Src\Js\Views\NavigationView.js" />
+    <Content Include="Static\Src\Js\Views\NoticeView.js" />
+    <Content Include="Static\Src\Js\Views\PagerView.js" />
+    <Content Include="Static\Src\Js\Views\PropertiesView.js" />
+    <Content Include="Static\Src\Js\Views\QueuedDetailsView.js" />
+    <Content Include="Static\Src\Js\Views\QueuedFormView.js" />
+    <Content Include="Static\Src\Js\Views\QueuedListView.js" />
+    <Content Include="Static\Src\Js\Views\QueuedRowView.js" />
+    <Content Include="Static\Src\Js\Views\ScheduledJobFormView.js" />
+    <Content Include="Static\Src\Js\Views\ScheduledJobListView.js" />
+    <Content Include="Static\Src\Js\Views\ScheduledJobRowView.js" />
+    <Content Include="Static\Src\Js\Views\ScheduleFormView.js" />
+    <Content Include="Static\Src\Js\Views\ScheduleListView.js" />
+    <Content Include="Static\Src\Js\Views\ScheduleRowView.js" />
+    <Content Include="Static\Src\Js\Views\SearchFormView.js" />
+    <Content Include="Static\Src\Js\Views\WorkerFormView.js" />
+    <Content Include="Static\Src\Js\Views\WorkerListView.js" />
+    <Content Include="Static\Src\Js\Views\WorkerRowView.js" />
+    <Content Include="Static\Src\Js\Views\WorkerSignalFormView.js" />
+    <Content Include="Static\Src\Js\Views\WorkingDetailsView.js" />
+    <Content Include="Static\Src\Js\Views\WorkingListView.js" />
+    <Content Include="Static\Src\Js\Views\WorkingRowView.js" />
+    <Content Include="Static\Src\Js\Views\WorkingSignalFormView.js" />
+    <Content Include="Static\tc-badge.png" />
+    <Content Include="Static\test.css" />
+    <Content Include="Static\test.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Test.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Templates.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Static\iconic_stroke.eot" />
+    <None Include="Static\iconic_stroke.ttf" />
+    <None Include="Static\iconic_stroke.woff" />
+    <None Include="Static\Lib\iconic_stroke.eot" />
+    <None Include="Static\Lib\iconic_stroke.ttf" />
+    <None Include="Static\Lib\iconic_stroke.woff" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.csproj">
+      <Project>{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}</Project>
+      <Name>BlueCollar.Examples</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BlueCollar\BlueCollar.csproj">
+      <Project>{1269260A-4785-4C26-A442-B87D94B1B6EA}</Project>
+      <Name>BlueCollar</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
+  <PropertyGroup>
+    <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
+    <AssetsOutputDir>$(MSBuildProjectDirectory)\Static</AssetsOutputDir>
+  </PropertyGroup>
+  <Import Project="..\..\BlueCollar.targets" />
+  <Target Name="BeforeBuild">
+    <CallTarget Targets="PackageAssets" />
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

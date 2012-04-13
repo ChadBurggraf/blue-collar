@@ -1,0 +1,25 @@
+<StyleCopSettings Version="105">
+  <Analyzers>
+    <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
+      <AnalyzerSettings>
+        <BooleanProperty Name="IncludeFields">False</BooleanProperty>
+      </AnalyzerSettings>
+    </Analyzer>
+  </Analyzers>
+  <SourceFileList>
+    <SourceFile>Global.asax.cs</SourceFile>
+    <Settings>
+      <Analyzers>
+        <Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
+          <Rules>
+            <Rule Name="FileHeaderFileNameDocumentationMustMatchTypeName">
+              <RuleSettings>
+                <BooleanProperty Name="Enabled">False</BooleanProperty>
+              </RuleSettings>
+            </Rule>
+          </Rules>
+        </Analyzer>
+      </Analyzers>
+    </Settings>
+  </SourceFileList>
+</StyleCopSettings>

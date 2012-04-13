@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<jspack src="BlueCollar.Dashboard\Static\Src" target="BlueCollar.Dashboard\Static" actions="false">
+  <outputAction name="MinifyCss" executable="java.exe" arguments="-jar ..\Tools\JSPack\yuicompressor-2.4.2.jar --type css" />
+  <outputAction name="MinifyJs" executable="java.exe" arguments="-jar ..\Tools\JSPack\yuicompressor-2.4.2.jar --type js" />
+  <outputAction name="CompileJs" executable="java.exe" arguments="-jar ..\Tools\JSPack\compiler.jar --warning_level QUIET" />
+  <output path="bc.css">
+    <action name="MinifyCss"/>
+    <input path="..\Lib\bootstrap-xtra-1.4.0.css"/>
+    <input path="..\Lib\prettify.css"/>
+    <input path="Css\BlueCollar.css"/>
+  </output>
+  <output path="test.css">
+    <input path="..\Lib\qunit-1.2.0pre.css"/>
+    <input path="Css\Test.css"/>
+  </output>
+  <output name="DateJs" path="date.js" temporary="true">
+    <input path="..\Lib\datejs\en-US.js"/>
+    <input path="..\Lib\datejs\core.js"/>
+    <input path="..\Lib\datejs\sugarpak.js"/>
+    <input path="..\Lib\datejs\parser.js"/>
+    <input path="..\Lib\datejs\time.js"/>
+  </output>
+  <output name="Lib" path="lib.js" temporary="true">
+    <input path="..\Lib\json2.js"/>
+    <input path="..\Lib\jquery-1.7.js"/>
+    <input path="..\Lib\underscore-1.2.1.js"/>
+    <input path="..\Lib\backbone-0.5.3.js"/>
+    <import name="DateJs"/>
+    <input path="..\Lib\relative-date.js"/>
+    <input path="..\Lib\extend.js"/>
+    <input path="..\Lib\prettify.js"/>
+    <input path="..\Lib\jquery.tabby.js"/>
+  </output>
+  <output name="Controllers" path="controllers.js" temporary="true">
+    <input path="Js\Controllers\BlueCollarController.js"/>
+    <input path="Js\Controllers\DashboardController.js"/>
+    <input path="Js\Controllers\HistoryController.js"/>
+    <input path="Js\Controllers\QueuedController.js"/>
+    <input path="Js\Controllers\ScheduleController.js"/>
+    <input path="Js\Controllers\ScheduledJobController.js"/>
+    <input path="Js\Controllers\WorkerController.js"/>
+    <input path="Js\Controllers\WorkingController.js"/>
+  </output>
+  <output name="Models" path="models.js" temporary="true">
+    <input path="Js\Models\BlueCollarModel.js"/>
+    <input path="Js\Models\BlueCollarCollection.js"/>
+    <input path="Js\Models\History.js"/>
+    <input path="Js\Models\NavigationItem.js"/>
+    <input path="Js\Models\Pager.js"/>
+    <input path="Js\Models\Queued.js"/>
+    <input path="Js\Models\Schedule.js"/>
+    <input path="Js\Models\ScheduledJob.js"/>
+    <input path="Js\Models\Stats.js"/>
+    <input path="Js\Models\Worker.js"/>
+    <input path="Js\Models\Working.js"/>
+  </output>
+  <output name="Views" path="views.js" temporary="true">
+    <input path="Js\Views\FormView.js"/>
+    <input path="Js\Views\ListView.js"/>
+    <input path="Js\Views\DashboardView.js"/>
+    <input path="Js\Views\HistoryDetailsView.js"/>
+    <input path="Js\Views\HistoryListView.js"/>
+    <input path="Js\Views\HistoryRowView.js"/>
+    <input path="Js\Views\NavigationView.js"/>
+    <input path="Js\Views\NoticeView.js"/>
+    <input path="Js\Views\PagerView.js"/>
+    <input path="Js\Views\PropertiesView.js"/>
+    <input path="Js\Views\QueuedDetailsView.js"/>
+    <input path="Js\Views\QueuedFormView.js"/>
+    <input path="Js\Views\QueuedListView.js"/>
+    <input path="Js\Views\QueuedRowView.js"/>
+    <input path="Js\Views\ScheduledJobFormView.js"/>
+    <input path="Js\Views\ScheduledJobListView.js"/>
+    <input path="Js\Views\ScheduledJobRowView.js"/>
+    <input path="Js\Views\ScheduleFormView.js"/>
+    <input path="Js\Views\ScheduleListView.js"/>
+    <input path="Js\Views\ScheduleRowView.js"/>
+    <input path="Js\Views\SearchFormView.js"/>
+    <input path="Js\Views\WorkerFormView.js"/>
+    <input path="Js\Views\WorkerListView.js"/>
+    <input path="Js\Views\WorkerRowView.js"/>
+    <input path="Js\Views\WorkerSignalFormView.js"/>
+    <input path="Js\Views\WorkingDetailsView.js"/>
+    <input path="Js\Views\WorkingListView.js"/>
+    <input path="Js\Views\WorkingRowView.js"/>
+    <input path="Js\Views\WorkingSignalFormView.js"/>
+  </output>
+  <output name="App" path="app.js" temporary="true">
+    <input path="Js\Util.js"/>
+    <input path="Js\Validate.js"/>
+    <input path="Js\FormSerializer.js"/>
+    <import name="Models"/>
+    <import name="Views"/>
+    <import name="Controllers"/>
+    <input path="Js\Dashboard.js"/>
+    <input path="Js\App.js"/>
+  </output>
+  <output path="bc.js">
+    <action name="CompileJs"/>
+    <import name="Lib"/>
+    <input path="Js\Open.js"/>
+    <import name="App"/>
+    <input path="Js\Close.js"/>
+  </output>
+  <output path="html5.js">
+    <action name="CompileJs"/>
+    <input path="..\Lib\html5.js"/>
+  </output>
+  <output path="test.js">
+    <import name="Lib"/>
+    <import name="App"/>
+    <input path="..\Lib\qunit-1.2.0pre.js"/>
+    <input path="Js\Tests\TestUtil.js"/>
+    <input path="Js\Tests\AjaxTests.js"/>
+    <input path="Js\Tests\ModelTests.js"/>
+    <input path="Js\Tests\SerializerTests.js"/>
+    <input path="Js\Tests\UtilityTests.js"/>
+    <input path="Js\Tests\ValidateTests.js"/>
+  </output>
+</jspack>

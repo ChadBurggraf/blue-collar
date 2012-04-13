@@ -1,0 +1,16 @@
+*.csproj.user
+*.InstallLog
+*.snk
+*.suo
+Source/BlueCollar.Dashboard/Web.config
+Source/BlueCollar.Test/App.config
+StyleCop.Cache
+testimpactdata.sdf
+App_Data/
+Artifacts/
+bin/
+Build/
+obj/
+Temp/
+TestResults/
+

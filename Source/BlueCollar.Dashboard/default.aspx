@@ -1,0 +1,1 @@
+﻿<%@ Page Language="C#" CodeBehind="default.aspx.cs" Inherits="BlueCollar.Dashboard.Default" %>

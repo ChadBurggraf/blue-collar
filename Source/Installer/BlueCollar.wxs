@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Name="Blue Collar 0.5" Id="F9268075-481D-4497-976D-BE9D1B6D2406" UpgradeCode="D2BB04C4-543A-4463-AC08-DECBF144FCE0" Language="1033" Codepage="1252" Version="0.5.0" Manufacturer="Tasty Codes">
+    <Package Id="*" Description="Blue Collar Installer" InstallerVersion="100" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
+    <Media Id="1" Cabinet="BlueCollar.cab" EmbedCab="yes" />
+    <PropertyRef Id="NETFRAMEWORK35" />
+    <PropertyRef Id="NETFRAMEWORK40FULL" />
+    <WixVariable Id="WixUIBannerBmp" Value="bannrbmp.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="dlgbmp.bmp" />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder" Name="PFiles">
+        <Directory Id="INSTALLDIR" Name="Blue Collar">
+          <Directory Id="ReferenceAssembliesFolder" Name="Reference Assemblies">
+            <Directory Id="ReferenceAssemblies2008Folder" Name="2008">
+              <Component Id="ReferenceAssemblies2008" Guid="47112920-5F7E-4030-8237-FA33DC1C97C1">
+                <File Id="BlueCollarDll2008" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.dll" KeyPath="yes" />
+                <File Id="BlueCollarPdb2008" Name="BlueCollar.pdb" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.pdb" />
+                <File Id="BlueCollarXml2008" Name="BlueCollar.xml" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.xml" />
+                <File Id="BlueCollarSQLiteRepositoryDll2008" Name="BlueCollar.SQLiteRepository.dll" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.dll" />
+                <File Id="BlueCollarSQLiteRepositoryPdb2008" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.pdb" />
+                <File Id="BlueCollarSQLiteRepositoryXml2008" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.xml" />
+              </Component>
+            </Directory>
+            <Directory Id="ReferenceAssemblies2010Folder" Name="2010">
+              <Component Id="ReferenceAssemblies2010" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
+                <File Id="BlueCollarDll2010" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.dll" KeyPath="yes" />
+                <File Id="BlueCollarPdb2010" Name="BlueCollar.pdb" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.pdb" />
+                <File Id="BlueCollarXml2010" Name="BlueCollar.xml" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.xml" />
+                <File Id="BlueCollarSQLiteRepositoryDll2010" Name="BlueCollar.SQLiteRepository.dll" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.dll" />
+                <File Id="BlueCollarSQLiteRepositoryPdb2010" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.pdb" />
+                <File Id="BlueCollarSQLiteRepositoryXml2010" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.xml" />
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="ServiceFolder" Name="Service">
+            <Component Id="Service" Guid="9B16741A-2A46-4A7E-B259-5D992AE0AEB8">
+              <File Id="CollarServiceExe" Name="CollarService.exe" DiskId="1" Source="Service\CollarService.exe" KeyPath="yes" />
+              <File Id="CollarServiceExeConfig" Name="CollarService.exe.config" DiskId="1" Source="Service\CollarService.exe.config" />
+              <File Id="ServiceNLogConfig" Name="NLog.config" DiskId="1" Source="Service\NLog.config" />
+            </Component>
+            <Directory Id="ServiceAnyCPUFolder" Name="AnyCPU">
+              <Directory Id="ServiceAnyCPU2008Folder" Name="2008">
+                <Component Id="ServiceAnyCPU2008" Guid="CCADEA03-3746-4B04-8431-2B98B93B213A">
+                  <File Id="CollarExeAnyCPU2008" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\2008\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigAnyCPU2008" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\2008\Collar.exe.config" />
+                  <File Id="BlueCollarDllAnyCPU2008" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\2008\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbAnyCPU2008" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\2008\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlAnyCPU2008" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\2008\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigAnyCPU2008" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\2008\NLog.config" />
+                </Component>
+              </Directory>
+              <Directory Id="ServiceAnyCPU2010Folder" Name="2010">
+                <Component Id="ServiceAnyCPU2010" Guid="82330361-6973-41D1-885F-A4A1557D02EE">
+                  <File Id="CollarExeAnyCPU2010" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\2010\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigAnyCPU2010" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\2010\Collar.exe.config" />
+                  <File Id="BlueCollarDllAnyCPU2010" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\2010\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbAnyCPU2010" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\2010\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlAnyCPU2010" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\2010\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigAnyCPU2010" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\2010\NLog.config" />
+                </Component>
+              </Directory>
+            </Directory>
+            <Directory Id="Servicex86Folder" Name="x86">
+              <Directory Id="Servicex862008Folder" Name="2008">
+                <Component Id="Servicex862008" Guid="C3E8B26E-C822-42D9-B4EC-E952B673A5BC">
+                  <File Id="CollarExex862008" Name="Collar.exe" DiskId="1" Source="Service\x86\2008\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigx862008" Name="Collar.exe.config" DiskId="1" Source="Service\x86\2008\Collar.exe.config" />
+                  <File Id="BlueCollarDllx862008" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\2008\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbx862008" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\2008\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlx862008" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\2008\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigx862008" Name="NLog.config" DiskId="1" Source="Service\x86\2008\NLog.config" />
+                </Component>
+              </Directory>
+              <Directory Id="Servicex862010Folder" Name="2010">
+                <Component Id="Servicex862010" Guid="DE77CB7A-CE37-4334-B297-9A4E17EF65BA">
+                  <File Id="CollarExex862010" Name="Collar.exe" DiskId="1" Source="Service\x86\2010\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigx862010" Name="Collar.exe.config" DiskId="1" Source="Service\x86\2010\Collar.exe.config" />
+                  <File Id="BlueCollarDllx862010" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\2010\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbx862010" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\2010\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlx862010" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\2010\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigx862010" Name="NLog.config" DiskId="1" Source="Service\x86\2010\NLog.config" />
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="Complete" Level="1" Title="Blue Collar" Display="expand" ConfigurableDirectory="INSTALLDIR">
+      <ComponentRef Id="ReferenceAssemblies2008" />
+      <ComponentRef Id="ReferenceAssemblies2010" />
+      <ComponentRef Id="Service" />
+      <ComponentRef Id="ServiceAnyCPU2008" />
+      <ComponentRef Id="ServiceAnyCPU2010" />
+      <ComponentRef Id="Servicex862008" />
+      <ComponentRef Id="Servicex862010" />
+    </Feature>
+    <UI>
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+      <UIRef Id="WixUI_InstallDir" />
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg" Order="2">1</Publish>
+      <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">1</Publish>
+    </UI>
+  </Product>
+</Wix>

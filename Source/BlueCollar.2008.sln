@@ -1,0 +1,102 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E900DE04-06E0-4428-9670-59DD16B8EC66}"
+	ProjectSection(SolutionItems) = preProject
+		BlueCollar.2008.vsmdi = BlueCollar.2008.vsmdi
+		..\BlueCollar.targets = ..\BlueCollar.targets
+		..\Build.proj = ..\Build.proj
+		JSPack.xml = JSPack.xml
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+		Open.js.template = Open.js.template
+		SolutionInfo.cs = SolutionInfo.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.2008", "BlueCollar\BlueCollar.2008.csproj", "{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.SQLiteRepository.2008", "BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.2008.csproj", "{9ADF8141-A754-40C9-ACD8-0531B042638A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Console.2008", "BlueCollar.Console\BlueCollar.Console.2008.csproj", "{70DF92F9-FEB2-4B93-BE61-2864A8378420}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Test.2008", "BlueCollar.Test\BlueCollar.Test.2008.csproj", "{E0C7E051-900C-4D14-BCCB-6C107903160E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Service.2008", "BlueCollar.Service\BlueCollar.Service.2008.csproj", "{196B1034-E44A-47AE-8B95-21CADABD038D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlueCollar.IO", "BlueCollar.IO", "{0AA7D93F-5732-4423-B85E-07C525B46706}"
+	ProjectSection(SolutionItems) = preProject
+		BlueCollar.IO\FileSystemEventType.cs = BlueCollar.IO\FileSystemEventType.cs
+		BlueCollar.IO\FileSystemWatcher.cs = BlueCollar.IO\FileSystemWatcher.cs
+		BlueCollar.IO\FileSystemWatcherMode.cs = BlueCollar.IO\FileSystemWatcherMode.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Examples.2008", "BlueCollar.Examples\BlueCollar.Examples.2008.csproj", "{104B2748-8615-4426-8103-8888F6F93E30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{DEE2AC9A-1786-47DE-B4B4-8801F77652E4}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\bannrbmp.bmp = Installer\bannrbmp.bmp
+		Installer\BlueCollar.wxs = Installer\BlueCollar.wxs
+		Installer\dlgbmp.bmp = Installer\dlgbmp.bmp
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = BlueCollar.2008.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Debug|x86.Build.0 = Debug|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}.Release|x86.Build.0 = Release|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Debug|x86.Build.0 = Debug|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Release|x86.ActiveCfg = Release|Any CPU
+		{9ADF8141-A754-40C9-ACD8-0531B042638A}.Release|x86.Build.0 = Release|Any CPU
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Debug|x86.ActiveCfg = Debug|x86
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Debug|x86.Build.0 = Debug|x86
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Release|x86.ActiveCfg = Release|x86
+		{70DF92F9-FEB2-4B93-BE61-2864A8378420}.Release|x86.Build.0 = Release|x86
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Debug|x86.Build.0 = Debug|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Release|x86.ActiveCfg = Release|Any CPU
+		{E0C7E051-900C-4D14-BCCB-6C107903160E}.Release|x86.Build.0 = Release|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Debug|x86.Build.0 = Debug|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Release|x86.ActiveCfg = Release|Any CPU
+		{196B1034-E44A-47AE-8B95-21CADABD038D}.Release|x86.Build.0 = Release|Any CPU
+		{104B2748-8615-4426-8103-8888F6F93E30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{104B2748-8615-4426-8103-8888F6F93E30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{104B2748-8615-4426-8103-8888F6F93E30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{104B2748-8615-4426-8103-8888F6F93E30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{104B2748-8615-4426-8103-8888F6F93E30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{104B2748-8615-4426-8103-8888F6F93E30}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

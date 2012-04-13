@@ -1,0 +1,158 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+  <UsingTask TaskName="GetVersion" AssemblyFile="Tools\Tasty\Tasty.dll"/>
+
+  <PropertyGroup>
+    <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)</RootDir>
+    <AssetsOutputDir Condition="'$(AssetsOutputDir)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Static</AssetsOutputDir>
+    <AssetsSourceDir>$(RootDir)\Source\BlueCollar.Dashboard\Static\Src</AssetsSourceDir>
+    <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Debug'">false</CompressAssets>
+    <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Release'">true</CompressAssets>
+    <ConsoleConfigSubstitutionsFile Condition="'$(ConsoleConfigSubstitutionsFile)' == ''">App.config.2010</ConsoleConfigSubstitutionsFile>
+    <HtmlHelpWorkshopDir Condition="'$(HtmlHelpWorkshopDir)' == ''">$(MSBuildExtensionsPath32)\..\HTML Help Workshop</HtmlHelpWorkshopDir>
+    <PackageAssets Condition="'$(PackageAssets)' == ''">true</PackageAssets>
+    <SandcastleDir Condition="'$(SandcastleDir)' == ''">$(MSBuildExtensionsPath32)\..\Sandcastle</SandcastleDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(SignAssembly)' == 'true' And Exists('$(AssemblyOriginatorKeyFile)')">
+    <KeyFileArgs>/keyfile:"$(AssemblyOriginatorKeyFile)"</KeyFileArgs>
+  </PropertyGroup>
+
+  <Target Name="GenerateConsoleConfig">
+    <Copy SourceFiles="App.config.base" DestinationFiles="$(OutputPath)$(AssemblyName).exe.config"/>
+    <XmlMassUpdate ContentFile="$(OutputPath)$(AssemblyName).exe.config" ContentRoot="/configuration" SubstitutionsFile="$(ConsoleConfigSubstitutionsFile)" SubstitutionsRoot="/configuration"/>
+    <CreateItem Include="$(OutputPath)$(AssemblyName).exe.config">
+      <Output TaskParameter="Include" ItemName="FileWrites"/>
+    </CreateItem>
+  </Target>
+
+  <Target Name="GenerateDocs">
+    <Message Text="Warning: Documentation will not be generated because Sandcaslte and/or the HTML Help Workshop could not be found." Condition="!Exists('$(SandcastleDir)') Or !Exists('$(HtmlHelpWorkshopDir)')" Importance="high"/>
+    <CallTarget Targets="_GenerateDocs"/>
+  </Target>
+
+  <Target Name="_GenerateDocs" Condition="Exists('$(SandcastleDir)') And Exists('$(HtmlHelpWorkshopDir)') And '$(DocsInputAssemblyPath)' != '' And '$(DocsInputCommentsPath)' != '' And '$(DocsProjectName)' != '' And '$(DocsStagingDir)' != '' And '$(DocsOutputPath)' != ''">
+    <!-- Staging directories. -->
+    <PropertyGroup>
+      <ChmDir>$(DocsStagingDir)\Chm</ChmDir>
+      <HtmlDir>$(DocsStagingDir)\Html</HtmlDir>
+    </PropertyGroup>
+
+    <!-- Sandcastle executables. -->
+    <PropertyGroup>
+      <BuildAssemblerPath>$(SandcastleDir)\ProductionTools\BuildAssembler.exe</BuildAssemblerPath>
+      <ChmBuilderPath>$(SandcastleDir)\ProductionTools\ChmBuilder.exe</ChmBuilderPath>
+      <HhcPath>$(HtmlHelpWorkshopDir)\hhc.exe</HhcPath>
+      <MrefBuilderPath>$(SandcastleDir)\ProductionTools\MrefBuilder.exe</MrefBuilderPath>
+      <XslTransformPath>$(SandcastleDir)\ProductionTools\XslTransform.exe</XslTransformPath>
+    </PropertyGroup>
+
+    <!-- Sandcastle XSL transforms. -->
+    <PropertyGroup>
+      <AddFriendlyFileNamesXslPath>$(SandcastleDir)\ProductionTransforms\AddFriendlyFilenames.xsl</AddFriendlyFileNamesXslPath>
+      <ApplyVSDocModelXslPath>$(SandcastleDir)\ProductionTransforms\ApplyVSDocModel.xsl</ApplyVSDocModelXslPath>
+      <CreateVSTocXslPath>$(SandcastleDir)\ProductionTransforms\CreateVSToc.xsl</CreateVSTocXslPath>
+      <ReflectionToManifestXslPath>$(SandcastleDir)\ProductionTransforms\ReflectionToManifest.xsl</ReflectionToManifestXslPath>
+    </PropertyGroup>
+
+    <!-- Assets the for documentation style we're using. -->
+    <ItemGroup>
+      <Icons Include="$(SandcastleDir)\Presentation\vs2005\icons\**\*.*"/>
+      <Scripts Include="$(SandcastleDir)\Presentation\vs2005\Scripts\**\*.*"/>
+      <Styles Include="$(SandcastleDir)\Presentation\vs2005\Styles\**\*.*"/>
+    </ItemGroup>
+
+    <!-- Ensure our staging directories and the custom config file we're going to use. -->
+    <MakeDir Directories="$(DocsStagingDir);$(ChmDir);$(HtmlDir)"/>
+    <Copy SourceFiles="$(RootDir)\Source\sandcastle.config" DestinationFolder="$(DocsStagingDir)"/>
+    
+    <!-- Copy the style assets over. -->
+    <Copy SourceFiles="@(Icons)" DestinationFolder="$(ChmDir)\icons\%(RecursiveDir)"/>
+    <Copy SourceFiles="@(Scripts)" DestinationFolder="$(ChmDir)\Scripts\%(RecursiveDir)"/>
+    <Copy SourceFiles="@(Styles)" DestinationFolder="$(ChmDir)\Styles\%(RecursiveDir)"/>
+
+    <!-- Copy the XML comments over. -->
+    <Copy SourceFiles="$(DocsInputCommentsPath)" DestinationFiles="$(DocsStagingDir)\comments.xml"/>
+
+    <!-- Run all of the required sandcastle commands. -->
+    <Exec Command='"$(MrefBuilderPath)" "$(DocsInputAssemblyPath)" /out:mref.xml' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(XslTransformPath)" mref.xml /xsl:"$(ApplyVSDocModelXslPath)" /out:docmodel.xml' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(XslTransformPath)" docmodel.xml /xsl:"$(AddFriendlyFileNamesXslPath)" /out:reflection.xml' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(XslTransformPath)" reflection.xml /xsl:"$(ReflectionToManifestXslPath)" /out:manifest.xml' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(BuildAssemblerPath)" manifest.xml /config:"$(DocsStagingDir)\sandcastle.config"' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(XslTransformPath)" reflection.xml /xsl:"$(CreateVSTocXslPath)" /out:toc.xml' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(ChmBuilderPath)" /project:$(DocsProjectName) /html:"$(HtmlDir)" /lcid:1033 /toc:toc.xml /out:"$(ChmDir)"' WorkingDirectory="$(DocsStagingDir)"/>
+    <Exec Command='"$(HhcPath)" "$(ChmDir)\$(DocsProjectName).hhp"' WorkingDirectory="$(DocsStagingDir)" ContinueOnError="true"/>
+    
+    <!-- Copy the final output to the destination. -->
+    <Copy SourceFiles="$(ChmDir)\$(DocsProjectName).chm" DestinationFiles="$(DocsOutputPath)"/>
+    
+    <!-- Clean up after ourselves. -->
+    <ItemGroup>
+      <CleanupFiles Include="$(DocsStagingDir)\**\*.*"/>
+    </ItemGroup>
+    <RemoveDir Directories="$(ChmDir);$(HtmlDir)"/>
+    <Delete Files="@(CleanupFiles)"/>
+  </Target>
+
+  <Target Name="GetVersion">
+    <GetVersion AssemblyInfoFile="$(RootDir)\Source\SolutionInfo.cs">
+      <Output TaskParameter="Major" PropertyName="Major"/>
+      <Output TaskParameter="Minor" PropertyName="Minor"/>
+      <Output TaskParameter="Build" PropertyName="Build"/>
+      <Output TaskParameter="Revision" PropertyName="Revision"/>
+    </GetVersion>
+  </Target>
+
+  <Target Name="MergeConsole" Condition="'$(MergedConsoleOutputPath)' != ''">
+    <Exec Command='"$(RootDir)\Tools\ILRepack\ILRepack.exe" /log /internalize /ndebug $(KeyFileArgs) /lib:$(OutputPath) /out:"$(MergedConsoleOutputPath)\Collar.exe" $(OutputPath)Collar.exe $(OutputPath)NDesk.Options.dll'/>
+    <Copy SourceFiles="$(OutputPath)NLog.config" DestinationFolder="$(MergedConsoleOutputPath)"/>
+  </Target>
+
+  <Target Name="MergeLibrary" Condition="'$(MergedLibraryOutputPath)' != ''">
+    <Exec Command='"$(RootDir)\Tools\ILRepack\ILRepack.exe" /log /internalize /xmldocs $(KeyFileArgs) /lib:$(OutputPath) /out:"$(MergedLibraryOutputPath)\BlueCollar.dll" $(OutputPath)BlueCollar.dll $(OutputPath)Dapper.dll $(OutputPath)Newtonsoft.Json.dll $(OutputPath)NLog.dll'/>
+  </Target>
+
+  <Target Name="MergeService" Condition="'$(MergedServiceOutputPath)' != ''">
+    <Exec Command='"$(RootDir)\Tools\ILRepack\ILRepack.exe" /log /internalize $(KeyFileArgs) /lib:$(OutputPath) /out:"$(MergedServiceOutputPath)\CollarService.exe" $(OutputPath)CollarService.exe $(OutputPath)NLog.dll'/>
+    <Copy SourceFiles="App.config" DestinationFiles="$(MergedServiceOutputPath)\$(AssemblyName).exe.config"/>
+    <Copy SourceFiles="$(OutputPath)NLog.config" DestinationFolder="$(MergedServiceOutputPath)"/>
+  </Target>
+
+  <Target Name="MergeSQLiteRepository" Condition="'$(MergedSQLiteRepositoryOutputPath)' != ''">
+    <Exec Command='"$(RootDir)\Tools\ILRepack\ILRepack.exe" /log /internalize $(KeyFileArgs) /xmldocs /lib:$(OutputPath) /out:"$(MergedSQLiteRepositoryOutputPath)\BlueCollar.SQLiteRepository.dll" $(OutputPath)BlueCollar.SQLiteRepository.dll $(OutputPath)Dapper.dll'/>
+  </Target>
+  
+  <Target Name="PackageAssets" DependsOnTargets="GetVersion" Condition="'$(PackageAssets)' == 'true'">
+    <ItemGroup>
+      <Fonts Include="$(AssetsSourceDir)\..\Lib\iconic_stroke.*"/>
+      <Gifs Include="$(AssetsSourceDir)\Img\**\*.gif" />
+      <Pngs Include="$(AssetsSourceDir)\Img\**\*.png" />
+      <Tokens Include="Version">
+        <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
+      </Tokens>
+    </ItemGroup>
+
+    <TemplateFile Template="$(RootDir)\Source\Open.js.template" OutputFilename="$(AssetsSourceDir)\Js\Open.js" Tokens="@(Tokens)" />
+    <Exec Command="$(RootDir)\Tools\PNGCrush\pngcrush.exe -d &quot;$(AssetsOutputDir)&quot; -f &quot;%(Pngs.Identity)&quot;" Condition="'$(CompressAssets)' == 'true'" />
+    <Copy SourceFiles="@(Pngs)" DestinationFiles="@(Pngs->'$(AssetsOutputDir)\%(RecursiveDir)%(Filename)%(Extension)')" Condition="'$(CompressAssets)' == 'false'" />
+    <Copy SourceFiles="@(Gifs)" DestinationFiles="@(Gifs->'$(AssetsOutputDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\JSPack.xml" /src:"$(AssetsSourceDir)" /target:"$(AssetsOutputDir)" /actions:$(CompressAssets)' />
+    <Copy SourceFiles="@(Fonts)" DestinationFiles="@(Fonts->'$(AssetsOutputDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
+  <Target Name="SetPackageVersion" DependsOnTargets="GetVersion">
+    <XmlUpdate
+      Prefix="n"
+      Namespace="http://schemas.microsoft.com/wix/2006/wi"
+      XmlFileName="$(InstallerDir)\BlueCollar.wxs"
+      XPath="/n:Wix/n:Product/@Name"
+      Value="Blue Collar $(Major).$(Minor)"/>
+    
+    <XmlUpdate
+      Prefix="n"
+      Namespace="http://schemas.microsoft.com/wix/2006/wi"
+      XmlFileName="$(InstallerDir)\BlueCollar.wxs"
+      XPath="/n:Wix/n:Product/@Version"
+      Value="$(Major).$(Minor).$(Build)"/>
+  </Target>
+</Project>

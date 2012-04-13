@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1269260A-4785-4C26-A442-B87D94B1B6EA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BlueCollar</RootNamespace>
+    <AssemblyName>BlueCollar</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\BlueCollar.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;$(MSBuildProgramFiles32)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;$(MSBuildProgramFiles32)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <DocumentationFile>bin\Debug\BlueCollar.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\BlueCollar.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;$(MSBuildProgramFiles32)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;$(MSBuildProgramFiles32)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\Rules</CodeAnalysisRuleDirectories>
+    <DocumentationFile>bin\Release\BlueCollar.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Dapper, Version=1.6.0.0, Culture=neutral, PublicKeyToken=ba961b0c1a303c11, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Lib\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\Lib\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="BlueCollarSection.cs" />
+    <Compile Include="ConfigurationRepositoryFactory.cs" />
+    <Compile Include="CountsRecord.cs" />
+    <Compile Include="DashboardElement.cs" />
+    <Compile Include="DashboardEnabledMode.cs" />
+    <Compile Include="Dashboard\DashboardStatsHandler.cs" />
+    <Compile Include="Dashboard\DeleteQueuedHandler.cs" />
+    <Compile Include="Dashboard\HandlerOutput.cs" />
+    <Compile Include="Dashboard\DashboardRouter.cs" />
+    <Compile Include="Dashboard\DashboardRoute{T}.cs" />
+    <Compile Include="Dashboard\DeleteScheduledJobHandler.cs" />
+    <Compile Include="Dashboard\DeleteScheduleHandler.cs" />
+    <Compile Include="Dashboard\DeleteWorkerHandler.cs" />
+    <Compile Include="Dashboard\HistoryDetailsHandler.cs" />
+    <Compile Include="Dashboard\HistoryListHandler.cs" />
+    <Compile Include="Dashboard\Index.cs" />
+    <Compile Include="Dashboard\IndexHandler.cs" />
+    <Compile Include="Dashboard\QueuedDetailsHandler.cs" />
+    <Compile Include="Dashboard\QueuedListHandler.cs" />
+    <Compile Include="Dashboard\SaveQueuedHandler.cs" />
+    <Compile Include="Dashboard\SaveWorkerHandler.cs" />
+    <Compile Include="Dashboard\ScheduledJobListHandler.cs" />
+    <Compile Include="Dashboard\HandlerHelper.cs" />
+    <Compile Include="Dashboard\IDashboardRoute.cs" />
+    <Compile Include="Dashboard\SaveScheduledJobHandler.cs" />
+    <Compile Include="Dashboard\SaveScheduleHandler.cs" />
+    <Compile Include="Dashboard\CountsHandler.cs" />
+    <Compile Include="Dashboard\DashboardHandlerBase.cs" />
+    <Compile Include="Dashboard\DashboardHandlerFactory.cs" />
+    <Compile Include="Dashboard\IDashboardHandler.cs" />
+    <Compile Include="Dashboard\JsonHandler.cs" />
+    <Compile Include="Dashboard\JsonHandler{T}.cs" />
+    <Compile Include="Dashboard\QueryString.cs" />
+    <Compile Include="Dashboard\ResponseCacheModes.cs" />
+    <Compile Include="Dashboard\ScheduleListHandler.cs" />
+    <Compile Include="Dashboard\SignalWorkerHandler.cs" />
+    <Compile Include="Dashboard\SignalWorkingHandler.cs" />
+    <Compile Include="Dashboard\StaticFile.cs" />
+    <Compile Include="Dashboard\StaticFileHandler.cs" />
+    <Compile Include="Dashboard\StyleSheetHandler.cs" />
+    <Compile Include="Dashboard\ValidationResult.cs" />
+    <Compile Include="Dashboard\WorkerListHandler.cs" />
+    <Compile Include="Dashboard\WorkingDetailsHandler.cs" />
+    <Compile Include="Dashboard\WorkingListHandler.cs" />
+    <Compile Include="EmptyLogger.cs" />
+    <Compile Include="EnqueueJobRecord.cs" />
+    <Compile Include="EventLogger.cs" />
+    <Compile Include="EventLoggerEventArgs.cs" />
+    <Compile Include="EventLoggerEventType.cs" />
+    <Compile Include="HistoryDetailsRecord.cs" />
+    <Compile Include="HistoryListRecord.cs" />
+    <Compile Include="HistoryStatusCountsRecord.cs" />
+    <Compile Include="IScheduler.cs" />
+    <Compile Include="Job.cs" />
+    <Compile Include="JobsPerHourByDayRecord.cs" />
+    <Compile Include="JobsPerWorkerRecord.cs" />
+    <Compile Include="MachineProxy.cs" />
+    <Compile Include="NullLogger.cs" />
+    <Compile Include="QueueDetailsRecord.cs" />
+    <Compile Include="QueueListRecord.cs" />
+    <Compile Include="QueueNameFilters.cs" />
+    <Compile Include="SqlServerRepository.cs" />
+    <Compile Include="StatisticsRecord.cs" />
+    <Compile Include="WorkerSignalRecord.cs" />
+    <Compile Include="ExceptionXElement.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="HistoryRecord.cs" />
+    <Compile Include="HistoryStatus.cs" />
+    <Compile Include="IJob.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="IRepository.cs" />
+    <Compile Include="IRepositoryFactory.cs" />
+    <Compile Include="IScheduledJob.cs" />
+    <Compile Include="JobRecordBase.cs" />
+    <Compile Include="JobSerializer.cs" />
+    <Compile Include="RecordList{T}.cs" />
+    <Compile Include="Machine.cs" />
+    <Compile Include="MachineElement.cs" />
+    <Compile Include="NLogger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueueRecord.cs" />
+    <Compile Include="RepositoryElement.cs" />
+    <Compile Include="ScheduledJobRecord.cs" />
+    <Compile Include="ScheduledJobRecordList.cs" />
+    <Compile Include="ScheduleListRecord.cs" />
+    <Compile Include="Scheduler.cs" />
+    <Compile Include="ScheduleRecord.cs" />
+    <Compile Include="ScheduleRepeatType.cs" />
+    <Compile Include="Worker.cs" />
+    <Compile Include="WorkerRecord.cs" />
+    <Compile Include="WorkerSignal.cs" />
+    <Compile Include="SignalsRecord.cs" />
+    <Compile Include="WorkerStartupType.cs" />
+    <Compile Include="WorkerStatus.cs" />
+    <Compile Include="WorkingDetailsRecord.cs" />
+    <Compile Include="WorkingListRecord.cs" />
+    <Compile Include="WorkingRecord.cs" />
+    <Compile Include="WorkingSignal.cs" />
+    <Compile Include="WorkingSignalRecord.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\bc.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\index.xslt">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\templates.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\bc.js" />
+    <EmbeddedResource Include="Dashboard\Static\loading-list.gif" />
+    <EmbeddedResource Include="Dashboard\Static\logo-header.png" />
+    <EmbeddedResource Include="Dashboard\Static\tc-badge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\html5.js" />
+    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.eot" />
+    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.ttf" />
+    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.woff" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SqlServer.Schema.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
+  <PropertyGroup>
+    <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
+    <AssetsOutputDir>$(MSBuildProjectDirectory)\Dashboard\Static</AssetsOutputDir>
+    <PackageAssets Condition="'$(PackageAssets)' == ''">false</PackageAssets>
+  </PropertyGroup>
+  <Import Project="..\..\BlueCollar.targets" />
+  <Target Name="BeforeBuild">
+    <CallTarget Targets="PackageAssets" />
+    <Copy SourceFiles="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml" DestinationFiles="$(AssetsOutputDir)\templates.html" />
+  </Target>
+  <Target Name="AfterBuild">
+    <CallTarget Targets="MergeLibrary" Condition="'$(Configuration)' == 'Release'" />
+  </Target>
+</Project>

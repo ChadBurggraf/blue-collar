@@ -1,0 +1,36 @@
+﻿<h1 id="qunit-header">Blue Collar Tests</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+
+@section style {
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Static/test.css")">
+}
+
+@section script {
+<script type="text/javascript">
+    var urlRoot = '@Url.Content("~/")'
+        jsonUrlRoot = '@Url.Content(BlueCollarSection.Section.Dashboard.HandlerUrl)';
+
+    if (urlRoot.lastIndexOf('/') !== urlRoot.length - 1) {
+        urlRoot += '/';
+    }
+
+    if (jsonUrlRoot.lastIndexOf('/') !== jsonUrlRoot.length - 1) {
+        jsonUrlRoot += '/';
+    }
+</script>
+<script type="text/javascript" src="@Url.Content("~/Static/test.js")"></script>
+<script type="text/javascript">
+    var navList = new NavigationItemList();
+    navList.urlRoot = urlRoot;
+    navList.showCounts = false;
+    navList.testLink = true;
+    navList.reset(navList.parse());
+    navList.setCurrent('Tests');
+
+    new NavigationView({collection: navList}).render();
+</script>
+}

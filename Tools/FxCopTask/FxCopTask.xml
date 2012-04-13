@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FxCopTask</name>
+    </assembly>
+    <members>
+        <member name="T:FxCopTask.FxCop">
+            <summary>
+            Executes FxCop from MSBuild.
+            </summary>
+        </member>
+        <member name="M:FxCopTask.FxCop.#ctor">
+            <summary>
+            Initializes a new instance of the FxCop class.
+            </summary>
+        </member>
+        <member name="M:FxCopTask.FxCop.GetRelativePath(System.String)">
+            <summary>
+            Gets the relative path of the given path string, compared to the currently environment directory.
+            </summary>
+            <param name="path">The path to get the relative path of.</param>
+            <returns>A relative path.</returns>
+        </member>
+        <member name="M:FxCopTask.FxCop.Execute">
+            <summary>
+            Executes the task.
+            </summary>
+            <returns>True if the task succeeded, false otherwise.</returns>
+        </member>
+        <member name="M:FxCopTask.FxCop.CreateProcess(System.String)">
+            <summary>
+            Creates an FxCop process, passing the given prepared assembly arguments.
+            </summary>
+            <param name="assemblyArgs">A string of prepared assembly arguments.</param>
+            <returns>The created process.</returns>
+        </member>
+        <member name="P:FxCopTask.FxCop.Assemblies">
+            <summary>
+            Gets or sets the collection of assemblies to run FxCop against.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.Dictionary">
+            <summary>
+            Gets or sets the path of the custom dictionary to pass to FxCop.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.Executable">
+            <summary>
+            Gets or sets the pass of FxCopCmd.exe.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.FailOnError">
+            <summary>
+            Gets or sets a value indicating whether to fail the build on FxCop errors.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.FailOnWarning">
+            <summary>
+            Gets or sets a value indicating whether to fail the build on FxCop warnings.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.Output">
+            <summary>
+            Gets or sets the path to save the FxCop output to.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.Rules">
+            <summary>
+            Gets or sets a collection of rule assemblies to use when running FxCop.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.RuleSet">
+            <summary>
+            Gets or sets the rule set to use, when not using rule assemblies.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.FxCop.RuleSetDirectory">
+            <summary>
+            Gets or sets the rule set directory to use, when not using rule assemblies.
+            </summary>
+        </member>
+        <member name="T:FxCopTask.ProgramLocation">
+            <summary>
+            Represents the location on disk of the FxCop installation.
+            </summary>
+        </member>
+        <member name="M:FxCopTask.ProgramLocation.FindDefault">
+            <summary>
+            Finds FxCop in the default location or in the location installed by Visual Studio 2010.
+            </summary>
+            <returns>The FxCop location.</returns>
+        </member>
+        <member name="P:FxCopTask.ProgramLocation.Executable">
+            <summary>
+            Gets or sets the path to the FxCopCmd executable.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.ProgramLocation.Found">
+            <summary>
+            Gets or sets a value indicating whether the location was found.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.ProgramLocation.RuleAssemblies">
+            <summary>
+            Gets a collection of rule assemblies from this instance's <see cref="P:FxCopTask.ProgramLocation.RulesDirectory"/>.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.ProgramLocation.RulesDirectory">
+            <summary>
+            Gets or sets the path to the rule assembly directory.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.ProgramLocation.RuleSetDirectory">
+            <summary>
+            Gets or sets the path to the ruleset directory, if one was found.
+            </summary>
+        </member>
+        <member name="T:FxCopTask.Logger">
+            <summary>
+            Function definition for logging messages found while parsing FxCop XML output.
+            </summary>
+            <param name="errorCode">The error code of the message to log.</param>
+            <param name="file">The file the message relates to.</param>
+            <param name="lineNumber">The line number in the file the message relates to.</param>
+            <param name="message">The message to log.</param>
+        </member>
+        <member name="T:FxCopTask.OutputParser">
+            <summary>
+            Parses FxCop output XML.
+            </summary>
+        </member>
+        <member name="M:FxCopTask.OutputParser.#ctor(System.String,FxCopTask.Logger,FxCopTask.Logger)">
+            <summary>
+            Initializes a new instance of the OutputParser class.
+            </summary>
+            <param name="outputPath">The path of the output file to parse.</param>
+            <param name="errorLogger">The logging function to use when logging error messages.</param>
+            <param name="warningLogger">The logging function to use when logging warning messages.</param>
+        </member>
+        <member name="M:FxCopTask.OutputParser.GetErrorCode(System.Xml.Linq.XElement)">
+            <summary>
+            Gets the error code from the given message XML element.
+            </summary>
+            <param name="message">The message XML element to get the error code from.</param>
+            <returns>The message's error code.</returns>
+        </member>
+        <member name="M:FxCopTask.OutputParser.GetFileName(System.String,System.Xml.Linq.XElement)">
+            <summary>
+            Gets the file name from the given issue, defaulting to the given assembly path if none was found.
+            </summary>
+            <param name="assembly">The path of the assembly the issue belongs to.</param>
+            <param name="issue">The issue XML element to get the file name from.</param>
+            <returns>The issue's file name.</returns>
+        </member>
+        <member name="M:FxCopTask.OutputParser.GetLevel(System.Xml.Linq.XElement)">
+            <summary>
+            Gets the level from the given issue XML element.
+            </summary>
+            <param name="issue">The issue XML element to get the level from.</param>
+            <returns>The issue's level.</returns>
+        </member>
+        <member name="M:FxCopTask.OutputParser.GetLineNumber(System.Xml.Linq.XElement)">
+            <summary>
+            Gets the line number from the given issue XML element.
+            </summary>
+            <param name="issue">The issue XML element to get the line number from.</param>
+            <returns>The issue's line number.</returns>
+        </member>
+        <member name="M:FxCopTask.OutputParser.GetMessage(System.Xml.Linq.XContainer)">
+            <summary>
+            Gets the message from the given issue XML element.
+            </summary>
+            <param name="issue">The issue XML element to get the message from.</param>
+            <returns>The issue's message.</returns>
+        </member>
+        <member name="M:FxCopTask.OutputParser.Parse(System.Boolean,System.Boolean)">
+            <summary>
+            Parses this instance's output file.
+            </summary>
+            <param name="failOnError">A value indicating whether to return failure when an error has been encountered.</param>
+            <param name="failOnWarning">A value indicating whether to return failure when a warning has been encountered.</param>
+            <returns>An indication of success or failure, depending on the failure settings passed during the call.</returns>
+        </member>
+        <member name="P:FxCopTask.OutputParser.ErrorLogger">
+            <summary>
+            Gets the logging function to use when logging error messages.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.OutputParser.OutputPath">
+            <summary>
+            Gets the path of the output file to parse.
+            </summary>
+        </member>
+        <member name="P:FxCopTask.OutputParser.WarningLogger">
+            <summary>
+            Gets the logging function to use when logging warning messages.
+            </summary>
+        </member>
+    </members>
+</doc>
