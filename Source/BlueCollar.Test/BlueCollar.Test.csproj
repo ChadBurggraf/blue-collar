@@ -133,6 +133,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <EmbeddedResource Include="Web.config" />
+    <None Include="App.config.template" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="TailTest-10.txt" />
@@ -149,6 +150,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <Target Name="BeforeBuild">
+    <Copy SourceFiles="App.config.template" DestinationFiles="App.config" Condition="!Exists('App.config')" />
   </Target>
   <Target Name="AfterBuild">
   </Target>

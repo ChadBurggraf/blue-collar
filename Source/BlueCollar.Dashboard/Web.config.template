@@ -1,0 +1,68 @@
+﻿<?xml version="1.0"?>
+<configuration>
+  <configSections>
+    <section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+  </configSections>
+
+  <appSettings>
+    <add key="webpages:Version" value="1.0.0.0"/>
+    <add key="ClientValidationEnabled" value="true"/>
+    <add key="CreateBlueCollarMachineInProcess" value="true"/>
+    <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
+  </appSettings>
+
+  <blueCollar applicationName="BlueCollar">
+    <dashboard handlerUrl="collar" mode="LocalOnly"/>
+    <repository type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository" connectionStringName="BlueCollarSQLite"/>
+  </blueCollar>
+
+  <connectionStrings>
+    <add name="BlueCollarSQLite" connectionString="data source=|DataDirectory|BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3;"/>
+  </connectionStrings>
+
+  <location path="collar">
+    <system.web>
+      <httpHandlers>
+        <add path="*" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*"/>
+      </httpHandlers>
+    </system.web>
+
+    <system.webServer>
+      <handlers>
+        <add name="*" path="*" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode"/>
+      </handlers>
+      <staticContent>
+        <mimeMap fileExtension=".woff" mimeType="application/octet-stream"/>
+      </staticContent>
+    </system.webServer>
+  </location>
+
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Data.SQLite" publicKeyToken="DB937BC2D44FF139" />
+        <bindingRedirect oldVersion="0.0.0.0-1.0.80.0" newVersion="1.0.80.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+
+  <system.web>
+    <compilation debug="true" targetFramework="4.0">
+      <assemblies>
+        <add assembly="System.Web.Abstractions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.Routing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+      </assemblies>
+    </compilation>
+  </system.web>
+
+  <system.webServer>
+    <validation validateIntegratedModeConfiguration="false"/>
+  </system.webServer>
+</configuration>

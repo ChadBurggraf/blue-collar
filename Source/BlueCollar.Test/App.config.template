@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <connectionStrings>
+    <!-- 
+    To run SQL Server tests, fill out the connection string below, 
+    and ensure you've created the Blue Collar schema on the target database. 
+    -->
+    <add name="SqlServerRepository" connectionString=""/>
+    <add name="TestNoOpRepository" connectionString="data source=(local);initial catalog=BlueCollar"/>
+  </connectionStrings>
+</configuration>

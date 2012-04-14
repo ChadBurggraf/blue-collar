@@ -225,6 +225,7 @@
     <None Include="Static\Lib\iconic_stroke.eot" />
     <None Include="Static\Lib\iconic_stroke.ttf" />
     <None Include="Static\Lib\iconic_stroke.woff" />
+    <None Include="Web.config.template" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.csproj">
@@ -245,6 +246,7 @@
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
+    <Copy SourceFiles="Web.config.template" DestinationFiles="Web.config" Condition="!Exists('Web.config')" />
     <CallTarget Targets="PackageAssets" />
   </Target>
   <Target Name="AfterBuild">
