@@ -20,6 +20,16 @@
                 <File Id="BlueCollarSQLiteRepositoryPdb2008" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.pdb" />
                 <File Id="BlueCollarSQLiteRepositoryXml2008" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.xml" />
               </Component>
+              <Directory Id="ReferenceAssemblies2008GACFolder" Name="GAC">
+                <Component Id="ReferenceAssemblies2008GAC" Guid="8C08B321-976A-4B76-877B-60B319FC0498">
+                  <File Id="BlueCollarDLLGAC2008" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
+                </Component>
+              </Directory>
+              <Component Id="ReferenceAssemblies2008AssemblyFolder" Guid="F5491A55-1249-4540-9A75-4055993671E4">
+                <RegistryKey Root="HKLM" Key="Software\Microsoft\.NETFramework\AssemblyFolders\Blue Collar .NET 3.5" Action="createAndRemoveOnUninstall">
+                  <RegistryValue Type="string" Value="[$ReferenceAssemblies2008AssemblyFolder]" />
+                </RegistryKey>
+              </Component>
             </Directory>
             <Directory Id="ReferenceAssemblies2010Folder" Name="2010">
               <Component Id="ReferenceAssemblies2010" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
@@ -30,13 +40,29 @@
                 <File Id="BlueCollarSQLiteRepositoryPdb2010" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.pdb" />
                 <File Id="BlueCollarSQLiteRepositoryXml2010" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.xml" />
               </Component>
+              <Directory Id="ReferenceAssemblies2010GACFolder" Name="GAC">
+                <Component Id="ReferenceAssemblies2010GAC" Guid="6B1E1C16-C7FA-400E-82BD-954FFAC056BC">
+                  <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
+                  <File Id="BlueCollarDLLGAC2010" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
+                </Component>
+              </Directory>
+              <Component Id="ReferenceAssemblies2010AssemblyFolder" Guid="1A1D91E7-2EEC-4B1F-ACF3-8D3644857C4B">
+                <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
+                <RegistryKey Root="HKLM" Key="Software\Microsoft\.NETFramework\AssemblyFolders\Blue Collar .NET 4.0" Action="createAndRemoveOnUninstall">
+                  <RegistryValue Type="string" Value="[$ReferenceAssemblies2010AssemblyFolder]" />
+                </RegistryKey>
+              </Component>
             </Directory>
           </Directory>
           <Directory Id="ServiceFolder" Name="Service">
             <Component Id="Service" Guid="9B16741A-2A46-4A7E-B259-5D992AE0AEB8">
               <File Id="CollarServiceExe" Name="CollarService.exe" DiskId="1" Source="Service\CollarService.exe" KeyPath="yes" />
-              <File Id="CollarServiceExeConfig" Name="CollarService.exe.config" DiskId="1" Source="Service\CollarService.exe.config" />
               <File Id="ServiceNLogConfig" Name="NLog.config" DiskId="1" Source="Service\NLog.config" />
+              <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="Blue Collar Service" DisplayName="Blue Collar Service" Description="Manages Blue Collar applications." Start="auto" Account="LocalSystem" ErrorControl="normal" Interactive="no" />
+              <ServiceControl Id="ServiceControl" Start="install" Stop="both" Remove="uninstall" Name="Blue Collar Service" Wait="yes" />
+            </Component>
+            <Component Id="ServiceConfig" Guid="FC96194B-EA9C-4A3D-9FF5-A1AFE43BC2F6" Permanent="yes">
+              <File Id="CollarServiceExeConfig" Name="CollarService.exe.config" DiskId="1" Source="Service\CollarService.exe.config" KeyPath="yes" />
             </Component>
             <Directory Id="ServiceAnyCPUFolder" Name="AnyCPU">
               <Directory Id="ServiceAnyCPU2008Folder" Name="2008">
@@ -83,17 +109,26 @@
               </Directory>
             </Directory>
           </Directory>
+          <Component Id="Help" Guid="574D2021-0A6B-49DB-8F51-79BC7D9C0242">
+            <File Id="BlueCollarChm" Name="BlueCollar.chm" DiskId="1" Source="BlueCollar.chm" KeyPath="yes" />
+          </Component>
         </Directory>
       </Directory>
     </Directory>
     <Feature Id="Complete" Level="1" Title="Blue Collar" Display="expand" ConfigurableDirectory="INSTALLDIR">
       <ComponentRef Id="ReferenceAssemblies2008" />
+      <ComponentRef Id="ReferenceAssemblies2008GAC" />
+      <ComponentRef Id="ReferenceAssemblies2008AssemblyFolder" />
       <ComponentRef Id="ReferenceAssemblies2010" />
+      <ComponentRef Id="ReferenceAssemblies2010GAC" />
+      <ComponentRef Id="ReferenceAssemblies2010AssemblyFolder" />
       <ComponentRef Id="Service" />
+      <ComponentRef Id="ServiceConfig" />
       <ComponentRef Id="ServiceAnyCPU2008" />
       <ComponentRef Id="ServiceAnyCPU2010" />
       <ComponentRef Id="Servicex862008" />
       <ComponentRef Id="Servicex862010" />
+      <ComponentRef Id="Help" />
     </Feature>
     <UI>
       <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />

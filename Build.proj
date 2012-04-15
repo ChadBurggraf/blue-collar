@@ -86,7 +86,7 @@
     <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.2008.csproj</ConsoleProject>
   </PropertyGroup>
 
-  <Target Name="Build" DependsOnTargets="CleanAll">
+  <Target Name="Build">
     <MakeDir Directories="$(BuildDir)"/>
     <MakeDir Directories="$(BuildDir)\Reference Assemblies"/>
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\2010"/>
@@ -118,6 +118,7 @@
   <Target Name="CleanAll" DependsOnTargets="Clean">
     <RemoveDir Directories="$(ArtifactDir)"/>
     <RemoveDir Directories="$(BuildDir)"/>
+    <RemoveDir Directories="$(TempDir)"/>
   </Target>
 
   <Target Name="Compile">
@@ -151,7 +152,8 @@
     <FxCop Assemblies="@(FxCopAssemblies)" Output="$(ArtifactDir)\FxCop.xml"/>
   </Target>
 
-  <Target Name="Help" DependsOnTargets="Compile">
+  <Target Name="Help">
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.csproj" Properties="Configuration=$(Configuration)"/>
     <MakeDir Directories="$(BuildDir)"/>
     <PropertyGroup>
       <DocsInputAssemblyPath>$(SourceDir)\BlueCollar\bin\$(Configuration)\BlueCollar.dll</DocsInputAssemblyPath>
@@ -164,7 +166,7 @@
     <RemoveDir Directories="$(DocsStagingDir)"/>
   </Target>
 
-  <Target Name="Package">
+  <Target Name="Package" DependsOnTargets="CleanAll;Help;Build">
     <RemoveDir Directories="$(TempDir)"/>
     <Delete Files="$(BuildDir)\BlueCollar.msi"/>
 
@@ -180,6 +182,7 @@
     <Exec Command='"$(WixDir)\candle.exe" "$(TempDir)\BlueCollar.wxs"' WorkingDirectory="$(TempDir)"/>
     <Exec Command='"$(WixDir)\light.exe" -ext WixUIExtension -ext WiXNetFxExtension -out BlueCollar.msi "$(TempDir)\BlueCollar.wixobj"' WorkingDirectory="$(TempDir)"/>
     <Copy SourceFiles="$(TempDir)\BlueCollar.msi" DestinationFolder="$(BuildDir)"/>
+    
     <RemoveDir Directories="$(TempDir)"/>
   </Target>
 
