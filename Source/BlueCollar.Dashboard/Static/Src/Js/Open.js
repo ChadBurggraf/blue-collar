@@ -1,5 +1,5 @@
 /**!
- * @preserve Blue Collar v0.5.0
+ * @preserve Blue Collar v2.0.0
  *
  * @author Chad Burggraf
  * @copyright Copyright (c) 2011 Chad Burggraf, Tasty Codes

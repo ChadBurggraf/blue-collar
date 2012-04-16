@@ -63,6 +63,15 @@ namespace BlueCollar
         }
 
         /// <summary>
+        /// Gets a value indicating whether the scheduler is enabled for the application.
+        /// </summary>
+        [ConfigurationProperty("schedulerEnabled", IsRequired = false, DefaultValue = true)]
+        public bool SchedulerEnabled
+        {
+            get { return (bool)this["schedulerEnabled"]; }
+        }
+
+        /// <summary>
         /// Gets the default worker heartbeat, in seconds.
         /// </summary>
         [ConfigurationProperty("workerHeartbeat", IsRequired = false, DefaultValue = 5)]

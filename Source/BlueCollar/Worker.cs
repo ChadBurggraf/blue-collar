@@ -27,7 +27,7 @@ namespace BlueCollar
         private Thread signalThread, runThread;
         private IScheduler scheduler;
         private WorkingRecord currentRecord;
-        private bool disposed;
+        private bool schedulerEnabled, disposed;
         private string applicationName, name;
         private long id;
         private QueueNameFilters queueFilters;
@@ -47,10 +47,11 @@ namespace BlueCollar
         /// <param name="name">The name of the worker.</param>
         /// <param name="queueFilters">The queue name filters the worker should use while processing queues..</param>
         /// <param name="heartbeat">The number of seconds between poll intervals.</param>
+        /// <param name="schedulerEnabled">A value indicating whether the scheduler is enabled.</param>
         /// <param name="repositoryFactory">The repository factory to use when accessing data.</param>
         /// <param name="logger">The logger to use when logging messages.</param>
-        public Worker(string applicationName, long id, string name, QueueNameFilters queueFilters, int heartbeat, IRepositoryFactory repositoryFactory, ILogger logger)
-            : this(applicationName, id, name, queueFilters, heartbeat, repositoryFactory, logger, null)
+        public Worker(string applicationName, long id, string name, QueueNameFilters queueFilters, int heartbeat, bool schedulerEnabled, IRepositoryFactory repositoryFactory, ILogger logger)
+            : this(applicationName, id, name, queueFilters, heartbeat, schedulerEnabled, repositoryFactory, logger, null)
         {
         }
 
@@ -62,10 +63,11 @@ namespace BlueCollar
         /// <param name="name">The name of the worker.</param>
         /// <param name="queueFilters">The queue name filters the worker should use while processing queues..</param>
         /// <param name="heartbeat">The number of seconds between poll intervals.</param>
+        /// <param name="schedulerEnabled">A value indicating whether the scheduler is enabled.</param>
         /// <param name="repositoryFactory">The repository factory to use when accessing data.</param>
         /// <param name="logger">The logger to use when logging messages.</param>
         /// <param name="scheduler">The scheduler to use when managing schedules and enqueueing scheduled jobs.</param>
-        public Worker(string applicationName, long id, string name, QueueNameFilters queueFilters, int heartbeat, IRepositoryFactory repositoryFactory, ILogger logger, IScheduler scheduler)
+        public Worker(string applicationName, long id, string name, QueueNameFilters queueFilters, int heartbeat, bool schedulerEnabled, IRepositoryFactory repositoryFactory, ILogger logger, IScheduler scheduler)
         {
             if (string.IsNullOrEmpty(applicationName))
             {
@@ -101,6 +103,7 @@ namespace BlueCollar
             this.id = id;
             this.name = name;
             this.heartbeat = heartbeat * 1000;
+            this.schedulerEnabled = schedulerEnabled;
             this.repositoryFactory = repositoryFactory;
             this.logger = logger;
             this.queueFilters = queueFilters ?? QueueNameFilters.Any();
@@ -134,6 +137,14 @@ namespace BlueCollar
         public long Id
         {
             get { return this.id; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the scheduler is enabled.
+        /// </summary>
+        public bool SchedulerEnabled
+        {
+            get { return this.schedulerEnabled; }
         }
 
         /// <summary>
@@ -751,18 +762,21 @@ namespace BlueCollar
 
                             if (status == WorkerStatus.Working)
                             {
-                                if (refreshQueues)
+                                if (this.SchedulerEnabled)
                                 {
-                                    this.scheduler.QueueFilters = new QueueNameFilters(this.queueFilters.Include, this.queueFilters.Exclude);
-                                }
+                                    if (refreshQueues)
+                                    {
+                                        this.scheduler.QueueFilters = new QueueNameFilters(this.queueFilters.Include, this.queueFilters.Exclude);
+                                    }
 
-                                if (signals.WorkerSignal == WorkerSignal.RefreshSchedules)
-                                {
-                                    this.logger.Debug("Worker {0} ({1}) received a signal to refresh its schedules.", this.name, this.id);
-                                    this.scheduler.RefreshSchedules();
-                                }
+                                    if (signals.WorkerSignal == WorkerSignal.RefreshSchedules)
+                                    {
+                                        this.logger.Debug("Worker {0} ({1}) received a signal to refresh its schedules.", this.name, this.id);
+                                        this.scheduler.RefreshSchedules();
+                                    }
 
-                                this.scheduler.EnqueueScheduledJobs();
+                                    this.scheduler.EnqueueScheduledJobs();
+                                }
                             }
                         }
                     }

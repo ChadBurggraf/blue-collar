@@ -47,7 +47,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Machine machine = new Machine(logger.Object, factory.Object, "/test", Machine.Address, Machine.Name, 1, 1, true))
+            using (Machine machine = new Machine(logger.Object, factory.Object, "/test", Machine.Address, Machine.Name, 1, 1, false, true))
             {
                 Thread.Sleep(1500);
             }

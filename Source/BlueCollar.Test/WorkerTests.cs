@@ -55,7 +55,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -103,7 +103,7 @@ namespace BlueCollar.Test
 
             try
             {
-                worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object);
+                worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object);
                 worker.Start();
                 Thread.Sleep(1500);
                 worker.Stop(false);
@@ -158,7 +158,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -204,7 +204,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -252,7 +252,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -299,7 +299,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -347,7 +347,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -376,7 +376,7 @@ namespace BlueCollar.Test
             var logger = new Mock<ILogger>();
             var scheduler = new Mock<IScheduler>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object, scheduler.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, true, factory.Object, logger.Object, scheduler.Object))
             {
                 worker.Start();
                 signals.WorkerSignal = WorkerSignal.RefreshSchedules;
@@ -399,7 +399,7 @@ namespace BlueCollar.Test
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 Assert.AreEqual(WorkerStatus.Stopped, worker.Status);
 
@@ -421,7 +421,7 @@ namespace BlueCollar.Test
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 worker.Stop(false);

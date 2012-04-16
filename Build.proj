@@ -166,7 +166,7 @@
     <RemoveDir Directories="$(DocsStagingDir)"/>
   </Target>
 
-  <Target Name="Package" DependsOnTargets="CleanAll;Help;Build">
+  <Target Name="Package" DependsOnTargets="CleanAll;Help;Build;SetPackageVersion">
     <RemoveDir Directories="$(TempDir)"/>
     <Delete Files="$(BuildDir)\BlueCollar.msi"/>
 

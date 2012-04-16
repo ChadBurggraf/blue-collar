@@ -85,7 +85,7 @@ namespace BlueCollar.Test
 
             Stopwatch stopwatch = new Stopwatch();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", QueueNameFilters.Any(), 1, factory.Object, logger.Object))
+            using (Worker worker = new Worker("/test", 1, "Test Worker", QueueNameFilters.Any(), 1, false, factory.Object, logger.Object))
             {
                 stopwatch.Start();
 

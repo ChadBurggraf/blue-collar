@@ -33,7 +33,7 @@ namespace BlueCollar
         private IRepositoryFactory repositoryFactory;
         private string address, applicationName, name;
         private int heartbeat, workerHeartbeat;
-        private bool disposed, ensureDefaultWorker;
+        private bool disposed, ensureDefaultWorker, schedulerEnabled;
 
         #endregion
 
@@ -51,6 +51,7 @@ namespace BlueCollar
             Machine.Name, 
             BlueCollarSection.Section.Machine.Heartbeat, 
             BlueCollarSection.Section.WorkerHeartbeat,
+            BlueCollarSection.Section.SchedulerEnabled,
             BlueCollarSection.Section.Machine.EnsureDefaultWorker)
         {
         }
@@ -65,8 +66,9 @@ namespace BlueCollar
         /// <param name="name">The name of the machine.</param>
         /// <param name="heartbeat">The heartbeat, in seconds, to use when polling for additions or removal of workers.</param>
         /// <param name="workerHeartbeat">The heartbeat, in seconds, the workers should use when polling for work.</param>
+        /// <param name="schedulerEnabled">A value indicating whether the job scheduler is enabled.</param>
         /// <param name="ensureDefaultWorker">A value indicating whether to ensure at least one worker exists, creating it if necessary.</param>
-        public Machine(ILogger logger, IRepositoryFactory repositoryFactory, string applicationName, string address, string name, int heartbeat, int workerHeartbeat, bool ensureDefaultWorker)
+        public Machine(ILogger logger, IRepositoryFactory repositoryFactory, string applicationName, string address, string name, int heartbeat, int workerHeartbeat, bool schedulerEnabled, bool ensureDefaultWorker)
         {
             if (logger == null)
             {
@@ -105,6 +107,7 @@ namespace BlueCollar
             this.name = name;
             this.heartbeat = heartbeat * 1000;
             this.workerHeartbeat = workerHeartbeat;
+            this.schedulerEnabled = schedulerEnabled;
             this.ensureDefaultWorker = ensureDefaultWorker;
 
             this.runThread = new Thread(this.RunLoop);
@@ -334,6 +337,7 @@ namespace BlueCollar
                             record.Name,
                             QueueNameFilters.Parse(record.QueueNames),
                             this.workerHeartbeat,
+                            this.schedulerEnabled,
                             this.repositoryFactory,
                             this.logger);
 
@@ -430,6 +434,7 @@ namespace BlueCollar
                 record.Name,
                 QueueNameFilters.Parse(record.QueueNames),
                 this.workerHeartbeat,
+                this.schedulerEnabled,
                 this.repositoryFactory,
                 this.logger);
         }
