@@ -135,6 +135,7 @@
     <Compile Include="QueueDetailsRecord.cs" />
     <Compile Include="QueueListRecord.cs" />
     <Compile Include="QueueNameFilters.cs" />
+    <Compile Include="ScheduledJob.cs" />
     <Compile Include="SqlServerRepository.cs" />
     <Compile Include="StatisticsRecord.cs" />
     <Compile Include="WorkerSignalRecord.cs" />
