@@ -70,8 +70,6 @@
                   <File Id="CollarExeAnyCPUNet35" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\Net35\Collar.exe" KeyPath="yes" />
                   <File Id="CollarExeConfigAnyCPUNet35" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\Net35\Collar.exe.config" />
                   <File Id="BlueCollarDllAnyCPUNet35" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\Net35\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbAnyCPUNet35" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\Net35\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlAnyCPUNet35" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\Net35\BlueCollar.xml" />
                   <File Id="ServiceNLogConfigAnyCPUNet35" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\Net35\NLog.config" />
                 </Component>
               </Directory>
@@ -80,8 +78,6 @@
                   <File Id="CollarExeAnyCPUNet40" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\Net40\Collar.exe" KeyPath="yes" />
                   <File Id="CollarExeConfigAnyCPUNet40" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\Net40\Collar.exe.config" />
                   <File Id="BlueCollarDllAnyCPUNet40" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\Net40\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbAnyCPUNet40" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\Net40\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlAnyCPUNet40" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\Net40\BlueCollar.xml" />
                   <File Id="ServiceNLogConfigAnyCPUNet40" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\Net40\NLog.config" />
                 </Component>
               </Directory>
@@ -92,8 +88,6 @@
                   <File Id="CollarExex86Net35" Name="Collar.exe" DiskId="1" Source="Service\x86\Net35\Collar.exe" KeyPath="yes" />
                   <File Id="CollarExeConfigx86Net35" Name="Collar.exe.config" DiskId="1" Source="Service\x86\Net35\Collar.exe.config" />
                   <File Id="BlueCollarDllx86Net35" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\Net35\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbx86Net35" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\Net35\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlx86Net35" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\Net35\BlueCollar.xml" />
                   <File Id="ServiceNLogConfigx86Net35" Name="NLog.config" DiskId="1" Source="Service\x86\Net35\NLog.config" />
                 </Component>
               </Directory>
@@ -102,8 +96,6 @@
                   <File Id="CollarExex86Net40" Name="Collar.exe" DiskId="1" Source="Service\x86\Net40\Collar.exe" KeyPath="yes" />
                   <File Id="CollarExeConfigx86Net40" Name="Collar.exe.config" DiskId="1" Source="Service\x86\Net40\Collar.exe.config" />
                   <File Id="BlueCollarDllx86Net40" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\Net40\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbx86Net40" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\Net40\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlx86Net40" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\Net40\BlueCollar.xml" />
                   <File Id="ServiceNLogConfigx86Net40" Name="NLog.config" DiskId="1" Source="Service\x86\Net40\NLog.config" />
                 </Component>
               </Directory>

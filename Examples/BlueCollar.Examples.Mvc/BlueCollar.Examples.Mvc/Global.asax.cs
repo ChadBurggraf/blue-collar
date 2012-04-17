@@ -45,7 +45,7 @@ namespace BlueCollar.Examples.Mvc
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            if (Convert.ToBoolean(ConfigurationManager.AppSettings["CreateBlueCollarMachineInProcess"], CultureInfo.InvariantCulture))
+            if (!BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
             {
                 // Use NLog.config file to configure the NLog logger.
                 machine = new Machine(new NLogger());

@@ -1775,9 +1775,9 @@ SET
     [MachineName] = @MachineName,
     [MachineAddress] = @MachineAddress,
     [QueueNames] = @QueueNames,
-    [Status] = @Status,
-    [Signal] = @Signal,
-    [Startup] = @Startup,
+    [Status] = @StatusString,
+    [Signal] = @SignalString,
+    [Startup] = @StartupString,
     [UpdatedOn] = @UpdatedOn
 WHERE
     [Id] = @Id;";

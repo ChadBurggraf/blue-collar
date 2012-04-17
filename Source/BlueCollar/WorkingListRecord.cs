@@ -61,7 +61,6 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the job's signal value.
         /// </summary>
-        ////[JsonConverter(typeof(StringEnumConverter))]
         public WorkingSignal Signal { get; set; }
 
         /// <summary>

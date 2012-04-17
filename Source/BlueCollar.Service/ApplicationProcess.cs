@@ -443,7 +443,7 @@ namespace BlueCollar.Service
                     this.logger.Error(output);
                 }
 
-                this.logger.Error("The application at '{0}' as exited with an error.");
+                this.logger.Error("The application at '{0}' has exited with an error.", this.Path);
             }
 
             if (this.Exited != null)

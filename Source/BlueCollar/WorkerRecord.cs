@@ -51,7 +51,6 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the worker's signal value.
         /// </summary>
-        ////[JsonConverter(typeof(StringEnumConverter))]
         public WorkerSignal Signal { get; set; }
 
         /// <summary>
@@ -66,7 +65,6 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the worker's status.
         /// </summary>
-        ////[JsonConverter(typeof(StringEnumConverter))]
         public WorkerStatus Status { get; set; }
 
         /// <summary>
@@ -81,7 +79,6 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the worker's startup type.
         /// </summary>
-        ////[JsonConverter(typeof(StringEnumConverter))]
         public WorkerStartupType Startup { get; set; }
 
         /// <summary>

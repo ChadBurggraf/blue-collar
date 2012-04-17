@@ -55,7 +55,6 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the schedule's repeat type.
         /// </summary>
-        ////[JsonConverter(typeof(StringEnumConverter))]
         public ScheduleRepeatType RepeatType { get; set; }
 
         /// <summary>

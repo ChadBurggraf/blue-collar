@@ -225,7 +225,9 @@
     <None Include="Static\Lib\iconic_stroke.eot" />
     <None Include="Static\Lib\iconic_stroke.ttf" />
     <None Include="Static\Lib\iconic_stroke.woff" />
-    <None Include="Web.config.template" />
+    <None Include="Web.config.template">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.csproj">

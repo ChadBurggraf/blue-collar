@@ -77,7 +77,6 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the execution status.
         /// </summary>
-        ////[JsonConverter(typeof(StringEnumConverter))]
         public HistoryStatus Status { get; set; }
 
         /// <summary>

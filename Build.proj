@@ -19,124 +19,91 @@
   <PropertyGroup Condition="Exists('$(AssemblyOriginatorKeyFile)') And '$(Configuration)' == 'Release'">
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
-  
-  <!-- "Private" properties. -->
-  <PropertyGroup>
-    <FrameworkTarget>4.0</FrameworkTarget>
-    <Platform>AnyCPU</Platform>
-    <Service>false</Service>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Service)' == 'false' And '$(FrameworkTarget)' != '3.5'">
-    <FinalOutputDir>$(BuildDir)\Reference Assemblies\Net40</FinalOutputDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Service)' == 'false' And '$(FrameworkTarget)' == '3.5'">
-    <FinalOutputDir>$(BuildDir)\Reference Assemblies\Net35</FinalOutputDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' != '3.5' And '$(Platform)' != 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\Net40</FinalOutputDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' == '3.5' And '$(Platform)' != 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\Net35</FinalOutputDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' != '3.5' And '$(Platform)' == 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\x86\Net40</FinalOutputDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' == '3.5' And '$(Platform)' == 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\x86\Net35</FinalOutputDir>
-  </PropertyGroup>
 
   <ItemGroup>
     <SolutionProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Dashboard\BlueCollar.Dashboard.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.Net35.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.Net35.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj"/>
-    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
-    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj"/>
-    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.Net35.csproj"/>
-    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.Net35.csproj"/>
-    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj"/>
-    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.Net35.csproj"/>
+    <SolutionProjects Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.Net35.csproj"/>
   </ItemGroup>
-
-  <ItemGroup Condition="'$(FrameworkTarget)' != '3.5' And '$(Service)' != 'true'">
-    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
-    <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
-  </ItemGroup>
-  <ItemGroup Condition="'$(FrameworkTarget)' == '3.5' And '$(Service)' != 'true'">
-    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
-    <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj"/>
-  </ItemGroup>
-  <ItemGroup Condition="'$(FrameworkTarget)' != '3.5' And '$(Service)' == 'true'">
-    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
-    <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
-  </ItemGroup>
-  <ItemGroup Condition="'$(FrameworkTarget)' == '3.5' And '$(Service)' == 'true'">
-    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
-    <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj"/>
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(FrameworkTarget)' != '3.5'">
-    <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj</ConsoleProject>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(FrameworkTarget)' == '3.5'">
-    <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj</ConsoleProject>
-  </PropertyGroup>
 
   <Target Name="Build">
     <MakeDir Directories="$(BuildDir)"/>
     <MakeDir Directories="$(BuildDir)\Reference Assemblies"/>
+
+    <!-- .NET 4.0 reference assemblies. -->
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net40"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);PackageAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedSQLiteRepositoryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
+
+    <!-- .NET 3.5 reference assemblies. -->
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net35"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);PackageAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedSQLiteRepositoryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
+
+    <!-- Root service. -->
     <MakeDir Directories="$(BuildDir)\Service"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedServiceOutputPath=$(BuildDir)\Service"/>
+
+    <ItemGroup>
+      <ExampleReferenceNet40 Include="$(BuildDir)\ReferenceAssemblies\Net40\BlueCollar.*"/>
+      <ExampleReferenceNet35 Include="$(BuildDir)\ReferenceAssemblies\Net35\BlueCollar.*"/>
+      <ReferenceNet40 Include="$(BuildDir)\Reference Assemblies\Net40\BlueCollar.dll"/>
+      <ReferenceNet35 Include="$(BuildDir)\Reference Assemblies\Net35\BlueCollar.dll"/>
+    </ItemGroup>
+    
+    <!-- Console AnyCPU -->
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU"/>
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU\Net40"/>
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU\Net35"/>
+    <Copy SourceFiles="@(ReferenceNet40)" DestinationFolder="$(BuildDir)\Service\AnyCPU\Net40"/>
+    <Copy SourceFiles="@(ReferenceNet35)" DestinationFolder="$(BuildDir)\Service\AnyCPU\Net35"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\AnyCPU\Net40"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\AnyCPU\Net35"/>
+
+    <!-- Console x86 -->
     <MakeDir Directories="$(BuildDir)\Service\x86"/>
     <MakeDir Directories="$(BuildDir)\Service\x86\Net40"/>
     <MakeDir Directories="$(BuildDir)\Service\x86\Net35"/>
+    <Copy SourceFiles="@(ReferenceNet40)" DestinationFolder="$(BuildDir)\Service\x86\Net40"/>
+    <Copy SourceFiles="@(ReferenceNet35)" DestinationFolder="$(BuildDir)\Service\x86\Net35"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);Platform=x86;SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\x86\Net40"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);Platform=x86;SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\x86\Net35"/>
 
-    <!-- Reference assemblies. -->
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile;CopyAssembliesToExampleProjects" Properties="FrameworkTarget=4.0"/>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile;CopyAssembliesToExampleProjects" Properties="FrameworkTarget=3.5"/>
-    
-    <!-- Service. -->
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=4.0;Service=true"/>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=3.5;Service=true"/>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=4.0;Service=true;Platform=x86"/>
-    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile" Properties="FrameworkTarget=3.5;Service=true;Platform=x86"/>
+    <!-- Copy build products to example projects. -->
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj" Properties="Configuration=Debug"/>
+
+    <ItemGroup>
+      <Examples Include="$(SourceDir)\BlueCollar.Examples\bin\Debug\BlueCollar.Examples.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\BlueCollar.Examples.Mvc\BlueCollar.Examples.Mvc\bin"/>
+    <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\BlueCollar.Examples.Mvc\BlueCollar.Examples.Mvc\bin"/>
   </Target>
 
   <Target Name="Clean">
-    <MSBuild Projects="@(SolutionProjects)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-    <MSBuild Projects="@(SolutionProjects2008)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
-  </Target>
-
-  <Target Name="CleanAll" DependsOnTargets="Clean">
-    <RemoveDir Directories="$(ArtifactDir)"/>
-    <RemoveDir Directories="$(BuildDir)"/>
-    <RemoveDir Directories="$(TempDir)"/>
-  </Target>
-
-  <Target Name="Compile">
-    <MSBuild Projects="@(CompileProjects)" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);PackageAssets=true;MergedLibraryOutputPath=$(FinalOutputDir);MergedSQLiteRepositoryOutputPath=$(FinalOutputDir)"/>
-    <MSBuild Projects="$(ConsoleProject)" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(FinalOutputDir)" Condition="'$(Service)' == 'true'"/>
-    <MSBuild Projects="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedServiceOutputPath=$(BuildDir)\Service" Condition="'$(Service)' == 'true' And '$(Platform)' == 'AnyCPU' And '$(FrameworkTarget)' == '3.5'"/>
-  </Target>
-
-  <Target Name="CopyAssembliesToExampleProjects">
     <ItemGroup>
-      <Assemblies Include="$(FinalOutputDir)\BlueCollar.dll;$(FinalOutputDir)\BlueCollar.pdb;$(FinalOutputDir)\BlueCollar.xml"/>
-      <Assemblies Include="$(FinalOutputDir)\BlueCollar.SQLiteRepository.dll;$(FinalOutputDir)\BlueCollar.SQLiteRepository.pdb;$(FinalOutputDir)\BlueCollar.SQLiteRepository.xml"/>
+      <ArtifactFiles Include="$(ArtifactDir)\**\*"/>
+      <BuildFiles Include="$(BuildDir)\**\*"/>
+      <TempFiles Include="$(TempDir)\**\*"/>
     </ItemGroup>
-    <Copy SourceFiles="@(Assemblies)" DestinationFolder="$(ExamplesDir)\BlueCollar.Examples.Mvc\BlueCollar.Examples.Mvc\bin" Condition="'$(FrameworkTarget)' == '4.0'"/>
+    <Delete Files="@(ArtifactFiles)"/>
+    <Delete Files="@(BuildFiles)"/>
+    <Delete Files="@(TempFiles)"/>
+
+    <MSBuild Projects="@(SolutionProjects)" Targets="Clean" Properties="Configuration=$(Configuration)"/>
   </Target>
 
   <Target Name="FxCop">
-    <MSBuild Projects="@(SolutionProjects)" Targets="Clean;Build" Properties="Configuration=Debug;PackageAssets=false"/>
+    <MSBuild Projects="@(SolutionProjects)" Targets="Clean;Build" Properties="Configuration=Debug"/>
     
     <ItemGroup>
       <FxCopAssemblies Include="$(SourceDir)\BlueCollar\bin\Debug\BlueCollar.dll"/>
@@ -166,7 +133,7 @@
     <RemoveDir Directories="$(DocsStagingDir)"/>
   </Target>
 
-  <Target Name="Package" DependsOnTargets="CleanAll;Help;Build;SetPackageVersion">
+  <Target Name="Package" DependsOnTargets="Clean;Help;Build;SetPackageVersion">
     <RemoveDir Directories="$(TempDir)"/>
     <Delete Files="$(BuildDir)\BlueCollar.msi"/>
 
