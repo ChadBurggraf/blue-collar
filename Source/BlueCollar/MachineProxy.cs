@@ -22,8 +22,21 @@ namespace BlueCollar
         /// </summary>
         /// <param name="logger">The logger to use when logging messages.</param>
         public MachineProxy(ILogger logger)
+            : this(logger, BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
         {
-            this.machine = new Machine(logger);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the MachineProxy class.
+        /// </summary>
+        /// <param name="logger">The logger to use when logging messages.</param>
+        /// <param name="enabled">A value indicating whether the machine is enabled.</param>
+        public MachineProxy(ILogger logger, bool enabled)
+        {
+            if (enabled)
+            {
+                this.machine = new Machine(logger);
+            }
         }
 
         /// <summary>

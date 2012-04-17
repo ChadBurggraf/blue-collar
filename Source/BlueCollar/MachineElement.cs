@@ -32,5 +32,15 @@ namespace BlueCollar
         {
             get { return (int)this["heartbeat"]; }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether service execution is enabled
+        /// for this application.
+        /// </summary>
+        [ConfigurationProperty("serviceExecutionEnabled", IsRequired = false, DefaultValue = true)]
+        public bool ServiceExecutionEnabled
+        {
+            get { return (bool)this["serviceExecutionEnabled"]; }
+        }
     }
 }
