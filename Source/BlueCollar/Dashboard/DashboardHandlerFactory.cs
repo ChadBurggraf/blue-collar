@@ -9,6 +9,7 @@ namespace BlueCollar.Dashboard
     using System;
     using System.Configuration;
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.IO;
     using System.Text;
     using System.Web;
@@ -179,7 +180,7 @@ namespace BlueCollar.Dashboard
                 {
                     string p = (path ?? string.Empty).Trim();
 
-                    if (sb.Length == 0 && p.StartsWith("/"))
+                    if (sb.Length == 0 && p.StartsWith("/", StringComparison.Ordinal))
                     {
                         rooted = true;
                     }
@@ -312,7 +313,7 @@ namespace BlueCollar.Dashboard
                 else
                 {
                     throw new ConfigurationErrorsException(
-                        string.Format("The configuration file must be underneath the application root in order to resolve the Blue Collar handler URL relative to the configuration file (i.e., not rooted or application-relative). The handler URL is set to '{0}', the application base is '{1}' and the configuration file is located at '{2}'", handlerUrl, baseDirectory, configPath),
+                        string.Format(CultureInfo.InvariantCulture, "The configuration file must be underneath the application root in order to resolve the Blue Collar handler URL relative to the configuration file (i.e., not rooted or application-relative). The handler URL is set to '{0}', the application base is '{1}' and the configuration file is located at '{2}'", handlerUrl, baseDirectory, configPath),
                         BlueCollarSection.Section.ElementInformation.Source,
                         BlueCollarSection.Section.Dashboard.ElementInformation.LineNumber);
                 }

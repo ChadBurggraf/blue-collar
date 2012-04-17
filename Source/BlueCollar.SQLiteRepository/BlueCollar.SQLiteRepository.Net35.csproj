@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="Dapper, Version=1.8.0.0, Culture=neutral, PublicKeyToken=ba961b0c1a303c11, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\2008\Dapper.dll</HintPath>
+      <HintPath>..\..\Lib\Net35\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
