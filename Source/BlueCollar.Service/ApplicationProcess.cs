@@ -225,22 +225,22 @@ namespace BlueCollar.Service
                     {
                         if (this.FrameworkVersion == "3.5")
                         {
-                            dir = System.IO.Path.Combine("x86", "2008");
+                            dir = System.IO.Path.Combine("x86", "Net35");
                         }
                         else
                         {
-                            dir = System.IO.Path.Combine("x86", "2010");
+                            dir = System.IO.Path.Combine("x86", "Net40");
                         }
                     }
                     else
                     {
                         if (this.FrameworkVersion == "3.5")
                         {
-                            dir = System.IO.Path.Combine("AnyCPU", "2008");
+                            dir = System.IO.Path.Combine("AnyCPU", "Net35");
                         }
                         else
                         {
-                            dir = System.IO.Path.Combine("AnyCPU", "2010");
+                            dir = System.IO.Path.Combine("AnyCPU", "Net40");
                         }
                     }
 

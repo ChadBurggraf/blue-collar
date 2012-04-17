@@ -28,22 +28,22 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Service)' == 'false' And '$(FrameworkTarget)' != '3.5'">
-    <FinalOutputDir>$(BuildDir)\Reference Assemblies\2010</FinalOutputDir>
+    <FinalOutputDir>$(BuildDir)\Reference Assemblies\Net40</FinalOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Service)' == 'false' And '$(FrameworkTarget)' == '3.5'">
-    <FinalOutputDir>$(BuildDir)\Reference Assemblies\2008</FinalOutputDir>
+    <FinalOutputDir>$(BuildDir)\Reference Assemblies\Net35</FinalOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' != '3.5' And '$(Platform)' != 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\2010</FinalOutputDir>
+    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\Net40</FinalOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' == '3.5' And '$(Platform)' != 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\2008</FinalOutputDir>
+    <FinalOutputDir>$(BuildDir)\Service\AnyCPU\Net35</FinalOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' != '3.5' And '$(Platform)' == 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\x86\2010</FinalOutputDir>
+    <FinalOutputDir>$(BuildDir)\Service\x86\Net40</FinalOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Service)' == 'true' And '$(FrameworkTarget)' == '3.5' And '$(Platform)' == 'x86'">
-    <FinalOutputDir>$(BuildDir)\Service\x86\2008</FinalOutputDir>
+    <FinalOutputDir>$(BuildDir)\Service\x86\Net35</FinalOutputDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,12 +54,12 @@
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
     <SolutionProjects Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj"/>
-    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
-    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
-    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj"/>
-    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj"/>
-    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
-    <SolutionProjects2008 Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj"/>
+    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
+    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj"/>
+    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.Net35.csproj"/>
+    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.Net35.csproj"/>
+    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj"/>
+    <SolutionProjectsNet35 Include="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.Net35.csproj"/>
   </ItemGroup>
 
   <ItemGroup Condition="'$(FrameworkTarget)' != '3.5' And '$(Service)' != 'true'">
@@ -67,37 +67,37 @@
     <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj"/>
   </ItemGroup>
   <ItemGroup Condition="'$(FrameworkTarget)' == '3.5' And '$(Service)' != 'true'">
-    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.2008.csproj"/>
-    <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.2008.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj"/>
   </ItemGroup>
   <ItemGroup Condition="'$(FrameworkTarget)' != '3.5' And '$(Service)' == 'true'">
     <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.csproj"/>
     <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj"/>
   </ItemGroup>
   <ItemGroup Condition="'$(FrameworkTarget)' == '3.5' And '$(Service)' == 'true'">
-    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.2008.csproj"/>
-    <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.2008.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj"/>
+    <CompileProjects Include="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj"/>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(FrameworkTarget)' != '3.5'">
     <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj</ConsoleProject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(FrameworkTarget)' == '3.5'">
-    <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.2008.csproj</ConsoleProject>
+    <ConsoleProject>$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj</ConsoleProject>
   </PropertyGroup>
 
   <Target Name="Build">
     <MakeDir Directories="$(BuildDir)"/>
     <MakeDir Directories="$(BuildDir)\Reference Assemblies"/>
-    <MakeDir Directories="$(BuildDir)\Reference Assemblies\2010"/>
-    <MakeDir Directories="$(BuildDir)\Reference Assemblies\2008"/>
+    <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net40"/>
+    <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net35"/>
     <MakeDir Directories="$(BuildDir)\Service"/>
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU"/>
-    <MakeDir Directories="$(BuildDir)\Service\AnyCPU\2010"/>
-    <MakeDir Directories="$(BuildDir)\Service\AnyCPU\2008"/>
+    <MakeDir Directories="$(BuildDir)\Service\AnyCPU\Net40"/>
+    <MakeDir Directories="$(BuildDir)\Service\AnyCPU\Net35"/>
     <MakeDir Directories="$(BuildDir)\Service\x86"/>
-    <MakeDir Directories="$(BuildDir)\Service\x86\2010"/>
-    <MakeDir Directories="$(BuildDir)\Service\x86\2008"/>
+    <MakeDir Directories="$(BuildDir)\Service\x86\Net40"/>
+    <MakeDir Directories="$(BuildDir)\Service\x86\Net35"/>
 
     <!-- Reference assemblies. -->
     <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Clean;Compile;CopyAssembliesToExampleProjects" Properties="FrameworkTarget=4.0"/>

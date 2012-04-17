@@ -12,15 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		SolutionInfo.cs = SolutionInfo.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.2008", "BlueCollar\BlueCollar.2008.csproj", "{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Net35", "BlueCollar\BlueCollar.Net35.csproj", "{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.SQLiteRepository.2008", "BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.2008.csproj", "{9ADF8141-A754-40C9-ACD8-0531B042638A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.SQLiteRepository.Net35", "BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj", "{9ADF8141-A754-40C9-ACD8-0531B042638A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Console.2008", "BlueCollar.Console\BlueCollar.Console.2008.csproj", "{70DF92F9-FEB2-4B93-BE61-2864A8378420}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Console.Net35", "BlueCollar.Console\BlueCollar.Console.Net35.csproj", "{70DF92F9-FEB2-4B93-BE61-2864A8378420}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Test.2008", "BlueCollar.Test\BlueCollar.Test.2008.csproj", "{E0C7E051-900C-4D14-BCCB-6C107903160E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Test.Net35", "BlueCollar.Test\BlueCollar.Test.Net35.csproj", "{E0C7E051-900C-4D14-BCCB-6C107903160E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Service.2008", "BlueCollar.Service\BlueCollar.Service.2008.csproj", "{196B1034-E44A-47AE-8B95-21CADABD038D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Service.Net35", "BlueCollar.Service\BlueCollar.Service.Net35.csproj", "{196B1034-E44A-47AE-8B95-21CADABD038D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlueCollar.IO", "BlueCollar.IO", "{0AA7D93F-5732-4423-B85E-07C525B46706}"
 	ProjectSection(SolutionItems) = preProject
@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlueCollar.IO", "BlueCollar
 		BlueCollar.IO\FileSystemWatcherMode.cs = BlueCollar.IO\FileSystemWatcherMode.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Examples.2008", "BlueCollar.Examples\BlueCollar.Examples.2008.csproj", "{104B2748-8615-4426-8103-8888F6F93E30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Examples.Net35", "BlueCollar.Examples\BlueCollar.Examples.Net35.csproj", "{104B2748-8615-4426-8103-8888F6F93E30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{DEE2AC9A-1786-47DE-B4B4-8801F77652E4}"
 	ProjectSection(SolutionItems) = preProject

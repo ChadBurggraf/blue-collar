@@ -84,23 +84,23 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config.2008" />
-    <None Include="App.config.2010" />
+    <None Include="App.config.Net35" />
+    <None Include="App.config.Net40" />
     <None Include="App.config.base" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BlueCollar\BlueCollar.2008.csproj">
+    <ProjectReference Include="..\BlueCollar\BlueCollar.Net35.csproj">
       <Project>{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}</Project>
-      <Name>BlueCollar.2008</Name>
+      <Name>BlueCollar.Net35</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>
-    <ConsoleConfigSubstitutionsFile>App.config.2008</ConsoleConfigSubstitutionsFile>
+    <ConsoleConfigSubstitutionsFile>App.config.Net35</ConsoleConfigSubstitutionsFile>
     <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />

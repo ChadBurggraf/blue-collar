@@ -8,7 +8,7 @@
     <AssetsSourceDir>$(RootDir)\Source\BlueCollar.Dashboard\Static\Src</AssetsSourceDir>
     <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Debug'">false</CompressAssets>
     <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Release'">true</CompressAssets>
-    <ConsoleConfigSubstitutionsFile Condition="'$(ConsoleConfigSubstitutionsFile)' == ''">App.config.2010</ConsoleConfigSubstitutionsFile>
+    <ConsoleConfigSubstitutionsFile Condition="'$(ConsoleConfigSubstitutionsFile)' == ''">App.config.Net40</ConsoleConfigSubstitutionsFile>
     <HtmlHelpWorkshopDir Condition="'$(HtmlHelpWorkshopDir)' == ''">$(MSBuildExtensionsPath32)\..\HTML Help Workshop</HtmlHelpWorkshopDir>
     <PackageAssets Condition="'$(PackageAssets)' == ''">true</PackageAssets>
     <SandcastleDir Condition="'$(SandcastleDir)' == ''">$(MSBuildExtensionsPath32)\..\Sandcastle</SandcastleDir>

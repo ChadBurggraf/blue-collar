@@ -56,9 +56,9 @@
     <Compile Include="Tail.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BlueCollar\BlueCollar.2008.csproj">
+    <ProjectReference Include="..\BlueCollar\BlueCollar.Net35.csproj">
       <Project>{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}</Project>
-      <Name>BlueCollar.2008</Name>
+      <Name>BlueCollar.Net35</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

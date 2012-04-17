@@ -118,8 +118,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config.base" />
-    <None Include="App.config.2008" />
-    <None Include="App.config.2010" />
+    <None Include="App.config.Net35" />
+    <None Include="App.config.Net40" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

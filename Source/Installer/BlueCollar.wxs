@@ -11,45 +11,45 @@
       <Directory Id="ProgramFilesFolder" Name="PFiles">
         <Directory Id="INSTALLDIR" Name="Blue Collar">
           <Directory Id="ReferenceAssembliesFolder" Name="Reference Assemblies">
-            <Directory Id="ReferenceAssemblies2008Folder" Name="2008">
-              <Component Id="ReferenceAssemblies2008" Guid="47112920-5F7E-4030-8237-FA33DC1C97C1">
-                <File Id="BlueCollarDll2008" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.dll" KeyPath="yes" />
-                <File Id="BlueCollarPdb2008" Name="BlueCollar.pdb" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.pdb" />
-                <File Id="BlueCollarXml2008" Name="BlueCollar.xml" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.xml" />
-                <File Id="BlueCollarSQLiteRepositoryDll2008" Name="BlueCollar.SQLiteRepository.dll" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.dll" />
-                <File Id="BlueCollarSQLiteRepositoryPdb2008" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.pdb" />
-                <File Id="BlueCollarSQLiteRepositoryXml2008" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.SQLiteRepository.xml" />
+            <Directory Id="ReferenceAssembliesNet35Folder" Name="Net35">
+              <Component Id="ReferenceAssembliesNet35" Guid="47112920-5F7E-4030-8237-FA33DC1C97C1">
+                <File Id="BlueCollarDllNet35" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.dll" KeyPath="yes" />
+                <File Id="BlueCollarPdbNet35" Name="BlueCollar.pdb" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.pdb" />
+                <File Id="BlueCollarXmlNet35" Name="BlueCollar.xml" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.xml" />
+                <File Id="BlueCollarSQLiteRepositoryDllNet35" Name="BlueCollar.SQLiteRepository.dll" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.dll" />
+                <File Id="BlueCollarSQLiteRepositoryPdbNet35" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.pdb" />
+                <File Id="BlueCollarSQLiteRepositoryXmlNet35" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.xml" />
               </Component>
-              <Directory Id="ReferenceAssemblies2008GACFolder" Name="GAC">
-                <Component Id="ReferenceAssemblies2008GAC" Guid="8C08B321-976A-4B76-877B-60B319FC0498">
-                  <File Id="BlueCollarDLLGAC2008" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2008\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
+              <Directory Id="ReferenceAssembliesNet35GACFolder" Name="GAC">
+                <Component Id="ReferenceAssembliesNet35GAC" Guid="8C08B321-976A-4B76-877B-60B319FC0498">
+                  <File Id="BlueCollarDLLGACNet35" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
                 </Component>
               </Directory>
-              <Component Id="ReferenceAssemblies2008AssemblyFolder" Guid="F5491A55-1249-4540-9A75-4055993671E4">
+              <Component Id="ReferenceAssembliesNet35AssemblyFolder" Guid="F5491A55-1249-4540-9A75-4055993671E4">
                 <RegistryKey Root="HKLM" Key="Software\Microsoft\.NETFramework\AssemblyFolders\Blue Collar .NET 3.5" Action="createAndRemoveOnUninstall">
-                  <RegistryValue Type="string" Value="[$ReferenceAssemblies2008AssemblyFolder]" />
+                  <RegistryValue Type="string" Value="[$ReferenceAssembliesNet35AssemblyFolder]" />
                 </RegistryKey>
               </Component>
             </Directory>
-            <Directory Id="ReferenceAssemblies2010Folder" Name="2010">
-              <Component Id="ReferenceAssemblies2010" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
-                <File Id="BlueCollarDll2010" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.dll" KeyPath="yes" />
-                <File Id="BlueCollarPdb2010" Name="BlueCollar.pdb" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.pdb" />
-                <File Id="BlueCollarXml2010" Name="BlueCollar.xml" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.xml" />
-                <File Id="BlueCollarSQLiteRepositoryDll2010" Name="BlueCollar.SQLiteRepository.dll" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.dll" />
-                <File Id="BlueCollarSQLiteRepositoryPdb2010" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.pdb" />
-                <File Id="BlueCollarSQLiteRepositoryXml2010" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.SQLiteRepository.xml" />
+            <Directory Id="ReferenceAssembliesNet40Folder" Name="Net40">
+              <Component Id="ReferenceAssembliesNet40" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
+                <File Id="BlueCollarDllNet40" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.dll" KeyPath="yes" />
+                <File Id="BlueCollarPdbNet40" Name="BlueCollar.pdb" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.pdb" />
+                <File Id="BlueCollarXmlNet40" Name="BlueCollar.xml" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.xml" />
+                <File Id="BlueCollarSQLiteRepositoryDllNet40" Name="BlueCollar.SQLiteRepository.dll" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.dll" />
+                <File Id="BlueCollarSQLiteRepositoryPdbNet40" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.pdb" />
+                <File Id="BlueCollarSQLiteRepositoryXmlNet40" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.xml" />
               </Component>
-              <Directory Id="ReferenceAssemblies2010GACFolder" Name="GAC">
-                <Component Id="ReferenceAssemblies2010GAC" Guid="6B1E1C16-C7FA-400E-82BD-954FFAC056BC">
+              <Directory Id="ReferenceAssembliesNet40GACFolder" Name="GAC">
+                <Component Id="ReferenceAssembliesNet40GAC" Guid="6B1E1C16-C7FA-400E-82BD-954FFAC056BC">
                   <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
-                  <File Id="BlueCollarDLLGAC2010" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\2010\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
+                  <File Id="BlueCollarDLLGACNet40" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
                 </Component>
               </Directory>
-              <Component Id="ReferenceAssemblies2010AssemblyFolder" Guid="1A1D91E7-2EEC-4B1F-ACF3-8D3644857C4B">
+              <Component Id="ReferenceAssembliesNet40AssemblyFolder" Guid="1A1D91E7-2EEC-4B1F-ACF3-8D3644857C4B">
                 <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
                 <RegistryKey Root="HKLM" Key="Software\Microsoft\.NETFramework\AssemblyFolders\Blue Collar .NET 4.0" Action="createAndRemoveOnUninstall">
-                  <RegistryValue Type="string" Value="[$ReferenceAssemblies2010AssemblyFolder]" />
+                  <RegistryValue Type="string" Value="[$ReferenceAssembliesNet40AssemblyFolder]" />
                 </RegistryKey>
               </Component>
             </Directory>
@@ -65,46 +65,46 @@
               <File Id="CollarServiceExeConfig" Name="CollarService.exe.config" DiskId="1" Source="Service\CollarService.exe.config" KeyPath="yes" />
             </Component>
             <Directory Id="ServiceAnyCPUFolder" Name="AnyCPU">
-              <Directory Id="ServiceAnyCPU2008Folder" Name="2008">
-                <Component Id="ServiceAnyCPU2008" Guid="CCADEA03-3746-4B04-8431-2B98B93B213A">
-                  <File Id="CollarExeAnyCPU2008" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\2008\Collar.exe" KeyPath="yes" />
-                  <File Id="CollarExeConfigAnyCPU2008" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\2008\Collar.exe.config" />
-                  <File Id="BlueCollarDllAnyCPU2008" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\2008\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbAnyCPU2008" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\2008\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlAnyCPU2008" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\2008\BlueCollar.xml" />
-                  <File Id="ServiceNLogConfigAnyCPU2008" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\2008\NLog.config" />
+              <Directory Id="ServiceAnyCPUNet35Folder" Name="Net35">
+                <Component Id="ServiceAnyCPUNet35" Guid="CCADEA03-3746-4B04-8431-2B98B93B213A">
+                  <File Id="CollarExeAnyCPUNet35" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\Net35\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigAnyCPUNet35" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\Net35\Collar.exe.config" />
+                  <File Id="BlueCollarDllAnyCPUNet35" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\Net35\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbAnyCPUNet35" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\Net35\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlAnyCPUNet35" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\Net35\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigAnyCPUNet35" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\Net35\NLog.config" />
                 </Component>
               </Directory>
-              <Directory Id="ServiceAnyCPU2010Folder" Name="2010">
-                <Component Id="ServiceAnyCPU2010" Guid="82330361-6973-41D1-885F-A4A1557D02EE">
-                  <File Id="CollarExeAnyCPU2010" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\2010\Collar.exe" KeyPath="yes" />
-                  <File Id="CollarExeConfigAnyCPU2010" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\2010\Collar.exe.config" />
-                  <File Id="BlueCollarDllAnyCPU2010" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\2010\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbAnyCPU2010" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\2010\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlAnyCPU2010" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\2010\BlueCollar.xml" />
-                  <File Id="ServiceNLogConfigAnyCPU2010" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\2010\NLog.config" />
+              <Directory Id="ServiceAnyCPUNet40Folder" Name="Net40">
+                <Component Id="ServiceAnyCPUNet40" Guid="82330361-6973-41D1-885F-A4A1557D02EE">
+                  <File Id="CollarExeAnyCPUNet40" Name="Collar.exe" DiskId="1" Source="Service\AnyCPU\Net40\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigAnyCPUNet40" Name="Collar.exe.config" DiskId="1" Source="Service\AnyCPU\Net40\Collar.exe.config" />
+                  <File Id="BlueCollarDllAnyCPUNet40" Name="BlueCollar.dll" DiskId="1" Source="Service\AnyCPU\Net40\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbAnyCPUNet40" Name="BlueCollar.pdb" DiskId="1" Source="Service\AnyCPU\Net40\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlAnyCPUNet40" Name="BlueCollar.xml" DiskId="1" Source="Service\AnyCPU\Net40\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigAnyCPUNet40" Name="NLog.config" DiskId="1" Source="Service\AnyCPU\Net40\NLog.config" />
                 </Component>
               </Directory>
             </Directory>
             <Directory Id="Servicex86Folder" Name="x86">
-              <Directory Id="Servicex862008Folder" Name="2008">
-                <Component Id="Servicex862008" Guid="C3E8B26E-C822-42D9-B4EC-E952B673A5BC">
-                  <File Id="CollarExex862008" Name="Collar.exe" DiskId="1" Source="Service\x86\2008\Collar.exe" KeyPath="yes" />
-                  <File Id="CollarExeConfigx862008" Name="Collar.exe.config" DiskId="1" Source="Service\x86\2008\Collar.exe.config" />
-                  <File Id="BlueCollarDllx862008" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\2008\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbx862008" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\2008\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlx862008" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\2008\BlueCollar.xml" />
-                  <File Id="ServiceNLogConfigx862008" Name="NLog.config" DiskId="1" Source="Service\x86\2008\NLog.config" />
+              <Directory Id="Servicex86Net35Folder" Name="Net35">
+                <Component Id="Servicex86Net35" Guid="C3E8B26E-C822-42D9-B4EC-E952B673A5BC">
+                  <File Id="CollarExex86Net35" Name="Collar.exe" DiskId="1" Source="Service\x86\Net35\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigx86Net35" Name="Collar.exe.config" DiskId="1" Source="Service\x86\Net35\Collar.exe.config" />
+                  <File Id="BlueCollarDllx86Net35" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\Net35\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbx86Net35" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\Net35\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlx86Net35" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\Net35\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigx86Net35" Name="NLog.config" DiskId="1" Source="Service\x86\Net35\NLog.config" />
                 </Component>
               </Directory>
-              <Directory Id="Servicex862010Folder" Name="2010">
-                <Component Id="Servicex862010" Guid="DE77CB7A-CE37-4334-B297-9A4E17EF65BA">
-                  <File Id="CollarExex862010" Name="Collar.exe" DiskId="1" Source="Service\x86\2010\Collar.exe" KeyPath="yes" />
-                  <File Id="CollarExeConfigx862010" Name="Collar.exe.config" DiskId="1" Source="Service\x86\2010\Collar.exe.config" />
-                  <File Id="BlueCollarDllx862010" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\2010\BlueCollar.dll" />
-                  <File Id="BlueCollarPdbx862010" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\2010\BlueCollar.pdb" />
-                  <File Id="BlueCollarXmlx862010" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\2010\BlueCollar.xml" />
-                  <File Id="ServiceNLogConfigx862010" Name="NLog.config" DiskId="1" Source="Service\x86\2010\NLog.config" />
+              <Directory Id="Servicex86Net40Folder" Name="Net40">
+                <Component Id="Servicex86Net40" Guid="DE77CB7A-CE37-4334-B297-9A4E17EF65BA">
+                  <File Id="CollarExex86Net40" Name="Collar.exe" DiskId="1" Source="Service\x86\Net40\Collar.exe" KeyPath="yes" />
+                  <File Id="CollarExeConfigx86Net40" Name="Collar.exe.config" DiskId="1" Source="Service\x86\Net40\Collar.exe.config" />
+                  <File Id="BlueCollarDllx86Net40" Name="BlueCollar.dll" DiskId="1" Source="Service\x86\Net40\BlueCollar.dll" />
+                  <File Id="BlueCollarPdbx86Net40" Name="BlueCollar.pdb" DiskId="1" Source="Service\x86\Net40\BlueCollar.pdb" />
+                  <File Id="BlueCollarXmlx86Net40" Name="BlueCollar.xml" DiskId="1" Source="Service\x86\Net40\BlueCollar.xml" />
+                  <File Id="ServiceNLogConfigx86Net40" Name="NLog.config" DiskId="1" Source="Service\x86\Net40\NLog.config" />
                 </Component>
               </Directory>
             </Directory>
@@ -116,18 +116,18 @@
       </Directory>
     </Directory>
     <Feature Id="Complete" Level="1" Title="Blue Collar" Display="expand" ConfigurableDirectory="INSTALLDIR">
-      <ComponentRef Id="ReferenceAssemblies2008" />
-      <ComponentRef Id="ReferenceAssemblies2008GAC" />
-      <ComponentRef Id="ReferenceAssemblies2008AssemblyFolder" />
-      <ComponentRef Id="ReferenceAssemblies2010" />
-      <ComponentRef Id="ReferenceAssemblies2010GAC" />
-      <ComponentRef Id="ReferenceAssemblies2010AssemblyFolder" />
+      <ComponentRef Id="ReferenceAssembliesNet35" />
+      <ComponentRef Id="ReferenceAssembliesNet35GAC" />
+      <ComponentRef Id="ReferenceAssembliesNet35AssemblyFolder" />
+      <ComponentRef Id="ReferenceAssembliesNet40" />
+      <ComponentRef Id="ReferenceAssembliesNet40GAC" />
+      <ComponentRef Id="ReferenceAssembliesNet40AssemblyFolder" />
       <ComponentRef Id="Service" />
       <ComponentRef Id="ServiceConfig" />
-      <ComponentRef Id="ServiceAnyCPU2008" />
-      <ComponentRef Id="ServiceAnyCPU2010" />
-      <ComponentRef Id="Servicex862008" />
-      <ComponentRef Id="Servicex862010" />
+      <ComponentRef Id="ServiceAnyCPUNet35" />
+      <ComponentRef Id="ServiceAnyCPUNet40" />
+      <ComponentRef Id="Servicex86Net35" />
+      <ComponentRef Id="Servicex86Net40" />
       <ComponentRef Id="Help" />
     </Feature>
     <UI>

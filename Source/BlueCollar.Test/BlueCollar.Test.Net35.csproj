@@ -101,25 +101,25 @@
     <EmbeddedResource Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BlueCollar.Console\BlueCollar.Console.2008.csproj">
+    <ProjectReference Include="..\BlueCollar.Console\BlueCollar.Console.Net35.csproj">
       <Project>{70DF92F9-FEB2-4B93-BE61-2864A8378420}</Project>
-      <Name>BlueCollar.Console.2008</Name>
+      <Name>BlueCollar.Console.Net35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.2008.csproj">
+    <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.Net35.csproj">
       <Project>{104B2748-8615-4426-8103-8888F6F93E30}</Project>
-      <Name>BlueCollar.Examples.2008</Name>
+      <Name>BlueCollar.Examples.Net35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BlueCollar.Service\BlueCollar.Service.2008.csproj">
+    <ProjectReference Include="..\BlueCollar.Service\BlueCollar.Service.Net35.csproj">
       <Project>{196B1034-E44A-47AE-8B95-21CADABD038D}</Project>
-      <Name>BlueCollar.Service.2008</Name>
+      <Name>BlueCollar.Service.Net35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.2008.csproj">
+    <ProjectReference Include="..\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj">
       <Project>{9ADF8141-A754-40C9-ACD8-0531B042638A}</Project>
-      <Name>BlueCollar.SQLiteRepository.2008</Name>
+      <Name>BlueCollar.SQLiteRepository.Net35</Name>
     </ProjectReference>
-    <ProjectReference Include="..\BlueCollar\BlueCollar.2008.csproj">
+    <ProjectReference Include="..\BlueCollar\BlueCollar.Net35.csproj">
       <Project>{A22962EB-D41F-40B4-ADDE-CA93E9E064E8}</Project>
-      <Name>BlueCollar.2008</Name>
+      <Name>BlueCollar.Net35</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
