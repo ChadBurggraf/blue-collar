@@ -248,6 +248,24 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryGetSchedule()
+        {
+            GetSchedule();
+        }
+
+        /// <summary>
+        /// Get schedule date exists for schedule.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryGetScheduleDateExistsForSchedule()
+        {
+            GetScheduleDateExistsForSchedule();
+        }
+
+        /// <summary>
         /// Get scheduled job list tests.
         /// </summary>
         [TestMethod]

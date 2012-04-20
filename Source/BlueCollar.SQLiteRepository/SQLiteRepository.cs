@@ -192,9 +192,7 @@ SELECT last_insert_rowid();";
         }
 
         /// <summary>
-        /// Creates the queue and history records for the given schedule. This method should ensure that no
-        /// records have already been created for the given schedule and schedule date before creating
-        /// the records given.
+        /// Creates the queue and history records for the given schedule.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule records are being created for.</param>
         /// <param name="scheduleDate">The schedule date records are being created for.</param>
@@ -215,46 +213,22 @@ SELECT last_insert_rowid();";
 
             try
             {
-                const string ExistingSql =
-@"SELECT CAST(COUNT([Id]) AS bigint)
-FROM [BlueCollarQueue]
-WHERE
-    [ScheduleId] = @ScheduleId
-    AND [QueuedOn] = @ScheduleDate;
+                const string InsertQueuedSql =
+@"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber])
+VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber);";
 
-SELECT CAST(COUNT([Id]) AS bigint)
-FROM [BlueCollarHistory]
-WHERE
-    [ScheduleId] = @ScheduleId
-    AND [QueuedOn] = @ScheduleDate;";
-
-                long existing = 0;
-
-                using (var multi = this.connection.QueryMultiple(ExistingSql, new { ScheduleId = scheduleId, ScheduleDate = scheduleDate }, transaction, null, null))
-                {
-                    existing += multi.Read<long>().First();
-                    existing += multi.Read<long>().First();
-                }
-
-                if (existing == 0)
-                {
-                    const string InsertQueuedSql =
-@"INSERT INTO [BlueCollarQueue]([ApplicationName],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber])
-VALUES(@ApplicationName,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber);";
-
-                    const string InsertHistorySql =
+                const string InsertHistorySql =
 @"INSERT INTO [BlueCollarHistory]([ApplicationName],[WorkerId],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[StartedOn],[Status],[Exception],[FinishedOn])
 VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@StartedOn,@StatusString,@Exception,@FinishedOn);";
 
-                    if (queued != null && queued.Count() > 0)
-                    {
-                        created += this.connection.Execute(InsertQueuedSql, queued, transaction, null, null);
-                    }
+                if (queued != null && queued.Count() > 0)
+                {
+                    created += this.connection.Execute(InsertQueuedSql, queued, transaction, null, null);
+                }
 
-                    if (history != null && history.Count() > 0)
-                    {
-                        created += this.connection.Execute(InsertHistorySql, history, transaction, null, null);
-                    }
+                if (history != null && history.Count() > 0)
+                {
+                    created += this.connection.Execute(InsertHistorySql, history, transaction, null, null);
                 }
 
                 if (commitRollback)
@@ -832,6 +806,47 @@ WHERE
                 true,
                 null,
                 null).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether data exists for the given schedule ID and calculated schedule date.
+        /// If it does, this indicates that jobs have already been enqueued for the schedule and should not
+        /// be enqueued again until the next calculated schedule date.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to check data for.</param>
+        /// <param name="scheduleDate">The calcualted schedule date to check data for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if data already exists, false otherwise.</returns>
+        public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction)
+        {
+            const string Sql = @"SELECT CAST(COUNT([Id]) AS bigint)
+FROM [BlueCollarHistory]
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND date([QueuedOn]) = date(@ScheduleDate);
+
+SELECT CAST(COUNT([Id]) AS bigint)
+FROM [BlueCollarQueue]
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND date([QueuedOn]) = date(@ScheduleDate);
+
+SELECT CAST(COUNT([Id]) AS bigint)
+FROM [BlueCollarWorking]
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND date([QueuedOn]) = date(@ScheduleDate);";
+
+            long count = 0;
+
+            using (var multi = this.connection.QueryMultiple(Sql, new { ScheduleId = scheduleId, ScheduleDate = scheduleDate }, transaction, null, null))
+            {
+                count = multi.Read<long>().First()
+                    + multi.Read<long>().First()
+                    + multi.Read<long>().First();
+            }
+
+            return count > 0;
         }
 
         /// <summary>

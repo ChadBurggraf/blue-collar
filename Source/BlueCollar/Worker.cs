@@ -323,6 +323,7 @@ namespace BlueCollar
                 ScheduleId = working.ScheduleId,
                 StartedOn = working.StartedOn,
                 Status = status,
+                TryNumber = working.TryNumber,
                 WorkerId = working.WorkerId
             };
         }

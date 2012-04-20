@@ -1067,6 +1067,75 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule tsts.
+        /// </summary>
+        protected void GetSchedule()
+        {
+            if (this.Repository != null)
+            {
+                Assert.IsNull(this.Repository.GetSchedule(12, null));
+
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = "/test",
+                    Name = "Test",
+                    RepeatType = ScheduleRepeatType.Days,
+                    RepeatValue = 1,
+                    StartOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateSchedule(scheduleRecord, null);
+                Assert.IsNotNull(this.Repository.GetSchedule(scheduleRecord.Id.Value, null));
+            }
+        }
+
+        /// <summary>
+        /// Get schedule date exists for schedule tests.
+        /// </summary>
+        protected void GetScheduleDateExistsForSchedule()
+        {
+            if (this.Repository != null)
+            {
+                DateTime now = DateTime.UtcNow.FloorWithSeconds();
+                TestJob job = new TestJob();
+
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = "/test",
+                    Name = "Test",
+                    RepeatType = ScheduleRepeatType.Days,
+                    RepeatValue = 1,
+                    StartOn = now.AddDays(-1)
+                };
+
+                this.Repository.CreateSchedule(scheduleRecord, null);
+
+                ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
+                {
+                    JobType = JobSerializer.GetTypeName(job),
+                    ScheduleId = scheduleRecord.Id.Value
+                };
+
+                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                Assert.IsFalse(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now, null));
+
+                QueueRecord queueRecord = new QueueRecord()
+                {
+                    ApplicationName = scheduleRecord.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueuedOn = now,
+                    ScheduleId = scheduleRecord.Id,
+                    TryNumber = 1
+                };
+
+                this.Repository.CreateQueued(queueRecord, null);
+                Assert.IsFalse(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now, null));
+            }
+        }
+
+        /// <summary>
         /// Get scheduled job list tests.
         /// </summary>
         protected void GetScheduledJobList()

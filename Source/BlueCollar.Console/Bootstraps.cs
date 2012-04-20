@@ -245,33 +245,42 @@ namespace BlueCollar.Console
         /// without waiting for pending jobs to complete.</param>
         public void Pushdown(bool force)
         {
-            new Action(
-                () =>
-                {
-                    this.IsLoaded = false;
-                    this.DestroyWatchers();
-
-                    if (this.machineProxy != null)
+            try
+            {
+                new Action(
+                    () =>
                     {
-                        try
-                        {
-                            this.machineProxy.Dispose(force);
-                        }
-                        catch (RemotingException)
-                        {
-                        }
-                        finally
-                        {
-                            this.machineProxy = null;
-                        }
-                    }
+                        this.IsLoaded = false;
+                        this.DestroyWatchers();
 
-                    if (this.domain != null)
-                    {
-                        AppDomain.Unload(this.domain);
-                        this.domain = null;
-                    }
-                }).InvokeWithTimeout(30000);
+                        if (this.machineProxy != null)
+                        {
+                            try
+                            {
+                                this.machineProxy.Dispose(force);
+                            }
+                            catch (RemotingException)
+                            {
+                            }
+                            finally
+                            {
+                                this.machineProxy = null;
+                            }
+                        }
+
+                        if (this.domain != null)
+                        {
+                            AppDomain.Unload(this.domain);
+                            this.domain = null;
+                        }
+                    }).InvokeWithTimeout(30000);
+            }
+            catch (TimeoutException)
+            {
+                this.watchers = new List<BlueCollar.FileSystemWatcher>();
+                this.machineProxy = null;
+                this.domain = null;
+            }
         }
 
         /// <summary>

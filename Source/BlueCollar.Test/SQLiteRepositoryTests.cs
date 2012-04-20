@@ -284,6 +284,26 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryGetSchedule()
+        {
+            GetSchedule();
+        }
+
+        /// <summary>
+        /// Get schedule date exists for schedule.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryGetScheduleDateExistsForSchedule()
+        {
+            GetScheduleDateExistsForSchedule();
+        }
+
+        /// <summary>
         /// Get scheduled job list tests.
         /// </summary>
         [TestMethod]

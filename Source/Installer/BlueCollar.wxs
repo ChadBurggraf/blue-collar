@@ -31,8 +31,8 @@
                   <RegistryValue Type="string" Value="[$ReferenceAssembliesNet35AssemblyFolder]" />
                 </RegistryKey>
               </Component>
+              -->
             </Directory>
-            -->
             <Directory Id="ReferenceAssembliesNet40Folder" Name="Net40">
               <Component Id="ReferenceAssembliesNet40" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
                 <File Id="BlueCollarDllNet40" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.dll" KeyPath="yes" />

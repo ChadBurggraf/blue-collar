@@ -91,13 +91,11 @@
 
   <Target Name="Clean">
     <ItemGroup>
-      <ArtifactFiles Include="$(ArtifactDir)\**\*"/>
-      <BuildFiles Include="$(BuildDir)\**\*"/>
-      <TempFiles Include="$(TempDir)\**\*"/>
+      <CleanFiles Include="$(ArtifactDir)\**\*"/>
+      <CleanFiles Include="$(BuildDir)\**\*"/>
+      <CleanFiles Include="$(TempDir)\**\*"/>
     </ItemGroup>
-    <Delete Files="@(ArtifactFiles)"/>
-    <Delete Files="@(BuildFiles)"/>
-    <Delete Files="@(TempFiles)"/>
+    <Delete Files="@(CleanFiles)"/>
 
     <RemoveDir Directories="$(ArtifactDir)"/>
     <RemoveDir Directories="$(BuildDir)"/>
@@ -139,14 +137,13 @@
 
   <Target Name="Package" DependsOnTargets="Clean;Help;Build;SetPackageVersion">
     <ItemGroup>
-      <BuildFiles Include="$(BuildDir)\**\*" Exclude="$(BuildDir)\BlueCollar.msi;$(BuildDir)\BlueCollar*.zip"/>
+      <BuildFiles Include="$(BuildDir)\**\*"/>
       <InstallerFiles Include="$(SourceDir)\Installer\**\*"/>
     </ItemGroup>
 
     <MakeDir Directories="$(TempDir)"/>
     <Copy SourceFiles="@(BuildFiles)" DestinationFiles="@(BuildFiles->'$(TempDir)\%(RecursiveDir)%(Filename)%(Extension)')"/>
     <Copy SourceFiles="@(InstallerFiles)" DestinationFolder="$(TempDir)"/>
-
     <Exec Command='"$(WixDir)\candle.exe" "$(TempDir)\BlueCollar.wxs"' WorkingDirectory="$(TempDir)"/>
     <Exec Command='"$(WixDir)\light.exe" -ext WixUIExtension -ext WiXNetFxExtension -out BlueCollar.msi "$(TempDir)\BlueCollar.wixobj"' WorkingDirectory="$(TempDir)"/>
     <Zip Files="@(BuildFiles)" ZipFileName="$(TempDir)\BlueCollar-$(Major).$(Minor).$(Build).$(Revision).zip" WorkingDirectory="$(BuildDir)"/>

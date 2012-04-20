@@ -130,11 +130,11 @@
     <td><%- QueueName || '' %></td>
     <td>
         <span class="list-date"><% print(StartedOn.toString('d MMM yyyy')); %></span>
-        <small class="list-time light"><% print(StartedOn.toString('h:mm tt')); %></small>
+        <small class="list-time light"><% print(StartedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td>
         <span class="list-date"><% print(FinishedOn.toString('d MMM yyyy')); %></span>
-        <small class="list-time light"><% print(FinishedOn.toString('h:mm tt')); %></small>
+        <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td><span class="status"><%- Status %></span></td>
 </script>
@@ -255,7 +255,7 @@
     <td><%- QueueName || '' %></td>
     <td>
         <span class="list-date"><% print(QueuedOn.toString('d MMM yyyy')); %></span>
-        <small class="list-time light"><% print(QueuedOn.toString('h:mm tt')); %></small>
+        <small class="list-time light"><% print(QueuedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td><%- TryNumber %></td>
 </script>
@@ -390,10 +390,10 @@
     <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
     <td>
         <span class="list-date"><% print(StartOn.toString('d MMM yyyy')); %></span>
-        <small class="list-time light"><% print(StartOn.toString('h:mm tt')); %></small>
+        <small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td>
-        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('d MMM yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm tt') + '</small>'); } %>
+        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('d MMM yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
     </td>
     <td><% print($.htmlEncode(QueueName || '*')); %></td>
     <td><% if (RepeatType && RepeatType !== 'None') { print('Every ' + RepeatValue + ' ' + RepeatType.toLowerCase()); } else { print('No'); } %></td>

@@ -283,6 +283,20 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Gets a value indicating whether data exists for the given schedule ID and calculated schedule date.
+        /// If it does, this indicates that jobs have already been enqueued for the schedule and should not
+        /// be enqueued again until the next calculated schedule date.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to check data for.</param>
+        /// <param name="scheduleDate">The calcualted schedule date to check data for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if data already exists, false otherwise.</returns>
+        public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Gets a schedule and its related scheduled jobs, filtered by the given list parameters.
         /// </summary>
         /// <param name="applicationName">The name of the application to get the scheduled job list for.</param>

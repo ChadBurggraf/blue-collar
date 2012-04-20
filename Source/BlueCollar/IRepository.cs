@@ -52,9 +52,7 @@ namespace BlueCollar
         QueueRecord CreateQueued(QueueRecord record, IDbTransaction transaction);
 
         /// <summary>
-        /// Creates the queue and history records for the given schedule. This method should ensure that no
-        /// records have already been created for the given schedule and schedule date before creating
-        /// the records given.
+        /// Creates the queue and history records for the given schedule.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule records are being created for.</param>
         /// <param name="scheduleDate">The schedule date records are being created for.</param>
@@ -200,6 +198,17 @@ namespace BlueCollar
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The schedule, or null if none was found.</returns>
         ScheduleRecord GetSchedule(long id, IDbTransaction transaction);
+
+        /// <summary>
+        /// Gets a value indicating whether data exists for the given schedule ID and calculated schedule date.
+        /// If it does, this indicates that jobs have already been enqueued for the schedule and should not
+        /// be enqueued again until the next calculated schedule date.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to check data for.</param>
+        /// <param name="scheduleDate">The calcualted schedule date to check data for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if data already exists, false otherwise.</returns>
+        bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction);
 
         /// <summary>
         /// Gets a schedule and its related scheduled jobs, filtered by the given list parameters.

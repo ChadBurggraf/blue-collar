@@ -112,17 +112,21 @@ namespace BlueCollar
         /// <param name="schedule">The schedule to test.</param>
         /// <param name="windowBegin">The begin date of the time window to check.</param>
         /// <param name="windowEnd">The end date of the time window to check.</param>
+        /// <param name="repository">The repository to use when checking for existing data.</param>
+        /// <param name="transaction">The transaction to use when checking for existing data, if applicable.</param>
         /// <param name="logger">The logger to use when logging messages. Can be null for no logging.</param>
         /// <param name="scheduleDate">Contains the actual date the schedule falls on within the given window.</param>
         /// <returns>True if the schedule can be enqueued, false otherwise.</returns>
         [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "This is the most elegate design and is similar to the TryParse etc. APIs.")]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling is correct.")]
-        public static bool CanScheduleBeEnqueued(ScheduleRecord schedule, DateTime windowBegin, DateTime windowEnd, ILogger logger, out DateTime? scheduleDate)
+        public static bool CanScheduleBeEnqueued(ScheduleRecord schedule, DateTime windowBegin, DateTime windowEnd, IRepository repository, IDbTransaction transaction, ILogger logger, out DateTime? scheduleDate)
         {
             if (schedule == null)
             {
                 throw new ArgumentNullException("schedule", "schedule cannot be null.");
             }
+
+            bool can = false;
 
             scheduleDate = null;
             windowBegin = windowBegin.FloorWithSeconds();
@@ -184,19 +188,30 @@ namespace BlueCollar
                     if (sd > windowBegin && sd <= windowEnd)
                     {
                         scheduleDate = sd;
-                        log();
-                        return true;
+                        can = true;
                     }
                 }
                 else if (sd > windowBegin && sd <= windowEnd)
                 {
                     scheduleDate = sd;
-                    log();
-                    return true;
+                    can = true;
+                }
+
+                if (can)
+                {
+                    if (!repository.GetScheduleDateExistsForSchedule(schedule.Id.Value, scheduleDate.Value, transaction))
+                    {
+                        log();
+                    }
+                    else
+                    {
+                        scheduleDate = null;
+                        can = false;
+                    }
                 }
             }
 
-            return false;
+            return can;
         }
 
         /// <summary>
@@ -227,7 +242,7 @@ namespace BlueCollar
                         {
                             DateTime? scheduleDate;
 
-                            if (CanScheduleBeEnqueued(schedule, begin, end, this.logger, out scheduleDate))
+                            if (CanScheduleBeEnqueued(schedule, begin, end, repository, transaction, this.logger, out scheduleDate))
                             {
                                 List<QueueRecord> queues = new List<QueueRecord>();
                                 List<HistoryRecord> histories = new List<HistoryRecord>();
