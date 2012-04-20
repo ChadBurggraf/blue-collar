@@ -20,6 +20,7 @@
                 <File Id="BlueCollarSQLiteRepositoryPdbNet35" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.pdb" />
                 <File Id="BlueCollarSQLiteRepositoryXmlNet35" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.xml" />
               </Component>
+              <!--
               <Directory Id="ReferenceAssembliesNet35GACFolder" Name="GAC">
                 <Component Id="ReferenceAssembliesNet35GAC" Guid="8C08B321-976A-4B76-877B-60B319FC0498">
                   <File Id="BlueCollarDLLGACNet35" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
@@ -31,6 +32,7 @@
                 </RegistryKey>
               </Component>
             </Directory>
+            -->
             <Directory Id="ReferenceAssembliesNet40Folder" Name="Net40">
               <Component Id="ReferenceAssembliesNet40" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
                 <File Id="BlueCollarDllNet40" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.dll" KeyPath="yes" />
@@ -40,6 +42,7 @@
                 <File Id="BlueCollarSQLiteRepositoryPdbNet40" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.pdb" />
                 <File Id="BlueCollarSQLiteRepositoryXmlNet40" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.xml" />
               </Component>
+              <!--
               <Directory Id="ReferenceAssembliesNet40GACFolder" Name="GAC">
                 <Component Id="ReferenceAssembliesNet40GAC" Guid="6B1E1C16-C7FA-400E-82BD-954FFAC056BC">
                   <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
@@ -52,6 +55,7 @@
                   <RegistryValue Type="string" Value="[$ReferenceAssembliesNet40AssemblyFolder]" />
                 </RegistryKey>
               </Component>
+              -->
             </Directory>
           </Directory>
           <Directory Id="ServiceFolder" Name="Service">
@@ -109,11 +113,15 @@
     </Directory>
     <Feature Id="Complete" Level="1" Title="Blue Collar" Display="expand" ConfigurableDirectory="INSTALLDIR">
       <ComponentRef Id="ReferenceAssembliesNet35" />
+      <!--
       <ComponentRef Id="ReferenceAssembliesNet35GAC" />
       <ComponentRef Id="ReferenceAssembliesNet35AssemblyFolder" />
+      -->
       <ComponentRef Id="ReferenceAssembliesNet40" />
+      <!--
       <ComponentRef Id="ReferenceAssembliesNet40GAC" />
       <ComponentRef Id="ReferenceAssembliesNet40AssemblyFolder" />
+      -->
       <ComponentRef Id="Service" />
       <ComponentRef Id="ServiceConfig" />
       <ComponentRef Id="ServiceAnyCPUNet35" />

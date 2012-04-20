@@ -52,6 +52,7 @@
       <HintPath>..\..\Lib\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -66,14 +67,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\BlueCollar.IO\FileSystemEventType.cs">
+    <Compile Include="..\Shared\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\FileSystemEventType.cs">
       <Link>FileSystemEventType.cs</Link>
     </Compile>
-    <Compile Include="..\BlueCollar.IO\FileSystemWatcher.cs">
+    <Compile Include="..\Shared\FileSystemWatcher.cs">
       <Link>FileSystemWatcher.cs</Link>
     </Compile>
-    <Compile Include="..\BlueCollar.IO\FileSystemWatcherMode.cs">
+    <Compile Include="..\Shared\FileSystemWatcherMode.cs">
       <Link>FileSystemWatcherMode.cs</Link>
+    </Compile>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="Bootstraps.cs" />
     <Compile Include="BootstrapsPullUpResult.cs" />

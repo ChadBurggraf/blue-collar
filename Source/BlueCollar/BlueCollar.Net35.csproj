@@ -70,6 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
@@ -123,7 +126,6 @@
     <Compile Include="EventLoggerEventArgs.cs" />
     <Compile Include="EventLoggerEventType.cs" />
     <Compile Include="ExceptionXElement.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="HistoryDetailsRecord.cs" />
     <Compile Include="HistoryListRecord.cs" />
     <Compile Include="HistoryRecord.cs" />
@@ -152,6 +154,7 @@
     <Compile Include="QueueRecord.cs" />
     <Compile Include="RecordList{T}.cs" />
     <Compile Include="RepositoryElement.cs" />
+    <Compile Include="ScheduledJob.cs" />
     <Compile Include="ScheduledJobRecord.cs" />
     <Compile Include="ScheduledJobRecordList.cs" />
     <Compile Include="ScheduleListRecord.cs" />

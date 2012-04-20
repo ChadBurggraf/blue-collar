@@ -271,7 +271,7 @@ namespace BlueCollar.Console
                         AppDomain.Unload(this.domain);
                         this.domain = null;
                     }
-                }).InvokeWithTimeout(30);
+                }).InvokeWithTimeout(30000);
         }
 
         /// <summary>
