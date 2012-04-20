@@ -11,21 +11,21 @@ namespace BlueCollar.Console
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Reflection;
+    using System.Runtime.Remoting;
     using System.Security;
     using System.Security.Permissions;
-    using BlueCollar.IO;
     
     /// <summary>
     /// Provides bootstrapping services for creating a <see cref="Machine"/> in a secondary app domain.
     /// </summary>
     [SecurityCritical]
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
-    internal sealed class Bootstraps : IDisposable
+    public sealed class Bootstraps : IDisposable
     {
         private AppDomain domain;
         private EventLogger logger;
         private MachineProxy machineProxy;
-        private List<BlueCollar.IO.FileSystemWatcher> watchers;
+        private List<BlueCollar.FileSystemWatcher> watchers;
         private bool disposed;
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace BlueCollar.Console
             this.ApplicationPath = applicationPath;
             this.ConfigPath = configPath ?? string.Empty;
             this.Threshold = threshold;
-            this.watchers = new List<BlueCollar.IO.FileSystemWatcher>();
+            this.watchers = new List<BlueCollar.FileSystemWatcher>();
         }
 
         /// <summary>
@@ -245,26 +245,33 @@ namespace BlueCollar.Console
         /// without waiting for pending jobs to complete.</param>
         public void Pushdown(bool force)
         {
-            this.IsLoaded = false;
+            new Action(
+                () =>
+                {
+                    this.IsLoaded = false;
+                    this.DestroyWatchers();
 
-            this.logger.Debug("Bootstraps is destroying the filesystem watchers.");
-            this.DestroyWatchers();
+                    if (this.machineProxy != null)
+                    {
+                        try
+                        {
+                            this.machineProxy.Dispose(force);
+                        }
+                        catch (RemotingException)
+                        {
+                        }
+                        finally
+                        {
+                            this.machineProxy = null;
+                        }
+                    }
 
-            this.logger.Debug("Bootstraps is destroying the machine with force set to '{0}'.", force);
-            
-            if (this.machineProxy != null)
-            {
-                this.machineProxy.Dispose(force);
-                this.machineProxy = null;
-            }
-
-            this.logger.Debug("Bootstraps is destroying the app domain.");
-
-            if (this.domain != null)
-            {
-                AppDomain.Unload(this.domain);
-                this.domain = null;
-            }
+                    if (this.domain != null)
+                    {
+                        AppDomain.Unload(this.domain);
+                        this.domain = null;
+                    }
+                }).InvokeWithTimeout(30);
         }
 
         /// <summary>
@@ -274,13 +281,13 @@ namespace BlueCollar.Console
         /// <param name="mode">The watch mode.</param>
         /// <param name="filter">The file search filter to use.</param>
         /// <returns>The created <see cref="FileSystemWatcher"/>.</returns>
-        private BlueCollar.IO.FileSystemWatcher CreateWatcher(string path, FileSystemWatcherMode mode, string filter)
+        private BlueCollar.FileSystemWatcher CreateWatcher(string path, FileSystemWatcherMode mode, string filter)
         {
-            BlueCollar.IO.FileSystemWatcher watcher = null;
+            BlueCollar.FileSystemWatcher watcher = null;
 
             try
             {
-                watcher = new BlueCollar.IO.FileSystemWatcher(path);
+                watcher = new BlueCollar.FileSystemWatcher(path);
                 watcher.Operation += new FileSystemEventHandler(this.WatcherOperation);
                 watcher.Mode = mode;
                 watcher.Filter = filter;
@@ -305,12 +312,12 @@ namespace BlueCollar.Console
         /// </summary>
         private void DestroyWatchers()
         {
-            foreach (BlueCollar.IO.FileSystemWatcher watcher in this.watchers)
+            foreach (BlueCollar.FileSystemWatcher watcher in this.watchers)
             {
                 watcher.Dispose();
             }
 
-            this.watchers = new List<BlueCollar.IO.FileSystemWatcher>();
+            this.watchers = new List<BlueCollar.FileSystemWatcher>();
         }
 
         /// <summary>

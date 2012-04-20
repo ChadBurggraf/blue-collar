@@ -15,7 +15,6 @@ namespace BlueCollar.Service
     using System.Security.Permissions;
     using System.ServiceProcess;
     using System.Threading;
-    using BlueCollar.IO;
     using NLog;
 
     /// <summary>
@@ -29,7 +28,7 @@ namespace BlueCollar.Service
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly object locker = new object();
         private ApplicationCoordinator coordinator = new ApplicationCoordinator(logger);
-        private BlueCollar.IO.FileSystemWatcher watcher;
+        private BlueCollar.FileSystemWatcher watcher;
         private bool isRunning, disposed;
 
         /// <summary>
@@ -166,7 +165,7 @@ namespace BlueCollar.Service
         {
             this.DestroyWatcher();
 
-            this.watcher = new BlueCollar.IO.FileSystemWatcher(Path.GetDirectoryName(BlueCollarServiceSection.Section.ElementInformation.Source), Path.GetFileName(BlueCollarServiceSection.Section.ElementInformation.Source));
+            this.watcher = new BlueCollar.FileSystemWatcher(Path.GetDirectoryName(BlueCollarServiceSection.Section.ElementInformation.Source), Path.GetFileName(BlueCollarServiceSection.Section.ElementInformation.Source));
             this.watcher.Operation += new FileSystemEventHandler(this.WatcherOperation);
             this.watcher.Mode = FileSystemWatcherMode.IndividualFiles;
             this.watcher.Threshold = 1000;

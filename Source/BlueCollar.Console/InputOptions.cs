@@ -15,7 +15,8 @@ namespace BlueCollar.Console
     /// <summary>
     /// Represents a set of options passed as input to a BlueCollar.Console process.
     /// </summary>
-    internal sealed class InputOptions
+    [CLSCompliant(false)]
+    public sealed class InputOptions
     {
         private static readonly Regex PathQuotesExp = new Regex(@"^[""']?([^""']*)[""']?$", RegexOptions.Compiled);
 

@@ -496,6 +496,11 @@ table.list td small
     margin-top: 3px;
 }
 
+table.list td ul.properties 
+{
+    margin-bottom: 0;
+}
+
 .bordered-table.list thead tr:first-child th:first-child, 
 .bordered-table.list tbody tr:first-child td:first-child, 
 .bordered-table.list thead tr:first-child th:last-child, 

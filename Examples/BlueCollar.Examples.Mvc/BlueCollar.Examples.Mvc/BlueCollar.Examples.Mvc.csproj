@@ -34,18 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BlueCollar, Version=0.5.0.0, Culture=neutral, PublicKeyToken=b3a309e154f3a64a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\BlueCollar.dll</HintPath>
-    </Reference>
-    <Reference Include="BlueCollar.Examples, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\BlueCollar.Examples.dll</HintPath>
-    </Reference>
-    <Reference Include="BlueCollar.SQLiteRepository, Version=0.5.0.0, Culture=neutral, PublicKeyToken=b3a309e154f3a64a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\BlueCollar.SQLiteRepository.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -106,6 +94,20 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="NLog.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Source\BlueCollar.Examples\BlueCollar.Examples.csproj">
+      <Project>{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}</Project>
+      <Name>BlueCollar.Examples</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj">
+      <Project>{12257995-43A3-4EDC-A577-514D0D6E3567}</Project>
+      <Name>BlueCollar.SQLiteRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Source\BlueCollar\BlueCollar.csproj">
+      <Project>{1269260A-4785-4C26-A442-B87D94B1B6EA}</Project>
+      <Name>BlueCollar</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

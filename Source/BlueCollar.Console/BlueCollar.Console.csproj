@@ -90,13 +90,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\BlueCollar.IO\FileSystemEventType.cs">
+    <Compile Include="..\Shared\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\FileSystemEventType.cs">
       <Link>FileSystemEventType.cs</Link>
     </Compile>
-    <Compile Include="..\BlueCollar.IO\FileSystemWatcher.cs">
+    <Compile Include="..\Shared\FileSystemWatcher.cs">
       <Link>FileSystemWatcher.cs</Link>
     </Compile>
-    <Compile Include="..\BlueCollar.IO\FileSystemWatcherMode.cs">
+    <Compile Include="..\Shared\FileSystemWatcherMode.cs">
       <Link>FileSystemWatcherMode.cs</Link>
     </Compile>
     <Compile Include="..\SolutionInfo.cs">
@@ -111,6 +114,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.csproj">
+      <Project>{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}</Project>
+      <Name>BlueCollar.Examples</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BlueCollar\BlueCollar.csproj">
       <Project>{1269260A-4785-4C26-A442-B87D94B1B6EA}</Project>
       <Name>BlueCollar</Name>

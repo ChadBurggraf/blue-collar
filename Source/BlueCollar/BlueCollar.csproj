@@ -71,6 +71,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
@@ -140,7 +143,6 @@
     <Compile Include="StatisticsRecord.cs" />
     <Compile Include="WorkerSignalRecord.cs" />
     <Compile Include="ExceptionXElement.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="HistoryRecord.cs" />
     <Compile Include="HistoryStatus.cs" />
     <Compile Include="IJob.cs" />

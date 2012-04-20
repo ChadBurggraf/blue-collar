@@ -13,7 +13,8 @@ namespace BlueCollar.Console
     /// <summary>
     /// Provides logging services for the console.
     /// </summary>
-    internal sealed class ConsoleLogger
+    [CLSCompliant(false)]
+    public sealed class ConsoleLogger
     {
         private static readonly NLogger logger = new NLogger();
         private InputOptions options;

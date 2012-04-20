@@ -112,6 +112,7 @@
     <ProjectReference Include="..\BlueCollar.Console\BlueCollar.Console.csproj">
       <Project>{8B77CF15-E59A-49A1-BD4E-75B65C272496}</Project>
       <Name>BlueCollar.Console</Name>
+      <Aliases>global</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.csproj">
       <Project>{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}</Project>

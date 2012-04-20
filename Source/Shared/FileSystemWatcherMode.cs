@@ -4,7 +4,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-namespace BlueCollar.IO
+namespace BlueCollar
 {
     using System;
 

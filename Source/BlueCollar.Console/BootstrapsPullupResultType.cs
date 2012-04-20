@@ -11,7 +11,7 @@ namespace BlueCollar.Console
     /// <summary>
     /// Defines the possible <see cref="Bootstraps.PullUp()"/> result types.
     /// </summary>
-    internal enum BootstrapsPullupResultType
+    public enum BootstrapsPullupResultType
     {
         /// <summary>
         /// Identifies success.

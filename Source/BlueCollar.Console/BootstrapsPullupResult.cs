@@ -11,7 +11,7 @@ namespace BlueCollar.Console
     /// <summary>
     /// Represents the result of a <see cref="Bootstraps.Pullup()"/> operation.
     /// </summary>
-    internal sealed class BootstrapsPullupResult
+    public sealed class BootstrapsPullupResult
     {
         /// <summary>
         /// Initializes a new instance of the BootstrapsPullupResult class.

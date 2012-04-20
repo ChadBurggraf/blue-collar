@@ -9,7 +9,6 @@ namespace BlueCollar.Test
     using System;
     using System.IO;
     using System.Threading;
-    using BlueCollar.IO;
     using BlueCollar.Service;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using NLog;

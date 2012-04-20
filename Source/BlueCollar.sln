@@ -25,13 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.SQLiteRepository
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Service", "BlueCollar.Service\BlueCollar.Service.csproj", "{44966C30-014E-41D4-B53D-77D944EB74F7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlueCollar.IO", "BlueCollar.IO", "{7F89747B-1EBB-464E-880D-17CAB60D88D0}"
-	ProjectSection(SolutionItems) = preProject
-		BlueCollar.IO\FileSystemEventType.cs = BlueCollar.IO\FileSystemEventType.cs
-		BlueCollar.IO\FileSystemWatcher.cs = BlueCollar.IO\FileSystemWatcher.cs
-		BlueCollar.IO\FileSystemWatcherMode.cs = BlueCollar.IO\FileSystemWatcherMode.cs
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Examples", "BlueCollar.Examples\BlueCollar.Examples.csproj", "{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{0F3D5445-1BB4-47FD-91F7-91441B9E0081}"
@@ -39,6 +32,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{
 		Installer\bannrbmp.bmp = Installer\bannrbmp.bmp
 		Installer\BlueCollar.wxs = Installer\BlueCollar.wxs
 		Installer\dlgbmp.bmp = Installer\dlgbmp.bmp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B55F51D9-2885-482C-9D9B-53BDD9676815}"
+	ProjectSection(SolutionItems) = preProject
+		Shared\Extensions.cs = Shared\Extensions.cs
+		Shared\FileSystemEventType.cs = Shared\FileSystemEventType.cs
+		Shared\FileSystemWatcher.cs = Shared\FileSystemWatcher.cs
+		Shared\FileSystemWatcherMode.cs = Shared\FileSystemWatcherMode.cs
 	EndProjectSection
 EndProject
 Global

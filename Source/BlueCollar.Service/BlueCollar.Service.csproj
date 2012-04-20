@@ -61,13 +61,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\BlueCollar.IO\FileSystemEventType.cs">
+    <Compile Include="..\Shared\FileSystemEventType.cs">
       <Link>FileSystemEventType.cs</Link>
     </Compile>
-    <Compile Include="..\BlueCollar.IO\FileSystemWatcher.cs">
+    <Compile Include="..\Shared\FileSystemWatcher.cs">
       <Link>FileSystemWatcher.cs</Link>
     </Compile>
-    <Compile Include="..\BlueCollar.IO\FileSystemWatcherMode.cs">
+    <Compile Include="..\Shared\FileSystemWatcherMode.cs">
       <Link>FileSystemWatcherMode.cs</Link>
     </Compile>
     <Compile Include="..\SolutionInfo.cs">

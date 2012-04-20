@@ -10,7 +10,6 @@ namespace BlueCollar.Test
     using System.Collections.Generic;
     using System.Linq;
     using System.Xml;
-    using BlueCollar;
     using BlueCollar.Dashboard;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
