@@ -316,7 +316,12 @@ namespace BlueCollar.Test
                         WorkerId = workerRecord.Id.Value
                     });
 
-                Assert.AreEqual(3, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, null));
+                using (var trans = this.Repository.BeginTransaction())
+                {
+                    Assert.AreEqual(3, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, trans));
+                    trans.Commit();
+                }
+
                 Assert.AreEqual(0, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, null));
             }
         }

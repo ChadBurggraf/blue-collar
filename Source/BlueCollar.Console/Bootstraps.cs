@@ -246,13 +246,19 @@ namespace BlueCollar.Console
         public void Pushdown(bool force)
         {
             this.IsLoaded = false;
+
+            this.logger.Debug("Bootstraps is destroying the filesystem watchers.");
             this.DestroyWatchers();
 
+            this.logger.Debug("Bootstraps is destroying the machine with force set to '{0}'.", force);
+            
             if (this.machineProxy != null)
             {
                 this.machineProxy.Dispose(force);
                 this.machineProxy = null;
             }
+
+            this.logger.Debug("Bootstraps is destroying the app domain.");
 
             if (this.domain != null)
             {

@@ -244,7 +244,7 @@ VALUES(@ApplicationName,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber)
 
                     const string InsertHistorySql =
 @"INSERT INTO [BlueCollarHistory]([ApplicationName],[WorkerId],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[StartedOn],[Status],[Exception],[FinishedOn])
-VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@StartedOn,@Status,@Exception,@FinishedOn);";
+VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@StartedOn,@StatusString,@Exception,@FinishedOn);";
 
                     if (queued != null && queued.Count() > 0)
                     {
@@ -1636,9 +1636,9 @@ SET
     [MachineName] = @MachineName,
     [MachineAddress] = @MachineAddress,
     [QueueNames] = @QueueNames,
-    [Status] = @Status,
-    [Signal] = @Signal,
-    [Startup] = @Startup,
+    [Status] = @StatusString,
+    [Signal] = @SignalString,
+    [Startup] = @StartupString,
     [UpdatedOn] = @UpdatedOn
 WHERE
     [Id] = @Id;";
