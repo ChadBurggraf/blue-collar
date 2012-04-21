@@ -114,6 +114,7 @@
                 <th>Started On</th>
                 <th>Finished On</th>
                 <th>Status</th>
+                <th>Try</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -137,6 +138,7 @@
         <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td><span class="status"><%- Status %></span></td>
+    <td><%- TryNumber %></td>
 </script>
 
 <script type="text/template" id="navigation-item-template">

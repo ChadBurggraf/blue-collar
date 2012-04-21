@@ -823,19 +823,19 @@ WHERE
 FROM [BlueCollarHistory]
 WHERE
     [ScheduleId] = @ScheduleId
-    AND date([QueuedOn]) = date(@ScheduleDate);
+    AND datetime([QueuedOn]) = datetime(@ScheduleDate);
 
 SELECT CAST(COUNT([Id]) AS bigint)
 FROM [BlueCollarQueue]
 WHERE
     [ScheduleId] = @ScheduleId
-    AND date([QueuedOn]) = date(@ScheduleDate);
+    AND datetime([QueuedOn]) = datetime(@ScheduleDate);
 
 SELECT CAST(COUNT([Id]) AS bigint)
 FROM [BlueCollarWorking]
 WHERE
     [ScheduleId] = @ScheduleId
-    AND date([QueuedOn]) = date(@ScheduleDate);";
+    AND datetime([QueuedOn]) = datetime(@ScheduleDate);";
 
             long count = 0;
 

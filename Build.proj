@@ -61,7 +61,7 @@
       <ReferenceNet35 Include="$(BuildDir)\Reference Assemblies\Net35\BlueCollar.dll"/>
     </ItemGroup>
     
-    <!-- Console AnyCPU -->
+    <!-- Console AnyCPU. -->
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU"/>
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU\Net40"/>
     <MakeDir Directories="$(BuildDir)\Service\AnyCPU\Net35"/>
@@ -70,7 +70,7 @@
     <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\AnyCPU\Net40"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\AnyCPU\Net35"/>
 
-    <!-- Console x86 -->
+    <!-- Console x86. -->
     <MakeDir Directories="$(BuildDir)\Service\x86"/>
     <MakeDir Directories="$(BuildDir)\Service\x86\Net40"/>
     <MakeDir Directories="$(BuildDir)\Service\x86\Net35"/>
@@ -79,6 +79,14 @@
     <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);Platform=x86;SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\x86\Net40"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.Console\BlueCollar.Console.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);Platform=x86;SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedConsoleOutputPath=$(BuildDir)\Service\x86\Net35"/>
 
+    <!-- SQL scripts. -->
+    <MakeDir Directories="$(BuildDir)\Schemas"/>
+    <ItemGroup>
+      <Schemas Include="$(SourceDir)\BlueCollar\SqlServer.Schema.sql"/>
+      <Schemas Include="$(SourceDir)\BlueCollar.SQLiteRepository\SQLite.Schema.sql"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(Schemas)" DestinationFolder="$(BuildDir)\Schemas"/>
+    
     <!-- Copy build products to example projects. -->
     <MSBuild Projects="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj" Properties="Configuration=Debug"/>
 

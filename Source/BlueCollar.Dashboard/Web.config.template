@@ -7,12 +7,12 @@
   <appSettings>
     <add key="webpages:Version" value="1.0.0.0"/>
     <add key="ClientValidationEnabled" value="true"/>
-    <add key="CreateBlueCollarMachineInProcess" value="true"/>
     <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
   </appSettings>
 
   <blueCollar applicationName="BlueCollar">
     <dashboard handlerUrl="collar" mode="LocalOnly"/>
+    <machine serviceExecutionEnabled="false"/>
     <repository type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository" connectionStringName="BlueCollarSQLite"/>
   </blueCollar>
 
@@ -20,6 +20,12 @@
     <add name="BlueCollarSQLite" connectionString="data source=|DataDirectory|BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3;"/>
   </connectionStrings>
 
+  <!--
+  This style of handler configuration enables the use of IIS7 proper,
+  or the built-in Visual Studio web server (Cassini). This is specific to the
+  way URLs are built by Blue Collar. If Cassini is not required, traditional
+  handler registration works just fine.
+  -->
   <location path="collar">
     <system.web>
       <httpHandlers>
@@ -31,9 +37,6 @@
       <handlers>
         <add name="*" path="*" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode"/>
       </handlers>
-      <staticContent>
-        <mimeMap fileExtension=".woff" mimeType="application/octet-stream"/>
-      </staticContent>
     </system.webServer>
   </location>
 
@@ -63,6 +66,10 @@
   </system.web>
 
   <system.webServer>
+    <staticContent>
+      <mimeMap fileExtension=".woff" mimeType="application/octet-stream"/>
+    </staticContent>
+  
     <validation validateIntegratedModeConfiguration="false"/>
   </system.webServer>
 </configuration>

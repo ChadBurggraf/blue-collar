@@ -196,7 +196,7 @@ namespace BlueCollar
                             string.Format(CultureInfo.InvariantCulture, "Failed to load type '{0}' configured as the IRepository type to use.", this.repositoryTypeName),
                             typeException,
                             BlueCollarSection.Section.ElementInformation.Source,
-                            BlueCollarSection.Section.ElementInformation.LineNumber);
+                            BlueCollarSection.Section.Repository.ElementInformation.LineNumber);
                     }
 
                     if (!typeof(IRepository).IsAssignableFrom(this.repositoryType))
@@ -204,7 +204,7 @@ namespace BlueCollar
                         throw new ConfigurationErrorsException(
                             string.Format(CultureInfo.InvariantCulture, "Type '{0}', configured as the IRepository type to use, does not implement IRepository.", this.repositoryTypeName),
                             BlueCollarSection.Section.ElementInformation.Source,
-                            BlueCollarSection.Section.ElementInformation.LineNumber);
+                            BlueCollarSection.Section.Repository.ElementInformation.LineNumber);
                     }
 
                     if (string.IsNullOrEmpty(this.connectionString))
@@ -216,7 +216,7 @@ namespace BlueCollar
                             throw new ConfigurationErrorsException(
                                 string.Format(CultureInfo.InvariantCulture, "Failed to find an empty constructor for IRepository type '{0}'.", this.repositoryTypeName),
                                 BlueCollarSection.Section.ElementInformation.Source,
-                                BlueCollarSection.Section.ElementInformation.LineNumber);
+                                BlueCollarSection.Section.Repository.ElementInformation.LineNumber);
                         }
                     }
                     else
@@ -228,7 +228,7 @@ namespace BlueCollar
                             throw new ConfigurationErrorsException(
                                 string.Format(CultureInfo.InvariantCulture, "Failed to find a constructor that takes a single string argument (the connection string) for IRepository type '{0}'.", this.repositoryTypeName),
                                 BlueCollarSection.Section.ElementInformation.Source,
-                                BlueCollarSection.Section.ElementInformation.LineNumber);
+                                BlueCollarSection.Section.Repository.ElementInformation.LineNumber);
                         }
                     }
 

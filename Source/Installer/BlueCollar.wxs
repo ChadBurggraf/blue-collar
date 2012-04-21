@@ -58,6 +58,12 @@
               -->
             </Directory>
           </Directory>
+          <Directory Id="SchemasFolder" Name="Schemas">
+            <Component Id="Schemas" Guid="6B8DB8CF-0F0E-4CC0-BB05-4E8D723B95D0">
+              <File Id="SqlServerSchemaSql" Name="SqlServer.Schema.sql" DiskId="1" Source="Schemas\SqlServer.Schema.sql" KeyPath="yes" />
+              <File Id="SQLiteSchemaSql" Name="SQLite.Schema.sql" DiskId="1" Source="Schemas\SQLite.Schema.sql" />
+            </Component>
+          </Directory>
           <Directory Id="ServiceFolder" Name="Service">
             <Component Id="Service" Guid="9B16741A-2A46-4A7E-B259-5D992AE0AEB8">
               <File Id="CollarServiceExe" Name="CollarService.exe" DiskId="1" Source="Service\CollarService.exe" KeyPath="yes" />
@@ -122,6 +128,7 @@
       <ComponentRef Id="ReferenceAssembliesNet40GAC" />
       <ComponentRef Id="ReferenceAssembliesNet40AssemblyFolder" />
       -->
+      <ComponentRef Id="Schemas" />
       <ComponentRef Id="Service" />
       <ComponentRef Id="ServiceConfig" />
       <ComponentRef Id="ServiceAnyCPUNet35" />

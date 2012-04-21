@@ -468,7 +468,7 @@ namespace BlueCollar
 
                     if (queued != null)
                     {
-                        working = CreateWorking(queued, this.id, null, DateTime.UtcNow);
+                        working = CreateWorking(queued, this.id, queued.ScheduleId, DateTime.UtcNow);
 
                         repository.DeleteQueued(queued.Id.Value, transaction);
                         working = repository.CreateWorking(working, transaction);

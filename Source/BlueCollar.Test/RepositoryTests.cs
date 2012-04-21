@@ -315,13 +315,7 @@ namespace BlueCollar.Test
                         WorkerId = workerRecord.Id.Value
                     });
 
-                using (var trans = this.Repository.BeginTransaction())
-                {
-                    Assert.AreEqual(3, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, trans));
-                    trans.Commit();
-                }
-
-                Assert.AreEqual(0, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, null));
+                Assert.AreEqual(3, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, null));
             }
         }
 
@@ -888,6 +882,7 @@ namespace BlueCollar.Test
             if (this.Repository != null)
             {
                 IJob job = new TestJob() { Id = Guid.NewGuid() };
+                DateTime now = DateTime.UtcNow.FloorWithSeconds();
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
@@ -899,7 +894,7 @@ namespace BlueCollar.Test
                     Signal = WorkerSignal.Stop,
                     Status = WorkerStatus.Working,
                     Startup = WorkerStartupType.Automatic,
-                    UpdatedOn = DateTime.UtcNow
+                    UpdatedOn = now
                 };
 
                 this.Repository.CreateWorker(workerRecord, null);
@@ -908,11 +903,11 @@ namespace BlueCollar.Test
                 {
                     ApplicationName = workerRecord.ApplicationName,
                     Data = JobSerializer.Serialize(job),
-                    FinishedOn = DateTime.UtcNow,
+                    FinishedOn = now,
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
-                    QueuedOn = DateTime.UtcNow,
-                    StartedOn = DateTime.UtcNow,
+                    QueuedOn = now,
+                    StartedOn = now,
                     Status = HistoryStatus.Succeeded,
                     TryNumber = 1,
                     WorkerId = workerRecord.Id.Value
@@ -929,6 +924,41 @@ namespace BlueCollar.Test
                 Assert.IsNotNull(list);
                 Assert.AreEqual(0, list.TotalCount);
                 Assert.AreEqual(0, list.Records.Count);
+
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Enabled = true,
+                    Name = "Test",
+                    QueueName = "scheduled",
+                    RepeatType = ScheduleRepeatType.None,
+                    StartOn = now
+                };
+
+                this.Repository.CreateSchedule(scheduleRecord, null);
+
+                historyRecord = new HistoryRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    FinishedOn = now,
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job.GetType()),
+                    QueuedOn = now,
+                    ScheduleId = scheduleRecord.Id.Value,
+                    StartedOn = now,
+                    Status = HistoryStatus.Succeeded,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateHistory(historyRecord, null);
+
+                list = this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0, null);
+                Assert.IsNotNull(list);
+                Assert.AreEqual(2, list.TotalCount);
+                Assert.AreEqual(2, list.Records.Count);
+                Assert.IsTrue(list.Records.Where(h => h.ScheduleName == "Test").Count() == 1);
             }
         }
 

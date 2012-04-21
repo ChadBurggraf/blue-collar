@@ -234,6 +234,10 @@
       <Project>{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}</Project>
       <Name>BlueCollar.Examples</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj">
+      <Project>{12257995-43A3-4EDC-A577-514D0D6E3567}</Project>
+      <Name>BlueCollar.SQLiteRepository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BlueCollar\BlueCollar.csproj">
       <Project>{1269260A-4785-4C26-A442-B87D94B1B6EA}</Project>
       <Name>BlueCollar</Name>
