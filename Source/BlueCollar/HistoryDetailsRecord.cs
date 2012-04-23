@@ -30,6 +30,11 @@ namespace BlueCollar
         public long Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the date the job was queued on.
+        /// </summary>
+        public DateTime QueuedOn { get; set; }
+
+        /// <summary>
         /// Gets or sets the address of the machine that executed the job.
         /// </summary>
         public string WorkerMachineAddress { get; set; }

@@ -6766,6 +6766,7 @@ var HistoryDetails = BlueCollarModel.extend({
         'FinishedOn': null,
         'JobName': null,
         'JobType': null,
+        'QueuedOn': null,
         'QueueName': null,
         'ScheduleName': null,
         'StartedOn': null,
@@ -11666,7 +11667,10 @@ test('DateToRelativeString', function() {
     equal(new Date().add({days: -3}).toRelativeString(), '3 days ago');
     equal(new Date().add({days: -7}).toRelativeString(), 'a week ago');
     equal(new Date().add({days: -14}).toRelativeString(), '2 weeks ago');
-    equal(new Date().add({months: -1}).toRelativeString(), '4 weeks ago');
+    
+    var month = new Date().add({months: -1}).toRelativeString();
+    ok(month =='4 weeks ago' || month == 'a month ago');
+
     equal(new Date().add({months: -4}).toRelativeString(), '4 months ago');
     equal(new Date().add({years: -1}).toRelativeString(), 'a year ago');
     equal(new Date().add({years: -10}).toRelativeString(), '10 years ago');

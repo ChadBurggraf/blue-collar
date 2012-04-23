@@ -6775,6 +6775,7 @@ var HistoryDetails = BlueCollarModel.extend({
         'FinishedOn': null,
         'JobName': null,
         'JobType': null,
+        'QueuedOn': null,
         'QueueName': null,
         'ScheduleName': null,
         'StartedOn': null,

@@ -618,6 +618,7 @@ WHERE
     h.[Id],
     h.[Data], 
     h.[Exception], 
+    h.[QueuedOn],
     w.[MachineAddress] AS [WorkerMachineAddress],
     w.[MachineName] AS [WorkerMachineName],
     w.[Name] AS [WorkerName]

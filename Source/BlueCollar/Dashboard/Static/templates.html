@@ -75,6 +75,21 @@
             </div>
         </div>
 
+        <div class="clearfix">
+            <label>Queued on</label>
+            <div class="input">
+                <p>
+                    <% if (QueuedOn) { 
+                        print(
+                            QueuedOn.toString('MMM d, yyyy')
+                            + ' <span class="light">'
+                            + QueuedOn.toString('h:mm:ss tt')
+                            + '</span>'); 
+                    } %>
+                </p>
+            </div>  
+        </div>
+
         <div class="clearfix exception">
             <label>Exception</label>
             <div class="input">
@@ -130,11 +145,11 @@
     <td><%- ScheduleName || '' %></td>
     <td><%- QueueName || '' %></td>
     <td>
-        <span class="list-date"><% print(StartedOn.toString('d MMM yyyy')); %></span>
+        <span class="list-date"><% print(StartedOn.toString('MMM d, yyyy')); %></span>
         <small class="list-time light"><% print(StartedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td>
-        <span class="list-date"><% print(FinishedOn.toString('d MMM yyyy')); %></span>
+        <span class="list-date"><% print(FinishedOn.toString('MMM d, yyyy')); %></span>
         <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td><span class="status"><%- Status %></span></td>
@@ -256,7 +271,7 @@
     <td><%- ScheduleName || '' %></td>
     <td><%- QueueName || '' %></td>
     <td>
-        <span class="list-date"><% print(QueuedOn.toString('d MMM yyyy')); %></span>
+        <span class="list-date"><% print(QueuedOn.toString('MMM d, yyyy')); %></span>
         <small class="list-time light"><% print(QueuedOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td><%- TryNumber %></td>
@@ -391,11 +406,11 @@
 <script type="text/template" id="schedule-row-template">
     <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
     <td>
-        <span class="list-date"><% print(StartOn.toString('d MMM yyyy')); %></span>
+        <span class="list-date"><% print(StartOn.toString('MMM d, yyyy')); %></span>
         <small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
     </td>
     <td>
-        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('d MMM yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
+        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('MMM d, yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
     </td>
     <td><% print($.htmlEncode(QueueName || '*')); %></td>
     <td><% if (RepeatType && RepeatType !== 'None') { print('Every ' + RepeatValue + ' ' + RepeatType.toLowerCase()); } else { print('No'); } %></td>
@@ -704,9 +719,9 @@
         <small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
     </td>
     <td>
-        <% print(QueuedOn.toString('d MMM yyyy h:mm tt')); %>
+        <% print(QueuedOn.toString('MMM d, yyyy h:mm tt')); %>
         <small class="light"><strong>Started On</strong></span>
-        <small class="light"><% print(StartedOn.toString('d MMM yyyy h:mm tt')); %></small>
+        <small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
     </td>
     <td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
     <td><%- TryNumber %></td>
