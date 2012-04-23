@@ -7,6 +7,15 @@ test('DateIsASPNET', function() {
     equal(Date.isASPNET('not a date'), false);
 });
 
+test('DateIsISOString', function() {
+    equal(Date.isISOString('2012-04-23T16:54:30Z'), true);
+    equal(Date.isISOString('2012-04-23T16:54:30.0000Z'), true);
+    equal(Date.isISOString('2012-04-23T16:54:30'), true);
+    equal(Date.isISOString(null), false);
+    equal(Date.isISOString(undefined), false);
+    equal(Date.isISOString('not a date'), false);
+});
+
 test('DateParseFail', function() {
     ok(_.isNull(Date.parse('not a date')), 'Date is not null.');
 });

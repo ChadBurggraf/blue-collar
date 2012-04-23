@@ -36,6 +36,11 @@ namespace BlueCollar
         public bool Enabled { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the schedule is currently being enqueued.
+        /// </summary>
+        public bool Enqueueing { get; set; }
+
+        /// <summary>
         /// Gets or sets the date the schedule ends on.
         /// </summary>
         public DateTime? EndOn

@@ -314,6 +314,16 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule enqueueing lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryGetScheduleEnqueueingLock()
+        {
+            GetScheduleEnqueueingLock();
+        }
+
+        /// <summary>
         /// Get schedule list tests.
         /// </summary>
         [TestMethod]
@@ -421,6 +431,16 @@ namespace BlueCollar.Test
         public void SQLiteRepositoryGetWorkingSignals()
         {
             GetWorkingSignals();
+        }
+
+        /// <summary>
+        /// Release schedule enqueueing lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryReleaseScheduleEnqueueingLock()
+        {
+            ReleaseScheduleEnqueueingLock();
         }
 
         /// <summary>

@@ -8,6 +8,7 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -73,6 +74,11 @@ namespace BlueCollar.Test
             if (this.Repository != null)
             {
                 using (var transaction = this.Repository.BeginTransaction())
+                {
+                    Assert.IsNotNull(transaction);
+                }
+
+                using (var transaction = this.Repository.BeginTransaction(IsolationLevel.RepeatableRead))
                 {
                     Assert.IsNotNull(transaction);
                 }
@@ -1194,6 +1200,30 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule enqueueing lock tests.
+        /// </summary>
+        protected void GetScheduleEnqueueingLock()
+        {
+            if (this.Repository != null)
+            {
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = "/test",
+                    Name = "Nightly",
+                    QueueName = "schedules",
+                    RepeatType = ScheduleRepeatType.Days,
+                    RepeatValue = 1,
+                    StartOn = DateTime.UtcNow.FloorWithSeconds()
+                };
+
+                this.Repository.CreateSchedule(scheduleRecord, null);
+
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+            }
+        }
+
+        /// <summary>
         /// Get schedule list tests.
         /// </summary>
         protected void GetScheduleList()
@@ -1981,6 +2011,31 @@ namespace BlueCollar.Test
                 Assert.IsNotNull(signals);
                 Assert.AreEqual(WorkingSignal.Cancel, signals.WorkingSignal);
             }
+        }
+
+        /// <summary>
+        /// Release schedule enqueueing lock tests.
+        /// </summary>
+        protected void ReleaseScheduleEnqueueingLock()
+        {
+            ScheduleRecord scheduleRecord = new ScheduleRecord()
+            {
+                ApplicationName = "/test",
+                Enabled = false,
+                Name = "Nightly",
+                QueueName = "schedules",
+                RepeatType = ScheduleRepeatType.Days,
+                RepeatValue = 1,
+                StartOn = DateTime.UtcNow.FloorWithSeconds()
+            };
+
+            this.Repository.CreateSchedule(scheduleRecord, null);
+            this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
+
+            Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+
+            this.Repository.ReleaseScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
+            Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
         }
 
         /// <summary>

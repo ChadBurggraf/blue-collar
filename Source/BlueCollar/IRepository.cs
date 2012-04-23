@@ -28,6 +28,13 @@ namespace BlueCollar
         IDbTransaction BeginTransaction();
 
         /// <summary>
+        /// Begins a transaction.
+        /// </summary>
+        /// <param name="level">The isolation level to use for the transaction.</param>
+        /// <returns>The transaction.</returns>
+        IDbTransaction BeginTransaction(IsolationLevel level);
+
+        /// <summary>
         /// Clears signals for the given worker and working job if applicable.
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>
@@ -211,6 +218,14 @@ namespace BlueCollar
         bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction);
 
         /// <summary>
+        /// Attempts to obtain the enqueueing lock for the given schedule ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
+        bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);
+
+        /// <summary>
         /// Gets a schedule and its related scheduled jobs, filtered by the given list parameters.
         /// </summary>
         /// <param name="applicationName">The name of the application to get the scheduled job list for.</param>
@@ -325,6 +340,13 @@ namespace BlueCollar
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A signals record.</returns>
         SignalsRecord GetWorkingSignals(long workerId, long? workingId, IDbTransaction transaction);
+
+        /// <summary>
+        /// Releases the enqueueing lock for the schedule with the given ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);
 
         /// <summary>
         /// Signals all workers for the given application name.

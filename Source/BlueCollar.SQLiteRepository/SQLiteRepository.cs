@@ -51,6 +51,7 @@ WHERE
     [ApplicationName] = @ApplicationName;";
 
         private IDbConnection connection;
+        private IsolationLevel defaultIsolationLevel;
         private bool disposed;
 
         /// <summary>
@@ -72,6 +73,15 @@ WHERE
 
             EnsureDatabase(builder.DataSource);
             this.ConnectionString = builder.ConnectionString;
+
+            try
+            {
+                this.defaultIsolationLevel = builder.DefaultIsolationLevel;
+            }
+            catch (NullReferenceException)
+            {
+                this.defaultIsolationLevel = IsolationLevel.Serializable;
+            }
 
             this.connection = new SQLiteConnection(this.ConnectionString);
             this.connection.Open();
@@ -97,6 +107,34 @@ WHERE
         public IDbTransaction BeginTransaction()
         {
             return this.connection.BeginTransaction();
+        }
+
+        /// <summary>
+        /// Begins a transaction.
+        /// </summary>
+        /// <param name="level">The isolation level to use for the transaction.</param>
+        /// <returns>The transaction.</returns>
+        public IDbTransaction BeginTransaction(IsolationLevel level)
+        {
+            switch (level)
+            {
+                case IsolationLevel.Chaos:
+                case IsolationLevel.ReadUncommitted:
+                case IsolationLevel.Unspecified:
+                    level = this.defaultIsolationLevel;
+                    break;
+                case IsolationLevel.RepeatableRead:
+                case IsolationLevel.Serializable:
+                case IsolationLevel.Snapshot:
+                    level = IsolationLevel.Serializable;
+                    break;
+                case IsolationLevel.ReadCommitted:
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return this.connection.BeginTransaction(level);
         }
 
         /// <summary>
@@ -266,8 +304,8 @@ VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Dat
         public ScheduleRecord CreateSchedule(ScheduleRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled])
-VALUES(@ApplicationName,@QueueName,@Name,@StartOn,@EndOn,@RepeatTypeString,@RepeatValue,@Enabled);
+@"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled],[Enqueueing])
+VALUES(@ApplicationName,@QueueName,@Name,@StartOn,@EndOn,@RepeatTypeString,@RepeatValue,@Enabled,@Enqueueing);
 SELECT last_insert_rowid();";
 
             record.Id = this.connection.Query<long>(
@@ -930,6 +968,60 @@ LIMIT @Limit OFFSET @Offset;");
         }
 
         /// <summary>
+        /// Attempts to obtain the enqueueing lock for the given schedule ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
+        public bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
+        {
+            bool obtained = false, commitRollback = false;
+
+            if (transaction == null)
+            {
+                transaction = this.BeginTransaction(IsolationLevel.Serializable);
+                commitRollback = true;
+            }
+
+            try
+            {
+                obtained = !this.connection.Query<bool>(
+                     @"SELECT [Enqueueing] FROM [BlueCollarSchedule] WHERE @Id = @Id;",
+                     new { Id = scheduleId },
+                     transaction,
+                     true,
+                     null,
+                     null).First();
+
+                if (obtained)
+                {
+                    this.connection.Execute(
+                        @"UPDATE [BlueCollarSchedule] SET [Enqueueing] = @Enqueueing WHERE [Id] = @Id;",
+                        new { Id = scheduleId, Enqueueing = true },
+                        transaction,
+                        null,
+                        null);
+                }
+
+                if (commitRollback)
+                {
+                    transaction.Commit();
+                }
+            }
+            catch
+            {
+                if (commitRollback)
+                {
+                    transaction.Rollback();
+                }
+
+                throw;
+            }
+
+            return obtained;
+        }
+
+        /// <summary>
         /// Gets a list of schedule records.
         /// </summary>
         /// <param name="applicationName">The name of the application to get the schedule list for.</param>
@@ -1558,6 +1650,28 @@ WHERE
         }
 
         /// <summary>
+        /// Releases the enqueueing lock for the schedule with the given ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
+        {
+            const string Sql =
+@"UPDATE [BlueCollarSchedule]
+SET
+    [Enqueueing] = @Enqueueing
+WHERE
+    [Id] = @Id;";
+
+            this.connection.Execute(
+                Sql,
+                new { Id = scheduleId, Enqueueing = false },
+                transaction,
+                null,
+                null);
+        }
+
+        /// <summary>
         /// Signals all workers for the given application name.
         /// </summary>
         /// <param name="applicationName">The application name to signal workers for.</param>
@@ -1597,7 +1711,8 @@ SET
     [EndOn] = @EndOn,
     [RepeatType] = @RepeatTypeString,
     [Repeatvalue] = @RepeatValue,
-    [Enabled] = @Enabled
+    [Enabled] = @Enabled,
+    [Enqueueing] = @Enqueueing
 WHERE
     [Id] = @Id;";
 

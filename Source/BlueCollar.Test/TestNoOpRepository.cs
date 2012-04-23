@@ -39,6 +39,16 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Begins a transaction.
+        /// </summary>
+        /// <param name="level">The isolation level to use for the transaction.</param>
+        /// <returns>The transaction.</returns>
+        public IDbTransaction BeginTransaction(IsolationLevel level)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Clears signals for the given worker and working job if applicable.
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>
@@ -312,6 +322,17 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Attempts to obtain the enqueueing lock for the given schedule ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
+        public bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Gets a list of schedule records.
         /// </summary>
         /// <param name="applicationName">The name of the application to get the schedule list for.</param>
@@ -444,6 +465,16 @@ namespace BlueCollar.Test
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A signals record.</returns>
         public SignalsRecord GetWorkingSignals(long workerId, long? workingId, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Releases the enqueueing lock for the schedule with the given ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
         {
             throw new NotImplementedException();
         }

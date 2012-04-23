@@ -5929,7 +5929,7 @@ _.extend(Date, {
 
     isISOString: function(value) {
         if (!_.isUndefined(value) && _.isString(value)) {
-            return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value);
+            return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$/.test(value);
         }
 
         return false;

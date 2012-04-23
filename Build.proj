@@ -154,11 +154,11 @@
     <Copy SourceFiles="@(InstallerFiles)" DestinationFolder="$(TempDir)"/>
     <Exec Command='"$(WixDir)\candle.exe" "$(TempDir)\BlueCollar.wxs"' WorkingDirectory="$(TempDir)"/>
     <Exec Command='"$(WixDir)\light.exe" -ext WixUIExtension -ext WiXNetFxExtension -out BlueCollar.msi "$(TempDir)\BlueCollar.wixobj"' WorkingDirectory="$(TempDir)"/>
-    <Zip Files="@(BuildFiles)" ZipFileName="$(TempDir)\BlueCollar-$(Major).$(Minor).$(Build).$(Revision).zip" WorkingDirectory="$(BuildDir)"/>
+    <Zip Files="@(BuildFiles)" ZipFileName="$(TempDir)\BlueCollar-$(Major).$(Minor).$(Build).zip" WorkingDirectory="$(BuildDir)"/>
 
     <RemoveDir Directories="$(BuildDir)"/>
     <MakeDir Directories="$(BuildDir)"/>
-    <Copy SourceFiles="$(TempDir)\BlueCollar-$(Major).$(Minor).$(Build).$(Revision).zip" DestinationFolder="$(BuildDir)"/>
+    <Copy SourceFiles="$(TempDir)\BlueCollar-$(Major).$(Minor).$(Build).zip" DestinationFolder="$(BuildDir)"/>
     <Copy SourceFiles="$(TempDir)\BlueCollar.msi" DestinationFolder="$(BuildDir)"/>
     <RemoveDir Directories="$(TempDir)"/>
   </Target>

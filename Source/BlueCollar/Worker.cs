@@ -462,7 +462,7 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                using (IDbTransaction transaction = repository.BeginTransaction())
+                using (IDbTransaction transaction = repository.BeginTransaction(IsolationLevel.RepeatableRead))
                 {
                     QueueRecord queued = repository.GetQueued(this.applicationName, queues, DateTime.UtcNow, transaction);
 

@@ -7,6 +7,7 @@
 namespace BlueCollar.Dashboard
 {
     using System;
+    using System.Data;
     using System.Web;
 
     /// <summary>
@@ -59,7 +60,20 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                this.Repository.DeleteSchedule(this.Id, null);
+                using (IDbTransaction transaction = Repository.BeginTransaction())
+                {
+                    try
+                    {
+                        Repository.DeleteSchedule(this.Id, transaction);
+                        Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, transaction);
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
             }
             else
             {

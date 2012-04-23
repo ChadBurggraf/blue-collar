@@ -5920,7 +5920,7 @@ _.extend(Date, {
 
     isISOString: function(value) {
         if (!_.isUndefined(value) && _.isString(value)) {
-            return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$/.test(value);
+            return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$/.test(value);
         }
 
         return false;
@@ -11640,6 +11640,15 @@ test('DateIsASPNET', function() {
     equal(Date.isASPNET(null), false);
     equal(Date.isASPNET(undefined), false);
     equal(Date.isASPNET('not a date'), false);
+});
+
+test('DateIsISOString', function() {
+    equal(Date.isISOString('2012-04-23T16:54:30Z'), true);
+    equal(Date.isISOString('2012-04-23T16:54:30.0000Z'), true);
+    equal(Date.isISOString('2012-04-23T16:54:30'), true);
+    equal(Date.isISOString(null), false);
+    equal(Date.isISOString(undefined), false);
+    equal(Date.isISOString('not a date'), false);
 });
 
 test('DateParseFail', function() {

@@ -275,6 +275,15 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule enqueueing lock tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryGetScheduleEnqueueingLock()
+        {
+            GetScheduleEnqueueingLock();
+        }
+
+        /// <summary>
         /// Get schedule list tests.
         /// </summary>
         [TestMethod]
@@ -371,6 +380,15 @@ namespace BlueCollar.Test
         public void SqlServerRepositoryGetWorkingSignals()
         {
             GetWorkingSignals();
+        }
+
+        /// <summary>
+        /// Release schedule enqueueing lock tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryReleaseScheduleEnqueueingLock()
+        {
+            ReleaseScheduleEnqueueingLock();
         }
 
         /// <summary>
