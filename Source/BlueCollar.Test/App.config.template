@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+  <configSections>
+    <section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+  </configSections>
+  
+  <blueCollar applicationName="Blue Collar Test"/>
+  
   <connectionStrings>
     <!-- 
     To run SQL Server tests, fill out the connection string below, 

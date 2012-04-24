@@ -73,7 +73,7 @@ namespace BlueCollar.Test
         {
             ScheduleRecord schedule = new ScheduleRecord()
             {
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Enabled = true,
                 Id = 1,
                 Name = "Test",
@@ -98,14 +98,14 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
-            repository.Setup(r => r.GetSchedules("/test", It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule });
+            repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName, It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule });
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
 
             var logger = new Mock<ILogger>();
 
-            Scheduler scheduler = new Scheduler(1, "/test", 1, factory.Object, logger.Object);
+            Scheduler scheduler = new Scheduler(1, BlueCollarSection.Section.ApplicationName, 1, factory.Object, logger.Object);
             Assert.AreEqual(0, scheduler.Schedules.Count());
 
             scheduler.RefreshSchedules();

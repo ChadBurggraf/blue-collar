@@ -62,7 +62,7 @@ namespace BlueCollar.Test
         {
             if (this.Repository != null)
             {
-                this.Repository.DeleteAll(null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
             }
         }
 
@@ -96,7 +96,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -153,7 +153,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -213,7 +213,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -251,7 +251,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -334,7 +334,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Enabled = true,
                     Name = "Test",
                     QueueName = "*",
@@ -357,7 +357,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     QueueName = "*",
                     RepeatType = ScheduleRepeatType.Days,
@@ -388,7 +388,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -415,7 +415,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -456,7 +456,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -484,7 +484,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -562,7 +562,7 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateHistory(historyRecord, null);
 
-                this.Repository.DeleteAll(null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
 
                 Assert.AreEqual(0, this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
                 Assert.AreEqual(0, this.Repository.GetWorkingList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
@@ -584,7 +584,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -624,7 +624,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     RepeatType = ScheduleRepeatType.Days,
                     RepeatValue = 1,
@@ -634,7 +634,7 @@ namespace BlueCollar.Test
                 this.Repository.CreateSchedule(scheduleRecord, null);
                 this.Repository.DeleteSchedule(scheduleRecord.Id.Value, null);
 
-                Assert.IsNull(this.Repository.GetScheduledJobList("/test", scheduleRecord.Id.Value, null, 1, 0, null).Id);
+                Assert.IsNull(this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 1, 0, null).Id);
             }
         }
 
@@ -647,7 +647,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     RepeatType = ScheduleRepeatType.Days,
                     RepeatValue = 1,
@@ -665,7 +665,7 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
                 this.Repository.DeleteScheduledJob(scheduledJobRecord.Id.Value, null);
-                Assert.AreEqual(0, this.Repository.GetScheduledJobList("/test", scheduleRecord.Id.Value, null, 100, 0, null).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null).TotalCount);
             }
         }
 
@@ -678,7 +678,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -706,7 +706,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -757,7 +757,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -840,7 +840,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -892,7 +892,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -980,7 +980,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1020,7 +1020,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1064,7 +1064,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1113,7 +1113,7 @@ namespace BlueCollar.Test
 
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     RepeatType = ScheduleRepeatType.Days,
                     RepeatValue = 1,
@@ -1137,7 +1137,7 @@ namespace BlueCollar.Test
 
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     RepeatType = ScheduleRepeatType.Days,
                     RepeatValue = 1,
@@ -1180,7 +1180,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     RepeatType = ScheduleRepeatType.Days,
                     RepeatValue = 1,
@@ -1189,11 +1189,11 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateSchedule(scheduleRecord, null);
 
-                ScheduledJobRecordList list = this.Repository.GetScheduledJobList("/test", scheduleRecord.Id.Value, null, 1, 0, null);
+                ScheduledJobRecordList list = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 1, 0, null);
                 Assert.IsNotNull(list.Id);
                 Assert.AreEqual(0, list.Records.Count);
 
-                list = this.Repository.GetScheduledJobList("/test", scheduleRecord.Id.Value, "boo", 50, 0, null);
+                list = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, "boo", 50, 0, null);
                 Assert.IsNotNull(list.Id);
                 Assert.AreEqual(0, list.Records.Count);
             }
@@ -1209,7 +1209,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Nightly",
                     QueueName = "schedules",
                     RepeatType = ScheduleRepeatType.Days,
@@ -1233,7 +1233,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Nightly",
                     QueueName = "schedules",
                     RepeatType = ScheduleRepeatType.Days,
@@ -1275,7 +1275,7 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
 
-                RecordList<ScheduleListRecord> schedules = this.Repository.GetScheduleList("/test", null, 100, 0, null);
+                RecordList<ScheduleListRecord> schedules = this.Repository.GetScheduleList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null);
                 Assert.IsNotNull(schedules);
                 Assert.AreEqual(2, schedules.TotalCount);
                 Assert.AreEqual(2, schedules.Records.Count);
@@ -1295,7 +1295,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Nightly",
                     QueueName = "schedules",
                     RepeatType = ScheduleRepeatType.Days,
@@ -1360,7 +1360,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1421,7 +1421,7 @@ namespace BlueCollar.Test
                  * Dequeued per hour by day - multiple queues.
                  */
 
-                this.Repository.DeleteAll(null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
 
                 workerRecord.Id = null;
                 this.Repository.CreateWorker(workerRecord, null);
@@ -1469,7 +1469,7 @@ namespace BlueCollar.Test
                  * History status counts.
                  */
 
-                this.Repository.DeleteAll(null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
 
                 Func<int, DateTime> getDate = (int i) =>
                 {
@@ -1577,7 +1577,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1602,7 +1602,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Test",
                     MachineName = "PRODUCTION",
                     MachineAddress = "127.0.0.1",
@@ -1615,11 +1615,11 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateWorker(workerRecord, null);
 
-                RecordList<WorkerRecord> list = this.Repository.GetWorkerList("/test", null, 1, 0, null);
+                RecordList<WorkerRecord> list = this.Repository.GetWorkerList(BlueCollarSection.Section.ApplicationName, null, 1, 0, null);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(1, list.Records.Count);
 
-                list = this.Repository.GetWorkerList("/test", "boo", 50, 0, null);
+                list = this.Repository.GetWorkerList(BlueCollarSection.Section.ApplicationName, "boo", 50, 0, null);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(0, list.Records.Count);
             }
@@ -1634,7 +1634,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1647,7 +1647,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord2 = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker 2",
@@ -1660,7 +1660,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord3 = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = "1.2.3.4.5",
                     MachineName = "DIFFERENTMACHINE",
                     Name = "Test Worker",
@@ -1673,7 +1673,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord4 = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = "1.2.3.4.5",
                     MachineName = null,
                     Name = "Test Worker 4",
@@ -1686,7 +1686,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord5 = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = null,
                     MachineName = "DIFFERENTMACHINE",
                     Name = "Test Worker 5",
@@ -1703,8 +1703,8 @@ namespace BlueCollar.Test
                 this.Repository.CreateWorker(workerRecord4, null);
                 this.Repository.CreateWorker(workerRecord5, null);
 
-                Assert.AreEqual(2, this.Repository.GetWorkers("/test", Machine.Address, Machine.Name, null).Count());
-                Assert.AreEqual(3, this.Repository.GetWorkers("/test", "1.2.3.4.5", "DIFFERENTMACHINE", null).Count());
+                Assert.AreEqual(2, this.Repository.GetWorkers(BlueCollarSection.Section.ApplicationName, Machine.Address, Machine.Name, null).Count());
+                Assert.AreEqual(3, this.Repository.GetWorkers(BlueCollarSection.Section.ApplicationName, "1.2.3.4.5", "DIFFERENTMACHINE", null).Count());
             }
         }
 
@@ -1719,7 +1719,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1734,7 +1734,7 @@ namespace BlueCollar.Test
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1762,7 +1762,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1777,7 +1777,7 @@ namespace BlueCollar.Test
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1808,7 +1808,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1823,7 +1823,7 @@ namespace BlueCollar.Test
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1839,7 +1839,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord2 = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker 2",
@@ -1854,7 +1854,7 @@ namespace BlueCollar.Test
 
                 WorkingRecord workingRecord2 = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1870,7 +1870,7 @@ namespace BlueCollar.Test
 
                 WorkingRecord workingRecord3 = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1910,7 +1910,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -1925,7 +1925,7 @@ namespace BlueCollar.Test
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1938,13 +1938,13 @@ namespace BlueCollar.Test
                 };
 
                 this.Repository.CreateWorking(workingRecord, null);
-                Assert.AreEqual(1, this.Repository.GetWorkingList("/test", null, 100, 0, null).TotalCount);
-                Assert.AreEqual(1, this.Repository.GetWorkingList("/test", "TestJob", 100, 0, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetWorkingList("/test", "not found search", 100, 0, null).TotalCount);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).TotalCount);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, "TestJob", 100, 0, null).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, "not found search", 100, 0, null).TotalCount);
 
                 WorkingRecord workingRecord2 = new WorkingRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Data = JobSerializer.Serialize(job),
                     JobName = job.Name,
                     JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -1957,9 +1957,9 @@ namespace BlueCollar.Test
                 };
 
                 this.Repository.CreateWorking(workingRecord2, null);
-                Assert.AreEqual(2, this.Repository.GetWorkingList("/test", null, 100, 0, null).TotalCount);
-                Assert.AreEqual(1, this.Repository.GetWorkingList("/test", null, 1, 0, null).Records.Count);
-                Assert.AreEqual(1, this.Repository.GetWorkingList("/test", null, 100, 1, null).Records.Count);
+                Assert.AreEqual(2, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).TotalCount);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 1, 0, null).Records.Count);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 1, null).Records.Count);
             }
         }
 
@@ -1974,7 +1974,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -2022,7 +2022,7 @@ namespace BlueCollar.Test
         {
             ScheduleRecord scheduleRecord = new ScheduleRecord()
             {
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Enabled = false,
                 Name = "Nightly",
                 QueueName = "schedules",
@@ -2032,7 +2032,7 @@ namespace BlueCollar.Test
             };
 
             this.Repository.CreateSchedule(scheduleRecord, null);
-            this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
+            Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
 
             Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
 
@@ -2049,7 +2049,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Enabled = false,
                     Name = "Nightly",
                     QueueName = "schedules",
@@ -2068,7 +2068,7 @@ namespace BlueCollar.Test
                 scheduleRecord.StartOn = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                 this.Repository.UpdateSchedule(scheduleRecord, null);
 
-                ScheduleRecord updatedRecord = this.Repository.GetSchedules("/test", null).Where(s => s.Id == scheduleRecord.Id).First();
+                ScheduleRecord updatedRecord = this.Repository.GetSchedules(BlueCollarSection.Section.ApplicationName, null).Where(s => s.Id == scheduleRecord.Id).First();
 
                 Assert.AreEqual(scheduleRecord.Enabled, updatedRecord.Enabled);
                 Assert.AreEqual(scheduleRecord.Name, updatedRecord.Name);
@@ -2088,7 +2088,7 @@ namespace BlueCollar.Test
             {
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     Name = "Nightly",
                     QueueName = "schedules",
                     RepeatType = ScheduleRepeatType.Days,
@@ -2111,7 +2111,7 @@ namespace BlueCollar.Test
                 jobRecord.Properties = "{\"One\":null, \"Two\":\"Three\"}";
                 this.Repository.UpdateScheduledJob(jobRecord, null);
 
-                ScheduledJobRecord updatedJob = this.Repository.GetScheduledJobList("/test", scheduleRecord.Id.Value, null, 100, 0, null).Records[0];
+                ScheduledJobRecord updatedJob = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null).Records[0];
                 Assert.AreEqual(jobRecord.JobType, updatedJob.JobType);
                 Assert.AreEqual(jobRecord.Properties, updatedJob.Properties);
             }
@@ -2126,7 +2126,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -2170,7 +2170,7 @@ namespace BlueCollar.Test
             {
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",
@@ -2199,7 +2199,7 @@ namespace BlueCollar.Test
 
                 WorkerRecord workerRecord = new WorkerRecord()
                 {
-                    ApplicationName = "/test",
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
                     MachineAddress = Machine.Address,
                     MachineName = Machine.Name,
                     Name = "Test Worker",

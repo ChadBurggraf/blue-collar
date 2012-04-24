@@ -55,7 +55,7 @@ namespace BlueCollar.Test
             try
             {
                 handler = new CountsHandler(factory.Object);
-                handler.ApplicationName = "/test";
+                handler.ApplicationName = BlueCollarSection.Section.ApplicationName;
                 handler.HandlerRelativeRequestUrl = "~/counts";
                 handler.QueryString = new QueryString();
 
@@ -96,7 +96,7 @@ namespace BlueCollar.Test
         {
             var record = new ScheduleRecord()
             {
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Id = 0,
                 Name = "Nightly",
                 QueueName = "schedules",
@@ -123,7 +123,7 @@ namespace BlueCollar.Test
 
             using (SaveScheduleHandler handler = new SaveScheduleHandler(factory.Object))
             {
-                handler.ApplicationName = "/test";
+                handler.ApplicationName = BlueCollarSection.Section.ApplicationName;
                 handler.HandlerRelativeRequestUrl = "~/schedules";
                 handler.QueryString = new QueryString();
 

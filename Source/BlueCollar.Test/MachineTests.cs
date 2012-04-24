@@ -47,12 +47,12 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Machine machine = new Machine(logger.Object, factory.Object, "/test", Machine.Address, Machine.Name, 1, 1, false, true))
+            using (Machine machine = new Machine(logger.Object, factory.Object, BlueCollarSection.Section.ApplicationName, Machine.Address, Machine.Name, 1, 1, false, true))
             {
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.CreateWorker(It.Is<WorkerRecord>(w => w.ApplicationName == "/test" && w.Name == "Default" && w.MachineAddress == Machine.Address && w.MachineName == Machine.Name), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateWorker(It.Is<WorkerRecord>(w => w.ApplicationName == BlueCollarSection.Section.ApplicationName && w.Name == "Default" && w.MachineAddress == Machine.Address && w.MachineName == Machine.Name), It.IsAny<IDbTransaction>()));
         }
 
         /// <summary>

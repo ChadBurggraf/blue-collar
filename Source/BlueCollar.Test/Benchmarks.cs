@@ -46,7 +46,7 @@ namespace BlueCollar.Test
                     new QueueRecord()
                     {
                         Id = i + 1,
-                        ApplicationName = "/test",
+                        ApplicationName = BlueCollarSection.Section.ApplicationName,
                         Data = JobSerializer.Serialize(job),
                         JobName = job.Name,
                         JobType = typeName,
@@ -86,7 +86,7 @@ namespace BlueCollar.Test
 
             Stopwatch stopwatch = new Stopwatch();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", QueueNameFilters.Any(), 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", QueueNameFilters.Any(), 1, false, factory.Object, logger.Object))
             {
                 stopwatch.Start();
 

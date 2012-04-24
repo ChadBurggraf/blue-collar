@@ -34,7 +34,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord() 
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -56,15 +56,15 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.GetQueued("/test", It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.GetQueued(BlueCollarSection.Section.ApplicationName, It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>()));
             repository.Verify(r => r.DeleteQueued(12, It.IsAny<IDbTransaction>()));
-            repository.Verify(r => r.CreateWorking(It.Is<WorkingRecord>(w => w.ApplicationName == "/test" && w.WorkerId == 1), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateWorking(It.Is<WorkingRecord>(w => w.ApplicationName == BlueCollarSection.Section.ApplicationName && w.WorkerId == 1), It.IsAny<IDbTransaction>()));
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord()
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -105,7 +105,7 @@ namespace BlueCollar.Test
 
             try
             {
-                worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object);
+                worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object);
                 worker.Start();
                 Thread.Sleep(1500);
                 worker.Stop(false);
@@ -135,7 +135,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord()
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -161,7 +161,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -182,7 +182,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord()
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -208,7 +208,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -231,7 +231,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord()
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -257,7 +257,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -279,7 +279,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord()
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -305,7 +305,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -328,7 +328,7 @@ namespace BlueCollar.Test
             QueueRecord queued = new QueueRecord()
             {
                 Id = 12,
-                ApplicationName = "/test",
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
                 Data = JsonConvert.SerializeObject(job),
                 JobName = job.Name,
                 JobType = JobSerializer.GetTypeName(job.GetType()),
@@ -354,7 +354,7 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 Thread.Sleep(1500);
@@ -384,7 +384,7 @@ namespace BlueCollar.Test
             var logger = new Mock<ILogger>();
             var scheduler = new Mock<IScheduler>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, true, factory.Object, logger.Object, scheduler.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, true, factory.Object, logger.Object, scheduler.Object))
             {
                 worker.Start();
                 signals.WorkerSignal = WorkerSignal.RefreshSchedules;
@@ -408,7 +408,7 @@ namespace BlueCollar.Test
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 Assert.AreEqual(WorkerStatus.Stopped, worker.Status);
 
@@ -431,7 +431,7 @@ namespace BlueCollar.Test
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();
 
-            using (Worker worker = new Worker("/test", 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
+            using (Worker worker = new Worker(BlueCollarSection.Section.ApplicationName, 1, "Test Worker", null, 1, false, factory.Object, logger.Object))
             {
                 worker.Start();
                 worker.Stop(false);

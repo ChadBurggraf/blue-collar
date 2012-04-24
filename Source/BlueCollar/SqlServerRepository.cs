@@ -469,18 +469,54 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         /// <summary>
         /// Deletes all data in the repository.
         /// </summary>
+        /// <param name="applicationName">The name of the application to delete data for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteAll(IDbTransaction transaction)
+        public void DeleteAll(string applicationName, IDbTransaction transaction)
         {
             const string Sql =
-@"DELETE FROM [BlueCollarHistory];
-DELETE FROM [BlueCollarWorking];
-DELETE FROM [BlueCollarWorker];
-DELETE FROM [BlueCollarQueue];
-DELETE FROM [BlueCollarScheduledJob];
-DELETE FROM [BlueCollarSchedule];";
+@"DELETE FROM [BlueCollarHistory] WHERE [ApplicationName] = @ApplicationName;
+DELETE FROM [BlueCollarWorking] WHERE [ApplicationName] = @ApplicationName;
+DELETE FROM [BlueCollarWorker] WHERE [ApplicationName] = @ApplicationName;
+DELETE FROM [BlueCollarQueue] WHERE [ApplicationName] = @ApplicationName;
+DELETE FROM [BlueCollarScheduledJob]
+WHERE
+	[ScheduleId] IN
+	(
+		SELECT [Id]
+		FROM [BlueCollarSchedule]
+		WHERE
+			[ApplicationName] = @ApplicationName
+	);
+DELETE FROM [BlueCollarSchedule] WHERE [ApplicationName] = @ApplicationName;";
 
-            this.connection.Execute(Sql, transaction);
+            this.connection.Execute(
+                Sql, 
+                new { ApplicationName = applicationName }, 
+                transaction, 
+                null, 
+                null);
+        }
+
+        /// <summary>
+        /// Deletes history older than the given date.
+        /// </summary>
+        /// <param name="applicationName">The name of the application to delete data for.</param>
+        /// <param name="olderThan">The date to delete history older than.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void DeleteHistory(string applicationName, DateTime olderThan, IDbTransaction transaction)
+        {
+            const string Sql =
+@"DELETE FROM [BlueCollarHistory]
+WHERE
+    [ApplicationName] = @ApplicationName
+    AND [QueuedOn] < @OlderThan;";
+
+            this.connection.Execute(
+                Sql,
+                new { ApplicationName = @applicationName, OlderThan = olderThan },
+                transaction,
+                null,
+                null);
         }
 
         /// <summary>
@@ -979,7 +1015,7 @@ WHERE
 @"SELECT [Enqueueing] 
 FROM [BlueCollarSchedule] 
 WHERE 
-    @Id = @Id;";
+    [Id] = @Id;";
 
             const string UpdateSql =
 @"UPDATE [BlueCollarSchedule] 

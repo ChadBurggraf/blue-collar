@@ -144,8 +144,20 @@ namespace BlueCollar.Test
         /// <summary>
         /// Deletes all data in the repository.
         /// </summary>
+        /// <param name="applicationName">The name of the application to delete data for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteAll(IDbTransaction transaction)
+        public void DeleteAll(string applicationName, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Deletes history older than the given date.
+        /// </summary>
+        /// <param name="applicationName">The name of the application to delete data for.</param>
+        /// <param name="olderThan">The date to delete history older than.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void DeleteHistory(string applicationName, DateTime olderThan, IDbTransaction transaction)
         {
             throw new NotImplementedException();
         }
