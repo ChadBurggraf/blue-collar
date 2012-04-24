@@ -150,6 +150,15 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Delete history tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryDeleteHistory()
+        {
+            DeleteHistory();
+        }
+
+        /// <summary>
         /// Delete queued tests.
         /// </summary>
         [TestMethod]

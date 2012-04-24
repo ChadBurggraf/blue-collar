@@ -574,6 +574,71 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Delete history tests.
+        /// </summary>
+        protected void DeleteHistory()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+                DateTime now = DateTime.UtcNow.FloorWithSeconds();
+
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = now
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+
+                HistoryRecord historyRecord = new HistoryRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    FinishedOn = now,
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueuedOn = now,
+                    QueueName = QueueNameFilters.Any().ToString(),
+                    StartedOn = now,
+                    Status = HistoryStatus.Succeeded,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateHistory(historyRecord, null);
+
+                historyRecord = new HistoryRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    FinishedOn = now.AddDays(-2),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueuedOn = now.AddDays(-2),
+                    QueueName = QueueNameFilters.Any().ToString(),
+                    StartedOn = now.AddDays(-2),
+                    Status = HistoryStatus.Succeeded,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateHistory(historyRecord, null);
+                Assert.AreEqual(2, this.Repository.GetHistoryList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).Records.Count);
+
+                this.Repository.DeleteHistory(BlueCollarSection.Section.ApplicationName, now.AddDays(-1), null);
+                Assert.AreEqual(1, this.Repository.GetHistoryList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).Records.Count);
+            }
+        }
+
+        /// <summary>
         /// Delete queued tests.
         /// </summary>
         protected void DeleteQueued()

@@ -158,6 +158,16 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Delete history tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryDeleteHistory()
+        {
+            DeleteHistory();
+        }
+
+        /// <summary>
         /// Delete queued tests.
         /// </summary>
         [TestMethod]
