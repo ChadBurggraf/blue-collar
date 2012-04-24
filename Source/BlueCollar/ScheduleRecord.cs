@@ -8,6 +8,7 @@ namespace BlueCollar
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Represents a schedule.
@@ -47,11 +48,13 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets a value indicating whether the schedule is currently being enqueued.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         public bool Enqueueing { get; set; }
 
         /// <summary>
         /// Gets or sets the date the value of <see cref="Enqueueing"/> was last updated.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         public DateTime? EnqueueingUpdatedOn
         {
             get { return this.enqueueingUpdatedOn; }

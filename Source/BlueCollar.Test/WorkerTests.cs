@@ -47,6 +47,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
 
@@ -92,6 +93,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
 
@@ -149,6 +151,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
@@ -195,6 +198,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
@@ -243,6 +247,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
@@ -290,6 +295,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
@@ -338,6 +344,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
@@ -368,6 +375,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
@@ -395,6 +403,7 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>(); 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();
@@ -417,6 +426,7 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>();
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();

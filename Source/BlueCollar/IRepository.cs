@@ -9,6 +9,7 @@ namespace BlueCollar
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
     /// <summary>
@@ -223,6 +224,7 @@ namespace BlueCollar
         /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);
 
         /// <summary>
@@ -346,6 +348,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);
 
         /// <summary>

@@ -1167,7 +1167,7 @@ namespace BlueCollar.Test
                 };
 
                 this.Repository.CreateQueued(queueRecord, null);
-                Assert.IsFalse(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now, null));
+                Assert.IsTrue(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now, null));
             }
         }
 
@@ -1202,6 +1202,7 @@ namespace BlueCollar.Test
         /// <summary>
         /// Get schedule enqueueing lock tests.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         protected void GetScheduleEnqueueingLock()
         {
             if (this.Repository != null)
@@ -2016,6 +2017,7 @@ namespace BlueCollar.Test
         /// <summary>
         /// Release schedule enqueueing lock tests.
         /// </summary>
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         protected void ReleaseScheduleEnqueueingLock()
         {
             ScheduleRecord scheduleRecord = new ScheduleRecord()

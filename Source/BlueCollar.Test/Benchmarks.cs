@@ -62,6 +62,7 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns((WorkingRecord r, IDbTransaction t) => { r.Id = 1; return r; });
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>()))

@@ -126,6 +126,11 @@ namespace BlueCollar
                 throw new ArgumentNullException("schedule", "schedule cannot be null.");
             }
 
+            if (repository == null)
+            {
+                throw new ArgumentNullException("repository", "repository cannot be null.");
+            }
+
             bool can = false;
 
             scheduleDate = null;

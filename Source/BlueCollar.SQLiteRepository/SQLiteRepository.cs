@@ -214,8 +214,8 @@ SELECT last_insert_rowid();";
         public QueueRecord CreateQueued(QueueRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarQueue]([ApplicationName],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber])
-VALUES(@ApplicationName,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber);
+@"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber])
+VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber);
 SELECT last_insert_rowid();";
 
             record.Id = this.connection.Query<long>(

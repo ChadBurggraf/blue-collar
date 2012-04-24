@@ -8,6 +8,7 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
@@ -278,6 +279,7 @@ namespace BlueCollar.Test
         /// Get schedule enqueueing lock tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         public void SqlServerRepositoryGetScheduleEnqueueingLock()
         {
             GetScheduleEnqueueingLock();
@@ -386,6 +388,7 @@ namespace BlueCollar.Test
         /// Release schedule enqueueing lock tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         public void SqlServerRepositoryReleaseScheduleEnqueueingLock()
         {
             ReleaseScheduleEnqueueingLock();
