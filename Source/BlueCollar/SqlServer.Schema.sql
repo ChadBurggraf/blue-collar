@@ -32,7 +32,9 @@ CREATE TABLE [BlueCollarSchedule]
 	[EndOn] datetime NULL,
 	[RepeatType] varchar(12) NOT NULL,
 	[RepeatValue] bigint NULL,
-	[Enabled] bit NOT NULL
+	[Enabled] bit NOT NULL,
+	[Enqueueing] bit NOT NULL,
+	[EnqueueingUpdatedOn] datetime NULL
 )
 GO
 

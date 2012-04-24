@@ -9,7 +9,8 @@
 	[RepeatType] VARCHAR(12) NOT NULL,
 	[RepeatValue] INTEGER NULL,
 	[Enabled] BOOLEAN NOT NULL,
-	[Enqueueing] BOOLEAN NOT NULL
+	[Enqueueing] BOOLEAN NOT NULL,
+	[EnqueueingUpdatedOn] DATETIME NULL
 );
 
 CREATE TABLE IF NOT EXISTS [BlueCollarScheduledJob]

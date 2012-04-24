@@ -235,7 +235,7 @@ namespace BlueCollar
 
                 foreach (ScheduleRecord schedule in this.Schedules)
                 {
-                    bool hasEnqueueingLock = false;
+                    bool hasEnqueueingLock = false, releasedEnqueueingLock = false;
 
                     using (IDbTransaction transaction = repository.BeginTransaction(IsolationLevel.RepeatableRead))
                     {
@@ -328,12 +328,20 @@ namespace BlueCollar
 
                                 repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, transaction);
                                 transaction.Commit();
+
+                                releasedEnqueueingLock = true;
                             }
                             catch
                             {
                                 transaction.Rollback();
-                                repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, null);
                                 throw;
+                            }
+                            finally
+                            {
+                                if (hasEnqueueingLock && !releasedEnqueueingLock)
+                                {
+                                    repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, null);
+                                }
                             }
                         }
                     }

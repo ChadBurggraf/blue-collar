@@ -376,8 +376,8 @@ VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Dat
         public ScheduleRecord CreateSchedule(ScheduleRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled],[Enqueueing])
-VALUES(@ApplicationName,@QueueName,@Name,@StartOn,@EndOn,@RepeatTypeString,@RepeatValue,@Enabled,@Enqueueing);
+@"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled],[Enqueueing],[EnqueueingUpdatedOn])
+VALUES(@ApplicationName,@QueueName,@Name,@StartOn,@EndOn,@RepeatTypeString,@RepeatValue,@Enabled,@Enqueueing,@EnqueueingUpdatedOn);
 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
 
             record.Id = this.connection.Query<long>(
@@ -975,6 +975,20 @@ WHERE
         /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
         public bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
         {
+            const string SelectSql =
+@"SELECT [Enqueueing] 
+FROM [BlueCollarSchedule] 
+WHERE 
+    @Id = @Id;";
+
+            const string UpdateSql =
+@"UPDATE [BlueCollarSchedule] 
+SET 
+    [Enqueueing] = @Enqueueing,
+    [EnqueueingUpdatedOn] = @EnqueueingUpdatedOn
+WHERE 
+    [Id] = @Id;";
+
             bool obtained = false, commitRollback = false;
 
             if (transaction == null)
@@ -986,7 +1000,7 @@ WHERE
             try
             {
                 obtained = !this.connection.Query<bool>(
-                     @"SELECT [Enqueueing] FROM [BlueCollarSchedule] WHERE @Id = @Id;",
+                     SelectSql,
                      new { Id = scheduleId },
                      transaction,
                      true,
@@ -996,8 +1010,8 @@ WHERE
                 if (obtained)
                 {
                     this.connection.Execute(
-                        @"UPDATE [BlueCollarSchedule] SET [Enqueueing] = @Enqueueing WHERE [Id] = @Id;",
-                        new { Id = scheduleId, Enqueueing = true },
+                        UpdateSql,
+                        new { Id = scheduleId, Enqueueing = true, EnqueueingUpdatedOn = DateTime.UtcNow },
                         transaction,
                         null,
                         null);
@@ -1765,13 +1779,14 @@ WHERE
             const string Sql =
 @"UPDATE [BlueCollarSchedule]
 SET
-    [Enqueueing] = @Enqueueing
+    [Enqueueing] = @Enqueueing,
+    [EnqueueingUpdatedOn] = @EnqueueingUpdatedOn
 WHERE
     [Id] = @Id;";
 
             this.connection.Execute(
                 Sql,
-                new { Id = scheduleId, Enqueueing = false },
+                new { Id = scheduleId, Enqueueing = false, EnqueueingUpdatedOn = DateTime.UtcNow },
                 transaction,
                 null,
                 null);
@@ -1818,7 +1833,8 @@ SET
     [RepeatType] = @RepeatTypeString,
     [Repeatvalue] = @RepeatValue,
     [Enabled] = @Enabled,
-    [Enqueueing] = @Enqueueing
+    [Enqueueing] = @Enqueueing,
+    [EnqueueingUpdatedOn] = @EnqueueingUpdatedOn
 WHERE
     [Id] = @Id;";
 

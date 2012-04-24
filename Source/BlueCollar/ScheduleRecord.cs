@@ -15,7 +15,7 @@ namespace BlueCollar
     public sealed class ScheduleRecord
     {
         private DateTime startOn;
-        private DateTime? endOn;
+        private DateTime? endOn, enqueueingUpdatedOn;
 
         /// <summary>
         /// Initializes a new instance of the ScheduleRecord class.
@@ -36,17 +36,26 @@ namespace BlueCollar
         public bool Enabled { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the schedule is currently being enqueued.
-        /// </summary>
-        public bool Enqueueing { get; set; }
-
-        /// <summary>
         /// Gets or sets the date the schedule ends on.
         /// </summary>
         public DateTime? EndOn
         {
             get { return this.endOn; }
             set { this.endOn = value.NormalizeToUtc(); }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the schedule is currently being enqueued.
+        /// </summary>
+        public bool Enqueueing { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date the value of <see cref="Enqueueing"/> was last updated.
+        /// </summary>
+        public DateTime? EnqueueingUpdatedOn
+        {
+            get { return this.enqueueingUpdatedOn; }
+            set { this.enqueueingUpdatedOn = value.NormalizeToUtc(); }
         }
 
         /// <summary>
