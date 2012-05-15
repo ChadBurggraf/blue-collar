@@ -1516,6 +1516,40 @@ namespace BlueCollar.Test
                     JobName = job.Name,
                     JobType = typeName,
                     QueuedOn = now.AddHours(-1),
+                    QueueName = "*",
+                    StartedOn = now.AddHours(-1),
+                    Status = HistoryStatus.Succeeded,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateHistory(historyRecord, null);
+
+                historyRecord = new HistoryRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Data = jobData,
+                    FinishedOn = now.AddHours(-1),
+                    JobName = job.Name,
+                    JobType = typeName,
+                    QueuedOn = now.AddHours(-1),
+                    QueueName = "test",
+                    StartedOn = now.AddHours(-1),
+                    Status = HistoryStatus.Succeeded,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateHistory(historyRecord, null);
+
+                historyRecord = new HistoryRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Data = jobData,
+                    FinishedOn = now.AddHours(-1),
+                    JobName = job.Name,
+                    JobType = typeName,
+                    QueuedOn = now.AddHours(-1),
                     QueueName = "test",
                     StartedOn = now.AddHours(-1),
                     Status = HistoryStatus.Succeeded,
@@ -1528,8 +1562,10 @@ namespace BlueCollar.Test
                 stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddDays(-1), now.AddDays(-14), now, null);
                 Assert.AreEqual(2, stats.JobsPerHourByDay.Count);
                 Assert.AreEqual("*", stats.JobsPerHourByDay[0].QueueName);
+                Assert.AreEqual(2L, stats.JobsPerHourByDay[0].JobsPerHour);
                 Assert.AreEqual("test", stats.JobsPerHourByDay[1].QueueName);
-
+                Assert.AreEqual(2L, stats.JobsPerHourByDay[1].JobsPerHour);
+                
                 /*
                  * History status counts.
                  */

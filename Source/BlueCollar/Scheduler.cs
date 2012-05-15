@@ -237,11 +237,14 @@ namespace BlueCollar
                 {
                     this.RefreshSchedules(repository, null);
                 }
+            }
 
-                foreach (ScheduleRecord schedule in this.Schedules)
+            foreach (ScheduleRecord schedule in this.Schedules)
+            {
+                bool hasEnqueueingLock = false, releasedEnqueueingLock = false;
+
+                using (IRepository repository = this.repositoryFactory.Create())
                 {
-                    bool hasEnqueueingLock = false, releasedEnqueueingLock = false;
-
                     using (IDbTransaction transaction = repository.BeginTransaction(IsolationLevel.RepeatableRead))
                     {
                         try
