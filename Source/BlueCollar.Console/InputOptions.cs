@@ -18,7 +18,7 @@ namespace BlueCollar.Console
     [CLSCompliant(false)]
     public sealed class InputOptions
     {
-        private static readonly Regex PathQuotesExp = new Regex(@"^[""']?([^""']*)[""']?$", RegexOptions.Compiled);
+        private static readonly Regex pathQuotesExp = new Regex(@"^[""']?([^""']*)[""']?$", RegexOptions.Compiled);
 
         /// <summary>
         /// Initializes a new instance of the InputOptions class.
@@ -98,8 +98,8 @@ namespace BlueCollar.Console
             try
             {
                 options.Parse(args);
-                result.ApplicationPath = PathQuotesExp.Replace(app ?? string.Empty, "$1");
-                result.ConfigPath = PathQuotesExp.Replace(config ?? string.Empty, "$1");
+                result.ApplicationPath = pathQuotesExp.Replace(app ?? string.Empty, "$1");
+                result.ConfigPath = pathQuotesExp.Replace(config ?? string.Empty, "$1");
                 result.IsValid = true;
             }
             catch (OptionException ex)
