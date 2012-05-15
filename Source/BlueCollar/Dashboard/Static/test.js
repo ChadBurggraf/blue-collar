@@ -7516,11 +7516,11 @@ var DashboardView = Backbone.View.extend({
     template: _.template($('#dashboard-template').html()),
     statsTemplate: _.template($('#dashboard-stats-template').html()),
 
-    initialize: function(options) {
+    initialize: function (options) {
         this.model.bind('change', this.render, this);
     },
 
-    render: function() {
+    render: function () {
         var el = $(this.el).html(this.template()),
             json = this.model.toJSON(),
             statsJson = _.extend(_.clone(json.HistoryStatusRecent), _.clone(json.Counts)),
@@ -7530,7 +7530,7 @@ var DashboardView = Backbone.View.extend({
             succeededEl = $('<span/>').text(new Number(statsJson.SucceededCount).format('0,000')),
             notSucceededEl = $('<span/>').text(new Number(notSucceededCount).format('0,000')),
             totalEl = $('<span/>').text(new Number(statsJson.TotalCount).format('0,000'));
-        
+
         statsHtml.find('.working-count').html(workingEl);
         statsHtml.find('.succeeded-count').html(succeededEl);
         statsHtml.find('.not-succeeded-count').html(notSucceededEl);
@@ -7551,9 +7551,9 @@ var DashboardView = Backbone.View.extend({
         return this;
     },
 
-    renderJobsPerHourChart: function(el, json) {
+    renderJobsPerHourChart: function (el, json) {
         var data = new google.visualization.DataTable(),
-            chart = new google.visualization.LineChart(el),
+            chart = new google.visualization.ColumnChart(el),
             queues,
             prop,
             queueDays,
@@ -7565,14 +7565,14 @@ var DashboardView = Backbone.View.extend({
 
         data.addColumn('string', 'Date');
 
-        queues = _.groupBy(json, function(d) { return d.QueueName || '*'; });
+        queues = _.groupBy(json, function (d) { return d.QueueName || '*'; });
         i = 1;
 
         for (prop in queues) {
             if (queues.hasOwnProperty(prop)) {
                 queueDays = queues[prop];
                 data.addColumn('number', prop);
-                
+
                 for (j = 0, m = queueDays.length; j < m; j++) {
                     queueDays[j].Index = i;
                 }
@@ -7588,13 +7588,13 @@ var DashboardView = Backbone.View.extend({
             data.setValue(i, day.Index, day.JobsPerHour);
         }
 
-        chart.draw(data, {width: 840, height: 300, vAxis: {title: 'Jobs per hour'}});
+        chart.draw(data, { width: 840, height: 300, vAxis: { title: 'Jobs per hour'} });
     },
 
-    renderStatusChart: function(el, json) {
+    renderStatusChart: function (el, json) {
         var data = new google.visualization.DataTable(),
             chart = new google.visualization.PieChart(el);
-        
+
         data.addColumn('string', 'Status');
         data.addColumn('number', 'Job Count');
         data.addRows(5);
@@ -7609,16 +7609,16 @@ var DashboardView = Backbone.View.extend({
         data.setValue(4, 0, 'Timed Out');
         data.setValue(4, 1, json.TimedOutCount);
 
-        chart.draw(data, {width: 400, height: 300});
+        chart.draw(data, { width: 400, height: 300 });
     },
 
-    renderWorkerLoadChart: function(el, json) {
+    renderWorkerLoadChart: function (el, json) {
         var data = new google.visualization.DataTable(),
             chart = new google.visualization.PieChart(el),
             worker,
             i,
             n;
-        
+
         data.addColumn('string', 'Worker');
         data.addColumn('number', 'Job Count');
 
@@ -7627,7 +7627,7 @@ var DashboardView = Backbone.View.extend({
             data.addRow([worker.Name + ' - ' + String.machineDisplay(worker.MachineName, worker.MachineAddress), worker.Count]);
         }
 
-        chart.draw(data, {width: 400, height: 300});
+        chart.draw(data, { width: 400, height: 300 });
     }
 });
 /**
