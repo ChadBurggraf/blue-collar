@@ -158,9 +158,15 @@ namespace BlueCollar.Test
                         handle.Set();
                     };
 
+                    process.KillTimeout += (object sender, EventArgs e) =>
+                    {
+                        Assert.Fail();
+                        handle.Set();
+                    };
+
                     Assert.IsTrue(process.Start());
                     process.Stop(true);
-                    WaitHandle.WaitAll(new WaitHandle[] { handle }, 1000);
+                    WaitHandle.WaitAll(new WaitHandle[] { handle }, 6000);
                 }
             }
             finally

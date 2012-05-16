@@ -201,6 +201,19 @@ namespace BlueCollar.Console
                         }
                     }
                 }
+                else if (input == "FORCE")
+                {
+                    isRunning = false;
+
+                    lock (locker)
+                    {
+                        if (bootstraps != null)
+                        {
+                            bootstraps.Dispose();
+                            bootstraps = null;
+                        }
+                    }
+                }
                 else if (!string.IsNullOrEmpty(input))
                 {
                     Console.WriteLine();

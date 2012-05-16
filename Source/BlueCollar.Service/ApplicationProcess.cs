@@ -12,12 +12,13 @@ namespace BlueCollar.Service
     using System.Globalization;
     using System.IO;
     using System.Text.RegularExpressions;
+    using BlueCollar;
     using NLog;
 
     /// <summary>
     /// Represents an application and its associated process.
     /// </summary>
-    internal sealed class ApplicationProcess : IDisposable
+    public sealed class ApplicationProcess : IDisposable
     {
         private static readonly Regex frameworkExp = new Regex(@"^3\.5|4\.0$", RegexOptions.Compiled);
         private readonly object locker = new object();
@@ -50,7 +51,7 @@ namespace BlueCollar.Service
         /// <param name="logger">The logger to use.</param>
         /// <param name="path">The path of the application.</param>
         /// <param name="exePath">The path of the Collar.exe executable to use.</param>
-        internal ApplicationProcess(Logger logger, string path, string exePath)
+        public ApplicationProcess(Logger logger, string path, string exePath)
             : this(logger, path)
         {
             this.exePath = exePath;
@@ -68,6 +69,12 @@ namespace BlueCollar.Service
         /// Event raised when this instance's process as exited.
         /// </summary>
         public event EventHandler Exited;
+
+        /// <summary>
+        /// Event raised when this instance is asked to kill its process,
+        /// and the safe kill operation times out.
+        /// </summary>
+        public event EventHandler KillTimeout;
 
         /// <summary>
         /// Gets the base path to use when resolving process paths.
@@ -347,6 +354,7 @@ namespace BlueCollar.Service
                 else if (this.process != null)
                 {
                     this.process.StandardInput.WriteLine("exit");
+                    this.logger.Info("The application at '{0}' has been issued an exit command.", this.Path);
                 }
             }
         }
@@ -379,20 +387,50 @@ namespace BlueCollar.Service
                 {
                     try
                     {
-                        this.isRunning = false;
-                        this.process.Kill();
-                    }
-                    catch (Win32Exception ex)
-                    {
-                        this.logger.Error(CultureInfo.InvariantCulture, "{0}\n\n{1}", ex.Message, ex.StackTrace);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        this.logger.Error(CultureInfo.InvariantCulture, "{0}\n\n{1}", ex.Message, ex.StackTrace);
+                        if (!this.process.HasExited)
+                        {
+                            try
+                            {
+                                // Try to ensure cleanup during shutdown, while forcing all workers
+                                // to abandon their work.
+                                new Action(
+                                    () =>
+                                    {
+                                        this.process.Exited -= new EventHandler(this.ProcessExited);
+                                        this.process.StandardInput.WriteLine("force");
+                                        this.process.WaitForExit();
+                                    }).InvokeWithTimeout(5000);
+                            }
+                            catch (TimeoutException)
+                            {
+                                if (this.KillTimeout != null)
+                                {
+                                    this.KillTimeout(this, EventArgs.Empty);
+                                }
+                            }
+                        }
+
+                        if (!this.process.HasExited)
+                        {
+                            try
+                            {
+                                this.process.Kill();
+                            }
+                            catch (Win32Exception ex)
+                            {
+                                this.logger.Error(CultureInfo.InvariantCulture, "{0}\n\n{1}", ex.Message, ex.StackTrace);
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                this.logger.Error(CultureInfo.InvariantCulture, "{0}\n\n{1}", ex.Message, ex.StackTrace);
+                            }
+                        }
                     }
                     finally
                     {
-                        if (this.process != null) 
+                        this.isRunning = false;
+                        
+                        if (this.process != null)
                         {
                             this.process.Dispose();
                             this.process = null;

@@ -13,7 +13,7 @@ namespace BlueCollar.Service
     /// <summary>
     /// Native methods.
     /// </summary>
-    internal static class NativeMethods
+    public static class NativeMethods
     {
         /// <summary>
         /// Function delegate for calling the native IsWow64Process procedure.

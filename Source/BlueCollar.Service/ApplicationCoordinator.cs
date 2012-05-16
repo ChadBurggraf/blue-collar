@@ -19,7 +19,7 @@ namespace BlueCollar.Service
     /// <summary>
     /// Coordinates a set of <see cref="ApplicationProcess"/>es.
     /// </summary>
-    internal sealed class ApplicationCoordinator : IDisposable
+    public sealed class ApplicationCoordinator : IDisposable
     {
         private readonly object locker = new object();
         private List<ApplicationProcess> applications = new List<ApplicationProcess>();
@@ -46,7 +46,7 @@ namespace BlueCollar.Service
         /// </summary>
         /// <param name="logger">The logger to use.</param>
         /// <param name="exePath">The path of the Collar.exe path to use for applications.</param>
-        internal ApplicationCoordinator(Logger logger, string exePath)
+        public ApplicationCoordinator(Logger logger, string exePath)
             : this(logger)
         {
             this.exePath = exePath;
@@ -98,6 +98,18 @@ namespace BlueCollar.Service
         }
 
         /// <summary>
+        /// Gets a collection of application paths currently being coordinated by this instance.
+        /// </summary>
+        /// <returns>A collection of application paths.</returns>
+        public IEnumerable<string> GetCoordinatedApplicationPaths()
+        {
+            lock (this.locker)
+            {
+                return this.applications.Select(a => a.Path).ToArray();
+            }
+        }
+
+        /// <summary>
         /// Starts or refreshes all applications, creating and pruning existing
         /// applications from the given element collection as necessary.
         /// </summary>
@@ -133,18 +145,6 @@ namespace BlueCollar.Service
         public void Stop()
         {
             this.Stop(false);
-        }
-
-        /// <summary>
-        /// Gets a collection of application paths currently being coordinated by this instance.
-        /// </summary>
-        /// <returns>A collection of application paths.</returns>
-        internal IEnumerable<string> GetCoordinatedApplicationPaths()
-        {
-            lock (this.locker)
-            {
-                return this.applications.Select(a => a.Path).ToArray();
-            }
         }
 
         /// <summary>

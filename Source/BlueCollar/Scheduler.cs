@@ -112,23 +112,15 @@ namespace BlueCollar
         /// <param name="schedule">The schedule to test.</param>
         /// <param name="windowBegin">The begin date of the time window to check.</param>
         /// <param name="windowEnd">The end date of the time window to check.</param>
-        /// <param name="repository">The repository to use when checking for existing data.</param>
-        /// <param name="transaction">The transaction to use when checking for existing data, if applicable.</param>
-        /// <param name="logger">The logger to use when logging messages. Can be null for no logging.</param>
         /// <param name="scheduleDate">Contains the actual date the schedule falls on within the given window.</param>
         /// <returns>True if the schedule can be enqueued, false otherwise.</returns>
         [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "This is the most elegate design and is similar to the TryParse etc. APIs.")]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling is correct.")]
-        public static bool CanScheduleBeEnqueued(ScheduleRecord schedule, DateTime windowBegin, DateTime windowEnd, IRepository repository, IDbTransaction transaction, ILogger logger, out DateTime? scheduleDate)
+        public bool CanScheduleBeEnqueued(ScheduleRecord schedule, DateTime windowBegin, DateTime windowEnd, out DateTime? scheduleDate)
         {
             if (schedule == null)
             {
                 throw new ArgumentNullException("schedule", "schedule cannot be null.");
-            }
-
-            if (repository == null)
-            {
-                throw new ArgumentNullException("repository", "repository cannot be null.");
             }
 
             bool can = false;
@@ -170,9 +162,9 @@ namespace BlueCollar
 
                 Action log = () =>
                 {
-                    if (logger != null)
+                    if (this.logger != null)
                     {
-                        logger.Debug(
+                        this.logger.Debug(
                             "Schedule can be enqueued with start date of {0:yyyy-MM-dd HH:mm:ss}, repeat type of {1} and repeat value of {2}. Window: {3:yyyy-MM-dd HH:mm:ss} - {4:yyyy-MM-dd HH:mm:ss}; calculated schedule date: {5:yyyy-MM-dd HH:mm:ss}",
                             schedule.StartOn,
                             schedule.RepeatType,
@@ -204,14 +196,18 @@ namespace BlueCollar
 
                 if (can)
                 {
-                    if (!repository.GetScheduleDateExistsForSchedule(schedule.Id.Value, scheduleDate.Value, transaction))
+                    using (IRepository repository = this.repositoryFactory.Create())
+                    {
+                        can = !repository.GetScheduleDateExistsForSchedule(schedule.Id.Value, scheduleDate.Value, null);
+                    }
+
+                    if (can)
                     {
                         log();
                     }
                     else
                     {
                         scheduleDate = null;
-                        can = false;
                     }
                 }
             }
@@ -241,7 +237,7 @@ namespace BlueCollar
 
             foreach (ScheduleRecord schedule in this.Schedules)
             {
-                bool hasEnqueueingLock = false, releasedEnqueueingLock = false;
+                bool hasEnqueueingLock = false;
 
                 using (IRepository repository = this.repositoryFactory.Create())
                 {
@@ -258,99 +254,90 @@ namespace BlueCollar
                             throw;
                         }
                     }
+                }
 
-                    if (hasEnqueueingLock)
+                if (hasEnqueueingLock)
+                {
+                    DateTime? scheduleDate;
+
+                    try
                     {
-                        using (IDbTransaction transaction = repository.BeginTransaction())
+                        if (this.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate))
                         {
-                            try
+                            List<QueueRecord> queues = new List<QueueRecord>();
+                            List<HistoryRecord> histories = new List<HistoryRecord>();
+
+                            foreach (ScheduledJobRecord scheduledJob in schedule.ScheduledJobs)
                             {
-                                DateTime? scheduleDate;
+                                IJob job = null;
+                                Exception ex = null;
 
-                                if (CanScheduleBeEnqueued(schedule, begin, end, repository, transaction, this.logger, out scheduleDate))
+                                // Try do de-serialize the job. We do this because we need the job name,
+                                // and also just to save the queue bandwidth in case in can't be de-serialized.
+                                try
                                 {
-                                    List<QueueRecord> queues = new List<QueueRecord>();
-                                    List<HistoryRecord> histories = new List<HistoryRecord>();
-
-                                    foreach (ScheduledJobRecord scheduledJob in schedule.ScheduledJobs)
-                                    {
-                                        IJob job = null;
-                                        Exception ex = null;
-
-                                        // Try do de-serialize the job. We do this because we need the job name,
-                                        // and also just to save the queue bandwidth in case in can't be de-serialized.
-                                        try
-                                        {
-                                            job = JobSerializer.Deserialize(scheduledJob.JobType, scheduledJob.Properties);
-                                            this.logger.Debug("Scheduler de-serialized scheduled job instance for '{0}' for schedule '{1}'.", scheduledJob.JobType, schedule.Name);
-                                        }
-                                        catch (Exception sx)
-                                        {
-                                            ex = sx;
-                                            this.logger.Warn("Scheduler failed to de-serialize scheduled job instance for '{0}' for schedule '{1}'.", scheduledJob.JobType, schedule.Name);
-                                        }
-
-                                        if (job != null)
-                                        {
-                                            queues.Add(
-                                                new QueueRecord()
-                                                {
-                                                    ApplicationName = this.applicationName,
-                                                    Data = scheduledJob.Properties,
-                                                    JobName = job.Name,
-                                                    JobType = scheduledJob.JobType,
-                                                    QueuedOn = scheduleDate.Value,
-                                                    QueueName = schedule.QueueName,
-                                                    ScheduleId = schedule.Id,
-                                                    TryNumber = 1
-                                                });
-                                        }
-                                        else
-                                        {
-                                            histories.Add(
-                                                new HistoryRecord()
-                                                {
-                                                    ApplicationName = this.applicationName,
-                                                    Data = scheduledJob.Properties,
-                                                    Exception = ex != null ? new ExceptionXElement(ex).ToString() : null,
-                                                    FinishedOn = scheduleDate.Value,
-                                                    JobName = null,
-                                                    JobType = scheduledJob.JobType,
-                                                    QueuedOn = scheduleDate.Value,
-                                                    QueueName = schedule.QueueName,
-                                                    ScheduleId = schedule.Id,
-                                                    StartedOn = scheduleDate.Value,
-                                                    Status = HistoryStatus.Failed,
-                                                    TryNumber = 1,
-                                                    WorkerId = this.workerId
-                                                });
-                                        }
-                                    }
-
-                                    if (queues.Count > 0 || histories.Count > 0)
-                                    {
-                                        repository.CreateQueuedAndHistoryForSchedule(schedule.Id.Value, scheduleDate.Value, queues, histories, transaction);
-                                        this.logger.Debug("Scheduler created {0} queued jobs and {1} failed history jobs for schedule '{2}'.", queues.Count, histories.Count, schedule.Name);
-                                    }
+                                    job = JobSerializer.Deserialize(scheduledJob.JobType, scheduledJob.Properties);
+                                    this.logger.Debug("Scheduler de-serialized scheduled job instance for '{0}' for schedule '{1}'.", scheduledJob.JobType, schedule.Name);
+                                }
+                                catch (Exception sx)
+                                {
+                                    ex = sx;
+                                    this.logger.Warn("Scheduler failed to de-serialize scheduled job instance for '{0}' for schedule '{1}'.", scheduledJob.JobType, schedule.Name);
                                 }
 
-                                repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, transaction);
-                                transaction.Commit();
-
-                                releasedEnqueueingLock = true;
-                            }
-                            catch
-                            {
-                                transaction.Rollback();
-                                throw;
-                            }
-                            finally
-                            {
-                                if (hasEnqueueingLock && !releasedEnqueueingLock)
+                                if (job != null)
                                 {
-                                    repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, null);
+                                    queues.Add(
+                                        new QueueRecord()
+                                        {
+                                            ApplicationName = this.applicationName,
+                                            Data = scheduledJob.Properties,
+                                            JobName = job.Name,
+                                            JobType = scheduledJob.JobType,
+                                            QueuedOn = scheduleDate.Value,
+                                            QueueName = schedule.QueueName,
+                                            ScheduleId = schedule.Id,
+                                            TryNumber = 1
+                                        });
+                                }
+                                else
+                                {
+                                    histories.Add(
+                                        new HistoryRecord()
+                                        {
+                                            ApplicationName = this.applicationName,
+                                            Data = scheduledJob.Properties,
+                                            Exception = ex != null ? new ExceptionXElement(ex).ToString() : null,
+                                            FinishedOn = scheduleDate.Value,
+                                            JobName = null,
+                                            JobType = scheduledJob.JobType,
+                                            QueuedOn = scheduleDate.Value,
+                                            QueueName = schedule.QueueName,
+                                            ScheduleId = schedule.Id,
+                                            StartedOn = scheduleDate.Value,
+                                            Status = HistoryStatus.Failed,
+                                            TryNumber = 1,
+                                            WorkerId = this.workerId
+                                        });
                                 }
                             }
+
+                            if (queues.Count > 0 || histories.Count > 0)
+                            {
+                                using (IRepository repository = this.repositoryFactory.Create())
+                                {
+                                    repository.CreateQueuedAndHistoryForSchedule(schedule.Id.Value, scheduleDate.Value, queues, histories, null);
+                                }
+
+                                this.logger.Debug("Scheduler created {0} queued jobs and {1} failed history jobs for schedule '{2}'.", queues.Count, histories.Count, schedule.Name);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        using (IRepository repository = this.repositoryFactory.Create())
+                        {
+                            repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, null);
                         }
                     }
                 }

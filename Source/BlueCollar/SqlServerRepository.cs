@@ -22,8 +22,6 @@ namespace BlueCollar
     /// </summary>
     public class SqlServerRepository : IRepository
     {
-        private static readonly object ensuredLocker = new object();
-        private static Dictionary<string, bool> ensuredSchemas = new Dictionary<string, bool>();
         private const string CountsSql =
 @"SELECT CAST(COUNT([Id]) AS bigint)
 FROM [BlueCollarHistory]
@@ -50,6 +48,8 @@ FROM [BlueCollarWorking]
 WHERE
     [ApplicationName] = @ApplicationName;";
 
+        private static readonly object ensuredLocker = new object();
+        private static Dictionary<string, bool> ensuredSchemas = new Dictionary<string, bool>();
         private IDbConnection connection;
         private bool disposed;
 

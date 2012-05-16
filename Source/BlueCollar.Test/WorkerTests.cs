@@ -26,6 +26,7 @@ namespace BlueCollar.Test
         /// Worker dequeue tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "We're going to ignore this in tests for now.")]
         public void WorkerDequeue()
         {
             IJob job = new TestJob() { Id = Guid.NewGuid() };
@@ -71,6 +72,7 @@ namespace BlueCollar.Test
         /// Dispose tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "We're going to ignore this in tests for now.")]
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "Code needs to operate on the object after it is disposed.")]
         public void WorkerDispose()
         {
@@ -127,6 +129,7 @@ namespace BlueCollar.Test
         /// Execute tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "We're going to ignore this in tests for now.")]
         public void WorkerExecute()
         {
             IJob job = new TestJob() { Id = Guid.NewGuid() };
@@ -223,6 +226,7 @@ namespace BlueCollar.Test
         /// Execute exception tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "We're going to ignore this in tests for now.")]
         public void WorkerExecuteException()
         {
             IJob job = new TestJob() { ThrowException = true };
@@ -271,6 +275,7 @@ namespace BlueCollar.Test
         /// Execute retry tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "We're going to ignore this in tests for now.")]
         public void WorkerExecuteRetry()
         {
             IJob job = new TestJob() { ThrowException = true, Retries = 1 };

@@ -29,6 +29,11 @@ namespace BlueCollar.Test
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.GetScheduleDateExistsForSchedule(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(false);
 
+            var factory = new Mock<IRepositoryFactory>();
+            factory.Setup(f => f.Create()).Returns(repository.Object);
+
+            var logger = new Mock<ILogger>();
+
             DateTime? scheduleDate;
             DateTime now = DateTime.UtcNow.FloorWithSeconds();
 
@@ -40,28 +45,35 @@ namespace BlueCollar.Test
                 StartOn = now
             };
 
+            Scheduler scheduler = new Scheduler(
+                1, 
+                BlueCollarSection.Section.ApplicationName, 
+                BlueCollarSection.Section.WorkerHeartbeat, 
+                factory.Object, 
+                logger.Object);
+
             DateTime begin = now.AddSeconds(-1);
             DateTime end = now;
-            Assert.IsTrue(Scheduler.CanScheduleBeEnqueued(schedule, begin, end, repository.Object, null, null, out scheduleDate));
+            Assert.IsTrue(scheduler.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate));
             Assert.IsNotNull(scheduleDate);
 
             begin = end;
             end = begin.AddSeconds(1);
-            Assert.IsFalse(Scheduler.CanScheduleBeEnqueued(schedule, begin, end, repository.Object, null, null, out scheduleDate));
+            Assert.IsFalse(scheduler.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate));
             Assert.IsNull(scheduleDate);
 
             begin = now.AddSeconds(-2);
             end = now.AddSeconds(-1);
-            Assert.IsFalse(Scheduler.CanScheduleBeEnqueued(schedule, begin, end, repository.Object, null, null, out scheduleDate));
+            Assert.IsFalse(scheduler.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate));
             Assert.IsNull(scheduleDate);
 
             begin = now.AddDays(1).AddSeconds(-1);
             end = now.AddDays(1);
-            Assert.IsTrue(Scheduler.CanScheduleBeEnqueued(schedule, begin, end, repository.Object, null, null, out scheduleDate));
+            Assert.IsTrue(scheduler.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate));
             Assert.IsNotNull(scheduleDate);
 
             schedule.RepeatType = ScheduleRepeatType.None;
-            Assert.IsFalse(Scheduler.CanScheduleBeEnqueued(schedule, begin, end, repository.Object, null, null, out scheduleDate));
+            Assert.IsFalse(scheduler.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate));
             Assert.IsNull(scheduleDate);
         }
 
