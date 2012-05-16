@@ -259,6 +259,35 @@ namespace BlueCollar.Service
         }
 
         /// <summary>
+        /// Gets a value indicating whether this instance's process's
+        /// <see cref="Process.HasExited"/> flag is set.
+        /// </summary>
+        private bool ProcessHasExited
+        {
+            get
+            {
+                if (this.process != null)
+                {
+                    try
+                    {
+                        return this.process.HasExited;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
+                    catch (Win32Exception)
+                    {
+                    }
+                    catch (NotSupportedException)
+                    {
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the <see cref="ProcessStartInfo"/> to  use when building the process.
         /// </summary>
         private ProcessStartInfo StartInfo
@@ -387,7 +416,7 @@ namespace BlueCollar.Service
                 {
                     try
                     {
-                        if (!this.process.HasExited)
+                        if (!this.ProcessHasExited)
                         {
                             try
                             {
@@ -410,7 +439,7 @@ namespace BlueCollar.Service
                             }
                         }
 
-                        if (!this.process.HasExited)
+                        if (!this.ProcessHasExited)
                         {
                             try
                             {
