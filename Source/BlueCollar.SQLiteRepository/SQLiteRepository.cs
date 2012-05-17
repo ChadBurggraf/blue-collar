@@ -634,6 +634,7 @@ WHERE
     h.[QueueName],
     h.[JobName],
     h.[JobType],
+    h.[QueuedOn],
     h.[TryNumber],
     h.[StartedOn],
     h.[Status],

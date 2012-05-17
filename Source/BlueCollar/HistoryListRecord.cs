@@ -15,7 +15,7 @@ namespace BlueCollar
     /// </summary>
     public class HistoryListRecord
     {
-        private DateTime finishedOn, startedOn;
+        private DateTime finishedOn, queuedOn, startedOn;
 
         /// <summary>
         /// Gets or sets the date the job finished on.
@@ -52,6 +52,22 @@ namespace BlueCollar
         /// Gets or sets the name of the queue the job executed on.
         /// </summary>
         public string QueueName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date the job was queued on.
+        /// </summary>
+        public DateTime QueuedOn
+        {
+            get
+            {
+                return this.queuedOn;
+            }
+
+            set
+            {
+                this.queuedOn = value.NormalizeToUtc();
+            }
+        }
 
         /// <summary>
         /// Gets or sets the name of the schedule the job was executed for.
