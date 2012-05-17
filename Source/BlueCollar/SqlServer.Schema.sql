@@ -61,9 +61,25 @@ CREATE TABLE [BlueCollarQueue]
 )
 GO
 
-CREATE INDEX [IX_BlueCollarQueue_QueuedOn]
-ON [BlueCollarQueue]([QueuedOn] ASC)
-GO
+CREATE INDEX [IX_BlueCollarHistory_QueuedOn_JobName_TryNumber_ApplicationName] 
+ON [BlueCollarHistory] 
+(
+	[QueuedOn] DESC,
+	[JobName] ASC,
+	[TryNumber] DESC,
+	[ApplicationName] ASC
+)
+INCLUDE 
+( 
+	[Id],
+	[ScheduleId],
+	[QueueName],
+	[JobType],
+	[StartedOn],
+	[Status],
+	[FinishedOn]
+)
+GO 
 
 CREATE TABLE [BlueCollarWorker]
 (

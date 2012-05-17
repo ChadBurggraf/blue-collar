@@ -26,7 +26,7 @@ namespace BlueCollar.Examples
             {
                 if (this.duration == null)
                 {
-                    if (Properties.ContainsKey("Duration"))
+                    if (!string.IsNullOrEmpty(Properties["Duration"]))
                     {
                         this.duration = Convert.ToInt32(Properties["Duration"], CultureInfo.InvariantCulture);
                     }

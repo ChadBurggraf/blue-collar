@@ -664,7 +664,7 @@ WHERE
 
             sb.Append("\n");
             sb.Append(
-@"ORDER BY h.[QueuedOn] DESC, h.[JobName] ASC
+@"ORDER BY h.[QueuedOn] DESC, h.[JobName] ASC, h.[TryNumber] DESC
 LIMIT @Limit OFFSET @Offset;");
 
             sb.Append("\n");

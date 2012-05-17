@@ -7,7 +7,7 @@
 namespace BlueCollar
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Optional interface definition for scheduled jobs.
@@ -18,6 +18,6 @@ namespace BlueCollar
         /// Gets a dictionary to which properties defined in the schedule
         /// are added for reference during execution.
         /// </summary>
-        IDictionary<string, string> Properties { get; }
+        NameValueCollection Properties { get; }
     }
 }

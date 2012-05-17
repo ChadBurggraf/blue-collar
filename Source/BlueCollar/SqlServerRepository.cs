@@ -709,12 +709,13 @@ FROM
         h.[QueueName],
         h.[JobName],
         h.[JobType],
+        h.[QueuedOn],
         h.[TryNumber],
         h.[StartedOn],
         h.[Status],
         h.[FinishedOn],
         s.[Name] AS [ScheduleName],
-        ROW_NUMBER() OVER(ORDER BY h.[QueuedOn] DESC, h.[JobName] ASC) AS [RowNumber]
+        ROW_NUMBER() OVER(ORDER BY h.[QueuedOn] DESC, h.[JobName] ASC, h.[TryNumber] DESC) AS [RowNumber]
     FROM [BlueCollarHistory] h
         LEFT OUTER JOIN [BlueCollarSchedule] s ON h.[ScheduleId] = s.[Id]
     WHERE

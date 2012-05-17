@@ -7,7 +7,7 @@
 namespace BlueCollar.Test
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Test scheduled job.
@@ -19,13 +19,13 @@ namespace BlueCollar.Test
         /// </summary>
         public TestScheduledJob()
         {
-            this.Properties = new Dictionary<string, string>();
+            this.Properties = new NameValueCollection();
         }
 
         /// <summary>
         /// Gets a dictionary to which properties defined in the schedule
         /// are added for reference during execution.
         /// </summary>
-        public IDictionary<string, string> Properties { get; private set; }
+        public NameValueCollection Properties { get; private set; }
     }
 }

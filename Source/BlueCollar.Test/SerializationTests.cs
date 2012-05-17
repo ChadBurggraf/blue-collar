@@ -7,7 +7,7 @@
 namespace BlueCollar.Test
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Runtime.Serialization;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -44,11 +44,8 @@ namespace BlueCollar.Test
             string data = @"{""A"":""1854ef1b-3937-476a-8b32-56436a7b6feb"",""B"":""Hello, world!"",""C"":""5/28/1982 7:00:00 AM""}";
             TestSerializationScheduledJob job = JobSerializer.Deserialize(typeName, data) as TestSerializationScheduledJob;
             Assert.IsNotNull(job);
-            Assert.IsTrue(job.Properties.ContainsKey("A"));
             Assert.AreEqual("1854ef1b-3937-476a-8b32-56436a7b6feb", job.Properties["A"]);
-            Assert.IsTrue(job.Properties.ContainsKey("B"));
             Assert.AreEqual("Hello, world!", job.Properties["B"]);
-            Assert.IsTrue(job.Properties.ContainsKey("C"));
             Assert.AreEqual("5/28/1982 7:00:00 AM", job.Properties["C"]);
 
             Assert.IsNotNull(JobSerializer.Deserialize(typeName, null));
@@ -161,14 +158,14 @@ namespace BlueCollar.Test
             /// </summary>
             public TestSerializationScheduledJob()
             {
-                this.Properties = new Dictionary<string, string>();
+                this.Properties = new NameValueCollection();
             }
 
             /// <summary>
             /// Gets a dictionary to which properties defined in the schedule
             /// are added for reference during execution.
             /// </summary>
-            public IDictionary<string, string> Properties { get; private set; }
+            public NameValueCollection Properties { get; private set; }
         }
 
         #endregion

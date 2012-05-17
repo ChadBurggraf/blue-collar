@@ -7,20 +7,20 @@
 namespace BlueCollar
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Specialized;
 
     /// <summary>
     /// Extends <see cref="Job"/> as a base <see cref="IScheduledJob"/> implementation.
     /// </summary>
     public abstract class ScheduledJob : Job, IScheduledJob
     {
-        private Dictionary<string, string> properties = new Dictionary<string, string>();
+        private NameValueCollection properties = new NameValueCollection();
 
         /// <summary>
         /// Gets a dictionary to which properties defined in the schedule
         /// are added for reference during execution.
         /// </summary>
-        public IDictionary<string, string> Properties
+        public NameValueCollection Properties
         {
             get { return this.properties; }
         }

@@ -85,5 +85,11 @@ CREATE TABLE IF NOT EXISTS [BlueCollarHistory]
 	[FinishedOn] DATETIME NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS [IX_BlueCollarHistory_QueuedOn]
-ON [BlueCollarHistory]([QueuedOn] DESC);
+CREATE INDEX IF NOT EXISTS [IX_BlueCollarHistory_QueuedOn_JobName_TryNumber_ApplicationName]
+ON [BlueCollarHistory]
+(
+	[QueuedOn] DESC,
+	[JobName] ASC,
+	[TryNumber] DESC,
+	[ApplicationName] ASC
+);
