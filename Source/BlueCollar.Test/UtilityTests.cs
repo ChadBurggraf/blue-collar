@@ -10,6 +10,7 @@ namespace BlueCollar.Test
     using System.Collections.Generic;
     using System.Linq;
     using System.Xml;
+    using BlueCollar;
     using BlueCollar.Dashboard;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,6 +20,17 @@ namespace BlueCollar.Test
     [TestClass]
     public sealed class UtilityTests
     {
+        private TestContext testContext;
+
+        /// <summary>
+        /// Gets or sets the current test context.
+        /// </summary>
+        public TestContext TestContext
+        {
+            get { return this.testContext; }
+            set { this.testContext = value; }
+        }
+
         /// <summary>
         /// Dictionary sequence equal tests.
         /// </summary>
@@ -107,6 +119,26 @@ namespace BlueCollar.Test
             Assert.IsTrue(filters.IncludesAllQueues);
             Assert.AreEqual(1, filters.Include.Count);
             Assert.AreEqual(0, filters.Exclude.Count);
+        }
+
+        /// <summary>
+        /// Randomize tests.
+        /// </summary>
+        [TestMethod]
+        public void UtilityRandomize()
+        {
+            List<long> values = new List<long>();
+
+            for (int i = 0; i < 25; i++)
+            {
+                long value = Extensions.Randomize(5000);
+                values.Add(value);
+                this.TestContext.WriteLine("{0}", value);
+            }
+
+            Assert.AreNotEqual(values.Count, values.Where(v => v == 5000).Count());
+            Assert.IsTrue(values.Min() >= 4500);
+            Assert.IsTrue(values.Max() <= 5500);
         }
 
         /// <summary>

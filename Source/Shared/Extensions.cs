@@ -20,6 +20,8 @@ namespace BlueCollar
     /// </summary>
     internal static class Extensions
     {
+        private static readonly Random rand = new Random();
+
         /// <summary>
         /// Adds a range of items to the list.
         /// </summary>
@@ -243,6 +245,46 @@ namespace BlueCollar
             }
 
             return value;
+        }
+
+        /// <summary>
+        /// Randomizes a value by 10 percent. A random value less than the 10 percent
+        /// of the original value is either added to or subtracted from the given value to
+        /// create the randomized result.
+        /// </summary>
+        /// <param name="value">The value to randomize.</param>
+        /// <returns>A randomized value.</returns>
+        public static int Randomize(this int value)
+        {
+            return value.Randomize(10);
+        }
+
+        /// <summary>
+        /// Randomizes a value by the given percent. A random value less than the given percentage
+        /// of the original value is either added to or subtracted from the given value to
+        /// create the randomized result.
+        /// </summary>
+        /// <param name="value">The value to randomize.</param>
+        /// <param name="percent">The percentage of the value to randomize by.</param>
+        /// <returns>A randomized value.</returns>
+        public static int Randomize(this int value, int percent)
+        {
+            if (percent < 1 || percent > 100)
+            {
+                throw new ArgumentOutOfRangeException("percent", "percent must be a value between 1 and 100, inclusive.");
+            }
+
+            int scale = (int)Math.Abs(Math.Round((double)value * ((double)percent / 100)));
+
+            if (scale < 2)
+            {
+                scale = 2;
+            }
+
+            int random = rand.Next(0, scale);
+            int sign = rand.Next(0, 2);
+
+            return value + (sign == 1 ? random : -random);
         }
 
         /// <summary>

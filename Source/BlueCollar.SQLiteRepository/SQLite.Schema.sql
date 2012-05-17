@@ -93,3 +93,11 @@ ON [BlueCollarHistory]
 	[TryNumber] DESC,
 	[ApplicationName] ASC
 );
+
+CREATE INDEX IF NOT EXISTS [IX_BlueCollarHistory_FinishedOn_ApplicationName_Status] 
+ON [BlueCollarHistory] 
+(
+	[FinishedOn] ASC,
+	[ApplicationName] ASC,
+	[Status] ASC
+);

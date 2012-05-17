@@ -120,7 +120,14 @@ namespace BlueCollar
 
             if (scheduledJob != null && scheduledJob.Properties != null)
             {
-                return JsonConvert.SerializeObject(scheduledJob.Properties, converters);
+                IDictionary<string, string> dict = new Dictionary<string, string>();
+
+                foreach (string key in scheduledJob.Properties.Keys)
+                {
+                    dict.Add(key, scheduledJob.Properties[key]);
+                }
+
+                return JsonConvert.SerializeObject(dict, converters);
             }
             else if (job != null)
             {

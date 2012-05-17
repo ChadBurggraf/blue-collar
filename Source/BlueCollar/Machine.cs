@@ -396,7 +396,7 @@ namespace BlueCollar
                     this.logger.Error(ex);
                 }
 
-                Thread.Sleep(this.heartbeat);
+                Thread.Sleep(this.heartbeat.Randomize());
             }
         }
 

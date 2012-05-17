@@ -668,7 +668,7 @@ namespace BlueCollar
                     if (needsRest)
                     {
                         this.logger.Debug("Worker {0} ({1}) is resting before trying to de-queue another job.", this.name, this.id);
-                        Thread.Sleep(this.heartbeat);
+                        Thread.Sleep(this.heartbeat.Randomize());
                     }
                     else
                     {
@@ -798,7 +798,7 @@ namespace BlueCollar
                     this.logger.Error(ex, "Exception thrown during the signal loop for worker {0} ({1}).", this.name, this.id);
                 }
 
-                Thread.Sleep(this.heartbeat);
+                Thread.Sleep(this.heartbeat.Randomize());
             }
         }
 

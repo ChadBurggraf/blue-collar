@@ -81,6 +81,20 @@ INCLUDE
 )
 GO 
 
+CREATE INDEX [IX_BlueCollarHistory_FinishedOn_ApplicationName_Status] 
+ON [BlueCollarHistory] 
+(
+	[FinishedOn] ASC,
+	[ApplicationName] ASC,
+	[Status] ASC
+)
+INCLUDE
+(
+	[WorkerId],
+	[QueueName]
+)
+GO
+
 CREATE TABLE [BlueCollarWorker]
 (
 	[Id] bigint NOT NULL PRIMARY KEY IDENTITY(1, 1),

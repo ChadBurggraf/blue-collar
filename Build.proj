@@ -165,7 +165,7 @@
     <MakeDir Directories="$(ArtifactDir)"/>
     <Delete Files="$(ArtifactDir)\Tests.trx"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.Test\BlueCollar.Test.csproj" Properties="Configuration=Debug"/>
-    <Exec Command='"$(MsTestPath)" /testcontainer:"$(SourceDir)\BlueCollar.Test\bin\Debug\BlueCollar.Test.dll" /resultsfile:"$(ArtifactDir)\Tests.trx"'/>
+    <Exec Command='"$(MsTestPath)" /testcontainer:"$(SourceDir)\BlueCollar.Test\bin\Debug\BlueCollar.Test.dll" /runconfig:"$(SourceDir)\Local.testsettings" /resultsfile:"$(ArtifactDir)\Tests.trx"'/>
     <RemoveDir Directories='$([System.IO.Directory]::GetDirectories("$(ArtifactDir)"))'/>
   </Target>
 </Project>
