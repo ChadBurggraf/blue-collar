@@ -420,6 +420,8 @@ namespace BlueCollar.Service
                         {
                             try
                             {
+                                System.Threading.Thread.Sleep(10000);
+
                                 // Try to ensure cleanup during shutdown, while forcing all workers
                                 // to abandon their work.
                                 new Action(
@@ -428,7 +430,7 @@ namespace BlueCollar.Service
                                         this.process.Exited -= new EventHandler(this.ProcessExited);
                                         this.process.StandardInput.WriteLine("force");
                                         this.process.WaitForExit();
-                                    }).InvokeWithTimeout(5000);
+                                    }).InvokeWithTimeout(10000);
                             }
                             catch (TimeoutException)
                             {

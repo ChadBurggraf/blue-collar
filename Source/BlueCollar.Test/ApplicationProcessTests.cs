@@ -166,7 +166,7 @@ namespace BlueCollar.Test
 
                     Assert.IsTrue(process.Start());
                     process.Stop(true);
-                    WaitHandle.WaitAll(new WaitHandle[] { handle }, 6000);
+                    WaitHandle.WaitAll(new WaitHandle[] { handle }, 11000);
                 }
             }
             finally
