@@ -183,7 +183,7 @@ namespace BlueCollar.Dashboard
                     }
                 }
 
-                if (output != null)
+                if (output != null && output.Data != null && output.Data.Length > 0)
                 {
                     context.Response.OutputStream.Write(output.Data, 0, output.Data.Length);
                 }
