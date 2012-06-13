@@ -373,42 +373,6 @@ namespace BlueCollar
             };
         }
 
-        /// <summary>
-        /// Executes the given job.
-        /// </summary>
-        /// <param name="job">The job to execute.</param>
-        /// <param name="ex">Contains the execution exception, if applicable.</param>
-        /// <returns>True if the job executed successfully, false otherwise.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We're returning any exceptions encountered back to the caller.")]
-        internal static bool ExecuteJob(IJob job, out Exception ex)
-        {
-            bool success = false;
-            ex = null;
-
-            try
-            {
-                // Execute the job, with a timeout if necessary.
-                int timeout = job.Timeout < 0 ? 30000 : job.Timeout;
-
-                if (timeout > 0)
-                {
-                    new Action(job.Execute).InvokeWithTimeout(timeout);
-                }
-                else
-                {
-                    job.Execute();
-                }
-
-                success = true;
-            }
-            catch (Exception tx)
-            {
-                ex = tx;
-            }
-
-            return success;
-        }
-
         #endregion
 
         #region Internal Instance Methods
@@ -481,6 +445,44 @@ namespace BlueCollar
             }
 
             return working;
+        }
+
+        /// <summary>
+        /// Executes the given job.
+        /// </summary>
+        /// <param name="job">The job to execute.</param>
+        /// <param name="ex">Contains the execution exception, if applicable.</param>
+        /// <returns>True if the job executed successfully, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We're returning any exceptions encountered back to the caller.")]
+        internal bool ExecuteJob(IJob job, out Exception ex)
+        {
+            bool success = false;
+            ex = null;
+
+            try
+            {
+                // Execute the job, with a timeout if necessary.
+                int timeout = job.Timeout < 0 ? 6000 : job.Timeout;
+
+                if (timeout > 0)
+                {
+                    this.logger.Info("Worker {0} ({1}) is executing job '{2}' with timeout {3}.", this.name, this.id, job.Name, job.Timeout);
+                    new Action(job.Execute).InvokeWithTimeout(timeout);
+                }
+                else
+                {
+                    this.logger.Info("Worker {0} ({1}) is executing job '{2}' with no timeout.", this.name, this.id, job.Name);
+                    job.Execute();
+                }
+
+                success = true;
+            }
+            catch (Exception tx)
+            {
+                ex = tx;
+            }
+
+            return success;
         }
 
         /// <summary>
