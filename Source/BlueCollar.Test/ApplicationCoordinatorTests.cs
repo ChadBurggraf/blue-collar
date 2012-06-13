@@ -19,7 +19,7 @@ namespace BlueCollar.Test
     [TestClass]
     public sealed class ApplicationCoordinatorTests
     {
-        private static readonly Logger logger = LogManager.CreateNullLogger();
+        private static readonly Logger Logger = LogManager.CreateNullLogger();
 
         /// <summary>
         /// Gets the framework version to use for application processes.
@@ -46,7 +46,7 @@ namespace BlueCollar.Test
             ApplicationElement element2 = new ApplicationElement() { ApplicationPath = ApplicationUtils.CreateValidExampleApplication(), Framework = Framework };
             ApplicationElement element3 = new ApplicationElement() { ApplicationPath = ApplicationUtils.CreateValidExampleApplication(), Framework = Framework };
 
-            using (ApplicationCoordinator coordinator = new ApplicationCoordinator(logger, Path.GetFullPath("Collar.exe")))
+            using (ApplicationCoordinator coordinator = new ApplicationCoordinator(Logger, Path.GetFullPath("Collar.exe")))
             {
                 coordinator.StartAndRefresh(new ApplicationElement[] { element1, element2 });
                 Assert.IsTrue(coordinator.IsRunning);
@@ -77,7 +77,7 @@ namespace BlueCollar.Test
             ApplicationElement element2 = new ApplicationElement() { ApplicationPath = ApplicationUtils.CreateValidExampleApplication(), Framework = Framework };
             ApplicationElement element3 = new ApplicationElement() { ApplicationPath = ApplicationUtils.CreateValidExampleApplication(), Framework = Framework };
 
-            using (ApplicationCoordinator coordinator = new ApplicationCoordinator(logger, Path.GetFullPath("Collar.exe")))
+            using (ApplicationCoordinator coordinator = new ApplicationCoordinator(Logger, Path.GetFullPath("Collar.exe")))
             {
                 coordinator.StartAndRefresh(new ApplicationElement[] { element1, element2, element3 });
                 Assert.IsTrue(coordinator.IsRunning);
@@ -107,7 +107,7 @@ namespace BlueCollar.Test
             ApplicationElement element1 = new ApplicationElement() { ApplicationPath = ApplicationUtils.CreateValidExampleApplication(), Framework = Framework };
             ApplicationElement element2 = new ApplicationElement() { ApplicationPath = ApplicationUtils.CreateValidExampleApplication(), Framework = Framework };
 
-            using (ApplicationCoordinator coordinator = new ApplicationCoordinator(logger, Path.GetFullPath("Collar.exe")))
+            using (ApplicationCoordinator coordinator = new ApplicationCoordinator(Logger, Path.GetFullPath("Collar.exe")))
             {
                 coordinator.StartAndRefresh(new ApplicationElement[] { element1, element2 });
                 Assert.IsTrue(coordinator.IsRunning);

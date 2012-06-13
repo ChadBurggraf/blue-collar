@@ -44,7 +44,7 @@ namespace BlueCollar.Dashboard
         /// </summary>
         ~DashboardHandlerBase()
         {
-            Dispose(false);
+            this.Dispose(false);
         }
 
         /// <summary>

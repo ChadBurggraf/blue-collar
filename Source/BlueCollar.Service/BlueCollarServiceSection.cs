@@ -14,7 +14,7 @@ namespace BlueCollar.Service
     /// </summary>
     public sealed class BlueCollarServiceSection : ConfigurationSection
     {
-        private static readonly object locker = new object();
+        private static readonly object Locker = new object();
         private static BlueCollarServiceSection section;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace BlueCollar.Service
         {
             get
             {
-                lock (locker)
+                lock (Locker)
                 {
                     return section ?? (section = (BlueCollarServiceSection)(ConfigurationManager.GetSection("blueCollarService") ?? new BlueCollarServiceSection()));
                 }
@@ -45,7 +45,7 @@ namespace BlueCollar.Service
         /// </summary>
         public static void Refresh()
         {
-            lock (locker)
+            lock (Locker)
             {
                 ConfigurationManager.RefreshSection("blueCollarService");
                 section = null;

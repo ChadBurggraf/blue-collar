@@ -25,9 +25,9 @@ namespace BlueCollar.Service
     [HostProtection(SecurityAction.Demand, SharedState = true, Synchronization = true, ExternalProcessMgmt = true, SelfAffectingProcessMgmt = true)]
     public partial class Service : ServiceBase
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly object locker = new object();
-        private ApplicationCoordinator coordinator = new ApplicationCoordinator(logger);
+        private ApplicationCoordinator coordinator = new ApplicationCoordinator(Logger);
         private BlueCollar.FileSystemWatcher watcher;
         private bool isRunning, disposed;
 
@@ -151,7 +151,7 @@ namespace BlueCollar.Service
             }
             catch (ConfigurationErrorsException ex)
             {
-                logger.ErrorException("The configuration file is invalid. Please edit the configuration and re-save the file in order to load updated configuration information.", ex);
+                Logger.ErrorException("The configuration file is invalid. Please edit the configuration and re-save the file in order to load updated configuration information.", ex);
                 applications = new ApplicationElement[0];
             }
 
@@ -195,7 +195,7 @@ namespace BlueCollar.Service
             {
                 if (this.isRunning)
                 {
-                    logger.Info("A change was detected in the configuration file at '{0}'. Refreshing the application list.", BlueCollarServiceSection.Section.ElementInformation.Source);
+                    Logger.Info("A change was detected in the configuration file at '{0}'. Refreshing the application list.", BlueCollarServiceSection.Section.ElementInformation.Source);
                     this.coordinator.StartAndRefresh(GetApplicationElements());
                 }
             }

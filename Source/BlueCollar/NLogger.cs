@@ -15,7 +15,7 @@ namespace BlueCollar
     /// </summary>
     public sealed class NLogger : ILogger
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Logs a debug message.
@@ -24,7 +24,7 @@ namespace BlueCollar
         /// <param name="args">The format arguments.</param>
         public void Debug(string format, params object[] args)
         {
-            logger.Debug(CultureInfo.InvariantCulture, format, args);
+            Logger.Debug(CultureInfo.InvariantCulture, format, args);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace BlueCollar
         /// <param name="args">The format arguments.</param>
         public void Error(string format, params object[] args)
         {
-            logger.Error(CultureInfo.InvariantCulture, format, args);
+            Logger.Error(CultureInfo.InvariantCulture, format, args);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace BlueCollar
         {
             if (ex != null)
             {
-                logger.Error(CultureInfo.InvariantCulture, "{0}\n\n{1}", ex.Message, ex.StackTrace);
+                Logger.Error(CultureInfo.InvariantCulture, "{0}\n\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -63,7 +63,7 @@ namespace BlueCollar
                     ? string.Format(CultureInfo.CurrentCulture, format + "\n\n", args)
                     : string.Empty;
 
-                logger.Error(CultureInfo.InvariantCulture, "{0}{1}\n\n{2}", message, ex.Message, ex.StackTrace);
+                Logger.Error(CultureInfo.InvariantCulture, "{0}{1}\n\n{2}", message, ex.Message, ex.StackTrace);
             }
             else
             {
@@ -78,7 +78,7 @@ namespace BlueCollar
         /// <param name="args">The format arguments.</param>
         public void Info(string format, params object[] args)
         {
-            logger.Info(CultureInfo.InvariantCulture, format, args);
+            Logger.Info(CultureInfo.InvariantCulture, format, args);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace BlueCollar
         /// <param name="args">The format arguments.</param>
         public void Warn(string format, params object[] args)
         {
-            logger.Warn(CultureInfo.InvariantCulture, format, args);
+            Logger.Warn(CultureInfo.InvariantCulture, format, args);
         }
     }
 }

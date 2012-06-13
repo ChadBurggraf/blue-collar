@@ -18,7 +18,7 @@ namespace BlueCollar.Examples
     /// </summary>
     public static class Tail
     {
-        private static readonly Regex newlineExpression = new Regex(@"[\n\r]+$", RegexOptions.Compiled);
+        private static readonly Regex NewlineExpression = new Regex(@"[\n\r]+$", RegexOptions.Compiled);
 
         /// <summary>
         /// Reads the given file, tailing the given number of lines, using UTF-8 encoding.
@@ -165,7 +165,7 @@ namespace BlueCollar.Examples
             }
 
             return result
-                .Select(s => newlineExpression.Replace(s, string.Empty))
+                .Select(s => NewlineExpression.Replace(s, string.Empty))
                 .ToArray();
         }
 

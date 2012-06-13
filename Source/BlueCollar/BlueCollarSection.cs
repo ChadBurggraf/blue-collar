@@ -16,14 +16,14 @@ namespace BlueCollar
     /// </summary>
     public sealed class BlueCollarSection : ConfigurationSection
     {
-        private static readonly BlueCollarSection section = (BlueCollarSection)(ConfigurationManager.GetSection("blueCollar") ?? new BlueCollarSection());
+        private static readonly BlueCollarSection BCSection = (BlueCollarSection)(ConfigurationManager.GetSection("blueCollar") ?? new BlueCollarSection());
 
         /// <summary>
         /// Gets the current configuration.
         /// </summary>
         public static BlueCollarSection Section
         {
-            get { return section; }
+            get { return BCSection; }
         }
 
         /// <summary>

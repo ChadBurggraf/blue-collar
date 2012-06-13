@@ -16,7 +16,7 @@ namespace BlueCollar.Console
     [CLSCompliant(false)]
     public sealed class ConsoleLogger
     {
-        private static readonly NLogger logger = new NLogger();
+        private static readonly NLogger Logger = new NLogger();
         private InputOptions options;
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace BlueCollar.Console
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "All logging methods should have instance-access for consistency.")]
         public void Debug(string format, params object[] args)
         {
-            logger.Debug(format, args);
+            Logger.Debug(format, args);
         }
 
         /// <summary>
@@ -56,11 +56,11 @@ namespace BlueCollar.Console
 
                 if (ex != null) 
                 {
-                    logger.Error(ex, format, args);
+                    Logger.Error(ex, format, args);
                 }
                 else 
                 {
-                    logger.Error(format, args);
+                    Logger.Error(format, args);
                 }
             }
             else
@@ -68,12 +68,12 @@ namespace BlueCollar.Console
                 if (ex != null)
                 {
                     message = ex.Message;
-                    logger.Error(ex);
+                    Logger.Error(ex);
                 }
                 else
                 {
                     message = "An unknown error occurred.";
-                    logger.Error(message);
+                    Logger.Error(message);
                 }
             }
 
@@ -104,7 +104,7 @@ namespace BlueCollar.Console
         [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", Justification = "Not localizing yet.")]
         public void Info(string format, params object[] args)
         {
-            logger.Info(format, args);
+            Logger.Info(format, args);
 
             if (this.options.Verbose)
             {
@@ -176,7 +176,7 @@ namespace BlueCollar.Console
         [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", Justification = "Not localizing yet.")]
         public void Warn(string format, params object[] args)
         {
-            logger.Warn(format, args);
+            Logger.Warn(format, args);
 
             if (this.options.Verbose)
             {

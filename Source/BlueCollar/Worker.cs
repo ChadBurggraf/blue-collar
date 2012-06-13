@@ -587,7 +587,7 @@ namespace BlueCollar
                                 }
 
                                 // Execute the job.
-                                bool success = ExecuteJob(job, out ex);
+                                bool success = this.ExecuteJob(job, out ex);
 
                                 // Acquire the run lock and move the job from the working
                                 // state to the history state, including the execution results.

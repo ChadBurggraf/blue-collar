@@ -17,7 +17,7 @@ namespace BlueCollar
     /// </summary>
     public static class JobSerializer
     {
-        private static readonly JsonConverter[] converters = new JsonConverter[] 
+        private static readonly JsonConverter[] Converters = new JsonConverter[] 
         {
             new IsoDateTimeConverter() { DateTimeStyles = DateTimeStyles.RoundtripKind }
         };
@@ -45,7 +45,7 @@ namespace BlueCollar
                 {
                     if (!string.IsNullOrEmpty(data) && job.Properties != null)
                     {
-                        IDictionary<string, string> properties = JsonConvert.DeserializeObject<IDictionary<string, string>>(data, converters);
+                        IDictionary<string, string> properties = JsonConvert.DeserializeObject<IDictionary<string, string>>(data, Converters);
 
                         foreach (string key in properties.Keys)
                         {
@@ -63,7 +63,7 @@ namespace BlueCollar
             else if (typeof(IJob).IsAssignableFrom(jobType))
             {
                 IJob job = !string.IsNullOrEmpty(data)
-                    ? JsonConvert.DeserializeObject(data, jobType, converters) as IJob
+                    ? JsonConvert.DeserializeObject(data, jobType, Converters) as IJob
                     : CreateInstance(jobType) as IJob;
 
                 if (job == null)
@@ -127,11 +127,11 @@ namespace BlueCollar
                     dict.Add(key, scheduledJob.Properties[key]);
                 }
 
-                return JsonConvert.SerializeObject(dict, converters);
+                return JsonConvert.SerializeObject(dict, Converters);
             }
             else if (job != null)
             {
-                return JsonConvert.SerializeObject(job, converters);
+                return JsonConvert.SerializeObject(job, Converters);
             }
 
             return string.Empty;

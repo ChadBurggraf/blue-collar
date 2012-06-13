@@ -13,7 +13,7 @@ namespace BlueCollar.Dashboard
     /// </summary>
     internal static class DashboardRouter
     {
-        private static readonly IDashboardRoute[] routes = new IDashboardRoute[]
+        private static readonly IDashboardRoute[] Routes = new IDashboardRoute[]
         {
             new DashboardRoute<IndexHandler>(@"^$", new string[] { "GET" }),
             new DashboardRoute<IndexHandler>(@"^index.html$", new string[] { "GET" }),
@@ -77,7 +77,7 @@ namespace BlueCollar.Dashboard
             verb = NormalizeVerb(verb);
             string path = NormalizeHandlerRelativeUrl(handlerRelativeUrl);
 
-            foreach (IDashboardRoute route in routes)
+            foreach (IDashboardRoute route in Routes)
             {
                 if (route.IsMatch(verb, path))
                 {

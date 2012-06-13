@@ -48,7 +48,7 @@ FROM [BlueCollarWorking]
 WHERE
     [ApplicationName] = @ApplicationName;";
 
-        private static readonly object ensuredLocker = new object();
+        private static readonly object EnsuredLocker = new object();
         private static Dictionary<string, bool> ensuredSchemas = new Dictionary<string, bool>();
         private IDbConnection connection;
         private bool disposed;
@@ -68,7 +68,7 @@ WHERE
             this.connection = conn;
             conn.Open();
 
-            lock (ensuredLocker)
+            lock (EnsuredLocker)
             {
                 if (!ensuredSchemas.ContainsKey(connectionString))
                 {

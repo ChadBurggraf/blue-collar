@@ -25,8 +25,8 @@ namespace BlueCollar
     {
         #region Private Fields
 
-        private static readonly string machineAddress = GetMachineAddress();
-        private static readonly string machineName = Environment.MachineName;
+        private static readonly string MachineAddress = GetMachineAddress();
+        private static readonly string MachineName = Environment.MachineName;
         private List<Worker> workers = new List<Worker>();
         private Thread runThread;
         private ILogger logger;
@@ -134,7 +134,7 @@ namespace BlueCollar
         /// </summary>
         public static string Address
         {
-            get { return machineAddress; }
+            get { return MachineAddress; }
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace BlueCollar
         /// </summary>
         public static string Name
         {
-            get { return machineName; }
+            get { return MachineName; }
         }
 
         #endregion

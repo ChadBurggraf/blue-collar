@@ -19,7 +19,7 @@ namespace BlueCollar.Test
     [TestClass]
     public sealed class ApplicationProcessTests
     {
-        private static readonly Logger logger = LogManager.CreateNullLogger();
+        private static readonly Logger Logger = LogManager.CreateNullLogger();
 
         /// <summary>
         /// Base path tests.
@@ -27,7 +27,7 @@ namespace BlueCollar.Test
         [TestMethod]
         public void ApplicationProcessBasePath()
         {
-            using (ApplicationProcess process = new ApplicationProcess(logger, @"C:\Path"))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, @"C:\Path"))
             {
                 Assert.AreEqual(Path.GetFullPath(Path.GetDirectoryName(GetType().Assembly.Location)), process.BasePath);
             }
@@ -40,7 +40,7 @@ namespace BlueCollar.Test
         [ExpectedException(typeof(ArgumentException))]
         public void ApplicationProcessFailConfigPathInvalid()
         {
-            using (ApplicationProcess process = new ApplicationProcess(logger, @"C:\Path"))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, @"C:\Path"))
             {
                 process.ConfigPath = @"C:\Path\Invalid>";
             }
@@ -53,7 +53,7 @@ namespace BlueCollar.Test
         [ExpectedException(typeof(ArgumentException))]
         public void ApplicationProcessFailFrameworkVersionInvalid()
         {
-            using (ApplicationProcess process = new ApplicationProcess(logger, @"C:\Path"))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, @"C:\Path"))
             {
                 process.FrameworkVersion = "1.0";
             }
@@ -66,7 +66,7 @@ namespace BlueCollar.Test
         [ExpectedException(typeof(ArgumentNullException))]
         public void ApplicationProcessFailPathEmpty()
         {
-            using (ApplicationProcess process = new ApplicationProcess(logger, null))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, null))
             {
             }
         }
@@ -78,7 +78,7 @@ namespace BlueCollar.Test
         [ExpectedException(typeof(ArgumentException))]
         public void ApplicationProcessFailPathInvalid()
         {
-            using (ApplicationProcess process = new ApplicationProcess(logger, @"C:\Invalid\Path>"))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, @"C:\Invalid\Path>"))
             {
             }
         }
@@ -90,7 +90,7 @@ namespace BlueCollar.Test
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ApplicationProcessFailThresholdInvalid()
         {
-            using (ApplicationProcess process = new ApplicationProcess(logger, @"C:\Path"))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, @"C:\Path"))
             {
                 process.Threshold = 0;
             }
@@ -104,7 +104,7 @@ namespace BlueCollar.Test
         {
             string path = ApplicationUtils.CreateValidExampleApplication();
 
-            using (ApplicationProcess process = new ApplicationProcess(logger, path, Path.GetFullPath("Collar.exe")))
+            using (ApplicationProcess process = new ApplicationProcess(Logger, path, Path.GetFullPath("Collar.exe")))
             {
                 Assert.IsTrue(process.Start());
             }
@@ -121,7 +121,7 @@ namespace BlueCollar.Test
 
             try
             {
-                using (ApplicationProcess process = new ApplicationProcess(logger, path, Path.GetFullPath("Collar.exe")))
+                using (ApplicationProcess process = new ApplicationProcess(Logger, path, Path.GetFullPath("Collar.exe")))
                 {
                     process.Exited += (object sender, EventArgs e) =>
                     {
@@ -150,7 +150,7 @@ namespace BlueCollar.Test
 
             try
             {
-                using (ApplicationProcess process = new ApplicationProcess(logger, path, Path.GetFullPath("Collar.exe")))
+                using (ApplicationProcess process = new ApplicationProcess(Logger, path, Path.GetFullPath("Collar.exe")))
                 {
                     process.Exited += (object sender, EventArgs e) =>
                     {

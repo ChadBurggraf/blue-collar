@@ -20,7 +20,7 @@ namespace BlueCollar.Service
     /// </summary>
     public sealed class ApplicationProcess : IDisposable
     {
-        private static readonly Regex frameworkExp = new Regex(@"^3\.5|4\.0$", RegexOptions.Compiled);
+        private static readonly Regex FrameworkExp = new Regex(@"^3\.5|4\.0$", RegexOptions.Compiled);
         private readonly object locker = new object();
         private Logger logger;
         private string basePath, configPath, exePath, frameworkVersion, path;
@@ -147,7 +147,7 @@ namespace BlueCollar.Service
 
             set
             {
-                if (!frameworkExp.IsMatch(value))
+                if (!FrameworkExp.IsMatch(value))
                 {
                     throw new ArgumentException("value must be one of 3.5 or 4.0.", "value");
                 }

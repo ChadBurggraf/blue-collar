@@ -15,7 +15,7 @@ namespace BlueCollar.Dashboard
     /// </summary>
     public abstract class JsonHandler : DashboardHandlerBase
     {
-        private static readonly JsonConverter[] converters = new JsonConverter[] 
+        private static readonly JsonConverter[] Converters = new JsonConverter[] 
         {
             new StringEnumConverter()
         };
@@ -48,7 +48,7 @@ namespace BlueCollar.Dashboard
 
             if (value != null)
             {
-                json = JsonConvert.SerializeObject(value, Formatting.None, converters);
+                json = JsonConvert.SerializeObject(value, Formatting.None, Converters);
             }
 
             return EncodeString(json);

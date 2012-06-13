@@ -22,7 +22,7 @@ namespace BlueCollar.Console
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
     public static class Program
     {
-        private static readonly object locker = new object();
+        private static readonly object Locker = new object();
         private static bool isRunning;
         private static ConsoleLogger logger;
         private static InputOptions options;
@@ -80,7 +80,7 @@ namespace BlueCollar.Console
         {
             logger.Info("A change was detected in '{0}'. Shutting down.", e.FullPath);
             
-            lock (locker)
+            lock (Locker)
             {
                 if (bootstraps != null)
                 {
@@ -111,7 +111,7 @@ namespace BlueCollar.Console
         /// <param name="e">The event arguments.</param>
         private static void ConsoleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
         {
-            lock (locker)
+            lock (Locker)
             {
                 if (bootstraps != null)
                 {
@@ -130,7 +130,7 @@ namespace BlueCollar.Console
             {
                 BootstrapsPullupResult result;
 
-                lock (locker)
+                lock (Locker)
                 {
                     if (bootstraps == null)
                     {
@@ -191,7 +191,7 @@ namespace BlueCollar.Console
 
                     isRunning = false;
 
-                    lock (locker)
+                    lock (Locker)
                     {
                         if (bootstraps != null)
                         {
@@ -205,7 +205,7 @@ namespace BlueCollar.Console
                 {
                     isRunning = false;
 
-                    lock (locker)
+                    lock (Locker)
                     {
                         if (bootstraps != null)
                         {

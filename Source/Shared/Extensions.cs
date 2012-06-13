@@ -20,7 +20,7 @@ namespace BlueCollar
     /// </summary>
     internal static class Extensions
     {
-        private static readonly Random rand = new Random();
+        private static readonly Random Rand = new Random();
 
         /// <summary>
         /// Adds a range of items to the list.
@@ -281,8 +281,8 @@ namespace BlueCollar
                 scale = 2;
             }
 
-            int random = rand.Next(0, scale);
-            int sign = rand.Next(0, 2);
+            int random = Rand.Next(0, scale);
+            int sign = Rand.Next(0, 2);
 
             return value + (sign == 1 ? random : -random);
         }
