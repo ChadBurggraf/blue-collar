@@ -9,6 +9,7 @@ namespace BlueCollar.Test
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Xml;
     using BlueCollar;
     using BlueCollar.Dashboard;
@@ -89,6 +90,41 @@ namespace BlueCollar.Test
             Index index = new Index();
             string html = index.Transform();
             Assert.IsFalse(string.IsNullOrEmpty(html));
+        }
+
+        /// <summary>
+        /// Invoke with timeout tests.
+        /// </summary>
+        [TestMethod]
+        public void UtilityInvokeWithTimeout()
+        {
+            try
+            {
+                new Action(
+                    () =>
+                    {
+                        Thread.Sleep(700);
+                    }).InvokeWithTimeout(1000);
+            }
+            catch (TimeoutException)
+            {
+                Assert.Fail();
+            }
+
+            try
+            {
+                new Action(
+                    () =>
+                    {
+                        Thread.Sleep(1000);
+                        Assert.Fail();
+                    }).InvokeWithTimeout(700);
+
+                Assert.Fail();
+            }
+            catch (TimeoutException)
+            {
+            }
         }
 
         /// <summary>

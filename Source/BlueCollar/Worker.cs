@@ -462,7 +462,7 @@ namespace BlueCollar
             try
             {
                 // Execute the job, with a timeout if necessary.
-                int timeout = job.Timeout < 0 ? 6000 : job.Timeout;
+                int timeout = job.Timeout < 0 ? 60000 : job.Timeout;
 
                 if (timeout > 0)
                 {

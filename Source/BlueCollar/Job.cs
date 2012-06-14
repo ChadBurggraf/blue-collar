@@ -32,12 +32,12 @@ namespace BlueCollar
 
         /// <summary>
         /// Gets the maximum timeout, in milliseconds, the job is allowed to run in.
-        /// Use 0 for infinite; defaults to 6,000 (1 minute).
+        /// Use 0 for infinite; defaults to 60,000 (1 minute).
         /// </summary>
         [JsonIgnore]
         public virtual int Timeout
         {
-            get { return 6000; }
+            get { return 60000; }
         }
 
         /// <summary>
