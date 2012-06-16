@@ -2824,18 +2824,18 @@ button.close {
 }
 
 .btn-success {
-  background-color: #5bb75b;
-  *background-color: #51a351;
-  background-image: -ms-linear-gradient(top, #62c462, #51a351);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#62c462), to(#51a351));
-  background-image: -webkit-linear-gradient(top, #62c462, #51a351);
-  background-image: -o-linear-gradient(top, #62c462, #51a351);
-  background-image: -moz-linear-gradient(top, #62c462, #51a351);
-  background-image: linear-gradient(top, #62c462, #51a351);
+  background-color: #55bd00;
+  *background-color: #4aa400;
+  background-image: -ms-linear-gradient(top, #5ccd00, #4aa400);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5ccd00), to(#4aa400));
+  background-image: -webkit-linear-gradient(top, #5ccd00, #4aa400);
+  background-image: -o-linear-gradient(top, #5ccd00, #4aa400);
+  background-image: -moz-linear-gradient(top, #5ccd00, #4aa400);
+  background-image: linear-gradient(top, #5ccd00, #4aa400);
   background-repeat: repeat-x;
-  border-color: #51a351 #51a351 #387038;
+  border-color: #4aa400 #4aa400 #275800;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#62c462', endColorstr='#51a351', GradientType=0);
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#5ccd00', endColorstr='#4aa400', GradientType=0);
   filter: progid:dximagetransform.microsoft.gradient(enabled=false);
 }
 
@@ -2844,13 +2844,13 @@ button.close {
 .btn-success.active,
 .btn-success.disabled,
 .btn-success[disabled] {
-  background-color: #51a351;
-  *background-color: #499249;
+  background-color: #4aa400;
+  *background-color: #3e8b00;
 }
 
 .btn-success:active,
 .btn-success.active {
-  background-color: #408140 \9;
+  background-color: #337100 \9;
 }
 
 .btn-info {
@@ -3090,7 +3090,7 @@ input[type="submit"].btn.btn-mini {
 }
 
 .btn-group.open .btn-success.dropdown-toggle {
-  background-color: #51a351;
+  background-color: #4aa400;
 }
 
 .btn-group.open .btn-info.dropdown-toggle {
