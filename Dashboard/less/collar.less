@@ -1,5 +1,65 @@
 @import "Bootstrap/less/mixins.less";
 
+.form {
+    input[type="text"],
+    textarea {
+        width: 250px;
+    }
+
+    select {
+        width: 258px;
+    }
+
+    .field {
+        span {
+            display: block;
+            font-weight: bold;
+            line-height: 20px;
+
+            em {
+                color: #f00;
+            }
+        }
+    }
+
+    .form-actions {
+        padding-bottom: 0;
+        padding-left: 0;
+        margin-bottom: 0;
+    }
+
+    .form-actions-delete {
+        padding: 10px 14px 14px;
+        text-align: center;
+        background-color: #fddfde;
+        border: solid 1px #fbc7c6;
+        .border-radius(4px);
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+    }
+
+    .help-block{
+        font-weight: normal !important;
+        line-height: normal !important;
+        color: #999;
+    }
+
+    .help-block-above {
+        margin-bottom: 0;
+    }
+
+    .legend {
+        margin-bottom: 18px;
+        font-size: 19.5px;
+        line-height: 36px;
+        color: #333;
+        border-bottom: solid 1px #e5e5e5;
+    }
+}
+
 .form-search {
     margin-bottom: 36px;
     text-align: center;
@@ -13,7 +73,9 @@
 
 .navbar {
     .brand {
-        font-weight: bold;
+        font-family: "Arial Black", Arial, sans-serif;
+        font-size: 18px;
+        line-height: 20px;
         color: #000;
         text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.125);
         -webkit-transition: all .2s linear;
@@ -109,6 +171,21 @@
     border-top-left-radius: 0;
 }
 
+.row-data {
+    border: none;
+
+    th,
+    td {
+        padding: 4px 16px;
+        border: none;
+        background-color: transparent !important;
+    }
+
+    th {
+        padding-left: 0;
+    }
+}
+
 .table-paged {
     margin-bottom: 0;
     border-top: none;
@@ -139,6 +216,72 @@
         tr:last-child td:first-child,
         tr:last-child td:last-child {
             .border-radius(0);
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    .form {
+        input[type="text"],
+        textarea {
+            width: 320px;
+        }
+
+        select {
+            width: 328px;
+        }
+    }
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+    .form {
+        input[type="text"],
+        textarea {
+            width: 178px;
+        }
+
+        select {
+            width: 186px;
+        }
+    }
+
+    .form-actions {
+        padding-right: 0;
+        text-align: center;
+
+        input,
+        button {
+            display: block;
+            width: 186px;
+            margin-bottom: 3px;
+        }
+    }
+
+    .form-actions-delete {
+        input,
+        button {
+            width: 158px;
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .table > thead > tr > th,
+    .table > tbody > tr > td {
+        display: none;
+        visibility: hidden;
+    }
+
+    .table > thead > tr th:first-child,
+    .table > tbody > tr td:first-child {
+        display: table-cell;
+        visibility: visible;
+    }
+
+    .form-search {
+        input[type="text"],
+        input[type="search"] {
+            margin-bottom: 3px;
         }
     }
 }

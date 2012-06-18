@@ -117,7 +117,33 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><a href="javascript:void(0);">Default</a></td>
+                                <td>
+                                    <a href="javascript:void(0);">Default</a>
+                                    <table class="row-data">
+                                        <tbody>
+                                            <tr>
+                                                <th>Machine</th>
+                                                <td>P2187759</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Queues</th>
+                                                <td>not:scheduled</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td>Working</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Signal</th>
+                                                <td><a href="javascript:void(0);">None</a></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Startup</th>
+                                                <td>Automatic</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
                                 <td>P2187759</td>
                                 <td>not:scheduled</td>
                                 <td>Working</td>
@@ -139,7 +165,57 @@
                 </div>
 
                 <div class="span4">
-                    <div class="well"></div>
+                    <form class="form well" action="javascript:void(0);">
+                        <fieldset>
+                            <p class="legend">Edit Worker</p>
+
+                            <label class="field">
+                                <span>Name <em>*</em></span>
+                                <input type="text" name="Name">
+                            </label>
+
+                            <div class="field">
+                                <span>Machine <em>*</em></span>
+                                <span class="help-block help-block-above">Machine not listed? <a href="javascript:void(0);">Enter one instead</a></span>
+                                <select>
+                                    <option>P2187759</option>
+                                </select>
+                            </div>
+
+                            <label class="field">
+                                <span>Queues</span>
+                                <textarea rows="5">not:scheduled</textarea>
+                                <span class="help-block">
+                                    Optional. Limit which queues the worker will process by entering one queue name per line. 
+                                    Blacklist instead of whitelist a queue by prefixing its name with <code>not:</code>
+                                </span>
+                            </label>
+
+                            <div class="field">
+                                <span>Startup <em>*</em></span>
+                                <label class="radio">
+                                    <input type="radio" name="Startup" value="Automatic">
+                                    Automatic
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="Startup" value="Manual">
+                                    Manual
+                                </label>
+                            </div>
+
+                            <div class="form-actions">
+                                <input type="submit" class="btn btn-primary" value="Update Worker">
+                                <button type="reset" class="btn">Cancel</button>
+                                <a href="javascript:void(0);">delete</a>
+                            </div>
+
+                            <div class="form-actions form-actions-delete">
+                                <label>Are you sure?</label>
+                                <button type="button" class="btn btn-danger">Yes, Delete</button>
+                                <button type="button" class="btn">No, Cancel</button>
+                            </div>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
