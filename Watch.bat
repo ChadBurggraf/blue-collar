@@ -1,0 +1,3 @@
+@echo off
+echo Watching images, JS and LESS files...
+watchr BlueCollar.watchr

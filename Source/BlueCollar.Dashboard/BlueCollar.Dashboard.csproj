@@ -103,6 +103,13 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Static\Img\glyphicons-halflings-white.png" />
+    <Content Include="Static\Img\glyphicons-halflings.png" />
+    <Content Include="Static\Img\loading-list.gif" />
+    <Content Include="Static\Img\logo-header.png" />
+    <Content Include="Static\Img\tc-badge.png" />
+    <Content Include="Static\Js\collar.js" />
+    <Content Include="Static\Js\html5.js" />
     <Content Include="Static\Src\Css\bootstrap-responsive.css" />
     <Content Include="Static\Src\Css\bootstrap.css" />
     <Content Include="Static\Src\Css\collar.css" />
@@ -141,8 +148,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Static\Css\" />
-    <Folder Include="Static\Img\" />
-    <Folder Include="Static\Js\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />

@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\BlueCollar.targets = ..\BlueCollar.targets
 		BlueCollar.vsmdi = BlueCollar.vsmdi
+		..\BlueCollar.watchr = ..\BlueCollar.watchr
 		..\Build.proj = ..\Build.proj
 		JSPack.xml = JSPack.xml
 		Local.testsettings = Local.testsettings

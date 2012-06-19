@@ -13,6 +13,12 @@
     <PackageAssets Condition="'$(PackageAssets)' == ''">true</PackageAssets>
     <SandcastleDir Condition="'$(SandcastleDir)' == ''">$(MSBuildExtensionsPath32)\..\Sandcastle</SandcastleDir>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <BootstrapDir Condition="'$(BootstrapDir)' == ''">$(RootDir)\Bootstrap</BootstrapDir>
+    <StaticDir Condition="'$(StaticDir)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Static</StaticDir>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(SignAssembly)' == 'true' And Exists('$(AssemblyOriginatorKeyFile)')">
     <KeyFileArgs>/keyfile:"$(AssemblyOriginatorKeyFile)"</KeyFileArgs>
   </PropertyGroup>
@@ -101,6 +107,25 @@
       <Output TaskParameter="Build" PropertyName="Build"/>
       <Output TaskParameter="Revision" PropertyName="Revision"/>
     </GetVersion>
+  </Target>
+
+  <Target Name="Img">
+    <ItemGroup>
+      <Gifs Include="$(StaticDir)\Src\Img\**\*.gif"/>
+      <Pngs Include="$(StaticDir)\Src\Img\**\*.png"/>
+    </ItemGroup>
+    <Exec Command='"$(RootDir)\Tools\PNGCrush\pngcrush.exe" -q -force &quot;%(Pngs.Identity)&quot; &quot;$(StaticDir)\Img\%(Pngs.Filename)%(Pngs.Extension)&quot;'/>
+    <Copy SourceFiles="@(Gifs)" DestinationFolder="$(StaticDir)\Img"/>
+  </Target>
+
+  <Target Name="Js">
+    <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\JSPack.xml"'/>
+  </Target>
+
+  <Target Name="Less">
+    <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"'/>
+    <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap-responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"'/>
+    <Exec Command='recess --compile "$(StaticDir)\Src\Less\collar.less" > "$(StaticDir)\Src\Css\collar.css"'/>
   </Target>
 
   <Target Name="MergeConsole" Condition="'$(MergedConsoleOutputPath)' != ''">
