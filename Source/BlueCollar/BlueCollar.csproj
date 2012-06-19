@@ -198,10 +198,15 @@
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
-    <CallTarget Targets="Img;Js;Less" />
-    <Copy SourceFiles="$(StaticDir)\Css\*.*" DestinationFolder="Dashboard\Static\Css" />
-    <Copy SourceFiles="$(StaticDir)\Img\*.*" DestinationFolder="Dashboard\Static\Img" />
-    <Copy SourceFiles="$(StaticDir)\Js\*.*" DestinationFolder="Dashboard\Static\Js" />
+    <CallTarget Targets="Img;Js;Less" Condition="'$(CompressAssets)' == 'true'" />
+    <ItemGroup>
+      <DashboardCssFiles Include="$(StaticDir)\Css\*" />
+      <DashboardImgFiles Include="$(StaticDir)\Img\*" />
+      <DashboardJsFiles Include="$(StaticDir)\Js\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DashboardCssFiles)" DestinationFolder="Dashboard\Static\css" Condition="'$(CompressAssets)' == 'true'" />
+    <Copy SourceFiles="@(DashboardImgFiles)" DestinationFolder="Dashboard\Static\img" Condition="'$(CompressAssets)' == 'true'" />
+    <Copy SourceFiles="@(DashboardJsFiles)" DestinationFolder="Dashboard\Static\js" Condition="'$(CompressAssets)' == 'true'" />
   </Target>
   <Target Name="AfterBuild">
     <CallTarget Targets="MergeLibrary" Condition="'$(Configuration)' == 'Release'" />

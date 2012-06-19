@@ -105,11 +105,14 @@
 
   <Target Name="Img">
     <ItemGroup>
-      <Gifs Include="$(StaticDir)\Src\Img\**\*.gif"/>
-      <Pngs Include="$(StaticDir)\Src\Img\**\*.png"/>
+      <Gifs Include="$(StaticDir)\Src\Img\*.gif"/>
+      <OldImages Include="$(StaticDir)\Img\*.gif"/>
+      <OldImages Include="$(StaticDir)\Img\*.png"/>
+      <Pngs Include="$(StaticDir)\Src\Img\*.png"/>
     </ItemGroup>
+    <Delete Files="@(OldImages)"/>
     <Exec Command='"$(RootDir)\Tools\PNGCrush\pngcrush.exe" -q -force &quot;%(Pngs.Identity)&quot; &quot;$(StaticDir)\Img\%(Pngs.Filename)%(Pngs.Extension)&quot;' Condition="'$(CompressAssets)' == 'true'"/>
-    <Copy SourceFiles="@(Pngs)" DestinationFolder="$(StaticDir)\Img" Condition="'$(CompressAssets)' == 'true'"/>
+    <Copy SourceFiles="@(Pngs)" DestinationFolder="$(StaticDir)\Img" Condition="'$(CompressAssets)' != 'true'"/>
     <Copy SourceFiles="@(Gifs)" DestinationFolder="$(StaticDir)\Img"/>
   </Target>
 
