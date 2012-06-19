@@ -122,7 +122,7 @@
         <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
       </JsTokens>
     </ItemGroup>
-    <TemplateFile Template="$(RootDir)\Source\Copyright.js.template" OutputFilename="$(StaticDir)\Src\Js\copyright.js" Tokens="@(JsTokens)" />
+    <TemplateFile Template="$(RootDir)\Source\Copyright.js.template" OutputFilename="$(StaticDir)\Src\Js\copyright.js" Tokens="@(JsTokens)" Condition="'$(ExcludeCopyright)' != 'true'"/>
     <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\Js.jspack" /actions:$(CompressAssets)'/>
   </Target>
 

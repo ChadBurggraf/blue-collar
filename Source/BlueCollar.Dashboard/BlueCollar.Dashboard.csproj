@@ -121,8 +121,12 @@
     <Content Include="Static\Src\Img\loading-list.gif" />
     <Content Include="Static\Src\Img\logo-header.png" />
     <Content Include="Static\Src\Img\tc-badge.png" />
+    <Content Include="Static\Src\Js\app.js" />
     <Content Include="Static\Src\Js\close.js" />
     <Content Include="Static\Src\Js\copyright.js" />
+    <Content Include="Static\Src\Js\Routers\collar-router.js" />
+    <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
+    <Content Include="Static\Src\Js\util.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-alert.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-button.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-carousel.js" />
