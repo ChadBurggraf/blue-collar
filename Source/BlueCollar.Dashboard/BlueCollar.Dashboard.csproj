@@ -103,6 +103,7 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Static\Css\collar.css" />
     <Content Include="Static\Img\glyphicons-halflings-white.png" />
     <Content Include="Static\Img\glyphicons-halflings.png" />
     <Content Include="Static\Img\loading-list.gif" />
@@ -113,11 +114,14 @@
     <Content Include="Static\Src\Css\bootstrap-responsive.css" />
     <Content Include="Static\Src\Css\bootstrap.css" />
     <Content Include="Static\Src\Css\collar.css" />
+    <Content Include="Static\Src\Css\copyright.css" />
     <Content Include="Static\Src\Img\glyphicons-halflings-white.png" />
     <Content Include="Static\Src\Img\glyphicons-halflings.png" />
     <Content Include="Static\Src\Img\loading-list.gif" />
     <Content Include="Static\Src\Img\logo-header.png" />
     <Content Include="Static\Src\Img\tc-badge.png" />
+    <Content Include="Static\Src\Js\close.js" />
+    <Content Include="Static\Src\Js\copyright.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-alert.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-button.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-carousel.js" />
@@ -147,7 +151,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Static\Css\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -192,14 +195,11 @@
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>
     <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
-    <AssetsOutputDir>$(MSBuildProjectDirectory)\Static</AssetsOutputDir>
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
     <Copy SourceFiles="Web.config.template" DestinationFiles="Web.config" Condition="!Exists('Web.config')" />
-    <!--
-    <CallTarget Targets="PackageAssets" />
-    -->
+    <CallTarget Targets="Img;Js;Less"/>
   </Target>
   <Target Name="AfterBuild">
   </Target>

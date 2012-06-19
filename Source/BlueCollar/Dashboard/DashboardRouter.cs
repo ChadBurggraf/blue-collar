@@ -18,7 +18,7 @@ namespace BlueCollar.Dashboard
             new DashboardRoute<IndexHandler>(@"^$", new string[] { "GET" }),
             new DashboardRoute<IndexHandler>(@"^index.html$", new string[] { "GET" }),
             new DashboardRoute<StyleSheetHandler>(@"^(.+?\.)([a-f0-9]+\.)?(css)$", new string[] { "GET" }),
-            new DashboardRoute<StaticFileHandler>(@"^(.+?\.)([a-f0-9]+\.)?(gif|js|png|eot|svg|ttf|woff)$", new string[] { "GET" }),
+            new DashboardRoute<StaticFileHandler>(@"^(.+?\.)([a-f0-9]+\.)?(gif|js|png)$", new string[] { "GET" }),
             new DashboardRoute<CountsHandler>(@"^counts$", new string[] { "GET" }),
             new DashboardRoute<HistoryListHandler>(@"^history$", new string[] { "GET" }),
             new DashboardRoute<HistoryDetailsHandler>(@"^history/(\d+)$", new string[] { "GET" }),

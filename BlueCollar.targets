@@ -3,24 +3,18 @@
   <UsingTask TaskName="GetVersion" AssemblyFile="Tools\Tasty\Tasty.dll"/>
 
   <PropertyGroup>
-    <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)</RootDir>
-    <AssetsOutputDir Condition="'$(AssetsOutputDir)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Static</AssetsOutputDir>
-    <AssetsSourceDir>$(RootDir)\Source\BlueCollar.Dashboard\Static\Src</AssetsSourceDir>
-    <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Debug'">false</CompressAssets>
-    <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Release'">true</CompressAssets>
+    <CompressAssets Condition="'$(CompressAssets)' == '' And ('$(Configuration)' == '' Or '$(Configuration)' == 'Debug')">false</CompressAssets>
     <ConsoleConfigSubstitutionsFile Condition="'$(ConsoleConfigSubstitutionsFile)' == ''">App.config.Net40</ConsoleConfigSubstitutionsFile>
     <HtmlHelpWorkshopDir Condition="'$(HtmlHelpWorkshopDir)' == ''">$(MSBuildExtensionsPath32)\..\HTML Help Workshop</HtmlHelpWorkshopDir>
-    <PackageAssets Condition="'$(PackageAssets)' == ''">true</PackageAssets>
+    <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)</RootDir>
     <SandcastleDir Condition="'$(SandcastleDir)' == ''">$(MSBuildExtensionsPath32)\..\Sandcastle</SandcastleDir>
   </PropertyGroup>
 
   <PropertyGroup>
     <BootstrapDir Condition="'$(BootstrapDir)' == ''">$(RootDir)\Bootstrap</BootstrapDir>
+    <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Release'">true</CompressAssets>
+    <KeyFileArgs Condition="'$(SignAssembly)' == 'true' And Exists('$(AssemblyOriginatorKeyFile)')">/keyfile:"$(AssemblyOriginatorKeyFile)"</KeyFileArgs>
     <StaticDir Condition="'$(StaticDir)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Static</StaticDir>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(SignAssembly)' == 'true' And Exists('$(AssemblyOriginatorKeyFile)')">
-    <KeyFileArgs>/keyfile:"$(AssemblyOriginatorKeyFile)"</KeyFileArgs>
   </PropertyGroup>
 
   <Target Name="GenerateConsoleConfig">
@@ -114,18 +108,32 @@
       <Gifs Include="$(StaticDir)\Src\Img\**\*.gif"/>
       <Pngs Include="$(StaticDir)\Src\Img\**\*.png"/>
     </ItemGroup>
-    <Exec Command='"$(RootDir)\Tools\PNGCrush\pngcrush.exe" -q -force &quot;%(Pngs.Identity)&quot; &quot;$(StaticDir)\Img\%(Pngs.Filename)%(Pngs.Extension)&quot;'/>
+    <Exec Command='"$(RootDir)\Tools\PNGCrush\pngcrush.exe" -q -force &quot;%(Pngs.Identity)&quot; &quot;$(StaticDir)\Img\%(Pngs.Filename)%(Pngs.Extension)&quot;' Condition="'$(CompressAssets)' == 'true'"/>
+    <Copy SourceFiles="@(Pngs)" DestinationFolder="$(StaticDir)\Img" Condition="'$(CompressAssets)' == 'true'"/>
     <Copy SourceFiles="@(Gifs)" DestinationFolder="$(StaticDir)\Img"/>
   </Target>
 
-  <Target Name="Js">
-    <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\JSPack.xml"'/>
+  <Target Name="Js" DependsOnTargets="GetVersion">
+    <ItemGroup>
+      <JsTokens Include="Version">
+        <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
+      </JsTokens>
+    </ItemGroup>
+    <TemplateFile Template="$(RootDir)\Source\Copyright.js.template" OutputFilename="$(StaticDir)\Src\Js\copyright.js" Tokens="@(JsTokens)" />
+    <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\Js.jspack" /actions:$(CompressAssets)'/>
   </Target>
 
-  <Target Name="Less">
-    <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"'/>
-    <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap-responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"'/>
-    <Exec Command='recess --compile "$(StaticDir)\Src\Less\collar.less" > "$(StaticDir)\Src\Css\collar.css"'/>
+  <Target Name="Less" DependsOnTargets="GetVersion">
+    <ItemGroup>
+      <CssTokens Include="Version">
+        <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
+      </CssTokens>
+    </ItemGroup>
+    <Exec Command='recess --compress "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"'/>
+    <Exec Command='recess --compress "$(BootstrapDir)\less\responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"'/>
+    <Exec Command='recess --compress "$(StaticDir)\Src\Less\collar.less" > "$(StaticDir)\Src\Css\collar.css"'/>
+    <TemplateFile Template="$(RootDir)\Source\Copyright.css.template" OutputFilename="$(StaticDir)\Src\Css\copyright.css" Tokens="@(CssTokens)" />
+    <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\Css.jspack" /actions:$(CompressAssets)'/>
   </Target>
 
   <Target Name="MergeConsole" Condition="'$(MergedConsoleOutputPath)' != ''">
@@ -145,24 +153,6 @@
 
   <Target Name="MergeSQLiteRepository" Condition="'$(MergedSQLiteRepositoryOutputPath)' != ''">
     <Exec Command='"$(RootDir)\Tools\ILRepack\ILRepack.exe" /log /internalize $(KeyFileArgs) /xmldocs /lib:$(OutputPath) /out:"$(MergedSQLiteRepositoryOutputPath)\BlueCollar.SQLiteRepository.dll" $(OutputPath)BlueCollar.SQLiteRepository.dll $(OutputPath)Dapper.dll'/>
-  </Target>
-  
-  <Target Name="PackageAssets" DependsOnTargets="GetVersion" Condition="'$(PackageAssets)' == 'true'">
-    <ItemGroup>
-      <Fonts Include="$(AssetsSourceDir)\..\Lib\iconic_stroke.*"/>
-      <Gifs Include="$(AssetsSourceDir)\Img\**\*.gif" />
-      <Pngs Include="$(AssetsSourceDir)\Img\**\*.png" />
-      <Tokens Include="Version">
-        <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
-      </Tokens>
-    </ItemGroup>
-
-    <TemplateFile Template="$(RootDir)\Source\Open.js.template" OutputFilename="$(AssetsSourceDir)\Js\Open.js" Tokens="@(Tokens)" />
-    <Exec Command="$(RootDir)\Tools\PNGCrush\pngcrush.exe -d &quot;$(AssetsOutputDir)&quot; -f &quot;%(Pngs.Identity)&quot;" Condition="'$(CompressAssets)' == 'true'" />
-    <Copy SourceFiles="@(Pngs)" DestinationFiles="@(Pngs->'$(AssetsOutputDir)\%(RecursiveDir)%(Filename)%(Extension)')" Condition="'$(CompressAssets)' == 'false'" />
-    <Copy SourceFiles="@(Gifs)" DestinationFiles="@(Gifs->'$(AssetsOutputDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\JSPack.xml" /src:"$(AssetsSourceDir)" /target:"$(AssetsOutputDir)" /actions:$(CompressAssets)' />
-    <Copy SourceFiles="@(Fonts)" DestinationFiles="@(Fonts->'$(AssetsOutputDir)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 
   <Target Name="SetPackageVersion" DependsOnTargets="GetVersion">

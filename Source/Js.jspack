@@ -28,8 +28,10 @@
 
   <output path="collar.js">
     <action name="CompileJs"/>
+    <input path="copyright.js"/>
     <import name="Backbone"/>
     <import name="Bootstrap"/>
     <import name="DateJs"/>
+    <input path="close.js"/>
   </output>
 </jspack>

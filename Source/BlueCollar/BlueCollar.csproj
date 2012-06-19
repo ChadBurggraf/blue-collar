@@ -178,47 +178,30 @@
     <Compile Include="WorkingSignalRecord.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\bc.css" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\index.xslt">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\templates.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\bc.js" />
-    <EmbeddedResource Include="Dashboard\Static\loading-list.gif" />
-    <EmbeddedResource Include="Dashboard\Static\logo-header.png" />
-    <EmbeddedResource Include="Dashboard\Static\tc-badge.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\html5.js" />
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.svg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.eot" />
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.ttf" />
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.woff" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="SqlServer.Schema.sql" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\css\collar.css" />
+    <EmbeddedResource Include="Dashboard\Static\img\glyphicons-halflings-white.png" />
+    <EmbeddedResource Include="Dashboard\Static\img\glyphicons-halflings.png" />
+    <EmbeddedResource Include="Dashboard\Static\img\loading-list.gif" />
+    <EmbeddedResource Include="Dashboard\Static\img\logo-header.png" />
+    <EmbeddedResource Include="Dashboard\Static\img\tc-badge.png" />
+    <EmbeddedResource Include="Dashboard\Static\js\collar.js" />
+    <EmbeddedResource Include="Dashboard\Static\js\html5.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>
     <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
-    <AssetsOutputDir>$(MSBuildProjectDirectory)\Dashboard\Static</AssetsOutputDir>
-    <PackageAssets Condition="'$(PackageAssets)' == ''">false</PackageAssets>
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
-    <!--
-    <CallTarget Targets="PackageAssets" />
-    <Copy SourceFiles="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml" DestinationFiles="$(AssetsOutputDir)\templates.html" />
-    -->
+    <CallTarget Targets="Img;Js;Less" />
+    <Copy SourceFiles="$(StaticDir)\Css\*.*" DestinationFolder="Dashboard\Static\Css" />
+    <Copy SourceFiles="$(StaticDir)\Img\*.*" DestinationFolder="Dashboard\Static\Img" />
+    <Copy SourceFiles="$(StaticDir)\Js\*.*" DestinationFolder="Dashboard\Static\Js" />
   </Target>
   <Target Name="AfterBuild">
     <CallTarget Targets="MergeLibrary" Condition="'$(Configuration)' == 'Release'" />

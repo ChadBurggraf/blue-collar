@@ -171,14 +171,6 @@ namespace BlueCollar.Dashboard
                 case ".HTML":
                 case ".XSLT":
                     return "text/html";
-                case ".EOT":
-                    return "application/vnd.bw-fontobject";
-                case ".SVG":
-                    return "image/svg+xml";
-                case ".TTF":
-                    return "application/x-font-ttf";
-                case ".WOFF":
-                    return "application/x-woff";
                 default:
                     return "application/octet-stream";
             }
