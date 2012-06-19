@@ -1,12 +1,3 @@
-/**!
- * @preserve Blue Collar v2.0.0
- *
- * @author Chad Burggraf
- * @copyright Copyright (c) 2012 Chad Burggraf, Tasty Codes
- * @license Blue Collar may be freely distributed and modified under the MIT license
- * @website https://github.com/ChadBurggraf/blue-collar
- */
-(function() {
 /*
     http://www.JSON.org/json2.js
     2011-10-19
@@ -6035,6 +6026,15 @@ var TimePeriod = function (years, months, days, hours, minutes, seconds, millise
     return this;
 };
 
+/**!
+ * @preserve Blue Collar v2.0.0
+ *
+ * @author Chad Burggraf
+ * @copyright Copyright (c) 2012 Chad Burggraf, Tasty Codes
+ * @license Blue Collar may be freely distributed and modified under the MIT license
+ * @website https://github.com/ChadBurggraf/blue-collar
+ */
+(function() {
 /*
  * Date extensions.
  */
@@ -6311,24 +6311,201 @@ _.extend(String.prototype, {
         return _.filter(_.map(value.split(separator), function(s) { return $.trim(s || ''); }), function(s) { return s.length > 0; });
     };
 })(jQuery);
+/**
+ * Base router implementation.
+ *
+ * @constructor
+ */
 var CollarRouter = Backbone.Router.extend({
+    /**
+     * Initialization.
+     * @this {CollarRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
     initialize: function(app, options) {
         this.app = app;
-        debugger;
     }
 });
-var DashboardRouter = CollarRouter.extend({
+/**
+ * History area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var HistoryRouter = CollarRouter.extend({
     routes: {
-        'dashboard': 'dashboard',
-        '*path': 'dashboard'
+        'history': 'index'
     },
 
+    /**
+     * Initialization.
+     * @this {HistoryRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
+        this.options = _.extend({}, options);
     },
 
-    dashboard: function() {
-        debugger;
+    /**
+     * Handles the root #history route.
+     * @this {HistoryRouter}
+     */
+    index: function() {
+        
+    }
+});
+/**
+ * Queue area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var QueueRouter = CollarRouter.extend({
+    routes: {
+        'queue': 'index'
+    },
+
+    /**
+     * Initialization.
+     * @this {QueueRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
+    initialize: function(app, options) {
+        CollarRouter.prototype.initialize.call(this, app, options);
+        this.options = _.extend({}, options);
+    },
+
+    /**
+     * Handles the root #queue route.
+     * @this {QueueRouter}
+     */
+    index: function() {
+        
+    }
+});
+/**
+ * Schedules area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var SchedulesRouter = CollarRouter.extend({
+    routes: {
+        'schedules': 'index'
+    },
+
+    /**
+     * Initialization.
+     * @this {SchedulesRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
+    initialize: function(app, options) {
+        CollarRouter.prototype.initialize.call(this, app, options);
+        this.options = _.extend({}, options);
+    },
+
+    /**
+     * Handles the root #schedules route.
+     * @this {SchedulesRouter}
+     */
+    index: function() {
+        
+    }
+});
+/**
+ * Workers area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var WorkersRouter = CollarRouter.extend({
+    routes: {
+        'workers': 'index'
+    },
+
+    /**
+     * Initialization.
+     * @this {WorkersRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
+    initialize: function(app, options) {
+        CollarRouter.prototype.initialize.call(this, app, options);
+        this.options = _.extend({}, options);
+    },
+
+    /**
+     * Handles the root #workers route.
+     * @this {WorkersRouter}
+     */
+    index: function() {
+        
+    }
+});
+/**
+ * Working area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var WorkingRouter = CollarRouter.extend({
+    routes: {
+        'working': 'index'
+    },
+
+    /**
+     * Initialization.
+     * @this {WorkingRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
+    initialize: function(app, options) {
+        CollarRouter.prototype.initialize.call(this, app, options);
+        this.options = _.extend({}, options);
+    },
+
+    /**
+     * Handles the root #working route.
+     * @this {WorkingRouter}
+     */
+    index: function() {
+        
+    }
+});
+/**
+ * Dashboard area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var DashboardRouter = CollarRouter.extend({
+    routes: {
+        'dashboard': 'index',
+        '*path': 'index'
+    },
+
+    /**
+     * Initialization.
+     * @this {DashboardRouter}
+     * @param {App} app The root application object.
+     * @param {Object} options Additional initialization options.
+     */
+    initialize: function(app, options) {
+        CollarRouter.prototype.initialize.call(this, app, options);
+        this.options = _.extend({}, options);
+    },
+
+    /**
+     * Handles the root #dashboard route.
+     * @this {DashboardRouter}
+     */
+    index: function() {
+
     }
 });
 
@@ -6346,8 +6523,13 @@ var DashboardRouter = CollarRouter.extend({
     this.jsonUrlRoot = this.options.jsonUrlRoot ? this.options.jsonUrlRoot.withTrailingSlash() : this.urlRoot;
 
     new DashboardRouter(this, this.options);
+    new HistoryRouter(this, this.options);
+    new QueueRouter(this, this.options);
+    new SchedulesRouter(this, this.options);
+    new WorkersRouter(this, this.options);
+    new WorkingRouter(this, this.options);
       
-    new Backbone.History().start({
+    Backbone.history.start({
         pushState: true,
         root: this.urlRoot
     });

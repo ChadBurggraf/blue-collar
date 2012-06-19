@@ -12,8 +12,13 @@
     this.jsonUrlRoot = this.options.jsonUrlRoot ? this.options.jsonUrlRoot.withTrailingSlash() : this.urlRoot;
 
     new DashboardRouter(this, this.options);
+    new HistoryRouter(this, this.options);
+    new QueueRouter(this, this.options);
+    new SchedulesRouter(this, this.options);
+    new WorkersRouter(this, this.options);
+    new WorkingRouter(this, this.options);
       
-    new Backbone.History().start({
+    Backbone.history.start({
         pushState: true,
         root: this.urlRoot
     });

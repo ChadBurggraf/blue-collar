@@ -1,18 +1,17 @@
 ﻿/**
- * Dashboard area router implementation.
+ * Queue area router implementation.
  *
  * @constructor
  * @extends {CollarRouter}
  */
-var DashboardRouter = CollarRouter.extend({
+var QueueRouter = CollarRouter.extend({
     routes: {
-        'dashboard': 'index',
-        '*path': 'index'
+        'queue': 'index'
     },
 
     /**
      * Initialization.
-     * @this {DashboardRouter}
+     * @this {QueueRouter}
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -22,10 +21,10 @@ var DashboardRouter = CollarRouter.extend({
     },
 
     /**
-     * Handles the root #dashboard route.
-     * @this {DashboardRouter}
+     * Handles the root #queue route.
+     * @this {QueueRouter}
      */
     index: function() {
-
+        
     }
 });

@@ -1,18 +1,17 @@
 ﻿/**
- * Dashboard area router implementation.
+ * Working area router implementation.
  *
  * @constructor
  * @extends {CollarRouter}
  */
-var DashboardRouter = CollarRouter.extend({
+var WorkingRouter = CollarRouter.extend({
     routes: {
-        'dashboard': 'index',
-        '*path': 'index'
+        'working': 'index'
     },
 
     /**
      * Initialization.
-     * @this {DashboardRouter}
+     * @this {WorkingRouter}
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -22,10 +21,10 @@ var DashboardRouter = CollarRouter.extend({
     },
 
     /**
-     * Handles the root #dashboard route.
-     * @this {DashboardRouter}
+     * Handles the root #working route.
+     * @this {WorkingRouter}
      */
     index: function() {
-
+        
     }
 });

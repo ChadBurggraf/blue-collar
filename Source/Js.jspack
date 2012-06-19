@@ -23,6 +23,11 @@
 
   <output name="Routers" path="routers.js" temporary="true">
     <input path="Routers\collar-router.js"/>
+    <input path="Routers\history-router.js"/>
+    <input path="Routers\queue-router.js"/>
+    <input path="Routers\schedules-router.js"/>
+    <input path="Routers\workers-router.js"/>
+    <input path="Routers\working-router.js"/>
     <input path="Routers\dashboard-router.js"/>
   </output>
 
@@ -33,10 +38,10 @@
 
   <output path="collar.js">
     <action name="CompileJs"/>
-    <input path="copyright.js"/>
     <import name="Backbone"/>
     <import name="Bootstrap"/>
     <import name="DateJs"/>
+    <input path="copyright.js"/>
     <input path="util.js"/>
     <import name="Routers"/>
     <input path="app.js"/>
