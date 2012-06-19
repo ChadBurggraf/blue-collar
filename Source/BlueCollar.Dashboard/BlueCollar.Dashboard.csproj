@@ -103,106 +103,46 @@
   <ItemGroup>
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="Static\bc.css" />
-    <Content Include="Static\bc.js" />
-    <Content Include="Static\html5.js" />
-    <Content Include="Static\iconic_stroke.svg" />
-    <Content Include="Static\Lib\backbone-0.5.3.js" />
-    <Content Include="Static\Lib\datejs\core.js" />
-    <Content Include="Static\Lib\datejs\en-US.js" />
-    <Content Include="Static\Lib\datejs\parser.js" />
-    <Content Include="Static\Lib\datejs\sugarpak.js" />
-    <Content Include="Static\Lib\datejs\time.js" />
-    <Content Include="Static\Lib\extend.js" />
-    <Content Include="Static\Lib\html5.js" />
-    <Content Include="Static\Lib\iconic_stroke.svg" />
-    <Content Include="Static\Lib\jquery-1.7.js" />
-    <Content Include="Static\Lib\jquery.tabby.js" />
-    <Content Include="Static\Lib\json2.js" />
-    <Content Include="Static\Lib\prettify.css" />
-    <Content Include="Static\Lib\prettify.js" />
-    <Content Include="Static\Lib\qunit-1.2.0pre.css" />
-    <Content Include="Static\Lib\qunit-1.2.0pre.js" />
-    <Content Include="Static\Lib\relative-date.js" />
-    <Content Include="Static\Lib\underscore-1.2.1.js" />
-    <Content Include="Static\loading-list.gif" />
-    <Content Include="Static\logo-header.png" />
-    <Content Include="Static\Src\Css\BlueCollar.css" />
-    <Content Include="Static\Lib\bootstrap-xtra-1.4.0.css" />
-    <Content Include="Static\Src\Css\Test.css" />
+    <Content Include="Static\Src\Css\bootstrap-responsive.css" />
+    <Content Include="Static\Src\Css\bootstrap.css" />
+    <Content Include="Static\Src\Css\collar.css" />
+    <Content Include="Static\Src\Img\glyphicons-halflings-white.png" />
+    <Content Include="Static\Src\Img\glyphicons-halflings.png" />
     <Content Include="Static\Src\Img\loading-list.gif" />
     <Content Include="Static\Src\Img\logo-header.png" />
     <Content Include="Static\Src\Img\tc-badge.png" />
-    <Content Include="Static\Src\Js\App.js" />
-    <Content Include="Static\Src\Js\Close.js" />
-    <Content Include="Static\Src\Js\Controllers\BlueCollarController.js" />
-    <Content Include="Static\Src\Js\Controllers\DashboardController.js" />
-    <Content Include="Static\Src\Js\Controllers\HistoryController.js" />
-    <Content Include="Static\Src\Js\Controllers\QueuedController.js" />
-    <Content Include="Static\Src\Js\Controllers\ScheduleController.js" />
-    <Content Include="Static\Src\Js\Controllers\ScheduledJobController.js" />
-    <Content Include="Static\Src\Js\Controllers\WorkerController.js" />
-    <Content Include="Static\Src\Js\Controllers\WorkingController.js" />
-    <Content Include="Static\Src\Js\Dashboard.js" />
-    <Content Include="Static\Src\Js\FormSerializer.js" />
-    <Content Include="Static\Src\Js\Models\BlueCollarCollection.js" />
-    <Content Include="Static\Src\Js\Models\BlueCollarModel.js" />
-    <Content Include="Static\Src\Js\Models\History.js" />
-    <Content Include="Static\Src\Js\Models\NavigationItem.js" />
-    <Content Include="Static\Src\Js\Models\Pager.js" />
-    <Content Include="Static\Src\Js\Models\Queued.js" />
-    <Content Include="Static\Src\Js\Models\Schedule.js" />
-    <Content Include="Static\Src\Js\Models\ScheduledJob.js" />
-    <Content Include="Static\Src\Js\Models\Stats.js" />
-    <Content Include="Static\Src\Js\Models\Worker.js" />
-    <Content Include="Static\Src\Js\Models\Working.js" />
-    <Content Include="Static\Src\Js\Open.js" />
-    <Content Include="Static\Src\Js\Tests\AjaxTests.js" />
-    <Content Include="Static\Src\Js\Tests\ModelTests.js" />
-    <Content Include="Static\Src\Js\Tests\SerializerTests.js" />
-    <Content Include="Static\Src\Js\Tests\TestUtil.js" />
-    <Content Include="Static\Src\Js\Tests\UtilityTests.js" />
-    <Content Include="Static\Src\Js\Tests\ValidateTests.js" />
-    <Content Include="Static\Src\Js\Util.js" />
-    <Content Include="Static\Src\Js\Validate.js" />
-    <Content Include="Static\Src\Js\Views\DashboardView.js" />
-    <Content Include="Static\Src\Js\Views\FormView.js" />
-    <Content Include="Static\Src\Js\Views\HistoryDetailsView.js" />
-    <Content Include="Static\Src\Js\Views\HistoryListView.js" />
-    <Content Include="Static\Src\Js\Views\HistoryRowView.js" />
-    <Content Include="Static\Src\Js\Views\ListView.js" />
-    <Content Include="Static\Src\Js\Views\NavigationView.js" />
-    <Content Include="Static\Src\Js\Views\NoticeView.js" />
-    <Content Include="Static\Src\Js\Views\PagerView.js" />
-    <Content Include="Static\Src\Js\Views\PropertiesView.js" />
-    <Content Include="Static\Src\Js\Views\QueuedDetailsView.js" />
-    <Content Include="Static\Src\Js\Views\QueuedFormView.js" />
-    <Content Include="Static\Src\Js\Views\QueuedListView.js" />
-    <Content Include="Static\Src\Js\Views\QueuedRowView.js" />
-    <Content Include="Static\Src\Js\Views\ScheduledJobFormView.js" />
-    <Content Include="Static\Src\Js\Views\ScheduledJobListView.js" />
-    <Content Include="Static\Src\Js\Views\ScheduledJobRowView.js" />
-    <Content Include="Static\Src\Js\Views\ScheduleFormView.js" />
-    <Content Include="Static\Src\Js\Views\ScheduleListView.js" />
-    <Content Include="Static\Src\Js\Views\ScheduleRowView.js" />
-    <Content Include="Static\Src\Js\Views\SearchFormView.js" />
-    <Content Include="Static\Src\Js\Views\WorkerFormView.js" />
-    <Content Include="Static\Src\Js\Views\WorkerListView.js" />
-    <Content Include="Static\Src\Js\Views\WorkerRowView.js" />
-    <Content Include="Static\Src\Js\Views\WorkerSignalFormView.js" />
-    <Content Include="Static\Src\Js\Views\WorkingDetailsView.js" />
-    <Content Include="Static\Src\Js\Views\WorkingListView.js" />
-    <Content Include="Static\Src\Js\Views\WorkingRowView.js" />
-    <Content Include="Static\Src\Js\Views\WorkingSignalFormView.js" />
-    <Content Include="Static\tc-badge.png" />
-    <Content Include="Static\test.css" />
-    <Content Include="Static\test.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-alert.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-button.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-carousel.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-collapse.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-dropdown.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-modal.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-popover.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-scrollspy.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-tab.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-tooltip.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-transition.js" />
+    <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-typeahead.js" />
+    <Content Include="Static\Src\Js\Vendor\backbone-0.9.2.js" />
+    <Content Include="Static\Src\Js\Vendor\DateJs\core.js" />
+    <Content Include="Static\Src\Js\Vendor\DateJs\en-US.js" />
+    <Content Include="Static\Src\Js\Vendor\DateJs\parser.js" />
+    <Content Include="Static\Src\Js\Vendor\DateJs\sugarpak.js" />
+    <Content Include="Static\Src\Js\Vendor\DateJs\time.js" />
+    <Content Include="Static\Src\Js\Vendor\html5.js" />
+    <Content Include="Static\Src\Js\Vendor\jquery-1.7.js" />
+    <Content Include="Static\Src\Js\Vendor\json2.js" />
+    <Content Include="Static\Src\Js\Vendor\relative-date.js" />
+    <Content Include="Static\Src\Js\Vendor\underscore-1.3.3.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Static\Css\" />
+    <Folder Include="Static\Img\" />
+    <Folder Include="Static\Js\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -223,12 +163,7 @@
     <Content Include="Views\Shared\_Templates.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Static\iconic_stroke.eot" />
-    <None Include="Static\iconic_stroke.ttf" />
-    <None Include="Static\iconic_stroke.woff" />
-    <None Include="Static\Lib\iconic_stroke.eot" />
-    <None Include="Static\Lib\iconic_stroke.ttf" />
-    <None Include="Static\Lib\iconic_stroke.woff" />
+    <None Include="Static\Src\Less\collar.less" />
     <None Include="Web.config.template">
       <SubType>Designer</SubType>
     </None>
@@ -257,7 +192,9 @@
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
     <Copy SourceFiles="Web.config.template" DestinationFiles="Web.config" Condition="!Exists('Web.config')" />
+    <!--
     <CallTarget Targets="PackageAssets" />
+    -->
   </Target>
   <Target Name="AfterBuild">
   </Target>

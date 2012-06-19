@@ -215,8 +215,10 @@
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
+    <!--
     <CallTarget Targets="PackageAssets" />
     <Copy SourceFiles="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml" DestinationFiles="$(AssetsOutputDir)\templates.html" />
+    -->
   </Target>
   <Target Name="AfterBuild">
     <CallTarget Targets="MergeLibrary" Condition="'$(Configuration)' == 'Release'" />
