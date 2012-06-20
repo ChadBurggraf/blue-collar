@@ -13,6 +13,11 @@
     <input path="Vendor\Bootstrap\bootstrap-collapse.js"/>
   </output>
 
+  <output name="Controllers" path="controllers.js" temporary="true">
+    <input path="Controllers\collar-controller.js"/>
+    <input path="Controllers\dashboard-controller.js"/>
+  </output>
+
   <output name="DateJs" path="date.js" temporary="true">
     <input path="Vendor\DateJs\en-US.js"/>
     <input path="Vendor\DateJs\core.js"/>
@@ -42,7 +47,9 @@
     <import name="Bootstrap"/>
     <import name="DateJs"/>
     <input path="copyright.js"/>
+    <input path="Vendor\extend.js"/>
     <input path="util.js"/>
+    <import name="Controllers"/>
     <import name="Routers"/>
     <input path="app.js"/>
     <input path="close.js"/>

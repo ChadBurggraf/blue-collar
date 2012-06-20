@@ -11,6 +11,9 @@
     this.urlRoot = (urlRoot || '/').withTrailingSlash();
     this.jsonUrlRoot = this.options.jsonUrlRoot ? this.options.jsonUrlRoot.withTrailingSlash() : this.urlRoot;
 
+    this.nav = $('#nav');
+    this.page = $('#page');
+
     new DashboardRouter(this, this.options);
     new HistoryRouter(this, this.options);
     new QueueRouter(this, this.options);

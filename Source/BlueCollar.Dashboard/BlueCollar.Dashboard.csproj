@@ -123,9 +123,16 @@
     <Content Include="Static\Src\Img\tc-badge.png" />
     <Content Include="Static\Src\Js\app.js" />
     <Content Include="Static\Src\Js\close.js" />
+    <Content Include="Static\Src\Js\Controllers\collar-controller.js" />
+    <Content Include="Static\Src\Js\Controllers\dashboard-controller.js" />
     <Content Include="Static\Src\Js\copyright.js" />
     <Content Include="Static\Src\Js\Routers\collar-router.js" />
     <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
+    <Content Include="Static\Src\Js\Routers\history-router.js" />
+    <Content Include="Static\Src\Js\Routers\queue-router.js" />
+    <Content Include="Static\Src\Js\Routers\schedules-router.js" />
+    <Content Include="Static\Src\Js\Routers\workers-router.js" />
+    <Content Include="Static\Src\Js\Routers\working-router.js" />
     <Content Include="Static\Src\Js\util.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-alert.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-button.js" />
@@ -145,11 +152,13 @@
     <Content Include="Static\Src\Js\Vendor\DateJs\parser.js" />
     <Content Include="Static\Src\Js\Vendor\DateJs\sugarpak.js" />
     <Content Include="Static\Src\Js\Vendor\DateJs\time.js" />
+    <Content Include="Static\Src\Js\Vendor\extend.js" />
     <Content Include="Static\Src\Js\Vendor\html5.js" />
     <Content Include="Static\Src\Js\Vendor\jquery-1.7.js" />
     <Content Include="Static\Src\Js\Vendor\json2.js" />
     <Content Include="Static\Src\Js\Vendor\relative-date.js" />
     <Content Include="Static\Src\Js\Vendor\underscore-1.3.3.js" />
+    <Content Include="Static\Src\Js\Views\nav-view.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -177,6 +186,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Static\Src\Less\collar.less" />
+    <Content Include="Views\Shared\Templates\_Dashboard.cshtml" />
+    <Content Include="Views\Shared\Templates\_Nav.cshtml" />
     <None Include="Web.config.template">
       <SubType>Designer</SubType>
     </None>
