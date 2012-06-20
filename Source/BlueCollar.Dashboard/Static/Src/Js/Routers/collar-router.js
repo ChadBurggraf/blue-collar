@@ -8,7 +8,7 @@ var CollarRouter = Backbone.Router.extend({
 
     /**
      * Initialization.
-     * @this {CollarRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Initialization options.
      */

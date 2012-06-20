@@ -11,7 +11,7 @@ var HistoryRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {HistoryRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -22,7 +22,6 @@ var HistoryRouter = CollarRouter.extend({
 
     /**
      * Handles the root #history route.
-     * @this {HistoryRouter}
      */
     index: function() {
         

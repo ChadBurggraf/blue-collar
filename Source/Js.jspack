@@ -26,6 +26,12 @@
     <input path="Vendor\DateJs\time.js"/>
   </output>
 
+  <output name="Models" path="models.js" temporary="true">
+    <input path="Models\collar-model.js"/>
+    <input path="Models\collar-collection.js"/>
+    <input path="Models\nav-model.js"/>
+  </output>
+
   <output name="Routers" path="routers.js" temporary="true">
     <input path="Routers\collar-router.js"/>
     <input path="Routers\history-router.js"/>
@@ -34,6 +40,10 @@
     <input path="Routers\workers-router.js"/>
     <input path="Routers\working-router.js"/>
     <input path="Routers\dashboard-router.js"/>
+  </output>
+
+  <output name="Views" path="views.js" temporary="true">
+    <input path="Views\nav-view.js"/>
   </output>
 
   <output path="html5.js">
@@ -49,8 +59,10 @@
     <input path="copyright.js"/>
     <input path="Vendor\extend.js"/>
     <input path="util.js"/>
+    <import name="Models"/>
     <import name="Controllers"/>
     <import name="Routers"/>
+    <import name="Views"/>
     <input path="app.js"/>
     <input path="close.js"/>
   </output>

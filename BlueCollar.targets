@@ -173,4 +173,14 @@
       XPath="/n:Wix/n:Product/@Version"
       Value="$(Major).$(Minor).$(Build)"/>
   </Target>
+
+  <Target Name="Templates">
+    <ItemGroup>
+      <TemplateFiles Include="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\Templates\*.cshtml"/>
+    </ItemGroup>
+    <ReadLinesFromFile File="%(TemplateFiles.Identity)">
+      <Output TaskParameter="Lines" ItemName="TemplateLines"/>
+    </ReadLinesFromFile>
+    <WriteLinesToFile File="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml" Lines="@(TemplateLines)" Overwrite="true"/>
+  </Target>
 </Project>

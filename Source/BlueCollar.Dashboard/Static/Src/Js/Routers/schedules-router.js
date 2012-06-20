@@ -11,7 +11,7 @@ var SchedulesRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {SchedulesRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -22,7 +22,6 @@ var SchedulesRouter = CollarRouter.extend({
 
     /**
      * Handles the root #schedules route.
-     * @this {SchedulesRouter}
      */
     index: function() {
         

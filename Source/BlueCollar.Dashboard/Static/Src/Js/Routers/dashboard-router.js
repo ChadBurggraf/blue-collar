@@ -13,7 +13,7 @@ var DashboardRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {DashboardRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Initialization options.
      */
@@ -24,7 +24,6 @@ var DashboardRouter = CollarRouter.extend({
 
     /**
      * Handles the root #dashboard route.
-     * @this {DashboardRouter}
      */
     index: function() {
         new this.controller(this.app.nav, this.app.page);

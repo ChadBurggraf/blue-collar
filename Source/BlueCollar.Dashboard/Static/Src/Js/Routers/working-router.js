@@ -11,7 +11,7 @@ var WorkingRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {WorkingRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -22,7 +22,6 @@ var WorkingRouter = CollarRouter.extend({
 
     /**
      * Handles the root #working route.
-     * @this {WorkingRouter}
      */
     index: function() {
         

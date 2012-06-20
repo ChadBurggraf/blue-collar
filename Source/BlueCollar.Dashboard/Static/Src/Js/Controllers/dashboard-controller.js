@@ -7,10 +7,10 @@
 var DashboardController = CollarController.extend({
     /**
      * Initialization.
-     * @this {DashboardController}
+     *
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        debugger;
+
     }
 });

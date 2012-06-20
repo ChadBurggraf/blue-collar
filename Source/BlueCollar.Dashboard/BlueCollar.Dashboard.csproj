@@ -126,6 +126,9 @@
     <Content Include="Static\Src\Js\Controllers\collar-controller.js" />
     <Content Include="Static\Src\Js\Controllers\dashboard-controller.js" />
     <Content Include="Static\Src\Js\copyright.js" />
+    <Content Include="Static\Src\Js\Models\collar-collection.js" />
+    <Content Include="Static\Src\Js\Models\collar-model.js" />
+    <Content Include="Static\Src\Js\Models\nav-model.js" />
     <Content Include="Static\Src\Js\Routers\collar-router.js" />
     <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
     <Content Include="Static\Src\Js\Routers\history-router.js" />
@@ -216,6 +219,7 @@
   <Target Name="BeforeBuild">
     <Copy SourceFiles="Web.config.template" DestinationFiles="Web.config" Condition="!Exists('Web.config')" />
     <CallTarget Targets="Img;Js;Less" />
+    <CallTarget Targets="Templates"/>
   </Target>
   <Target Name="AfterBuild">
   </Target>

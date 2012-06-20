@@ -11,7 +11,7 @@ var QueueRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {QueueRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -22,7 +22,6 @@ var QueueRouter = CollarRouter.extend({
 
     /**
      * Handles the root #queue route.
-     * @this {QueueRouter}
      */
     index: function() {
         

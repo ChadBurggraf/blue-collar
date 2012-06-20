@@ -6366,6 +6366,321 @@ _.extend(String.prototype, {
     };
 })(jQuery);
 /**
+ * Base model implementation.
+ *
+ * @constructor
+ */
+var CollarModel = Backbone.Model.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} app A set of initial model attribute values.
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(attributes, options) {
+        if (attributes) {
+            // Backbone is not initializing attributes in initialize,
+            // it is happening in the real object constructor. This is
+            // hacky, but we need to replace the initialized attributes
+            // with our replaced ones.
+            this.set(CollarModel.parseAllDates(attributes), {silent: true});
+            this.changed = {};
+            this._silent = {};
+            this._pending = {};
+            this._previousAttributes = _.clone(this.attributes);
+            this.initialize.apply(this, arguments); 
+        }
+    },
+
+    /**
+     * Gets a value indicating whether this instance represents a new model.
+     *
+     * @return {boolean} True if the model is new, false otherwise.
+     */
+    isNew: function() {
+        var id = this.get('Id');
+        return _.isUndefined(id) || _.isNull(id) || _.isNaN(id) || id < 1;
+    },
+
+    /**
+     * Parses the model's data as returned by the server.
+     *
+     * @param {Object} response The raw response object received from the server.
+     * @return {Object} The parsed response object.
+     */
+    parse: function(response) {
+        return CollarModel.parseAllDates(response);
+    },
+
+    /**
+     * Sets the given attributes on this instance.
+     *
+     * @param {Object} attributes The attributes to set.
+     * @param {Object} options The options to use when setting attributes.
+     */
+    set: function(attributes, options) {
+        if (attributes && !_.isUndefined(attributes.Id)) {
+            attributes.id = attributes.Id;
+        }
+
+        return Backbone.Model.prototype.set.call(this, attributes, options);
+    },
+
+    /**
+     * Gets a copy of th emodel's attributes, suitable for editing in a UI.
+     *
+     * @return {Object} An editable copy of the model's underlying attributes.
+     */
+    toEditJSON: function() {
+        var obj = this.toJSON(),
+            prop;
+
+        for (prop in obj) {
+            if (obj.hasOwnProperty(prop)) {
+                if (_.isUndefined(this.defaults[prop])) {
+                    delete obj[prop];
+                }
+            }
+        }
+
+        return obj;
+    },
+
+    /**
+     * Gets a copy of the model's attributes.
+     *
+     * @return {Object} A copy of the model's underlying attributes.
+     */
+    toJSON: function() {
+        var obj = Backbone.Model.prototype.toJSON.call(this);
+        delete obj.id;
+        return obj;
+    },
+
+    /**
+     * Gets the URL to use when interacting with the model on the server.
+     *
+     * @return {String} The model's server URL.
+     */
+    url: function() {
+        var baseUrl = this.collection && this.collection.url ? (_.isFunction(this.collection.url) ? this.collection.url() : this.collection.url) : '';
+        baseUrl = baseUrl || this.urlRoot || urlError();
+        return this.isNew() ? baseUrl : baseUrl.appendUrlPath(this.id);
+    }
+});
+
+/**
+ * Static functions.
+ */
+_.extend(CollarModel, {
+    /**
+     * Searches the given attributes object for strings that look like
+     * dates, and parses them into {Date} objects.
+     *
+     * @param {Object} attributes A hash of attributes to search.
+     * @return {Object} The updated attributes object with all dates parsed.
+     */
+    parseAllDates: function(attributes) {
+        var prop,
+            value;
+
+        if (attributes) {
+            for (prop in attributes) {
+                if (attributes.hasOwnProperty(prop)) {
+                    value = attributes[prop];
+                    
+                    if (Date.isASPNET(value)) {
+                        attributes[prop] = Date.parseASPNET(value);
+                    } else if (Date.isISOString(value)) {
+                        attributes[prop] = new Date(value);
+                    }
+                }
+            }
+        }
+
+        return attributes;
+    }
+});
+/**
+ * Base collection implementation.
+ *
+ * @constructor
+ */
+ var CollarCollection = Backbone.Collection.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} models An object specifying the model collection.
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(models, options) {
+        options = options || {};
+        this.search = '';
+        this.urlRoot = options.urlRoot || '/';
+
+        // Reset is called by the true Backbone.Collection constructor
+        // if models is defined. Therefore, only call if models is
+        // not defined.
+        if (!models) {
+            this.reset(models, {silent: true});
+        }
+    },
+
+    /**
+     * Clears the 'editing' attribute from each model in the collection.
+     */
+    clearEditing: function() {
+        this.each(function(m) { 
+            m.set({editing: false}); 
+        });
+    },
+
+    /**
+     * Creates a params object for listing the collection.
+     */
+    listParams: function() {
+        return {
+            search: this.search || '',
+            page: this.pageNumber || 1
+        };
+    },
+
+    /**
+     * Replaces this instance's model collection with the given collection.
+     *
+     * @param {Object} models An object specifying the new model collection.
+     * @param {Object} options The options to use when performing the reset.
+     * @return {CollarCollection} This instance.
+     */
+    reset: function(models, options) {
+        models = models || {};
+        this.pageCount = models.PageCount || 1;
+        this.pageNumber = models.PageNumber || 1;
+        this.totalCount = models.TotalCount || 0;
+        
+        if (models.Counts) {
+            this.trigger('counts', this, models.Counts);
+        }
+
+        return Backbone.Collection.prototype.reset.call(this, models.Records, options);
+    },
+
+    /**
+     * Gets the URL to use when interacting with the collection on the server.
+     *
+     * @return {String} The collection's server URL.
+     */
+    url: function() {
+        var url = this.urlRoot || '/',
+            queryIndex = url.indexOf('?');
+
+        if (queryIndex < 0) {
+            url += '?';
+        } else if (queryIndex !== url.length && url.lastIndexof('&') !== url.length) {
+            url += '&';
+        }
+
+        url += 'q=' + encodeURIComponent(this.search || '');
+        url += '&p=' + encodeURIComponent((this.pageNumber || 1).toString());
+
+        return url;
+    }
+ });
+/**
+ * Model's a navigation item.
+ *
+ * @constructor
+ */
+var NavModel = Backbone.Model.extend({});
+
+/**
+ * Represents a collection of {NavModel}s.
+ *
+ * @constructor
+ */
+var NavCollection = Backbone.Collection.extend({
+    model: NavModel,
+
+    /**
+     * Gets the current nav item.
+     *
+     * @return {NavModel} The current nav item, or null if none is current.
+     */
+    getCurrent: function() {
+        var item = this.find(function(item) {
+            return item.get('Current');
+        });
+
+        if (!item && this.length > 0) {
+            this.setCurrent(this.at(0).get('Name'));
+            item = this.at(0);
+        }
+
+        return item || null;
+    },
+
+    /**
+     * Parses the collection's data as returned by the server.
+     *
+     * @param {Object} response The raw response object received from the server.
+     * @return {Array} The parsed collection data.
+     */
+    parse: function(response) {
+        var m = [],
+            current = this.getCurrent(),
+            urlRoot = this.urlRoot || '',
+            showCounts = !!this.showCounts,
+            i = 1,
+            prop;
+
+        response = response || {};
+
+        function push(id, name, count, url) {
+            count = count !== null && showCounts ? count || 0 : null;
+            m.push({id: id.toString(), Name: name, Count: count, Current: !!(current && current.get('Name') === name), Url: urlRoot + url});
+        }
+
+        push(i++, 'Dashboard', null, '#dashboard');
+        push(i++, 'Working', response['WorkingCount'], '#working');
+        push(i++, 'Queue', response['QueueCount'], '#queue');
+        push(i++, 'History', response['HistoryCount'], '#history');
+        push(i++, 'Workers', response['WorkerCount'], '#workers');
+        push(i++, 'Schedules', response['ScheduleCount'], '#schedules');
+
+        if (this.testLink) {
+            push(i++, 'Tests', null, 'test');
+        }
+
+        if (!current) {
+            m[0].Current = true;
+        }
+        
+        return m;
+    },
+
+    /**
+     * Sets the nav item with the given name to be the current nav item.
+     *
+     * @param {String} name The name of the nav item to set current.
+     */
+    setCurrent: function(name) {
+        var item,
+            i,
+            n;
+
+        for (i = 0, n = this.length; i < n; i++) {
+            item = this.at(i);
+
+            if (item.get('Name') === name) {
+                item.set({Current: true});
+            } else {
+                item.set({Current: false});
+            }
+        }
+    }
+});
+
+/**
  * Base controller implementation.
  *
  * @constructor
@@ -6384,6 +6699,9 @@ var CollarController = function(nav, page, options) {
  * Static functions.
  */
 _.extend(CollarController, {
+    /**
+     * Mixin extend functionality to enable inheritence.
+     */
     extend: extend
 });
 
@@ -6393,7 +6711,7 @@ _.extend(CollarController, {
 _.extend(CollarController.prototype, Backbone.Events, {
     /**
      * Initialization.
-     * @this {CollarController}
+     *
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {}
@@ -6407,11 +6725,11 @@ _.extend(CollarController.prototype, Backbone.Events, {
 var DashboardController = CollarController.extend({
     /**
      * Initialization.
-     * @this {DashboardController}
+     *
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        debugger;
+
     }
 });
 
@@ -6425,7 +6743,7 @@ var CollarRouter = Backbone.Router.extend({
 
     /**
      * Initialization.
-     * @this {CollarRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Initialization options.
      */
@@ -6446,7 +6764,7 @@ var HistoryRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {HistoryRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -6457,7 +6775,6 @@ var HistoryRouter = CollarRouter.extend({
 
     /**
      * Handles the root #history route.
-     * @this {HistoryRouter}
      */
     index: function() {
         
@@ -6476,7 +6793,7 @@ var QueueRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {QueueRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -6487,7 +6804,6 @@ var QueueRouter = CollarRouter.extend({
 
     /**
      * Handles the root #queue route.
-     * @this {QueueRouter}
      */
     index: function() {
         
@@ -6506,7 +6822,7 @@ var SchedulesRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {SchedulesRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -6517,7 +6833,6 @@ var SchedulesRouter = CollarRouter.extend({
 
     /**
      * Handles the root #schedules route.
-     * @this {SchedulesRouter}
      */
     index: function() {
         
@@ -6536,7 +6851,7 @@ var WorkersRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {WorkersRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -6547,7 +6862,6 @@ var WorkersRouter = CollarRouter.extend({
 
     /**
      * Handles the root #workers route.
-     * @this {WorkersRouter}
      */
     index: function() {
         
@@ -6566,7 +6880,7 @@ var WorkingRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {WorkingRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Additional initialization options.
      */
@@ -6577,7 +6891,6 @@ var WorkingRouter = CollarRouter.extend({
 
     /**
      * Handles the root #working route.
-     * @this {WorkingRouter}
      */
     index: function() {
         
@@ -6598,7 +6911,7 @@ var DashboardRouter = CollarRouter.extend({
 
     /**
      * Initialization.
-     * @this {DashboardRouter}
+     *
      * @param {App} app The root application object.
      * @param {Object} options Initialization options.
      */
@@ -6609,7 +6922,6 @@ var DashboardRouter = CollarRouter.extend({
 
     /**
      * Handles the root #dashboard route.
-     * @this {DashboardRouter}
      */
     index: function() {
         new this.controller(this.app.nav, this.app.page);
@@ -6617,20 +6929,113 @@ var DashboardRouter = CollarRouter.extend({
 });
 
 /**
+ * Manages the view for a single navigation item.
+ *
+ * @constructor
+ */
+var NavItemView = Backbone.View.extend({
+    tagName: 'li',
+    template: _.template($('#nav-item-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {NaviItemView} This instance.
+     */
+    render: function() {
+        this.$el.html(this.template(this.model.toJSON()));
+
+        if (this.model.get('Current')) {
+            this.$el.addClass('active');
+        } else {
+            this.$el.removeClass('current');
+        }
+
+        return this;
+    }
+});
+
+/**
+ * Manages the view for the navigation list.
+ *
+ * @constructor
+ */
+var NavView = Backbone.View.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.collection.bind('reset', this.render, this);
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {NavView} This instance.
+     */
+    render: function() {
+        var model,
+            view,
+            i,
+            n;
+
+        this.$el.html('');
+
+        for (i = 0, n = this.collection.length; i < n; i++) {
+            model = this.collection.at(i);
+            view = new NavItemView({model: model});
+            this.$el.append(view.render().el);
+        }
+
+        return this;
+    }
+});
+
+/**
  * Application entry point.
  *
  * @constructor
- * @this {App}
  * @param {string} urlRoot The root application URL, used for navigation and Ajax.
  * @param {object} options Additional initialization options.
  */
  var App = function(urlRoot, options) {
-    this.options = options || {};
+    var navCollection;
+
+    this.options = options = _.extend({
+        stats: null,
+        showCounts: true,
+        testLink: false
+    }, options);
+
     this.urlRoot = (urlRoot || '/').withTrailingSlash();
     this.jsonUrlRoot = this.options.jsonUrlRoot ? this.options.jsonUrlRoot.withTrailingSlash() : this.urlRoot;
 
     this.nav = $('#nav');
     this.page = $('#page');
+
+    navCollection = new NavCollection();
+    navCollection.urlRoot = this.urlRoot;
+    navCollection.showCounts = this.options.showCounts;
+    navCollection.testLink = this.options.testLink;
+    navCollection.url = this.jsonUrlRoot + 'counts';
+    this.navView = new NavView({collection: navCollection, el: this.nav});
+
+    if (options.stats && options.stats.Counts) {
+        navCollection.reset(navCollection.parse(options.stats.Counts));
+    } else {
+        navCollection.fetch();
+    }
 
     new DashboardRouter(this, this.options);
     new HistoryRouter(this, this.options);

@@ -1,4 +1,4 @@
 @echo off
-MSBuild BlueCollar.targets /t:Js;Less
-echo Watching JS and LESS files...
+MSBuild BlueCollar.targets /t:Js;Less;Templates
+echo Watching JS, LESS and template files...
 watchr BlueCollar.watchr

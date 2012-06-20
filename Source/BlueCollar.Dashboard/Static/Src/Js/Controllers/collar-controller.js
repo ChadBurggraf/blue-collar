@@ -17,6 +17,9 @@ var CollarController = function(nav, page, options) {
  * Static functions.
  */
 _.extend(CollarController, {
+    /**
+     * Mixin extend functionality to enable inheritence.
+     */
     extend: extend
 });
 
@@ -26,7 +29,7 @@ _.extend(CollarController, {
 _.extend(CollarController.prototype, Backbone.Events, {
     /**
      * Initialization.
-     * @this {CollarController}
+     *
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {}
