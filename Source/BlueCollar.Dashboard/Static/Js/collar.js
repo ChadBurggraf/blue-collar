@@ -6684,12 +6684,10 @@ var NavCollection = Backbone.Collection.extend({
  * Base controller implementation.
  *
  * @constructor
- * @param {jQuery} nav A reference to the nav jQuery element.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(nav, page, options) {
-    this.nav = nav;
+var CollarController = function(page, options) {
     this.page = page;
     this.options = _.extend({}, options);
     this.initialize(this, this.options);
@@ -6729,7 +6727,11 @@ var DashboardController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.view = new DashboardView({el: this.page});
+    },
 
+    index: function(options) {
+        this.view.render();
     }
 });
 
@@ -6924,10 +6926,28 @@ var DashboardRouter = CollarRouter.extend({
      * Handles the root #dashboard route.
      */
     index: function() {
-        new this.controller(this.app.nav, this.app.page);
+        new this.controller(this.app.page).index();
     }
 });
 
+/**
+ * Manages the root dashboard view.
+ *
+ * @constructor
+ */
+var DashboardView = Backbone.View.extend({
+    template: _.template($('#dashboard-template').html()),
+
+    /**
+     * Renders the view.
+     *
+     * @return {DashboardView} This instance.
+     */
+    render: function() {
+        this.$el.html(this.template());
+        return this;
+    }
+});
 /**
  * Manages the view for a single navigation item.
  *

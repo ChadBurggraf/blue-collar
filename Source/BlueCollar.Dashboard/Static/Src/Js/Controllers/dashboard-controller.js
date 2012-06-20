@@ -11,6 +11,10 @@ var DashboardController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.view = new DashboardView({el: this.page});
+    },
 
+    index: function(options) {
+        this.view.render();
     }
 });

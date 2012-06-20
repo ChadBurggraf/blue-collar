@@ -2,12 +2,10 @@
  * Base controller implementation.
  *
  * @constructor
- * @param {jQuery} nav A reference to the nav jQuery element.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(nav, page, options) {
-    this.nav = nav;
+var CollarController = function(page, options) {
     this.page = page;
     this.options = _.extend({}, options);
     this.initialize(this, this.options);

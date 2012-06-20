@@ -43,6 +43,7 @@
   </output>
 
   <output name="Views" path="views.js" temporary="true">
+    <input path="Views\dashboard-view.js"/>
     <input path="Views\nav-view.js"/>
   </output>
 

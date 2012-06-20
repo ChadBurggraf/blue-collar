@@ -26,6 +26,6 @@ var DashboardRouter = CollarRouter.extend({
      * Handles the root #dashboard route.
      */
     index: function() {
-        new this.controller(this.app.nav, this.app.page);
+        new this.controller(this.app.page).index();
     }
 });
