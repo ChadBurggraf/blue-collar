@@ -6089,11 +6089,17 @@ var extend = function (protoProps, classProps) {
     child.extend = this.extend;
     return child;
 };
-/*
- * Date extensions.
+/**
+ * Static {Date} functions.
  */
-
 _.extend(Date, {
+    /**
+     * Gets a value indicating whether the given value is a string
+     * that looks like an ASP.NET date.
+     *
+     * @param {Object} value The value to check.
+     * @return {boolean} True if the object is an ASP.NET date string, false otherwise.
+     */
     isASPNET: function(value) {
         if (!_.isUndefined(value) && _.isString(value)) {
             return /^\/Date\([\d-+]+\)\/$/.test(value);
@@ -6102,6 +6108,13 @@ _.extend(Date, {
         return false;
     },
 
+    /**
+     * Gets a value indicating whether the given value is a string
+     * that looks like an ISO date.
+     *
+     * @param {Object} value The value to check.
+     * @return {boolean} True if the value is an ISO date string, false otherwise.
+     */
     isISOString: function(value) {
         if (!_.isUndefined(value) && _.isString(value)) {
             return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z?$/.test(value);
@@ -6110,6 +6123,12 @@ _.extend(Date, {
         return false;
     },
 
+    /**
+     * Parses an ASP.NET date string into a {Date}.
+     *
+     * @param {String} value The value to parse.
+     * @return {Date} The parsed date.
+     */
     parseASPNET: function(value) {
         var num;
 
@@ -6125,17 +6144,25 @@ _.extend(Date, {
     }
 });
 
-/*
- * Number extensions.
+/**
+ * Static {Number} functions and constants.
  */
-
 _.extend(Number, {
     THOUSAND: 1000,
     MILLION: 1000000,
     BILLION: 1000000000
 });
 
+/**
+ * Prototype {Number} functions.
+ */
 _.extend(Number.prototype, {
+    /**
+     * Formats this instance using the given format string.
+     *
+     * @param {String} format The format string to use.
+     * @return {String} The formatted value.
+     */
     format: function(format) {
         var hasComma,
             fnum,
@@ -6203,6 +6230,13 @@ _.extend(Number.prototype, {
         return format.replace(/[\d,?\.?]+/, fnum);
     },
 
+    /**
+     * Gets this instance's value as an abbreviated string.
+     * e.g., 14K instead of 14000.
+     *
+     * @param {String} tooBig The value to return if this instance is too big to be abbreviated.
+     * @return {String} An abbreviated string.
+     */
     toAbbreviatedString: function(tooBig) {
         var n;
 
@@ -6260,10 +6294,18 @@ _.extend(Number.prototype, {
 });
 
 /*
- * String extensions.
+ * Static {String} functions.
  */
-
 _.extend(String, {
+    /**
+     * Gets a display string identifying a Blue Collar machine.
+     *
+     * @param {String} name The machine name.
+     * @param {String} address The machine address.
+     * @param {String} beginSep The left separation token.
+     * @param {String} endSep The right separation token.
+     * @return {String} A machine display string.
+     */
     machineDisplay: function(name, address, beginSep, endSep) {
         var result = '',
             beginSep = beginSep || '(',
@@ -6290,14 +6332,34 @@ _.extend(String, {
         return result;
     },
 
+    /**
+     * Gets a machine display string using the 'light' style.
+     *
+     * @param {String} name The machine name.
+     * @param {String} address The machine address.
+     * @return {String} A machine display string.
+     */
     machineDisplayLight: function(name, address) {
         return String.machineDisplay(name, address, '<span class="light">', '</span>');
     },
 
+    /**
+     * Gets a machine display string using the 'parens' style.
+     *
+     * @param {String} name The machine name.
+     * @param {String} address The machine address.
+     * @return {String} A machine display string.
+     */
     machineDisplayParens: function(name, address) {
         return String.machineDisplay(name, address, '(', ')');
     },
 
+    /**
+     * Formats a newline-separated string of queue names for display.
+     *
+     * @param {String} value A newline-separated string of queue names.
+     * @return {String} A queue names display string.
+     */
     queueNamesDisplay: function(value) {
         value = $.splitAndTrim(value, '\n');
         return value.length === 0 || _.any(value, function(s) { return s === '*'; })
@@ -6306,7 +6368,16 @@ _.extend(String, {
     }
 });
 
+/**
+ * Prototype {String} functions.
+ */
 _.extend(String.prototype, {
+    /**
+     * Appens a path part to this instance, treating it as a URL.
+     *
+     * @param {String} path The path part to append.
+     * @return {String} This instance, updated.
+     */
     appendUrlPath: function(path) {
         var parts,
             url,
@@ -6331,10 +6402,20 @@ _.extend(String.prototype, {
         return this;
     },
 
+    /**
+     * Gets a value indicating whether this instance is a valid JSON/JavaScript identifier.
+     *
+     * @return True if this instance is a valid identifier, false otherwise.
+     */
     isValidIdentifier: function() {
         return /^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(this);
     },
 
+    /**
+     * Ensures this instance ends with a trailing slash.
+     *
+     * @return This instance with a trailing slash.
+     */
     withTrailingSlash: function() {
         return this.lastIndexOf('/') !== this.length - 1
             ? this + '/'
@@ -6342,15 +6423,25 @@ _.extend(String.prototype, {
     }
 });
 
-/*
+/**
  * jQuery extensions.
  */
-
 (function($) {
+    /**
+     * Gets the outer-HTML of this element.
+     *
+     * @return {String} This element's outer-HTML.
+     */
     $.fn.outerHtml = function() {
         return this.wrap('<div/>').parent().html();
     };
 
+    /**
+     * HTML-encodes the given value.
+     *
+     * @param {Object} value The value to HTML-encode.
+     * @return {String} The HTML-encoded value.
+     */
     $.htmlEncode = function(value) {
         if (_.isUndefined(value) || _.isNull(value)) {
             value = '';
@@ -6359,6 +6450,14 @@ _.extend(String.prototype, {
         return $('<div/>').text(value).text();
     };
 
+    /**
+     * Splits the given value using the given separator, trimming each resulting value
+     * and then removing any empty values.
+     *
+     * @param {String} value The value to split and trim.
+     * @param {String} separator The token to split the string on.
+     * @return {Array} The result array.
+     */ 
     $.splitAndTrim = function(value, separator) {
         value = value || '';
         separator = separator || '';
@@ -6558,7 +6657,7 @@ _.extend(CollarModel, {
         this.totalCount = models.TotalCount || 0;
         
         if (models.Counts) {
-            this.trigger('counts', this, models.Counts);
+            this.trigger('counts', this, {counts: models.Counts});
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);
@@ -6585,6 +6684,58 @@ _.extend(CollarModel, {
         return url;
     }
  });
+/**
+ * Models a history entry.
+ *
+ * @constructor
+ */
+var HistoryModel = CollarModel.extend({
+    defaults: {
+        'Id': 0,
+        'FinishedOn': null,
+        'JobName': null,
+        'JobType': null,
+        'QueueName': null,
+        'ScheduleName': null,
+        'StartedOn': null,
+        'Status': 'None',
+        'TryNumber': 0
+    }
+});
+
+/**
+ * Models the full details of a history entry.
+ *
+ * @constructor
+ */
+var HistoryDetailsModel = CollarModel.extend({
+    defaults: {
+        'Id': null,
+        'Data': null,
+        'Exception': null,
+        'FinishedOn': null,
+        'JobName': null,
+        'JobType': null,
+        'QueuedOn': null,
+        'QueueName': null,
+        'ScheduleName': null,
+        'StartedOn': null,
+        'Status': 'None',
+        'TryNumber': 0,
+        'WorkerMachineAddress': null,
+        'WorkerMachineName': null,
+        'WorkerName': null
+    }
+});
+
+/**
+ * Represents a collection of {HistoryModel}s.
+ *
+ * @constructor
+ */
+var HistoryCollection = CollarCollection.extend({
+    model: HistoryModel
+});
 /**
  * Models a navigation item.
  *
@@ -6653,7 +6804,7 @@ var NavCollection = Backbone.Collection.extend({
         if (!current) {
             m[0].Current = true;
         }
-        
+
         return m;
     },
 
@@ -6823,7 +6974,7 @@ var StatsModel = CollarModel.extend({
         options = _.extend({silent: false}, options);
 
         if (attributes.Counts && !options.silent) {
-            this.trigger('counts', this, attributes.Counts);
+            this.trigger('counts', this, {counts: attributes.Counts});
         }
 
         this.counts.set(this.counts.parse(attributes.Counts), {silent: true});
@@ -6868,13 +7019,24 @@ var StatsModel = CollarModel.extend({
  *
  * @constructor
  * @param {String} applicationName The name of the application.
+ * @param {String} urlRoot The JSON URL root the application is using.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(applicationName, page, options) {
+var CollarController = function(applicationName, urlRoot, page, options) {
     this.applicationName = applicationName;
+    this.urlRoot = urlRoot;
     this.page = page;
     this.options = _.extend({}, options);
+
+    var collection = null;
+
+    if (_.isFunction(this.collection)) {
+        collection = new this.collection(null, {urlRoot: this.urlRoot});
+        collection.bind('reset', this.reset, this);
+    }
+
+    this.model = new Backbone.Model({ApplicationName: this.applicationName, Collection: collection});
     this.initialize(this.options);
 };
 
@@ -6892,9 +7054,8 @@ _.extend(CollarController, {
  * Prototype functions.
  */
 _.extend(CollarController.prototype, Backbone.Events, {
-    collection: null,
+    collection: CollarCollection,
     fragment: '',
-    listView: null,
 
     /**
      * Initialization.
@@ -6911,12 +7072,14 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {jqXHR} response The response received from the server.
      */
     ajaxError: function(view, model, response) {
+        var collection = this.getCollection();
+
         if (view && _.isFunction(view.hideLoading)) {
             view.hideLoading();
         }
 
-        if (this.collection) {
-            this.collection.each(function(m) { 
+        if (collection) {
+            collection.each(function(m) { 
                 m.set({editing: false}); 
             });
         }
@@ -6947,6 +7110,64 @@ _.extend(CollarController.prototype, Backbone.Events, {
                 model: {Title: 'Uh Oh, That Kinda Hurt', Message: message}
             });
         }
+    },
+
+    /**
+     * Handles counts update events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        this.trigger('counts', this, args);
+    },
+
+    /**
+     * Gets this instance's current collection instance, if applicable.
+     *
+     * @return {CollarCollection} The current collection instance, or null if none exists.
+     */
+    getCollection: function() {
+        var collection = this.model && _.isFunction(this.model.get) ? this.model.get('Collection') : null;
+        return _.isFunction(collection) ? collection : null;
+    },
+
+    /**
+     * Performs navigation on behalf of this controller.
+     */
+    navigate: function() {
+        var collection = this.getCollection(),
+            fragment = this.navigateFragment(),
+            search,
+            page;
+
+        if (collection) {
+            search = collection.search || '';
+            page = collection.pageNumber || 1;
+        }
+
+        this.trigger('navigate', this, {fragment: fragment, search: search, page: page});
+    },
+
+    /**
+     * Gets the URL fragment to use when navigating.
+     *
+     * @return {String} A URL fragment.
+     */
+    navigateFragment: function() {
+        return this.fragment || '';
+    },
+
+    /**
+     * Handles reset events sent to this instance.
+     */
+    reset: function() {
+        var collection = this.getCollection();
+
+        if (collection && collection.length === 0 && collection.pageNumber > 1) {
+            collection.pageNumber = 1;
+            this.navigate();
+        }
     }
 });
 /**
@@ -6975,7 +7196,10 @@ var DashboardController = CollarController.extend({
         this.view = new DashboardView({el: this.page, model: this.model});
     },
 
-    index: function(options) {
+    /**
+     * Renders the index view.
+     */
+    index: function() {
         this.view.render();
 
         if (this.fetchOnIndex) {
@@ -6985,6 +7209,36 @@ var DashboardController = CollarController.extend({
         }
     }
 });
+/**
+ * History area controller implementation.
+ *
+ * @constructor
+ * @extends {CollarController}
+ */
+var HistoryController = CollarController.extend({
+    collection: HistoryCollection,
+    fragment: 'history',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.view = new HistoryView({el: this.page, model: this.model});
+    },
+
+    /**
+     * Renders the index view.
+     *
+     * @param {String} search The search string to filter the view on.
+     * @param {Number} page The page number to filter the view on.
+     */
+    index: function(search, page) {
+        this.model.set({Search: search || '', Page: page || 1}, {silent: true});
+        this.view.render();
+    }
+});
 
 /**
  * Base router implementation.
@@ -6992,8 +7246,6 @@ var DashboardController = CollarController.extend({
  * @constructor
  */
 var CollarRouter = Backbone.Router.extend({
-    controller: CollarController,
-
     /**
      * Initialization.
      *
@@ -7002,6 +7254,61 @@ var CollarRouter = Backbone.Router.extend({
      */
     initialize: function(app, options) {
         this.app = app;
+        this.options = _.extend({}, options);
+    },
+
+    /**
+     * Handles controller-initiated navigate events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    controllerNavigate: function(sender, args) {
+        var url;
+
+        args = _.extend({
+            fragment: '',
+            search: '',
+            page: 1
+        }, args);
+
+        url = args.fragment;
+
+        if (args.search || args.page > 1) {
+            url += '/' + encodeURIComponent(args.search) + '/p' + encodeURIComponent(args.page.toString());
+        }
+
+        this.navigate(url, {trigger: true});
+    },
+
+    /**
+     * Handles counts update events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        this.trigger('counts', this, args);
+    },
+
+    /**
+     * Creates a new instance of this router's default controller.
+     *
+     * @param {Function} func The constructor function of the controller to create.
+     * @param {String} fragment The URL-root the controller uses to interact with the server.
+     * @param {Object} options Initialization options to use when creating the controller.
+     * @return The created controller.
+     */
+    createController: function(func, fragment, options) {
+        var controller = new func(
+            this.app.name,
+            this.app.jsonUrlRoot + fragment,
+            this.app.page,
+            options);
+
+        controller.bind('counts', this.counts, this);
+        controller.bind('navigate', this.controllerNavigate, this);
+        return controller;
     }
 });
 /**
@@ -7012,25 +7319,30 @@ var CollarRouter = Backbone.Router.extend({
  */
 var HistoryRouter = CollarRouter.extend({
     routes: {
-        'history': 'index'
+        'history': 'index',
+        'history/:search/p:page': 'index',
     },
 
     /**
      * Initialization.
      *
      * @param {App} app The root application object.
-     * @param {Object} options Additional initialization options.
+     * @param {Object} options Initialization options.
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
+        this.controller = this.createController(HistoryController, 'history', this.options);
     },
 
     /**
      * Handles the root #history route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
      */
-    index: function() {
-        
+    index: function(search, page) {
+        this.controller.index(search, page);
+        this.trigger('nav', this, {name: 'History'});
     }
 });
 /**
@@ -7156,7 +7468,6 @@ var WorkingRouter = CollarRouter.extend({
  * @extends {CollarRouter}
  */
 var DashboardRouter = CollarRouter.extend({
-    controller: DashboardController,
     routes: {
         'dashboard': 'index',
         '*path': 'index'
@@ -7170,14 +7481,15 @@ var DashboardRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
+        this.controller = this.createController(DashboardController, 'stats', this.options);
     },
 
     /**
      * Handles the root #dashboard route.
      */
     index: function() {
-        new this.controller(this.app.name, this.app.page, this.options).index();
+        this.controller.index();
+        this.trigger('nav', this, {name: 'Dashboard'});
     }
 });
 
@@ -7189,6 +7501,15 @@ var DashboardRouter = CollarRouter.extend({
 var DashboardView = Backbone.View.extend({
     statsTemplate: _.template($('#dashboard-stats-template').html()),
     template: _.template($('#dashboard-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+    },
 
     /**
      * Renders the view.
@@ -7351,6 +7672,33 @@ var DashboardView = Backbone.View.extend({
     }
 });
 /**
+ * Manages the root history view.
+ *
+ * @constructor
+ */
+var HistoryView = Backbone.View.extend({
+    template: _.template($('#history-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {HistoryView} This instance.
+     */
+    render: function() {
+        this.$el.html(this.template(this.model.toJSON()));
+        return this;
+    }
+});
+/**
  * Manages the view for a single navigation item.
  *
  * @constructor
@@ -7379,7 +7727,7 @@ var NavItemView = Backbone.View.extend({
         if (this.model.get('Current')) {
             this.$el.addClass('active');
         } else {
-            this.$el.removeClass('current');
+            this.$el.removeClass('active');
         }
 
         return this;
@@ -7600,17 +7948,56 @@ _.extend(NoticeView, {
         navCollection.fetch();
     }
 
-    new DashboardRouter(this, this.options);
-    new HistoryRouter(this, this.options);
-    new QueueRouter(this, this.options);
-    new SchedulesRouter(this, this.options);
-    new WorkersRouter(this, this.options);
-    new WorkingRouter(this, this.options);
+    this.createRouter(DashboardRouter);
+    this.createRouter(HistoryRouter);
+    this.createRouter(QueueRouter);
+    this.createRouter(SchedulesRouter);
+    this.createRouter(WorkersRouter);
+    this.createRouter(WorkingRouter);
       
-    Backbone.history.start({
-        pushState: true,
-        root: this.urlRoot
-    });
+    Backbone.history.start();
 };
+
+/**
+ * Prototype functions.
+ */
+_.extend(App.prototype, {
+    /**
+     * Handles counts updated events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        if (args && args.counts) {
+            this.navView.collection.reset(this.navView.collection.parse(args.counts));
+        }
+    },
+
+    /**
+     * Creates a new {CollarRouter} using the given constructor function.
+     *
+     * @param {Function} router The constructor function to use.
+     * @return {CollarRouter} The constructed router.
+     */
+    createRouter: function(router) {
+        var r = new router(this, this.options);
+        r.bind('counts', this.counts, this);
+        r.bind('nav', this.navigated, this);
+        return r;
+    },
+
+    /**
+     * Handles navigated events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    navigated: function(sender, args) {
+        if (args && args.name) {
+            this.navView.collection.setCurrent(args.name);
+        }
+    }
+});
     window['App'] = App;
 })();

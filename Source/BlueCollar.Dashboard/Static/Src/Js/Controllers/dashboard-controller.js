@@ -24,7 +24,10 @@ var DashboardController = CollarController.extend({
         this.view = new DashboardView({el: this.page, model: this.model});
     },
 
-    index: function(options) {
+    /**
+     * Renders the index view.
+     */
+    index: function() {
         this.view.render();
 
         if (this.fetchOnIndex) {

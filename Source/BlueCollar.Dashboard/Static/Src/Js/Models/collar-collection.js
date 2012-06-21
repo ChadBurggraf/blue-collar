@@ -56,7 +56,7 @@
         this.totalCount = models.TotalCount || 0;
         
         if (models.Counts) {
-            this.trigger('counts', this, models.Counts);
+            this.trigger('counts', this, {counts: models.Counts});
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);

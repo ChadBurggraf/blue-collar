@@ -143,7 +143,7 @@ var StatsModel = CollarModel.extend({
         options = _.extend({silent: false}, options);
 
         if (attributes.Counts && !options.silent) {
-            this.trigger('counts', this, attributes.Counts);
+            this.trigger('counts', this, {counts: attributes.Counts});
         }
 
         this.counts.set(this.counts.parse(attributes.Counts), {silent: true});

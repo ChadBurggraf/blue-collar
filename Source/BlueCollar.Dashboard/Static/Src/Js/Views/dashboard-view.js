@@ -8,6 +8,15 @@ var DashboardView = Backbone.View.extend({
     template: _.template($('#dashboard-template').html()),
 
     /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+    },
+
+    /**
      * Renders the view.
      *
      * @return {DashboardView} This instance.

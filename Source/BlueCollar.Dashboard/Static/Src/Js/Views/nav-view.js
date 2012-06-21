@@ -27,7 +27,7 @@ var NavItemView = Backbone.View.extend({
         if (this.model.get('Current')) {
             this.$el.addClass('active');
         } else {
-            this.$el.removeClass('current');
+            this.$el.removeClass('active');
         }
 
         return this;

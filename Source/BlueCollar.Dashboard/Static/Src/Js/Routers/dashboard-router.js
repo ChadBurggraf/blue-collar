@@ -5,7 +5,6 @@
  * @extends {CollarRouter}
  */
 var DashboardRouter = CollarRouter.extend({
-    controller: DashboardController,
     routes: {
         'dashboard': 'index',
         '*path': 'index'
@@ -19,13 +18,14 @@ var DashboardRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
+        this.controller = this.createController(DashboardController, 'stats', this.options);
     },
 
     /**
      * Handles the root #dashboard route.
      */
     index: function() {
-        new this.controller(this.app.name, this.app.page, this.options).index();
+        this.controller.index();
+        this.trigger('nav', this, {name: 'Dashboard'});
     }
 });

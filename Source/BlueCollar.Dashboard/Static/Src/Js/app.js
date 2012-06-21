@@ -35,15 +35,54 @@
         navCollection.fetch();
     }
 
-    new DashboardRouter(this, this.options);
-    new HistoryRouter(this, this.options);
-    new QueueRouter(this, this.options);
-    new SchedulesRouter(this, this.options);
-    new WorkersRouter(this, this.options);
-    new WorkingRouter(this, this.options);
+    this.createRouter(DashboardRouter);
+    this.createRouter(HistoryRouter);
+    this.createRouter(QueueRouter);
+    this.createRouter(SchedulesRouter);
+    this.createRouter(WorkersRouter);
+    this.createRouter(WorkingRouter);
       
-    Backbone.history.start({
-        pushState: true,
-        root: this.urlRoot
-    });
+    Backbone.history.start();
 };
+
+/**
+ * Prototype functions.
+ */
+_.extend(App.prototype, {
+    /**
+     * Handles counts updated events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        if (args && args.counts) {
+            this.navView.collection.reset(this.navView.collection.parse(args.counts));
+        }
+    },
+
+    /**
+     * Creates a new {CollarRouter} using the given constructor function.
+     *
+     * @param {Function} router The constructor function to use.
+     * @return {CollarRouter} The constructed router.
+     */
+    createRouter: function(router) {
+        var r = new router(this, this.options);
+        r.bind('counts', this.counts, this);
+        r.bind('nav', this.navigated, this);
+        return r;
+    },
+
+    /**
+     * Handles navigated events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    navigated: function(sender, args) {
+        if (args && args.name) {
+            this.navView.collection.setCurrent(args.name);
+        }
+    }
+});

@@ -66,7 +66,7 @@ var NavCollection = Backbone.Collection.extend({
         if (!current) {
             m[0].Current = true;
         }
-        
+
         return m;
     },
 

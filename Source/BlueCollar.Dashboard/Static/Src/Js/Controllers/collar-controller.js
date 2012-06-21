@@ -3,13 +3,24 @@
  *
  * @constructor
  * @param {String} applicationName The name of the application.
+ * @param {String} urlRoot The JSON URL root the application is using.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(applicationName, page, options) {
+var CollarController = function(applicationName, urlRoot, page, options) {
     this.applicationName = applicationName;
+    this.urlRoot = urlRoot;
     this.page = page;
     this.options = _.extend({}, options);
+
+    var collection = null;
+
+    if (_.isFunction(this.collection)) {
+        collection = new this.collection(null, {urlRoot: this.urlRoot});
+        collection.bind('reset', this.reset, this);
+    }
+
+    this.model = new Backbone.Model({ApplicationName: this.applicationName, Collection: collection});
     this.initialize(this.options);
 };
 
@@ -27,9 +38,8 @@ _.extend(CollarController, {
  * Prototype functions.
  */
 _.extend(CollarController.prototype, Backbone.Events, {
-    collection: null,
+    collection: CollarCollection,
     fragment: '',
-    listView: null,
 
     /**
      * Initialization.
@@ -46,12 +56,14 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {jqXHR} response The response received from the server.
      */
     ajaxError: function(view, model, response) {
+        var collection = this.getCollection();
+
         if (view && _.isFunction(view.hideLoading)) {
             view.hideLoading();
         }
 
-        if (this.collection) {
-            this.collection.each(function(m) { 
+        if (collection) {
+            collection.each(function(m) { 
                 m.set({editing: false}); 
             });
         }
@@ -81,6 +93,64 @@ _.extend(CollarController.prototype, Backbone.Events, {
                 className: 'error',
                 model: {Title: 'Uh Oh, That Kinda Hurt', Message: message}
             });
+        }
+    },
+
+    /**
+     * Handles counts update events.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        this.trigger('counts', this, args);
+    },
+
+    /**
+     * Gets this instance's current collection instance, if applicable.
+     *
+     * @return {CollarCollection} The current collection instance, or null if none exists.
+     */
+    getCollection: function() {
+        var collection = this.model && _.isFunction(this.model.get) ? this.model.get('Collection') : null;
+        return _.isFunction(collection) ? collection : null;
+    },
+
+    /**
+     * Performs navigation on behalf of this controller.
+     */
+    navigate: function() {
+        var collection = this.getCollection(),
+            fragment = this.navigateFragment(),
+            search,
+            page;
+
+        if (collection) {
+            search = collection.search || '';
+            page = collection.pageNumber || 1;
+        }
+
+        this.trigger('navigate', this, {fragment: fragment, search: search, page: page});
+    },
+
+    /**
+     * Gets the URL fragment to use when navigating.
+     *
+     * @return {String} A URL fragment.
+     */
+    navigateFragment: function() {
+        return this.fragment || '';
+    },
+
+    /**
+     * Handles reset events sent to this instance.
+     */
+    reset: function() {
+        var collection = this.getCollection();
+
+        if (collection && collection.length === 0 && collection.pageNumber > 1) {
+            collection.pageNumber = 1;
+            this.navigate();
         }
     }
 });
