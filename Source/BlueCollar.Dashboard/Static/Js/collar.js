@@ -6388,7 +6388,6 @@ var CollarModel = Backbone.Model.extend({
             this._silent = {};
             this._pending = {};
             this._previousAttributes = _.clone(this.attributes);
-            this.initialize.apply(this, arguments); 
         }
     },
 
@@ -6587,7 +6586,7 @@ _.extend(CollarModel, {
     }
  });
 /**
- * Model's a navigation item.
+ * Models a navigation item.
  *
  * @constructor
  */
@@ -6679,6 +6678,187 @@ var NavCollection = Backbone.Collection.extend({
         }
     }
 });
+/**
+ * Models a set of simple counts.
+ *
+ * @constructor
+ */
+var CountsModel = CollarModel.extend({
+    defaults: {
+        'HistoryCount': 0,
+        'QueueCount': 0,
+        'ScheduleCount': 0,
+        'WorkingCount': 0,
+        'WorkerCount': 0
+    }
+});
+
+/**
+ * Models a set of history status counts.
+ *
+ * @constructor
+ */
+var HistoryStatusCountsModel = CollarModel.extend({
+    defaults: {
+        'CanceledCount': 0,
+        'FailedCount': 0,
+        'InterruptedCount': 0,
+        'SucceededCount': 0,
+        'TimedOutCount': 0,
+        'TotalCount': 0
+    }
+});
+
+/**
+ * Models a jobs-per-hour count.
+ *
+ * @constructor
+ */
+var JobsPerHourModel = CollarModel.extend({
+    defaults: {
+        'Date': null,
+        'JobsPerHour': 0,
+        'QueueName': null
+    }
+});
+
+/**
+ * Represents a collection of {JobsPerHourModel}s.
+ *
+ * @constructor
+ */
+var JobsPerHourCollection = CollarCollection.extend({
+    model: JobsPerHourModel,
+
+    /**
+     * Replaces this instance's model collection with the given collection.
+     *
+     * @param {Object} models An object specifying the new model collection.
+     * @param {Object} options The options to use when performing the reset.
+     * @return {JobsPerHourCollection} This instance.
+     */
+    reset: function(models, options) {
+        return Backbone.Collection.prototype.reset.call(this, models, options);
+    }
+});
+
+/**
+ * Models a jobs-per-worker count.
+ *
+ * @constructor
+ */
+var JobsPerWorkerModel = CollarModel.extend({
+    defaults: {
+        'Count': 0,
+        'MachineAddress': null,
+        'MachineName': null,
+        'Name': null
+    }
+});
+
+/**
+ * Represents a collection of {JobsPerWorkerModel}s.
+ *
+ * @constructor
+ */
+var JobsPerWorkerCollection = CollarCollection.extend({
+    model: JobsPerWorkerModel,
+
+    /**
+     * Replaces this instance's model collection with the given collection.
+     *
+     * @param {Object} models An object specifying the new model collection.
+     * @param {Object} options The options to use when performing the reset.
+     * @return {JobsPerWorkerCollection} This instance.
+     */
+    reset: function(models, options) {
+        return Backbone.Collection.prototype.reset.call(this, models, options);
+    }
+});
+
+/**
+ * Models a complete set of stats.
+ *
+ * @constructor
+ */
+var StatsModel = CollarModel.extend({
+    counts: new CountsModel(),
+    historyStatusDistant: new HistoryStatusCountsModel(),
+    historyStatusRecent: new HistoryStatusCountsModel(),
+    jobsPerHour: new JobsPerHourCollection(),
+    jobsPerWorker: new JobsPerWorkerCollection(),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} app A set of initial model attribute values.
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(attributes, options) {
+        CollarModel.prototype.initialize.call(this, attributes, options);
+        this.counts.bind('change', this.change, this);
+        this.historyStatusDistant.bind('change', this.change, this);
+        this.historyStatusRecent.bind('change', this.change, this);
+        this.jobsPerHour.bind('reset', this.change, this);
+        this.jobsPerWorker.bind('reset', this.change, this);
+    },
+
+    /**
+     * Fires a 'change' event.
+     */
+    change: function() {
+        this.trigger('change', this);
+    },
+
+    /**
+     * Sets the given attributes on this instance.
+     *
+     * @param {Object} attributes The attributes to set.
+     * @param {Object} options The options to use when setting attributes.
+     */
+    set: function(attributes, options) {
+        attributes = attributes || {};
+        options = _.extend({silent: false}, options);
+
+        if (attributes.Counts && !options.silent) {
+            this.trigger('counts', this, attributes.Counts);
+        }
+
+        this.counts.set(this.counts.parse(attributes.Counts), {silent: true});
+        this.historyStatusDistant.set(this.historyStatusDistant.parse(attributes.HistoryStatusDistant), {silent: true});
+        this.historyStatusRecent.set(this.historyStatusRecent.parse(attributes.HistoryStatusRecent), {silent: true});
+        this.jobsPerHour.reset(this.jobsPerHour.parse(attributes.JobsPerHourByDay), {silent: true});
+        this.jobsPerWorker.reset(this.jobsPerWorker.parse(attributes.JobsPerWorker), {silent: true});
+
+        if (!options.silent) {
+            this.change();
+        }
+    },
+
+    /**
+     * Gets a copy of the model's attributes.
+     *
+     * @return {Object} A copy of the model's underlying attributes.
+     */
+    toJSON: function() {
+        return {
+            Counts: this.counts.toJSON(),
+            HistoryStatusDistant: this.historyStatusDistant.toJSON(),
+            HistoryStatusRecent: this.historyStatusRecent.toJSON(),
+            JobsPerHourByDay: this.jobsPerHour.toJSON(),
+            JobsPerWorker: this.jobsPerWorker.toJSON()
+        };
+    },
+
+    /**
+     * Gets the URL to use when interacting with the model on the server.
+     *
+     * @return {String} The model's server URL.
+     */
+    url: function() {
+        return this.urlRoot;
+    }
+});
 
 /**
  * Base controller implementation.
@@ -6690,7 +6870,7 @@ var NavCollection = Backbone.Collection.extend({
 var CollarController = function(page, options) {
     this.page = page;
     this.options = _.extend({}, options);
-    this.initialize(this, this.options);
+    this.initialize(this.options);
 };
 
 /**
@@ -6707,12 +6887,62 @@ _.extend(CollarController, {
  * Prototype functions.
  */
 _.extend(CollarController.prototype, Backbone.Events, {
+    collection: null,
+    fragment: '',
+    listView: null,
+
     /**
      * Initialization.
      *
      * @param {Object} options Initialization options.
      */
-    initialize: function(options) {}
+    initialize: function(options) {},
+
+    /**
+     * Generic handler for Ajax-related errors.
+     *
+     * @param {Backbone.View} view The view the error is related to.
+     * @param {Backbone.Model} model The model the error is related to.
+     * @param {jqXHR} response The response received from the server.
+     */
+    ajaxError: function(view, model, response) {
+        if (view && _.isFunction(view.hideLoading)) {
+            view.hideLoading();
+        }
+
+        if (this.collection) {
+            this.collection.each(function(m) { 
+                m.set({editing: false}); 
+            });
+        }
+
+        if (!view || !view.ajaxError(model, response)) {
+            var message;
+
+            switch (response.status) {
+                case 400:
+                    message = 'Bad Request (400): The server indicated that you submitted was invalid or impropertly formatted.';
+                    break;
+                case 403:
+                    message = 'Forbidden (403): You are not authorized to access the requested resource.';
+                    break;
+                case 404:
+                    message = 'Not Found (404): The requested resource was not found on the server.';
+                    break;
+                case 500:
+                    message = 'Internal Server Error (500): Something when wrong when processing your request on the server.';
+                    break;
+                default:
+                    message = 'Unknown Error (' + response.status + '): An unknown error occurred while processing your request on the server.';
+                    break;
+            }
+
+            NoticeView.create({
+                className: 'error',
+                model: {Title: 'Uh Oh, That Kinda Hurt', Message: message}
+            });
+        }
+    }
 });
 /**
  * Dashboard area controller implementation.
@@ -6727,11 +6957,27 @@ var DashboardController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new DashboardView({el: this.page});
+        this.model = new StatsModel();
+        this.model.urlRoot = this.urlRoot;
+        this.model.bind('counts', this.counts, this);
+        this.fetchOnIndex = true;
+
+        if (options && options.stats) {
+            this.model.set(this.model.parse(options.stats), {silent: true});
+            this.fetchOnIndex = false;
+        }
+
+        this.view = new DashboardView({el: this.page, model: this.model});
     },
 
     index: function(options) {
         this.view.render();
+
+        if (this.fetchOnIndex) {
+            this.model.fetch({error: _.bind(this.ajaxError, this, null)});
+        } else {
+            this.fetchOnIndex = true;
+        }
     }
 });
 
@@ -6926,7 +7172,7 @@ var DashboardRouter = CollarRouter.extend({
      * Handles the root #dashboard route.
      */
     index: function() {
-        new this.controller(this.app.page).index();
+        new this.controller(this.app.page, this.options).index();
     }
 });
 
@@ -6936,6 +7182,7 @@ var DashboardRouter = CollarRouter.extend({
  * @constructor
  */
 var DashboardView = Backbone.View.extend({
+    statsTemplate: _.template($('#dashboard-stats-template').html()),
     template: _.template($('#dashboard-template').html()),
 
     /**
@@ -6944,8 +7191,160 @@ var DashboardView = Backbone.View.extend({
      * @return {DashboardView} This instance.
      */
     render: function() {
+        var json,
+            statsJson,
+            statsHtml,
+            notSucceededCount,
+            workingEl,
+            succeededEl,
+            notSucceededEl,
+            totalEl;
+
         this.$el.html(this.template());
+
+        json = this.model.toJSON();
+        statsJson = _.extend(_.clone(json.HistoryStatusRecent), _.clone(json.Counts));
+        statsHtml = this.$('.stats').html(this.statsTemplate(statsJson));
+        notSucceededCount = statsJson.CanceledCount + statsJson.FailedCount + statsJson.InterruptedCount + statsJson.TimedOutCount;
+        workingEl = $('<span/>').text(new Number(statsJson.WorkingCount).format('0,000'));
+        succeededEl = $('<span/>').text(new Number(statsJson.SucceededCount).format('0,000'));
+        notSucceededEl = $('<span/>').text(new Number(notSucceededCount).format('0,000'));
+        totalEl = $('<span/>').text(new Number(statsJson.TotalCount).format('0,000'));
+
+        statsHtml.find('.working-count').html(workingEl);
+        statsHtml.find('.succeeded-count').html(succeededEl);
+        statsHtml.find('.not-succeeded-count').html(notSucceededEl);
+        statsHtml.find('.total-count').html(totalEl);
+
+        if (statsJson.SucceededCount > 0) {
+            succeededEl.addClass('green');
+        }
+
+        if (notSucceededCount > 0) {
+            notSucceededEl.addClass('red');
+        }
+
+        this.renderStatusChart(this.$('.chart-job-status .chart-contents')[0], json.HistoryStatusDistant);
+        this.renderWorkerLoadChart(this.$('.chart-worker-load .chart-contents')[0], json.JobsPerWorker);
+        this.renderJobsPerHourChart(this.$('.chart-jobs-per-hour .chart-contents')[0], json.JobsPerHourByDay);
+
         return this;
+    },
+
+    /**
+     * Renders jobs-per-hour chart.
+     *
+     * @param {HTMLElement} el The HTML element to render the chart into.
+     * @param {Object} json The raw object representing the data to render.
+     */
+    renderJobsPerHourChart: function(el, json) {
+        var data = new google.visualization.DataTable(),
+            chart = new google.visualization.ColumnChart(el),
+            queues,
+            dates,
+            prop,
+            queueDays,
+            dayQueues,
+            day,
+            cols,
+            i,
+            j,
+            n,
+            m;
+
+        data.addColumn('string', 'Date');
+        queues = _.groupBy(json, function(d) { return d.QueueName || '*'; });
+
+        i = 1;
+        for (prop in queues) {
+            if (queues.hasOwnProperty(prop)) {
+                queueDays = queues[prop];
+                data.addColumn('number', prop);
+
+                for (j = 0, m = queueDays.length; j < m; j++) {
+                    queueDays[j].Index = i;
+                }
+
+                i++;
+            }
+        }
+
+        cols = data.getNumberOfColumns();
+        dates = _.groupBy(json, function(d) { return d.Date.toString('MMM d')});
+
+        i = 0;
+        for (prop in dates) {
+            if (dates.hasOwnProperty(prop)) {
+                dayQueues = dates[prop];
+                data.addRow();
+                data.setValue(i, 0, prop);
+
+                for (j = 1; j < cols; j++) {
+                    day = _.find(dayQueues, function(d) { return d.Index === j; });
+
+                    if (day) {
+                        data.setValue(i, j, day.JobsPerHour);
+                    } else {
+                        data.setValue(i, j, 0);
+                    }
+                }
+
+                i++;
+            }
+        }
+
+        chart.draw(data, {width:'100%', height:300, vAxis:{title:'Jobs per hour'}});
+    },
+
+    /**
+     * Renders the status chart.
+     *
+     * @param {HTMLElement} el The HTML element to render the chart into.
+     * @param {Object} json The raw object representing the data to render.
+     */
+    renderStatusChart: function(el, json) {
+        var data = new google.visualization.DataTable(),
+            chart = new google.visualization.PieChart(el);
+
+        data.addColumn('string', 'Status');
+        data.addColumn('number', 'Job Count');
+        data.addRows(5);
+        data.setValue(0, 0, 'Succeeded');
+        data.setValue(0, 1, json.SucceededCount);
+        data.setValue(1, 0, 'Failed');
+        data.setValue(1, 1, json.FailedCount);
+        data.setValue(2, 0, 'Canceled');
+        data.setValue(2, 1, json.CanceledCount);
+        data.setValue(3, 0, 'Interrupted');
+        data.setValue(3, 1, json.InterruptedCount);
+        data.setValue(4, 0, 'Timed Out');
+        data.setValue(4, 1, json.TimedOutCount);
+
+        chart.draw(data, {width:'100%', height:300});
+    },
+
+    /**
+     * Renders the worker load chart.
+     *
+     * @param {HTMLElement} el The HTML element to render the chart into.
+     * @param {Object} json The raw object representing the data to render.
+     */
+    renderWorkerLoadChart: function(el, json) {
+        var data = new google.visualization.DataTable(),
+            chart = new google.visualization.PieChart(el),
+            worker,
+            i,
+            n;
+
+        data.addColumn('string', 'Worker');
+        data.addColumn('number', 'Job Count');
+
+        for (i = 0, n = json.length; i < n; i++) {
+            worker = json[i];
+            data.addRow([worker.Name + ' - ' + String.machineDisplay(worker.MachineName, worker.MachineAddress), worker.Count]);
+        }
+
+        chart.draw(data, {width:'!00%', height:300});
     }
 });
 /**
@@ -7019,6 +7418,145 @@ var NavView = Backbone.View.extend({
         }
 
         return this;
+    }
+});
+/**
+ * Manages the view for system-wide notices.
+ *
+ * @constructor
+ */
+var NoticeView = Backbone.View.extend({
+    className: 'alert alert-block',
+    events: {
+        "click a.close": "destroy"
+    },
+    id: 'notice',
+    tagName: 'div',
+    template: _.template($('#notice-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.resize();
+        $(window).resize(_.bind(this.resize, this));
+    },
+
+    /**
+     * Destroys the view singleton.
+     */
+    destroy: function() {
+        NoticeView.destroy();
+    },
+
+    render: function() {
+        this.$el
+            .css('display', 'none')
+            .html(this.template(this.model.toJSON()));
+
+        return this;
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {NaviItemView} This instance.
+     */
+    resize: function() {
+        var sub = this.$el.outerWidth() - this.$el.width(),
+            page = $('#page'),
+            pageWidth = page.outerWidth(),
+            pageOffset = page.offset();
+        
+        this.$el.css({
+            width: (pageWidth - sub) + 'px',
+            left: pageOffset.left + 'px'
+        });
+    }
+});
+
+/**
+ * Static functions.
+ */
+_.extend(NoticeView, {
+    destroying: false,
+    timeout: null,
+
+    /**
+     * Creates or replaces the singleon {NoticeView}.
+     *
+     * @param {Object} options A set of display options.
+     * @return {NoticeView} The created or replaced {NoticeView} instance.
+     */
+    create: function(options) {
+        var el = $('#notice'),
+            className,
+            view;
+
+        options = _.extend({
+            destroy: true,
+            scroll: true,
+            timeout: 7500
+        }, options);
+
+        if (el.length > 0 && !NoticeView.destroying) {
+            el.remove();
+        }
+
+        if (options.className) {
+            className = options.className;
+            delete options.className;
+        }
+
+        if (options.model && !(options.model instanceof Backbone.Model)) {
+            options.model = new Backbone.Model(options.model);
+        } else if (!options.model) {
+            options.model = new Backbone.Model();
+        }
+
+        view = new NoticeView(options).render();
+        el = view.$el;
+
+        if (className) {
+            el.addClass(className);
+        }
+
+        $('body').append(el);
+        view.resize();
+        el.fadeIn();
+
+        if (options.scroll) {
+            scrollTo(0, 0);
+        }
+
+        if (options.destroy) {
+            if (NoticeView.timeout) {
+                clearTimeout(NoticeView.timeout);
+            }
+
+            NoticeView.timeout = setTimeout(NoticeView.destroy, options.timeout);
+        }
+
+        return view;
+    },
+
+    /**
+     * Destroys the singleton {NoticeView} if it exists and is not
+     * already being destroyed.
+     */
+    destroy: function() {
+        var el = $('#notice');
+
+        if (el.length > 0) {
+            NoticeView.destroying = true;
+
+            el.fadeOut(function() {
+                el.remove();
+                NoticeView.destroying = false;
+            });
+        }
     }
 });
 

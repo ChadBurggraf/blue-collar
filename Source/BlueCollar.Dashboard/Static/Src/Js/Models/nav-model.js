@@ -1,5 +1,5 @@
 ﻿/**
- * Model's a navigation item.
+ * Models a navigation item.
  *
  * @constructor
  */

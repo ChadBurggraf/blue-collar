@@ -30,6 +30,7 @@
     <input path="Models\collar-model.js"/>
     <input path="Models\collar-collection.js"/>
     <input path="Models\nav-model.js"/>
+    <input path="Models\stats-model.js"/>
   </output>
 
   <output name="Routers" path="routers.js" temporary="true">
@@ -45,6 +46,7 @@
   <output name="Views" path="views.js" temporary="true">
     <input path="Views\dashboard-view.js"/>
     <input path="Views\nav-view.js"/>
+    <input path="Views\notice-view.js"/>
   </output>
 
   <output path="html5.js">

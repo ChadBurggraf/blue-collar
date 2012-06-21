@@ -1,7 +1,64 @@
+<script type="text/template" id="dashboard-stats-template">
+<div class="stats-group">
+<table>
+<tr>
+<td class="working-count"></td>
+</tr>
+<tr>
+<th>
+Running now
+</th>
+</tr>
+</table>
+</div>
+<div class="stats-group">
+<h4>In the last 24 hours,</h4>
+<table>
+<tr>
+<td class="succeeded-count"></td>
+<td class="not-succeeded-count"></td>
+<td class="total-count"></td>
+</tr>
+<tr>
+<th>
+Succeeded
+</th>
+<th>
+Did not succeed
+</th>
+<th>
+Total jobs executed
+</th>
+</tr>
+</table>
+</div>
+</script>
 <script type="text/template" id="dashboard-template">
 <div class="page-header"><h1>Dashboard</h1></div>
-<div class="row">
-<div class="span12"></div>
+<div class="row dashboard-row">
+<div class="span12 stats"></div>
+</div>
+<div class="row dashboard-row">
+<div class="span6">
+<div class="chart chart-job-status">
+<h3>Job Status - 2 Weeks</h3>
+<div class="chart-contents"></div>
+</div>
+</div>
+<div class="span6">
+<div class="chart chart-worker-load">
+<h3>Worker Load - 2 Weeks</h3>
+<div class="chart-contents"></div>
+</div>
+</div>
+</div>
+<div class="row dashboard-row">
+<div class="span12">
+<div class="chart chart-jobs-per-hour">
+<h3>Jobs Per Hour By Queue - 2 Weeks</h3>
+<div class="chart-contents"</div>
+</div>
+</div>
 </div>
 </script>
 <script type="text/template" id="nav-item-template">
@@ -9,4 +66,9 @@
 <% if (Count !== null) { print('<span class="badge badge-inverse">' + new Number(Count).toAbbreviatedString() + '</span>'); } %>
 <%- Name %>
 </a>
+</script>
+<script type="text/template" id="notice-template">
+<a class="close" href="javascript:void(0);">×</a>
+<% if (Title) { print($('<h5/>').text(Title).outerHtml()); } %>
+<p><%- Message %></p>
 </script>

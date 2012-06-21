@@ -21,7 +21,6 @@ var CollarModel = Backbone.Model.extend({
             this._silent = {};
             this._pending = {};
             this._previousAttributes = _.clone(this.attributes);
-            this.initialize.apply(this, arguments); 
         }
     },
 

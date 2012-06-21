@@ -64,12 +64,4 @@
       </assemblies>
     </compilation>
   </system.web>
-
-  <system.webServer>
-    <staticContent>
-      <mimeMap fileExtension=".woff" mimeType="application/octet-stream"/>
-    </staticContent>
-  
-    <validation validateIntegratedModeConfiguration="false"/>
-  </system.webServer>
 </configuration>

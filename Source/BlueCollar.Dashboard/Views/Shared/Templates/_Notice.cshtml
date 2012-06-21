@@ -1,0 +1,5 @@
+﻿<script type="text/template" id="notice-template">
+    <a class="close" href="javascript:void(0);">×</a>
+    <% if (Title) { print($('<h5/>').text(Title).outerHtml()); } %>
+    <p><%- Message %></p>
+</script>
