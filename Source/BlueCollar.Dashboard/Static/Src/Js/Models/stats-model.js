@@ -137,6 +137,8 @@ var StatsModel = CollarModel.extend({
      * @param {Object} options The options to use when setting attributes.
      */
     set: function(attributes, options) {
+        CollarModel.prototype.set.call(this, attributes, options);
+
         attributes = attributes || {};
         options = _.extend({silent: false}, options);
 
@@ -162,6 +164,7 @@ var StatsModel = CollarModel.extend({
      */
     toJSON: function() {
         return {
+            ApplicationName: this.get('ApplicationName'),
             Counts: this.counts.toJSON(),
             HistoryStatusDistant: this.historyStatusDistant.toJSON(),
             HistoryStatusRecent: this.historyStatusRecent.toJSON(),

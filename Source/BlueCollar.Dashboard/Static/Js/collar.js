@@ -6817,6 +6817,8 @@ var StatsModel = CollarModel.extend({
      * @param {Object} options The options to use when setting attributes.
      */
     set: function(attributes, options) {
+        CollarModel.prototype.set.call(this, attributes, options);
+
         attributes = attributes || {};
         options = _.extend({silent: false}, options);
 
@@ -6842,6 +6844,7 @@ var StatsModel = CollarModel.extend({
      */
     toJSON: function() {
         return {
+            ApplicationName: this.get('ApplicationName'),
             Counts: this.counts.toJSON(),
             HistoryStatusDistant: this.historyStatusDistant.toJSON(),
             HistoryStatusRecent: this.historyStatusRecent.toJSON(),
@@ -6864,10 +6867,12 @@ var StatsModel = CollarModel.extend({
  * Base controller implementation.
  *
  * @constructor
+ * @param {String} applicationName The name of the application.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(page, options) {
+var CollarController = function(applicationName, page, options) {
+    this.applicationName = applicationName;
     this.page = page;
     this.options = _.extend({}, options);
     this.initialize(this.options);
@@ -6957,7 +6962,7 @@ var DashboardController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model = new StatsModel();
+        this.model = new StatsModel({ApplicationName: this.applicationName});
         this.model.urlRoot = this.urlRoot;
         this.model.bind('counts', this.counts, this);
         this.fetchOnIndex = true;
@@ -7172,7 +7177,7 @@ var DashboardRouter = CollarRouter.extend({
      * Handles the root #dashboard route.
      */
     index: function() {
-        new this.controller(this.app.page, this.options).index();
+        new this.controller(this.app.name, this.app.page, this.options).index();
     }
 });
 
@@ -7191,8 +7196,8 @@ var DashboardView = Backbone.View.extend({
      * @return {DashboardView} This instance.
      */
     render: function() {
-        var json,
-            statsJson,
+        var json = this.model.toJSON(),
+            statsJson = _.extend(_.clone(json.HistoryStatusRecent), _.clone(json.Counts)),
             statsHtml,
             notSucceededCount,
             workingEl,
@@ -7200,10 +7205,8 @@ var DashboardView = Backbone.View.extend({
             notSucceededEl,
             totalEl;
 
-        this.$el.html(this.template());
+        this.$el.html(this.template(json));
 
-        json = this.model.toJSON();
-        statsJson = _.extend(_.clone(json.HistoryStatusRecent), _.clone(json.Counts));
         statsHtml = this.$('.stats').html(this.statsTemplate(statsJson));
         notSucceededCount = statsJson.CanceledCount + statsJson.FailedCount + statsJson.InterruptedCount + statsJson.TimedOutCount;
         workingEl = $('<span/>').text(new Number(statsJson.WorkingCount).format('0,000'));
@@ -7564,10 +7567,11 @@ _.extend(NoticeView, {
  * Application entry point.
  *
  * @constructor
- * @param {string} urlRoot The root application URL, used for navigation and Ajax.
- * @param {object} options Additional initialization options.
+ * @param {String} name The name of the application.
+ * @param {String} urlRoot The root application URL, used for navigation and Ajax.
+ * @param {Object} options Additional initialization options.
  */
- var App = function(urlRoot, options) {
+ var App = function(name, urlRoot, options) {
     var navCollection;
 
     this.options = options = _.extend({
@@ -7576,6 +7580,7 @@ _.extend(NoticeView, {
         testLink: false
     }, options);
 
+    this.name = name || 'Default';
     this.urlRoot = (urlRoot || '/').withTrailingSlash();
     this.jsonUrlRoot = this.options.jsonUrlRoot ? this.options.jsonUrlRoot.withTrailingSlash() : this.urlRoot;
 

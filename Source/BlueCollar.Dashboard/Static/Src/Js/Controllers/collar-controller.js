@@ -2,10 +2,12 @@
  * Base controller implementation.
  *
  * @constructor
+ * @param {String} applicationName The name of the application.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(page, options) {
+var CollarController = function(applicationName, page, options) {
+    this.applicationName = applicationName;
     this.page = page;
     this.options = _.extend({}, options);
     this.initialize(this.options);

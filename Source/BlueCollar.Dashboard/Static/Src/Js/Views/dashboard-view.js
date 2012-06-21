@@ -13,8 +13,8 @@ var DashboardView = Backbone.View.extend({
      * @return {DashboardView} This instance.
      */
     render: function() {
-        var json,
-            statsJson,
+        var json = this.model.toJSON(),
+            statsJson = _.extend(_.clone(json.HistoryStatusRecent), _.clone(json.Counts)),
             statsHtml,
             notSucceededCount,
             workingEl,
@@ -22,10 +22,8 @@ var DashboardView = Backbone.View.extend({
             notSucceededEl,
             totalEl;
 
-        this.$el.html(this.template());
+        this.$el.html(this.template(json));
 
-        json = this.model.toJSON();
-        statsJson = _.extend(_.clone(json.HistoryStatusRecent), _.clone(json.Counts));
         statsHtml = this.$('.stats').html(this.statsTemplate(statsJson));
         notSucceededCount = statsJson.CanceledCount + statsJson.FailedCount + statsJson.InterruptedCount + statsJson.TimedOutCount;
         workingEl = $('<span/>').text(new Number(statsJson.WorkingCount).format('0,000'));

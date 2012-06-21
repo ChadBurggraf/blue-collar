@@ -11,7 +11,7 @@ var DashboardController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model = new StatsModel();
+        this.model = new StatsModel({ApplicationName: this.applicationName});
         this.model.urlRoot = this.urlRoot;
         this.model.bind('counts', this.counts, this);
         this.fetchOnIndex = true;

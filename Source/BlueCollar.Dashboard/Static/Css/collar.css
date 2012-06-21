@@ -5950,6 +5950,12 @@ a.badge:hover {
   text-decoration: none;
 }
 
+.navbar .navbar-inner {
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+}
+
 .pagination {
   margin: 0;
 }

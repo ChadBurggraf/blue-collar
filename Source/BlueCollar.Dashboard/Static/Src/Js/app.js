@@ -2,10 +2,11 @@
  * Application entry point.
  *
  * @constructor
- * @param {string} urlRoot The root application URL, used for navigation and Ajax.
- * @param {object} options Additional initialization options.
+ * @param {String} name The name of the application.
+ * @param {String} urlRoot The root application URL, used for navigation and Ajax.
+ * @param {Object} options Additional initialization options.
  */
- var App = function(urlRoot, options) {
+ var App = function(name, urlRoot, options) {
     var navCollection;
 
     this.options = options = _.extend({
@@ -14,6 +15,7 @@
         testLink: false
     }, options);
 
+    this.name = name || 'Default';
     this.urlRoot = (urlRoot || '/').withTrailingSlash();
     this.jsonUrlRoot = this.options.jsonUrlRoot ? this.options.jsonUrlRoot.withTrailingSlash() : this.urlRoot;
 
