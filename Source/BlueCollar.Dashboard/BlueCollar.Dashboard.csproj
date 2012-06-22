@@ -171,6 +171,7 @@
     <Content Include="Static\Src\Js\Views\history-view.js" />
     <Content Include="Static\Src\Js\Views\nav-view.js" />
     <Content Include="Static\Src\Js\Views\notice-view.js" />
+    <Content Include="Static\Src\Js\Views\pager-view.js" />
     <Content Include="Static\Src\Js\Views\search-view.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -204,6 +205,7 @@
     <Content Include="Views\Shared\Templates\_Notice.cshtml" />
     <Content Include="Views\Shared\Templates\_History.cshtml" />
     <Content Include="Views\Shared\Templates\_Search.cshtml" />
+    <Content Include="Views\Shared\Templates\_Pager.cshtml" />
     <None Include="Web.config.template">
       <SubType>Designer</SubType>
     </None>
