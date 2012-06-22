@@ -128,6 +128,7 @@
     <Content Include="Static\Src\Js\Controllers\history-controller.js" />
     <Content Include="Static\Src\Js\copyright.js" />
     <Content Include="Static\Src\Js\form-serializer.js" />
+    <Content Include="Static\Src\Js\form-validator.js" />
     <Content Include="Static\Src\Js\Models\collar-collection.js" />
     <Content Include="Static\Src\Js\Models\collar-model.js" />
     <Content Include="Static\Src\Js\Models\history-model.js" />

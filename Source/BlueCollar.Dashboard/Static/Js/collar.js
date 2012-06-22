@@ -6465,6 +6465,623 @@ _.extend(String.prototype, {
     };
 })(jQuery);
 /**
+ * Provides form serialization services.
+ *
+ * @constructor
+ * @param {Object} options Initialization options.
+ */
+var FormSerializer = function(options) {
+    this.options = _.extend({}, options);
+    this.initialize(options);
+};
+
+/**
+ * Static {FormSerializer} functions.
+ */
+_.extend(FormSerializer, {
+    /**
+     * Inheritence behavior mixin.
+     */
+    extend: extend,
+
+    /**
+     * Gets a selector string that can be used to select inputs
+     * for the given attribute name.
+     *
+     * @param {String} name The attribute name to create the selectors for.
+     * @return {String} A string of input selectors.
+     */
+    inputSelectors: function(name) {
+        return 'input[name="' + name + '"], select[name="' + name + '"], textarea[name="' + name + '"]';
+    },
+
+    /**
+     * Gets a value indicating whether the given element is a jQuery instance.
+     *
+     * @param {Object} el The element to check.
+     * @return {boolean} True if the element is a jQuery instance, false otherwise.
+     */
+    isJQuery: function(el) {
+        return !_.isUndefined(el) && el instanceof jQuery && el.length > 0;
+    }
+});
+
+/**
+ * Prototype {FormSerializer} functions.
+ */
+_.extend(FormSerializer.prototype, {
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {},
+
+    /**
+     * De-serializes the given attributes into the given form element.
+     *
+     * @param {jQuery} el The jQuery object containing the form element to de-serialize into.
+     * @param {Object} attributes The attributes representing the data to de-serialize.
+     * @param {Object} serializers An optional hash of {FieldSerializer}s, keyed the same as the attributes object, to use when de-serializing specific fields.
+     */
+    deserialize: function(el, attributes, serializers) {
+        var prop,
+            fields,
+            ser;
+
+        attributes = attributes || {};
+        serializers = serializers || {};
+
+        if (FormSerializer.isJQuery(el)) {
+            for (prop in attributes) {
+                if (attributes.hasOwnProperty(prop)) {
+                    fields = el.find(FormSerializer.inputSelectors(prop));
+                    ser = serializers[prop] || new FieldSerializer();
+                    ser.deserialize(attributes[prop], fields);
+                }
+            }
+        }
+    },
+
+    /**
+     * Serializes the given form element.
+     *
+     * @param {jQuery} el The jQuery object containing the form element to serialize.
+     * @param {Object} attributes The attributes hash identifying the names of the fields to serialize.
+     * @param {Object} serializers An optional hash of {FieldSerializer}s, keyed the same as the attributes object, to use when serializing specific fields.
+     * @return {Object} The serialized form data.
+     */
+    serialize: function(el, attributes, serializers) {
+        var prop,
+            fields,
+            ser,
+            result = {};
+
+        attributes = attributes || {};
+        serializers = serializers || {};
+
+        if (FormSerializer.isJQuery(el)) {
+            for (prop in attributes) {
+                if (attributes.hasOwnProperty(prop)) {
+                    fields = el.find(FormSerializer.inputSelectors(prop));
+                    ser = serializers[prop] || new FieldSerializer();
+                    result[prop] = ser.serialize(fields);
+                }
+            }
+        }
+
+        return result;
+    }
+});
+
+/**
+ * Provides field serialization services.
+ *
+ * @constructor
+ * @param {Object} options Initialization options.
+ */
+var FieldSerializer = function(options) {
+    this.options = _.extend({}, options);
+    this.initialize(this.options);
+};
+
+/**
+ * Static {FieldSerializer} functions.
+ */
+_.extend(FieldSerializer, {
+    /**
+     * Inheritence behavior mixin.
+     */
+    extend: extend
+});
+
+/**
+ * Prototype {FieldSerializer} functions.
+ */
+_.extend(FieldSerializer.prototype, {
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {},
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        var tagName,
+            type,
+            op,
+            i,
+            n;
+
+        if (FormSerializer.isJQuery(el)) {
+            tagName = (el[0].tagName || '').toUpperCase();
+            type = (el.attr('type') || '').toUpperCase();
+
+            if (tagName === 'INPUT' && type === 'CHECKBOX') {
+                if (!_.isUndefined(value) && !_.isNull(value) && !_.isNaN(value)) {
+                    if (!_.isArray(value)) {
+                        value = [value.toString()];
+                    }
+                }
+
+                value = (value || []).map(function(v) { return v.toString(); });
+
+                for (i = 0, n = el.length; i < n; i++) {
+                    el[i].checked = '';
+
+                    if (_.any(value, function(v) { return v === $(el[i]).val(); })) {
+                        el[i].checked = 'checked';
+                    }
+                }
+            } else if (tagName === 'INPUT' && type === 'RADIO') {
+                if (!_.isUndefined(value) && !_.isNull(value) && !_.isNaN(value)) {
+                    value = value.toString();
+                } else {
+                    value = null;
+                }
+
+                for (i = 0, n = el.length; i < n; i++) {
+                    el[i].checked = value === $(el[i]).val() ? 'checked' : '';
+                }
+            } else if (tagName === 'SELECT') {
+                if (el[0].options.length > 0) {
+                    if (!_.isUndefined(value) && !_.isNull(value) && !_.isNaN(value)) {
+                        value = value.toString();
+                        
+                        for (i = el[0].options.length - 1; i >= 0; i--) {
+                            op = el[0].options.item(i);
+                            
+                            if ((op.value && value === op.value) || value === op.text || i === 0) {
+                                el[0].selectedIndex = i;
+                                break;
+                            }
+                        }
+                    } else {
+                        el[0].selectedIndex = 0;
+                    }
+                }
+            } else {
+                if (!_.isUndefined(value) && !_.isNull(value) && !_.isNaN(value)) {
+                    el.val(value.toString());
+                } else {
+                    el.val('');
+                }
+            } 
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var tagName,
+            type,
+            i,
+            n,
+            val = null;
+
+        if (FormSerializer.isJQuery(el)) {
+            tagName = (el[0].tagName || '').toUpperCase();
+            type = (el.attr('type') || '').toUpperCase();
+
+            if (tagName === 'INPUT' && type === 'CHECKBOX') {
+                val = [];
+
+                for (i = 0, n = el.length; i < n; i++) {
+                    if (el[i].checked) {
+                        val.push($(el[i]).val());
+                    }
+                }
+            } else if (tagName === 'INPUT' && type === 'RADIO') {
+                for (i = 0, n = el.length; i < n; i++) {
+                    if (el[i].checked) {
+                        val = $(el[i]).val();
+                        break;
+                    }
+                }
+            } else {
+                val = el.val();
+            }
+        }
+
+        return val;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize date values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var DateFieldSerializer = FieldSerializer.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FieldSerializer.prototype.initialize.call(this, options);
+
+        this.options = _.extend({
+            format: 'yyyy-MM-dd h:mm tt'
+        }, this.options);
+    },
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isDate(value)) {
+                el.val(value.toString(this.options.format));
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        if (FormSerializer.isJQuery(el)) {
+            return Date.parse(el.val());
+        }
+
+        return null;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize double values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var DoubleFieldSerializer = FieldSerializer.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FieldSerializer.prototype.initialize.call(this, options);
+
+        this.options = _.extend({
+            digits: 2
+        }, this.options);
+    },
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isNumber(value)) {
+                el.val(new Number(value).toFixed(this.options.digits));
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value;
+
+        if (FormSerializer.isJQuery(el)) {
+            value = el.val();
+            
+            if (jQuery.isNumeric(value)) {
+                return parseFloat(value, 10);
+            }       
+        }
+
+        return null;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize integer values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var IntFieldSerializer = FieldSerializer.extend({
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isNumber(value)) {
+                el.val(Math.floor(value).toString());
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value;
+
+        if (FormSerializer.isJQuery(el)) {
+            value = el.val();
+            
+            if (jQuery.isNumeric(value)) {
+                return Math.floor(parseInt(value, 10));
+            }       
+        }
+
+        return null;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize queue name values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var QueueNamesSerializer = FieldSerializer.extend({
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        value = $.splitAndTrim(value, '\n');
+
+        if (_.any(value, function(s) { return s === '*'; })) {
+            el.val('');
+        } else {
+            el.val(value.join('\n'));
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value = $.splitAndTrim(el.val(), '\n');
+        
+        if (_.any(value, function(s) { return s === '*'; })) {
+            return '*';
+        } else {
+            return value.join('\n');
+        }
+    }
+});
+/**
+ * Provides form validation services.
+ *
+ * @constructor
+ * @param {Object} options Initialization options.
+ */
+var FormValidator = function(options) {
+    this.options = _.extend({}, options);
+    this.initialize(options);
+};
+
+/**
+ * Static {FormValidator} functions.
+ */
+_.extend(FormValidator, {
+    /**
+     * Inheritence behavior mixin.
+     */
+    extend: extend
+});
+
+/**
+ * Prototype {FormValidator} functions.
+ */
+_.extend(FormValidator.prototype, {
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.options = _.extend({
+            message: 'Invalid.'
+        }, options);
+    },
+
+    /**
+     * Executes validation against the given value.
+     *
+     * @param {Object} value The value to validate.
+     * @return {String} The error message to display if validation failed, undefined otherwise.
+     */
+    validate: function(value) {}
+});
+
+/**
+ * Extends {FormValidator} to validate enumerations.
+ *
+ * @constructor
+ * @extends {FormValidator}
+ */
+var EnumFormValidator = FormValidator.extend({
+    /**
+     * Executes validation against the given value.
+     *
+     * @param {Object} value The value to validate.
+     * @return {String} The error message to display if validation failed, undefined otherwise.
+     */
+    validate: function(value) {
+        if (!_.isUndefined(value) && !_.isNull(value)) {
+            value = value.toString();
+
+            if (value.length > 0 && !_.any(this.options.possibleValues || [], function(o) { return o === value; })) {
+                return this.options.message;
+            }
+        }
+    }
+});
+
+/**
+ * Extends {FormValidator} to validate string length.
+ *
+ * @constructor
+ * @extends {FormValidator}
+ */
+var LengthFormValidator = FormValidator.extend({
+    /**
+     * Executes validation against the given value.
+     *
+     * @param {Object} value The value to validate.
+     * @return {String} The error message to display if validation failed, undefined otherwise.
+     */
+    validate: function(value) {
+        if (!_.isUndefined(value) && !_.isNull(value)) {
+            value = value.toString();
+
+            if (value.length > this.options.maxLength) {
+                return this.options.message;
+            }
+        }
+    }
+});
+
+/**
+ * Extends {FormValidator} to validate number or date ranges.
+ *
+ * @constructor
+ * @extends {FormValidator}
+ */
+var RangeFormValidator = FormValidator.extend({
+    /**
+     * Executes validation against the given value.
+     *
+     * @param {Object} value The value to validate.
+     * @return {String} The error message to display if validation failed, undefined otherwise.
+     */
+    validate: function(value) {
+        if (!_.isUndefined(value) && !_.isNull(value)) {
+            if (_.isNumber(value)) {
+                if (value < this.options.min || value > this.options.max) {
+                    return this.options.message;
+                }
+            } else if (_.isDate(value)) {
+                if (!value.equals(this.options.min) && !value.equals(this.options.max) && !value.between(this.options.min, this.options.max)) {
+                    return this.options.message;
+                }
+            }
+        }
+    }
+});
+
+/**
+ * Extends {FormValidator} to validate against a regular expression.
+ *
+ * @constructor
+ * @extends {FormValidator}
+ */
+var RegexFormValidator = FormValidator.extend({
+    /**
+     * Executes validation against the given value.
+     *
+     * @param {Object} value The value to validate.
+     * @return {String} The error message to display if validation failed, undefined otherwise.
+     */
+    validate: function(value) {
+        if (!_.isUndefined(value) && !_.isNull(value) && _.isString(value) && value.length > 0) {
+            if (_.isRegExp(this.options.exp)) {
+                if (!this.options.exp.test(value)) {
+                    return this.options.message;
+                }
+            } else {
+                if (!(new RegExp(this.options.exp).test(value))) {
+                    return this.options.message;
+                }
+            }
+        }
+    }
+});
+
+/**
+ * Extends {FormValidator} to validate required values.
+ *
+ * @constructor
+ * @extends {FormValidator}
+ */
+var RequiredValidator = FormValidator.extend({
+    /**
+     * Executes validation against the given value.
+     *
+     * @param {Object} value The value to validate.
+     * @return {String} The error message to display if validation failed, undefined otherwise.
+     */
+    validate: function(value) {
+        if (_.isUndefined(value)
+            || _.isNull(value)
+            || (_.isString(value) && value.length === 0)
+            || (_.isNumber(value) && _.isNaN(value))
+            || (_.isArray(value) && value.length === 0)
+            || (jQuery.isPlainObject(value) && _.isEmpty(value))) {
+            return this.options.message;
+        }
+    }
+});
+/**
  * Base model implementation.
  *
  * @constructor
@@ -7235,7 +7852,7 @@ var HistoryController = CollarController.extend({
      * @param {Number} page The page number to filter the view on.
      */
     index: function(search, page) {
-        this.model.set({Search: search || '', Page: page || 1}, {silent: true});
+        this.model.set({Search: search || '', PageNumber: page || 1}, {silent: true});
         this.view.render();
     }
 });
@@ -7494,6 +8111,441 @@ var DashboardRouter = CollarRouter.extend({
 });
 
 /**
+ * Base form view implementation.
+ *
+ * @constructor
+ */
+var FormView = Backbone.View.extend({
+    className: 'form well',
+    tagName: 'form',
+    inputSelector: 'input, select, textarea',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.options = _.extend({
+            errorClassName: 'error',
+            fieldSelector: '.field',
+            validationSummaryMessage: 'Please correct the errors below.',
+            validationSummarySelector: '.alert.alert-block.error'
+        }, this.options);
+
+        this.model.bind('change', this.change, this);
+        this.$el.attr('action', 'javascript:void(0);');
+        this.isLoading = false;
+    },
+
+    /**
+     * Attempts to render an error response generated by the server.
+     *
+     * @param {CollarModel} model The model that caused the error to be generated.
+     * @param {jqXHR} response The Ajax response object indicating the error.
+     * @return {boolean} True if the error was handled by this function, false otherwise.
+     */
+    ajaxError: function(model, response) {
+        if (/^application\/json/i.test(response.getResponseHeader('Content-Type'))) {
+            var json = null;
+
+            try {
+                json = JSON.parse(response.responseText);
+            } catch (e) {
+            }
+
+            if (json && !_.isEmpty(json)) {
+                this.renderErrors(json);
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    /**
+     * Handles the non-delete cancel button press.
+     */
+    cancel: function() {
+        this.trigger('cancel', this);
+    },
+
+    /**
+     * Handles the cancel delete button press.
+     */
+    cancelDelete: function() {
+        this.$('.form-actions')
+            .hide()
+            .filter(':not(.form-actions-delete)')
+            .fadeIn();
+    },
+
+    /**
+     * Handles model change events.
+     */
+    change: function() {
+        this.deserialize(this.getAttributes());
+    },
+
+    /**
+     * Handles the confirm-delete button press.
+     */
+    confirmDelete: function() {
+        this.trigger('delete', this);
+    },
+
+    /**
+     * Handles an initial (pre-confirmation) delete link click.
+     */
+    del: function() {
+        this.$('.form-actions')
+            .hide()
+            .filter('.form-actions-delete')
+            .fadeIn();
+    },
+
+    /**
+     * De-serializes the given attributes hash into this view's form fields.
+     *
+     * @param {Object} attributes A hash of attribute values to fill this instance with.
+     * @return {FormView} This instance.
+     */
+    deserialize: function(attributes) {
+        new FormSerializer().deserialize(this.$el, attributes, this.serializers);
+        return this;
+    },
+
+    /**
+     * Gets a jQuery object containing all of the form's fields.
+     */
+    findFields: function(name) {
+        return this.$('input[name="' + name + '"], textarea[name="' + name + '"], select[name="' + name + '"]');
+    },
+
+    /**
+     * Focuses the first element in the form.
+     */
+    focus: function() {},
+
+    /**
+     * Gets the attributes hash to use during serialization and de-serialization.
+     *
+     * @return {Object} This instance's attributes hash.
+     */
+    getAttributes: function() {
+        return !_.isUndefined(this.model.toEditJSON) ? this.model.toEditJSON() : this.model.toJSON();
+    },
+
+    /**
+     * Updates the view to reflect that submitting data to or loading
+     * data from the server has completed.
+     */
+    hideLoading: function() {
+        var elements,
+            el,
+            data,
+            i,
+            n;
+
+        if (this.isLoading) {
+            elements = this.$(this.inputSelector);
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                el = $(elements[i]);
+                data = el.data('FormView:Loading');
+
+                if (data) {
+                    el[0].disabled = data.disabled;
+                }
+
+                el.removeData('FormView:Loading');
+            }
+
+            this.isLoading = false;
+        }
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {FormView} This instance.
+     */
+    render: function() {
+        var attributes = this.getAttributes(),
+            actions,
+            actionsDelete,
+            del;
+
+        this.$el.html(this.template(attributes));
+        this.deserialize(attributes);
+        this.renderErrors();
+
+        actions = this.$('.form-actions:not(.form-actions-delete)').show();
+        actionsDelete = actions.find('a.delete');
+        del = this.$('.form-actions-delete').hide();
+
+        this.$el.bind('submit', _.bind(this.submit, this));
+        actions.find('button[type="reset"]').bind('click', _.bind(this.cancel, this));
+
+        if (this.model.get('Id')) {
+            actionsDelete.bind('click', _.bind(this.del, this));
+            del.find('button.btn-danger').bind('click', _.bind(this.confirmDelete, this));
+            del.find('button:not(.btn-danger)').bind('click', _.bind(this.cancelDelete, this));
+        } else {
+            actionsDelete.remove();
+            del.remove();
+        }
+
+        return this;
+    },
+
+    /**
+     * Renders the given errors hash for this instance.
+     *
+     * @param {Object} errors A hash of error messages to render.
+     * @return {FormView} This instance.
+     */
+    renderErrors: function(errors) {
+        var summary = this.$(this.options.validationSummarySelector),
+            fields = this.$(this.options.fieldSelector),
+            summaryErrors = [],
+            summaryList,
+            prop,
+            error,
+            inputs,
+            field,
+            errorEl,
+            found;
+
+        summary.hide().html('');
+
+        fields
+            .removeClass(this.options.errorClassName)
+            .find('.' + this.options.errorClassName)
+            .hide();
+
+        errors = errors || {};
+
+        for (prop in errors) {
+            if (errors.hasOwnProperty(prop)) {
+                error = (errors[prop] || '').toString();
+
+                if (error) {
+                    found = false;
+                    inputs = this.findFields(prop);
+
+                    if (inputs.length > 0) {
+                        field = inputs.parents(this.options.fieldSelector);
+                        errorEl = field.find('.' + this.options.errorClassName);
+
+                        if (field.length > 0 && errorEl.length > 0) {
+                            field.addClass(this.options.errorClassName);
+                            errorEl.text(error).show();
+
+                            found = true;
+                        }
+                    }
+
+                    if (!found) {
+                        summaryErrors.push(error);
+                    }
+                }
+            }
+        }
+
+        if (summaryErrors.length > 0) {
+            summaryList = $('<ul/>');
+            summaryList.append.apply(summaryList, _.map(summaryErrors, function(e) { return $('<li/>').text(e); }));
+
+            summary
+                .append($('<p/>').text(this.options.validationSummaryMessage))
+                .append(summaryList)
+                .show();
+        }
+
+        return this;
+    },
+
+    /**
+     * Serializes the form.
+     *
+     * @return {Object} The serialized form attributes.
+     */
+    serialize: function() {
+        return new FormSerializer().serialize(this.$el, this.getAttributes(), this.serializers);
+    },
+
+    /**
+     * Updates the view to reflect submitting data to or loading data from
+     * the server.
+     */
+    showLoading: function() {
+        var elements,
+            el,
+            i,
+            n;
+
+        if (!this.isLoading) {
+            this.isLoading = true;
+            elements = this.$(this.inputSelector);
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                el = $(elements[i]);
+                el.data('FormView:Loading', {disabled: el[0].disabled});
+                el.attr('disabled', 'disabled');
+            }
+        }   
+    },
+
+    /**
+     * Submits this form by serializing and validating the current inputs
+     * If validation passes, the 'submit' event is raised. Otherwise, the
+     * validation failure message(s) are rendered.
+     *
+     * @return {FormView} This instance.
+     */
+    submit: function() {
+        var attributes = this.serialize(),
+            errors = this.validate(attributes);
+
+        this.renderErrors(errors);
+
+        if (!errors) {
+            this.trigger('submit', this, attributes);
+        }
+
+        return this;
+    },
+
+    /**
+     * Validates the given serialized attributes hash against this instance's validators.
+     *
+     * @param {Object} attributes The serialized attributes to validate.
+     * @return {Object} A hash of error messages if validation failed, otherwise undefined.
+     */
+    validate: function(attributes) {
+        var errors = {},
+            prop,
+            validators,
+            message,
+            i,
+            n
+
+        attributes = attributes || {};
+
+        if (!_.isUndefined(this.validators) && !_.isNull(this.validators)) {
+            for (prop in this.validators) {
+                if (this.validators.hasOwnProperty(prop)) {
+                    validators = this.validators[prop];
+
+                    if (!_.isArray(validators)) {
+                        validators = [validators];
+                    }
+
+                    for (i = 0, n = validators.length; i < n; i++) {
+                        message = validators[i].validate(attributes[prop]);
+
+                         if (message) {
+                            errors[prop] = message;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!_.isEmpty(errors)) {
+            return errors;
+        }
+    }
+});
+var PagerView = Backbone.View.extend({
+    className: 'pagination',
+    events: {
+        'form submit': 'submit',
+        '.pagination-previous a': 'previous',
+        'a.pagination-count': 'last',
+        '.pagination-next a': 'next'
+    },
+    tagName: 'div',
+    template: _.template($('#pager-template').html()),
+
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+    },
+
+    last: function() {
+
+    },
+
+    next: function() {
+
+    },
+
+    previous: function() {
+
+    },
+
+    render: function() {
+        var number = this.model.get('PageNumber'),
+            count = this.model.get('PageCount');
+
+        if (count > 1) {
+            this.$el.show().html(this.template(this.model.toJSON()));
+
+            if (number === 1) {
+                this.$('.pagination-previous').addClass('disabled');
+            }
+
+            if (number === count) {
+                this.$('a.pagination-count').hide();
+                this.$('.pagination-next').addClass('disabled');
+            } else {
+                this.$('span.pagination-count').hide();
+            }
+        } else {
+            this.$el.hide();
+        }
+
+        return this;
+    },
+
+    submit: function() {
+
+    }
+});
+var SearchView = FormView.extend({
+    className: 'form-search',
+    events: {
+        "click button[type='reset']": "clear"
+    },
+    tagName: 'form',
+    template: _.template($('#search-template').html()),
+
+    clear: function() {
+        this.trigger('clear', this);
+    },
+
+    deserialize: function(attributes) {
+        var input = this.$('input[name="q"]').val('');
+
+        if (!_.isUndefined(attributes) && !_.isNull(attributes)) {
+            if (_.isString(attributes)) {
+                input.val(attributes);
+            } else if (!_.isUndefined(attributes.Search)) {
+                input.val(attributes.Search);
+            } else {
+                input.val(attributes.toString());
+            }
+        }
+
+        return this;
+    },
+
+    serialize: function() {
+        return this.$('input[name="q"]').val();
+    }
+});
+/**
  * Manages the root dashboard view.
  *
  * @constructor
@@ -7685,7 +8737,39 @@ var HistoryView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
+        this.model.bind('change', this.change, this);
+
+        this.searchView = new SearchView({model: new Backbone.Model({Search: this.model.get('Search')})});
+        this.searchView.bind('submit', this.submitSearch, this);
+        this.searchView.bind('clear', this.clearSearch, this);
+
+        this.topPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
+        this.topPagerView.bind('page', this.page, this);
+
+        this.bottomPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
+        this.bottomPagerView.bind('page', this.page, this);
+    },
+
+    change: function(sender, args) {
+        this.searchView.model.set({Search: this.model.get('Search')});
+    },
+
+    clearSearch: function(sender, args) {
+
+    },
+
+    getPagingAttributes: function() {
+        var attr = {PageNumber: this.model.get('PageNumber'), PageCount: this.model.get('PageCount')};
+
+        if (_.isUndefined(attr.PageCount) || attr.PageCount < 1) {
+            attr.PageCount = 1;
+        }
+
+        return attr;
+    },
+
+    page: function(sender, args) {
+
     },
 
     /**
@@ -7694,8 +8778,34 @@ var HistoryView = Backbone.View.extend({
      * @return {HistoryView} This instance.
      */
     render: function() {
+        var searchEl,
+            pagingHeaderEl,
+            listEl,
+            pagingFooterEl,
+            detailsEl;
+
         this.$el.html(this.template(this.model.toJSON()));
+
+        searchEl = this.$('.search');
+        pagingHeaderEl = this.$('.paging-header');
+        listEl = this.$('.list');
+        pagingFooterEl = this.$('.paging-footer');
+        detailsEl = this.$('.details');
+
+        this.searchView.model.set({Search: this.model.get('Search')}, {silent: true});
+        searchEl.html(this.searchView.render().el);
+
+        this.topPagerView.model.set(this.getPagingAttributes(), {silent: true});
+        pagingHeaderEl.html(this.topPagerView.render().el);
+
+        this.bottomPagerView.model.set(this.getPagingAttributes(), {silent: true});
+        pagingFooterEl.html(this.bottomPagerView.render().el);
+
         return this;
+    },
+
+    submitSearch: function(sender, args) {
+
     }
 });
 /**

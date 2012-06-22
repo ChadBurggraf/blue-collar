@@ -6006,6 +6006,17 @@ a.badge:hover {
           border-radius: 3px 0 0 3px;
 }
 
+.pagination li > span {
+  float: left;
+  padding: 0 14px;
+  line-height: 30px;
+  color: #999;
+  border: solid 1px #ddd;
+  -webkit-border-radius: 3px 0 0 3px;
+     -moz-border-radius: 3px 0 0 3px;
+          border-radius: 3px 0 0 3px;
+}
+
 .pagination ul {
   box-shadow: none;
 }

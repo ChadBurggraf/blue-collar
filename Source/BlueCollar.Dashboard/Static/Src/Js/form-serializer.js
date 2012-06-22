@@ -250,3 +250,195 @@ _.extend(FieldSerializer.prototype, {
         return val;
     }
 });
+
+/**
+ * Extends {FieldSerializer} to serialize date values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var DateFieldSerializer = FieldSerializer.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FieldSerializer.prototype.initialize.call(this, options);
+
+        this.options = _.extend({
+            format: 'yyyy-MM-dd h:mm tt'
+        }, this.options);
+    },
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isDate(value)) {
+                el.val(value.toString(this.options.format));
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        if (FormSerializer.isJQuery(el)) {
+            return Date.parse(el.val());
+        }
+
+        return null;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize double values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var DoubleFieldSerializer = FieldSerializer.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FieldSerializer.prototype.initialize.call(this, options);
+
+        this.options = _.extend({
+            digits: 2
+        }, this.options);
+    },
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isNumber(value)) {
+                el.val(new Number(value).toFixed(this.options.digits));
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value;
+
+        if (FormSerializer.isJQuery(el)) {
+            value = el.val();
+            
+            if (jQuery.isNumeric(value)) {
+                return parseFloat(value, 10);
+            }       
+        }
+
+        return null;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize integer values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var IntFieldSerializer = FieldSerializer.extend({
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isNumber(value)) {
+                el.val(Math.floor(value).toString());
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value;
+
+        if (FormSerializer.isJQuery(el)) {
+            value = el.val();
+            
+            if (jQuery.isNumeric(value)) {
+                return Math.floor(parseInt(value, 10));
+            }       
+        }
+
+        return null;
+    }
+});
+
+/**
+ * Extends {FieldSerializer} to serialize queue name values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var QueueNamesSerializer = FieldSerializer.extend({
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        value = $.splitAndTrim(value, '\n');
+
+        if (_.any(value, function(s) { return s === '*'; })) {
+            el.val('');
+        } else {
+            el.val(value.join('\n'));
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value = $.splitAndTrim(el.val(), '\n');
+        
+        if (_.any(value, function(s) { return s === '*'; })) {
+            return '*';
+        } else {
+            return value.join('\n');
+        }
+    }
+});

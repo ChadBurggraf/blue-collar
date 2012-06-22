@@ -73,6 +73,15 @@ History
 <small><%- ApplicationName %></small>
 </h1>
 </div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="paging-header"></div>
+<div class="list"></div>
+<div class="paging-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
 </script>
 <script type="text/template" id="nav-item-template">
 <a href="<%= Url %>">
@@ -84,4 +93,28 @@ History
 <a class="close" href="javascript:void(0);">×</a>
 <% if (Title) { print($('<h5/>').text(Title).outerHtml()); } %>
 <p><%- Message %></p>
+</script>
+<script type="text/template" id="pager-template">
+<form action="javascript:void(0);">
+<ul>
+<li class="pagination-previous"><a href="javascript:void(0);">&laquo; Prev</a></li>
+<li>
+<label>
+<span>Page</span>
+<input type="text" name="PageNumber" value="<%- PageNumber %>">
+<span>of</span>
+</label>
+<a class="pagination-count" href="javascript:void(0);"><% print(new Number(PageCount).format('0,000')); %></a>
+<span class="pagination-count"><% print(new Number(PageCount).format('0,000')); %></span>
+</li>
+<li class="pagination-next"><a href="javascript:void(0);">Next &raquo;</a></li>
+</ul>
+</form>
+</script>
+<script type="text/template" id="search-template">
+<fieldset>
+<input type="search" name="q" class="span6 search-query">
+<input type="submit" class="btn btn-primary" value="Search">
+<button type="reset" class="btn">Clear</button>
+</fieldset>
 </script>

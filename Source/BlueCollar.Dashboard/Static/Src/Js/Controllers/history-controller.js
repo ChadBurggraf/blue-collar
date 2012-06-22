@@ -24,7 +24,7 @@ var HistoryController = CollarController.extend({
      * @param {Number} page The page number to filter the view on.
      */
     index: function(search, page) {
-        this.model.set({Search: search || '', Page: page || 1}, {silent: true});
+        this.model.set({Search: search || '', PageNumber: page || 1}, {silent: true});
         this.view.render();
     }
 });

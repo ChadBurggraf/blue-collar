@@ -12,7 +12,39 @@ var HistoryView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
+        this.model.bind('change', this.change, this);
+
+        this.searchView = new SearchView({model: new Backbone.Model({Search: this.model.get('Search')})});
+        this.searchView.bind('submit', this.submitSearch, this);
+        this.searchView.bind('clear', this.clearSearch, this);
+
+        this.topPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
+        this.topPagerView.bind('page', this.page, this);
+
+        this.bottomPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
+        this.bottomPagerView.bind('page', this.page, this);
+    },
+
+    change: function(sender, args) {
+        this.searchView.model.set({Search: this.model.get('Search')});
+    },
+
+    clearSearch: function(sender, args) {
+
+    },
+
+    getPagingAttributes: function() {
+        var attr = {PageNumber: this.model.get('PageNumber'), PageCount: this.model.get('PageCount')};
+
+        if (_.isUndefined(attr.PageCount) || attr.PageCount < 1) {
+            attr.PageCount = 1;
+        }
+
+        return attr;
+    },
+
+    page: function(sender, args) {
+
     },
 
     /**
@@ -21,7 +53,33 @@ var HistoryView = Backbone.View.extend({
      * @return {HistoryView} This instance.
      */
     render: function() {
+        var searchEl,
+            pagingHeaderEl,
+            listEl,
+            pagingFooterEl,
+            detailsEl;
+
         this.$el.html(this.template(this.model.toJSON()));
+
+        searchEl = this.$('.search');
+        pagingHeaderEl = this.$('.paging-header');
+        listEl = this.$('.list');
+        pagingFooterEl = this.$('.paging-footer');
+        detailsEl = this.$('.details');
+
+        this.searchView.model.set({Search: this.model.get('Search')}, {silent: true});
+        searchEl.html(this.searchView.render().el);
+
+        this.topPagerView.model.set(this.getPagingAttributes(), {silent: true});
+        pagingHeaderEl.html(this.topPagerView.render().el);
+
+        this.bottomPagerView.model.set(this.getPagingAttributes(), {silent: true});
+        pagingFooterEl.html(this.bottomPagerView.render().el);
+
         return this;
+    },
+
+    submitSearch: function(sender, args) {
+
     }
 });
