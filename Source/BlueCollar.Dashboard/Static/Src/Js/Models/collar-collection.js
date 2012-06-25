@@ -12,6 +12,7 @@
      */
     initialize: function(models, options) {
         options = options || {};
+        this.pageNumber = 1;
         this.search = '';
         this.urlRoot = options.urlRoot || '/';
 
@@ -32,14 +33,8 @@
         });
     },
 
-    /**
-     * Creates a params object for listing the collection.
-     */
-    listParams: function() {
-        return {
-            search: this.search || '',
-            page: this.pageNumber || 1
-        };
+    fetch: function(options) {
+        
     },
 
     /**

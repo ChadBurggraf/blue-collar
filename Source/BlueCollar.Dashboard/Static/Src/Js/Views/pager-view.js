@@ -1,4 +1,9 @@
-﻿var PagerView = Backbone.View.extend({
+﻿/**
+ * Manages a paging view for paging through a list.
+ *
+ * @constructor
+ */
+var PagerView = Backbone.View.extend({
     className: 'pagination',
     events: {
         'submit form': 'submit',
@@ -11,24 +16,45 @@
     tagName: 'div',
     template: _.template($('#pager-template').html()),
 
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
     initialize: function(options) {
         this.model.bind('change', this.render, this);
     },
 
+    /**
+     * Handles the keyup event.
+     *
+     * @param {DOMEvent} event The event definition.
+     */
     keyup: function(event) {
         if (event.keyCode === 13) {
             this.submit();
         }   
     },
 
+    /**
+     * Handles the last event.
+     */
     last: function() {
         this.page(this.model.get('PageCount'));
     },
 
+    /**
+     * Handles the next event.
+     */
     next: function() {
         this.page(this.model.get('PageNumber') + 1);
     },
 
+    /**
+     * Raises the 'page' event with the given page number.
+     *
+     * @param {Number} pageNumber The page number to raise the event with.
+     */
     page: function(pageNumber) {
         var cn = this.model.get('PageNumber'),
             cc = this.model.get('PageCount');
@@ -50,10 +76,18 @@
         }
     },
 
+    /**
+     * Handles the previous event.
+     */
     previous: function() {
         this.page(this.model.get('PageNumber') - 1);
     },
 
+    /**
+     * Renders the view.
+     *
+     * @return {PagerView} This instance.
+     */
     render: function() {
         var number = this.model.get('PageNumber'),
             count = this.model.get('PageCount');
@@ -78,6 +112,9 @@
         return this;
     },
 
+    /**
+     * Handles the submit event.
+     */
     submit: function() {
         var pageNumber = parseInt(this.$('input').val(), 10);
 

@@ -1,4 +1,35 @@
-﻿<script type="text/template" id="history-template">
+﻿<script type="text/template" id="history-row-template">
+    <td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
+    <td><%- ScheduleName || '' %></td>
+    <td><%- QueueName || '' %></td>
+    <td>
+        <span class="list-date"><% print(StartedOn.toString('MMM d, yyyy')); %></span>
+        <small class="list-time light"><% print(StartedOn.toString('h:mm:ss tt')); %></small>
+    </td>
+    <td>
+        <span class="list-date"><% print(FinishedOn.toString('MMM d, yyyy')); %></span>
+        <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
+    </td>
+    <td><span class="status"><%- Status %></span></td>
+    <td><%- TryNumber %></td>
+</script>
+
+<script type="text/template" id="history-list-template">
+    <thead>
+        <tr>
+            <th>Job</th>
+            <th>Schedule</th>
+            <th>Queue</th>
+            <th>Started On</th>
+            <th>Finished On</th>
+            <th>Status</th>
+            <th>Try</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="history-template">
     <div class="page-header">
         <h1>
             History

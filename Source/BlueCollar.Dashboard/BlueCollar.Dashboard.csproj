@@ -132,6 +132,7 @@
     <Content Include="Static\Src\Js\Models\collar-collection.js" />
     <Content Include="Static\Src\Js\Models\collar-model.js" />
     <Content Include="Static\Src\Js\Models\history-model.js" />
+    <Content Include="Static\Src\Js\Models\area-model.js" />
     <Content Include="Static\Src\Js\Models\nav-model.js" />
     <Content Include="Static\Src\Js\Models\stats-model.js" />
     <Content Include="Static\Src\Js\Routers\collar-router.js" />
@@ -168,11 +169,14 @@
     <Content Include="Static\Src\Js\Vendor\underscore-1.3.3.js" />
     <Content Include="Static\Src\Js\Views\dashboard-view.js" />
     <Content Include="Static\Src\Js\Views\form-view.js" />
+    <Content Include="Static\Src\Js\Views\history-list-view.js" />
+    <Content Include="Static\Src\Js\Views\history-row-view.js" />
     <Content Include="Static\Src\Js\Views\history-view.js" />
     <Content Include="Static\Src\Js\Views\list-view.js" />
     <Content Include="Static\Src\Js\Views\nav-view.js" />
     <Content Include="Static\Src\Js\Views\notice-view.js" />
     <Content Include="Static\Src\Js\Views\pager-view.js" />
+    <Content Include="Static\Src\Js\Views\row-view.js" />
     <Content Include="Static\Src\Js\Views\search-view.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

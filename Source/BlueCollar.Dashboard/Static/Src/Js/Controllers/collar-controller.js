@@ -8,19 +8,18 @@
  * @param {Object} options Initialization options. 
  */
 var CollarController = function(applicationName, urlRoot, page, options) {
+    var collection;
+
     this.applicationName = applicationName;
     this.urlRoot = urlRoot;
     this.page = page;
     this.options = _.extend({}, options);
 
-    var collection = null;
+    collection = new this.collection(null, {urlRoot: this.urlRoot});
+    collection.bind('counts', this.counts, this);
+    collection.bind('reset', this.reset, this);
 
-    if (_.isFunction(this.collection)) {
-        collection = new this.collection(null, {urlRoot: this.urlRoot});
-        collection.bind('reset', this.reset, this);
-    }
-
-    this.model = new Backbone.Model({ApplicationName: this.applicationName, Collection: collection});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection});
     this.initialize(this.options);
 };
 
@@ -64,9 +63,11 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
         if (collection) {
             collection.each(function(m) { 
-                m.set({editing: false}); 
+                m.set({Editing: false}); 
             });
         }
+
+        this.model.set({Loading: false});
 
         if (!view || !view.ajaxError(model, response)) {
             var message;
@@ -107,28 +108,37 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Performs an Ajax fetch on this instance's collection.
+     *
+     */
+    fetch: function() {
+        var collection = this.getCollection();
+
+        if (collection) {
+            collection.pageNumber = this.model.get('PageNumber');
+            collection.search = this.model.get('Search');
+            collection.fetch({error: _.bind(this.ajaxError, this, null)});
+            this.navigate();
+        }
+    },
+
+    /**
      * Gets this instance's current collection instance, if applicable.
      *
      * @return {CollarCollection} The current collection instance, or null if none exists.
      */
     getCollection: function() {
         var collection = this.model && _.isFunction(this.model.get) ? this.model.get('Collection') : null;
-        return _.isFunction(collection) ? collection : null;
+        return collection && !_.isUndefined(collection.length) ? collection : null;
     },
 
     /**
      * Performs navigation on behalf of this controller.
      */
     navigate: function() {
-        var collection = this.getCollection(),
-            fragment = this.navigateFragment(),
-            search,
-            page;
-
-        if (collection) {
-            search = collection.search || '';
-            page = collection.pageNumber || 1;
-        }
+        var fragment = this.navigateFragment(),
+            search = this.model.get('Search'),
+            page = this.model.get('PageNumber');
 
         this.trigger('navigate', this, {fragment: fragment, search: search, page: page});
     },

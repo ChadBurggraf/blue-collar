@@ -15,6 +15,7 @@ var HistoryController = CollarController.extend({
      */
     initialize: function(options) {
         this.view = new HistoryView({el: this.page, model: this.model});
+        this.view.bind('fetch', this.fetch, this);
     },
 
     /**
@@ -24,7 +25,8 @@ var HistoryController = CollarController.extend({
      * @param {Number} page The page number to filter the view on.
      */
     index: function(search, page) {
-        this.model.set({Search: search || '', PageNumber: page || 1}, {silent: true});
+        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
         this.view.render();
+        this.fetch();
     }
 });

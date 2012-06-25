@@ -36,7 +36,7 @@ var CollarRouter = Backbone.Router.extend({
             url += '/' + encodeURIComponent(args.search) + '/p' + encodeURIComponent(args.page.toString());
         }
 
-        this.navigate(url, {trigger: true});
+        this.navigate(url);
     },
 
     /**

@@ -30,6 +30,7 @@
   <output name="Models" path="models.js" temporary="true">
     <input path="Models\collar-model.js"/>
     <input path="Models\collar-collection.js"/>
+    <input path="Models\area-model.js"/>
     <input path="Models\history-model.js"/>
     <input path="Models\nav-model.js"/>
     <input path="Models\stats-model.js"/>
@@ -47,9 +48,13 @@
 
   <output name="Views" path="views.js" temporary="true">
     <input path="Views\form-view.js"/>
+    <input path="Views\list-view.js"/>
     <input path="Views\pager-view.js"/>
+    <input path="Views\row-view.js"/>
     <input path="Views\search-view.js"/>
     <input path="Views\dashboard-view.js"/>
+    <input path="Views\history-list-view.js"/>
+    <input path="Views\history-row-view.js"/>
     <input path="Views\history-view.js"/>
     <input path="Views\nav-view.js"/>
     <input path="Views\notice-view.js"/>

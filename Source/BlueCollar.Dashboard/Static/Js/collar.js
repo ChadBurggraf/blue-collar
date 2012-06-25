@@ -7230,6 +7230,7 @@ _.extend(CollarModel, {
      */
     initialize: function(models, options) {
         options = options || {};
+        this.pageNumber = 1;
         this.search = '';
         this.urlRoot = options.urlRoot || '/';
 
@@ -7250,14 +7251,8 @@ _.extend(CollarModel, {
         });
     },
 
-    /**
-     * Creates a params object for listing the collection.
-     */
-    listParams: function() {
-        return {
-            search: this.search || '',
-            page: this.pageNumber || 1
-        };
+    fetch: function(options) {
+        
     },
 
     /**
@@ -7301,6 +7296,25 @@ _.extend(CollarModel, {
         return url;
     }
  });
+var AreaModel = Backbone.Model.extend({
+    defaults: {
+        ApplicationName: 'Default',
+        Collection: new CollarCollection(),
+        Loading: false,
+        PageCount: 0,
+        PageNumber: 1,
+        Search: '',
+        TotalCount: 0
+    },
+
+    initialize: function(options) {
+        this.collection.bind('reset', this.reset, this);
+    },
+
+    reset: function() {
+
+    }
+});
 /**
  * Models a history entry.
  *
@@ -7641,19 +7655,18 @@ var StatsModel = CollarModel.extend({
  * @param {Object} options Initialization options. 
  */
 var CollarController = function(applicationName, urlRoot, page, options) {
+    var collection;
+
     this.applicationName = applicationName;
     this.urlRoot = urlRoot;
     this.page = page;
     this.options = _.extend({}, options);
 
-    var collection = null;
+    collection = new this.collection(null, {urlRoot: this.urlRoot});
+    collection.bind('counts', this.counts, this);
+    collection.bind('reset', this.reset, this);
 
-    if (_.isFunction(this.collection)) {
-        collection = new this.collection(null, {urlRoot: this.urlRoot});
-        collection.bind('reset', this.reset, this);
-    }
-
-    this.model = new Backbone.Model({ApplicationName: this.applicationName, Collection: collection});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection});
     this.initialize(this.options);
 };
 
@@ -7697,9 +7710,11 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
         if (collection) {
             collection.each(function(m) { 
-                m.set({editing: false}); 
+                m.set({Editing: false}); 
             });
         }
+
+        this.model.set({Loading: false});
 
         if (!view || !view.ajaxError(model, response)) {
             var message;
@@ -7740,28 +7755,37 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Performs an Ajax fetch on this instance's collection.
+     *
+     */
+    fetch: function() {
+        var collection = this.getCollection();
+
+        if (collection) {
+            collection.pageNumber = this.model.get('PageNumber');
+            collection.search = this.model.get('Search');
+            collection.fetch({error: _.bind(this.ajaxError, this, null)});
+            this.navigate();
+        }
+    },
+
+    /**
      * Gets this instance's current collection instance, if applicable.
      *
      * @return {CollarCollection} The current collection instance, or null if none exists.
      */
     getCollection: function() {
         var collection = this.model && _.isFunction(this.model.get) ? this.model.get('Collection') : null;
-        return _.isFunction(collection) ? collection : null;
+        return collection && !_.isUndefined(collection.length) ? collection : null;
     },
 
     /**
      * Performs navigation on behalf of this controller.
      */
     navigate: function() {
-        var collection = this.getCollection(),
-            fragment = this.navigateFragment(),
-            search,
-            page;
-
-        if (collection) {
-            search = collection.search || '';
-            page = collection.pageNumber || 1;
-        }
+        var fragment = this.navigateFragment(),
+            search = this.model.get('Search'),
+            page = this.model.get('PageNumber');
 
         this.trigger('navigate', this, {fragment: fragment, search: search, page: page});
     },
@@ -7843,6 +7867,7 @@ var HistoryController = CollarController.extend({
      */
     initialize: function(options) {
         this.view = new HistoryView({el: this.page, model: this.model});
+        this.view.bind('fetch', this.fetch, this);
     },
 
     /**
@@ -7852,8 +7877,9 @@ var HistoryController = CollarController.extend({
      * @param {Number} page The page number to filter the view on.
      */
     index: function(search, page) {
-        this.model.set({Search: search || '', PageNumber: page || 1}, {silent: true});
+        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
         this.view.render();
+        this.fetch();
     }
 });
 
@@ -7895,7 +7921,7 @@ var CollarRouter = Backbone.Router.extend({
             url += '/' + encodeURIComponent(args.search) + '/p' + encodeURIComponent(args.page.toString());
         }
 
-        this.navigate(url, {trigger: true});
+        this.navigate(url);
     },
 
     /**
@@ -8460,6 +8486,84 @@ var FormView = Backbone.View.extend({
         }
     }
 });
+/**
+ * Provides a base for list view implementations.
+ *
+ * @constructor
+ */
+var ListView = Backbone.View.extend({
+    className: 'table table-bordered table-striped table-paged',
+    cols: 1,
+    tagName: 'table',
+
+    initialize: function(options) {
+        this.model.get('Collection').bind('reset', this.render, this);
+    },  
+
+    /**
+     * Gets an element suitable for displaying an empty list message.
+     *
+     * @param {String} message The message to display.
+     * @return {jQuery} An empty list message element.
+     */
+    empty: function(message) {
+        return $('<tr class="empty"/>').append(
+            $('<td/>').attr('colspan', this.cols).append(
+                $('<p/>').text(message)));
+    },
+
+    /**
+     * Gets an element suitable for displaying a loading list message.
+     *
+     * @return {jQuery} A loading list element.
+     */
+    loading: function() {
+        return $('<tr class="loading"/>').append(
+            $('<td/>').attr('colspan', this.cols).append(
+                $('<p/>').append(
+                    $('<span class="loading"/>'))));
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {ListView} This instance.
+     */
+    render: function() {
+        var collection = this.model.get('Collection'),
+            loading = this.model.get('Loading'),
+            tbody;
+
+        this.$el.html(this.template());
+        tbody = this.$('tbody');
+
+        if (!loading && this.collection.length > 0) {
+            this.renderRows(tbody, collection);
+        } else if (loading) { 
+            this.html(this.loading());
+        } else {
+            tbody.html(this.empty('There are no jobs to display.'));
+        }
+
+        return this;
+    },
+
+    /**
+     * Renders the view's row collection.
+     *
+     * @param {jQuery} tbody The list's tbody element.
+     * @param {CollarCollection} collection The collection to render rows for.
+     * @return {ListView} This instance.
+     */
+    renderRows: function(tbody, collection) {
+        return this;
+    }
+});
+/**
+ * Manages a paging view for paging through a list.
+ *
+ * @constructor
+ */
 var PagerView = Backbone.View.extend({
     className: 'pagination',
     events: {
@@ -8473,24 +8577,45 @@ var PagerView = Backbone.View.extend({
     tagName: 'div',
     template: _.template($('#pager-template').html()),
 
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
     initialize: function(options) {
         this.model.bind('change', this.render, this);
     },
 
+    /**
+     * Handles the keyup event.
+     *
+     * @param {DOMEvent} event The event definition.
+     */
     keyup: function(event) {
         if (event.keyCode === 13) {
             this.submit();
         }   
     },
 
+    /**
+     * Handles the last event.
+     */
     last: function() {
         this.page(this.model.get('PageCount'));
     },
 
+    /**
+     * Handles the next event.
+     */
     next: function() {
         this.page(this.model.get('PageNumber') + 1);
     },
 
+    /**
+     * Raises the 'page' event with the given page number.
+     *
+     * @param {Number} pageNumber The page number to raise the event with.
+     */
     page: function(pageNumber) {
         var cn = this.model.get('PageNumber'),
             cc = this.model.get('PageCount');
@@ -8512,10 +8637,18 @@ var PagerView = Backbone.View.extend({
         }
     },
 
+    /**
+     * Handles the previous event.
+     */
     previous: function() {
         this.page(this.model.get('PageNumber') - 1);
     },
 
+    /**
+     * Renders the view.
+     *
+     * @return {PagerView} This instance.
+     */
     render: function() {
         var number = this.model.get('PageNumber'),
             count = this.model.get('PageCount');
@@ -8540,12 +8673,59 @@ var PagerView = Backbone.View.extend({
         return this;
     },
 
+    /**
+     * Handles the submit event.
+     */
     submit: function() {
         var pageNumber = parseInt(this.$('input').val(), 10);
 
         if (!isNaN(pageNumber) && pageNumber > 0) {
             this.page(pageNumber);
         }
+    }
+});
+/**
+ * Provides a base for list row view implementations.
+ *
+ * @constructor
+ */
+var RowView = Backbone.View.extend({
+    events: {
+        'a.display': 'display'
+    },
+    tagName: 'tr',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+    },
+
+    /**
+     * Handles the row's display event.
+     */
+    display: function() {
+        this.trigger('display', this);
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {RowView} This instance.
+     */
+    render: function() {
+        this.$el.html(this.template(this.model.toJSON()));
+
+        if (this.model.get('Editing')) {
+            this.$el.addClass('editing');
+        } else {
+            this.$el.removeClass('editing');   
+        }
+
+        return this;
     }
 });
 /**
@@ -8776,6 +8956,77 @@ var DashboardView = Backbone.View.extend({
     }
 });
 /**
+ * Manages the history list view.
+ *
+ * @constructor
+ * @extends {ListView}
+ */
+var HistoryListView = ListView.extend({
+    cols: 7,
+    template: _.template($('#history-list-template').html()),
+
+    /**
+     * Renders the view's row collection.
+     *
+     * @param {jQuery} tbody The list's tbody element.
+     * @param {CollarCollection} collection The collection to render rows for.
+     * @return {ListView} This instance.
+     */
+    renderRows: function(tbody, collection) {
+        var model,
+            i,
+            n;
+        
+        for (i = 0, n = collection.length; i < n; i++) {
+            model = collection.at(i);
+            view = new HistoryRowView({model: model}).render();
+            view.bind('display', this.display, this);
+            tbody.append(view.el);
+        }
+
+        return this;
+    }
+});
+/**
+ * Manages the row view for the history list.
+ *
+ * @constructor
+ * @extends {RowView}
+ */
+var HistoryRowView = RowView.extend({
+    template: _.template($('#history-row-template').html()),
+
+    /**
+     * Renders the view.
+     *
+     * @return {RowView} This instance.
+     */
+    render: function() {
+        var status,
+            css;
+
+        RowView.prototype.render.call(this);
+
+        status = this.model.get('Status');
+
+        switch (status) {
+            case 'Succeeded':
+                css = 'green';
+                break;
+            case 'Failed':
+            case 'TimedOut':
+                css = 'red';
+                break;
+            default:
+                css = '';
+                break;
+        }
+
+        this.$('.status').removeClass('red green').addClass(css);
+        return this;
+    }
+});
+/**
  * Manages the root history view.
  *
  * @constructor
@@ -8789,43 +9040,34 @@ var HistoryView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.change, this);
+        this.model.get('Collection').bind('reset', this.reset, this);
 
-        this.searchView = new SearchView({model: new Backbone.Model({Search: this.model.get('Search')})});
+        this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
         this.searchView.bind('cancel', this.cancelSearch, this);
 
-        this.topPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
+        this.topPagerView = new PagerView({model: this.model});
         this.topPagerView.bind('page', this.page, this);
 
-        this.bottomPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
+        this.listView = new HistoryListView({model: this.model});
+        this.listView.bind('display', this.display, this);
+
+        this.bottomPagerView = new PagerView({model: this.model});
         this.bottomPagerView.bind('page', this.page, this);
     },
 
-    change: function(sender, args) {
-        var pagingAttributes = this.getPagingAttributes();
-
-        this.searchView.model.set({Search: this.model.get('Search')});
-        this.topPagerView.set(pagingAttributes);
-        this.bottomPagerView.set(pagingAttributes);
-    },
-
     cancelSearch: function(sender, args) {
-        this.model.set({Search: ''});
+        //this.model.set({Search: ''});
+        //this.triggerFetch();
     },
 
-    getPagingAttributes: function() {
-        var attr = {PageNumber: this.model.get('PageNumber'), PageCount: this.model.get('PageCount')};
+    display: function(sender, args) {
 
-        if (_.isUndefined(attr.PageCount) || attr.PageCount < 1) {
-            attr.PageCount = 1;
-        }
-
-        return attr;
     },
 
     page: function(sender, args) {
-        this.model.set({PageNumber: args.PageNumber});  
+        //this.model.set({PageNumber: args.PageNumber});  
+        //this.triggerFetch();
     },
 
     /**
@@ -8833,13 +9075,14 @@ var HistoryView = Backbone.View.extend({
      *
      * @return {HistoryView} This instance.
      */
-    render: function() {
+    render: function(options) {
         var searchEl,
             pagingHeaderEl,
             listEl,
             pagingFooterEl,
             detailsEl;
 
+        options = options || {};
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -8848,20 +9091,27 @@ var HistoryView = Backbone.View.extend({
         pagingFooterEl = this.$('.paging-footer');
         detailsEl = this.$('.details');
 
-        this.searchView.model.set({Search: this.model.get('Search')}, {silent: true});
-        searchEl.html(this.searchView.render().el);
-
-        this.topPagerView.model.set(this.getPagingAttributes(), {silent: true});
-        pagingHeaderEl.html(this.topPagerView.render().el);
-
-        this.bottomPagerView.model.set(this.getPagingAttributes(), {silent: true});
-        pagingFooterEl.html(this.bottomPagerView.render().el);
+        searchEl.html(this.searchView.render(options).el);
+        pagingHeaderEl.html(this.topPagerView.render(options).el);
+        listEl.html(this.listView.render(options).el);
+        pagingFooterEl.html(this.bottomPagerView.render(options).el);
 
         return this;
     },
 
+    reset: function() {
+        //var collection = this.model.get('Collection');
+        //this.model.set({PageNumber: collection.pageNumber, PageCount: collection.pageCount});
+    },
+
     submitSearch: function(sender, args) {
-        this.model.set({Search: args.Search});
+        //this.model.set({Search: args.Search});
+        //this.triggerFetch();
+    },
+
+    triggerFetch: function() {
+        //this.model.set({Loading: true});
+        //this.trigger('fetch', this);
     }
 });
 /**
