@@ -5,6 +5,13 @@
  */
 var FormView = Backbone.View.extend({
     className: 'form well',
+    events: {
+        'submit': 'submit',
+        'click button.btn-reset': 'cancel',
+        'click a.delete': 'del',
+        'click button.btn-confirm-delete': 'confirmDelete',
+        'click button.btn-cancel-delete': 'cancelDelete'
+    },
     tagName: 'form',
     inputSelector: 'input, select, textarea',
 
@@ -113,7 +120,9 @@ var FormView = Backbone.View.extend({
     /**
      * Focuses the first element in the form.
      */
-    focus: function() {},
+    focus: function() {
+        return this;
+    },
 
     /**
      * Gets the attributes hash to use during serialization and de-serialization.
@@ -172,14 +181,7 @@ var FormView = Backbone.View.extend({
         actionsDelete = actions.find('a.delete');
         del = this.$('.form-actions-delete').hide();
 
-        this.$el.bind('submit', _.bind(this.submit, this));
-        actions.find('button[type="reset"]').bind('click', _.bind(this.cancel, this));
-
-        if (this.model.get('Id')) {
-            actionsDelete.bind('click', _.bind(this.del, this));
-            del.find('button.btn-danger').bind('click', _.bind(this.confirmDelete, this));
-            del.find('button:not(.btn-danger)').bind('click', _.bind(this.cancelDelete, this));
-        } else {
+        if (!this.model.get('Id')) {
             actionsDelete.remove();
             del.remove();
         }

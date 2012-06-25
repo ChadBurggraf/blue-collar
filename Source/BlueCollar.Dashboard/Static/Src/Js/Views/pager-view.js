@@ -1,10 +1,12 @@
 ﻿var PagerView = Backbone.View.extend({
     className: 'pagination',
     events: {
-        'form submit': 'submit',
-        '.pagination-previous a': 'previous',
-        'a.pagination-count': 'last',
-        '.pagination-next a': 'next'
+        'submit form': 'submit',
+        'click .pagination-previous a': 'previous',
+        'keyup input': 'keyup',
+        'change input': 'submit',
+        'click a.pagination-count': 'last',
+        'click .pagination-next a': 'next'
     },
     tagName: 'div',
     template: _.template($('#pager-template').html()),
@@ -13,16 +15,43 @@
         this.model.bind('change', this.render, this);
     },
 
-    last: function() {
+    keyup: function(event) {
+        if (event.keyCode === 13) {
+            this.submit();
+        }   
+    },
 
+    last: function() {
+        this.page(this.model.get('PageCount'));
     },
 
     next: function() {
+        this.page(this.model.get('PageNumber') + 1);
+    },
 
+    page: function(pageNumber) {
+        var cn = this.model.get('PageNumber'),
+            cc = this.model.get('PageCount');
+
+        if (pageNumber < 1) {
+            pageNumber = 1;
+        }
+
+        if (pageNumber !== 1 && _.isNumber(cc)) {
+            if (pageNumber > cc) {
+                pageNumber = cc;
+            }
+        } else {
+            pageNumber = 1;
+        }
+
+        if (pageNumber !== cn) {
+            this.trigger('page', this, {PageNumber: pageNumber});
+        }
     },
 
     previous: function() {
-
+        this.page(this.model.get('PageNumber') - 1);
     },
 
     render: function() {
@@ -50,6 +79,10 @@
     },
 
     submit: function() {
+        var pageNumber = parseInt(this.$('input').val(), 10);
 
+        if (!isNaN(pageNumber) && pageNumber > 0) {
+            this.page(pageNumber);
+        }
     }
 });

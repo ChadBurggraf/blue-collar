@@ -16,7 +16,7 @@ var HistoryView = Backbone.View.extend({
 
         this.searchView = new SearchView({model: new Backbone.Model({Search: this.model.get('Search')})});
         this.searchView.bind('submit', this.submitSearch, this);
-        this.searchView.bind('clear', this.clearSearch, this);
+        this.searchView.bind('cancel', this.cancelSearch, this);
 
         this.topPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
         this.topPagerView.bind('page', this.page, this);
@@ -26,11 +26,15 @@ var HistoryView = Backbone.View.extend({
     },
 
     change: function(sender, args) {
+        var pagingAttributes = this.getPagingAttributes();
+
         this.searchView.model.set({Search: this.model.get('Search')});
+        this.topPagerView.set(pagingAttributes);
+        this.bottomPagerView.set(pagingAttributes);
     },
 
-    clearSearch: function(sender, args) {
-
+    cancelSearch: function(sender, args) {
+        this.model.set({Search: ''});
     },
 
     getPagingAttributes: function() {
@@ -44,7 +48,7 @@ var HistoryView = Backbone.View.extend({
     },
 
     page: function(sender, args) {
-
+        this.model.set({PageNumber: args.PageNumber});  
     },
 
     /**
@@ -80,6 +84,6 @@ var HistoryView = Backbone.View.extend({
     },
 
     submitSearch: function(sender, args) {
-
+        this.model.set({Search: args.Search});
     }
 });

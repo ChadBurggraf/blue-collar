@@ -1,15 +1,19 @@
-﻿var SearchView = FormView.extend({
+﻿/**
+ * Manages the list search view.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var SearchView = FormView.extend({
     className: 'form-search',
-    events: {
-        "click button[type='reset']": "clear"
-    },
-    tagName: 'form',
     template: _.template($('#search-template').html()),
 
-    clear: function() {
-        this.trigger('clear', this);
-    },
-
+    /**
+     * De-serializes the given attributes hash into this view's form fields.
+     *
+     * @param {Object} attributes A hash of attribute values to fill this instance with.
+     * @return {FormView} This instance.
+     */
     deserialize: function(attributes) {
         var input = this.$('input[name="q"]').val('');
 
@@ -26,7 +30,20 @@
         return this;
     },
 
+    /**
+     * Focuses the first element in the form.
+     */
+    focus: function() {
+        this.$('input[name="q"]').focus();
+        return this;
+    },
+
+    /**
+     * Serializes the form.
+     *
+     * @return {Object} The serialized form attributes.
+     */
     serialize: function() {
-        return this.$('input[name="q"]').val();
+        return {Search: this.$('input[name="q"]').val()};
     }
 });

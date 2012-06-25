@@ -8117,6 +8117,13 @@ var DashboardRouter = CollarRouter.extend({
  */
 var FormView = Backbone.View.extend({
     className: 'form well',
+    events: {
+        'submit': 'submit',
+        'click button.btn-reset': 'cancel',
+        'click a.delete': 'del',
+        'click button.btn-confirm-delete': 'confirmDelete',
+        'click button.btn-cancel-delete': 'cancelDelete'
+    },
     tagName: 'form',
     inputSelector: 'input, select, textarea',
 
@@ -8225,7 +8232,9 @@ var FormView = Backbone.View.extend({
     /**
      * Focuses the first element in the form.
      */
-    focus: function() {},
+    focus: function() {
+        return this;
+    },
 
     /**
      * Gets the attributes hash to use during serialization and de-serialization.
@@ -8284,14 +8293,7 @@ var FormView = Backbone.View.extend({
         actionsDelete = actions.find('a.delete');
         del = this.$('.form-actions-delete').hide();
 
-        this.$el.bind('submit', _.bind(this.submit, this));
-        actions.find('button[type="reset"]').bind('click', _.bind(this.cancel, this));
-
-        if (this.model.get('Id')) {
-            actionsDelete.bind('click', _.bind(this.del, this));
-            del.find('button.btn-danger').bind('click', _.bind(this.confirmDelete, this));
-            del.find('button:not(.btn-danger)').bind('click', _.bind(this.cancelDelete, this));
-        } else {
+        if (!this.model.get('Id')) {
             actionsDelete.remove();
             del.remove();
         }
@@ -8461,10 +8463,12 @@ var FormView = Backbone.View.extend({
 var PagerView = Backbone.View.extend({
     className: 'pagination',
     events: {
-        'form submit': 'submit',
-        '.pagination-previous a': 'previous',
-        'a.pagination-count': 'last',
-        '.pagination-next a': 'next'
+        'submit form': 'submit',
+        'click .pagination-previous a': 'previous',
+        'keyup input': 'keyup',
+        'change input': 'submit',
+        'click a.pagination-count': 'last',
+        'click .pagination-next a': 'next'
     },
     tagName: 'div',
     template: _.template($('#pager-template').html()),
@@ -8473,16 +8477,43 @@ var PagerView = Backbone.View.extend({
         this.model.bind('change', this.render, this);
     },
 
-    last: function() {
+    keyup: function(event) {
+        if (event.keyCode === 13) {
+            this.submit();
+        }   
+    },
 
+    last: function() {
+        this.page(this.model.get('PageCount'));
     },
 
     next: function() {
+        this.page(this.model.get('PageNumber') + 1);
+    },
 
+    page: function(pageNumber) {
+        var cn = this.model.get('PageNumber'),
+            cc = this.model.get('PageCount');
+
+        if (pageNumber < 1) {
+            pageNumber = 1;
+        }
+
+        if (pageNumber !== 1 && _.isNumber(cc)) {
+            if (pageNumber > cc) {
+                pageNumber = cc;
+            }
+        } else {
+            pageNumber = 1;
+        }
+
+        if (pageNumber !== cn) {
+            this.trigger('page', this, {PageNumber: pageNumber});
+        }
     },
 
     previous: function() {
-
+        this.page(this.model.get('PageNumber') - 1);
     },
 
     render: function() {
@@ -8510,21 +8541,29 @@ var PagerView = Backbone.View.extend({
     },
 
     submit: function() {
+        var pageNumber = parseInt(this.$('input').val(), 10);
 
+        if (!isNaN(pageNumber) && pageNumber > 0) {
+            this.page(pageNumber);
+        }
     }
 });
+/**
+ * Manages the list search view.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
 var SearchView = FormView.extend({
     className: 'form-search',
-    events: {
-        "click button[type='reset']": "clear"
-    },
-    tagName: 'form',
     template: _.template($('#search-template').html()),
 
-    clear: function() {
-        this.trigger('clear', this);
-    },
-
+    /**
+     * De-serializes the given attributes hash into this view's form fields.
+     *
+     * @param {Object} attributes A hash of attribute values to fill this instance with.
+     * @return {FormView} This instance.
+     */
     deserialize: function(attributes) {
         var input = this.$('input[name="q"]').val('');
 
@@ -8541,8 +8580,21 @@ var SearchView = FormView.extend({
         return this;
     },
 
+    /**
+     * Focuses the first element in the form.
+     */
+    focus: function() {
+        this.$('input[name="q"]').focus();
+        return this;
+    },
+
+    /**
+     * Serializes the form.
+     *
+     * @return {Object} The serialized form attributes.
+     */
     serialize: function() {
-        return this.$('input[name="q"]').val();
+        return {Search: this.$('input[name="q"]').val()};
     }
 });
 /**
@@ -8741,7 +8793,7 @@ var HistoryView = Backbone.View.extend({
 
         this.searchView = new SearchView({model: new Backbone.Model({Search: this.model.get('Search')})});
         this.searchView.bind('submit', this.submitSearch, this);
-        this.searchView.bind('clear', this.clearSearch, this);
+        this.searchView.bind('cancel', this.cancelSearch, this);
 
         this.topPagerView = new PagerView({model: new Backbone.Model(this.getPagingAttributes())});
         this.topPagerView.bind('page', this.page, this);
@@ -8751,11 +8803,15 @@ var HistoryView = Backbone.View.extend({
     },
 
     change: function(sender, args) {
+        var pagingAttributes = this.getPagingAttributes();
+
         this.searchView.model.set({Search: this.model.get('Search')});
+        this.topPagerView.set(pagingAttributes);
+        this.bottomPagerView.set(pagingAttributes);
     },
 
-    clearSearch: function(sender, args) {
-
+    cancelSearch: function(sender, args) {
+        this.model.set({Search: ''});
     },
 
     getPagingAttributes: function() {
@@ -8769,7 +8825,7 @@ var HistoryView = Backbone.View.extend({
     },
 
     page: function(sender, args) {
-
+        this.model.set({PageNumber: args.PageNumber});  
     },
 
     /**
@@ -8805,7 +8861,7 @@ var HistoryView = Backbone.View.extend({
     },
 
     submitSearch: function(sender, args) {
-
+        this.model.set({Search: args.Search});
     }
 });
 /**

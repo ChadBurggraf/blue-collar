@@ -169,6 +169,7 @@
     <Content Include="Static\Src\Js\Views\dashboard-view.js" />
     <Content Include="Static\Src\Js\Views\form-view.js" />
     <Content Include="Static\Src\Js\Views\history-view.js" />
+    <Content Include="Static\Src\Js\Views\list-view.js" />
     <Content Include="Static\Src\Js\Views\nav-view.js" />
     <Content Include="Static\Src\Js\Views\notice-view.js" />
     <Content Include="Static\Src\Js\Views\pager-view.js" />
