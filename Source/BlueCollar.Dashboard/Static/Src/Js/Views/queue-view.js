@@ -1,11 +1,11 @@
 ﻿/**
- * Manages the root history view.
+ * Manages the root queue view.
  *
  * @constructor
  * @extends {AreaView}
  */
-var HistoryView = AreaView.extend({
-    template: _.template($('#history-template').html()),
+var QueueView = AreaView.extend({
+    template: _.template($('#queue-template').html()),
 
     /**
      * Initialization.
@@ -14,7 +14,7 @@ var HistoryView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-        this.listView = new HistoryListView({model: this.model});
+        this.listView = new QueueListView({model: this.model});
         this.listView.bind('display', this.display, this);
     },
 

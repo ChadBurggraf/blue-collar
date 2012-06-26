@@ -17,6 +17,7 @@
     <input path="Controllers\collar-controller.js"/>
     <input path="Controllers\dashboard-controller.js"/>
     <input path="Controllers\history-controller.js"/>
+    <input path="Controllers\queue-controller.js"/>
   </output>
 
   <output name="DateJs" path="date.js" temporary="true">
@@ -33,6 +34,7 @@
     <input path="Models\area-model.js"/>
     <input path="Models\history-model.js"/>
     <input path="Models\nav-model.js"/>
+    <input path="Models\queue-model.js"/>
     <input path="Models\stats-model.js"/>
   </output>
 
@@ -52,12 +54,16 @@
     <input path="Views\pager-view.js"/>
     <input path="Views\row-view.js"/>
     <input path="Views\search-view.js"/>
+    <input path="Views\area-view.js"/>
     <input path="Views\dashboard-view.js"/>
     <input path="Views\history-list-view.js"/>
     <input path="Views\history-row-view.js"/>
     <input path="Views\history-view.js"/>
     <input path="Views\nav-view.js"/>
     <input path="Views\notice-view.js"/>
+    <input path="Views\queue-list-view.js"/>
+    <input path="Views\queue-row-view.js"/>
+    <input path="Views\queue-view.js"/>
   </output>
 
   <output path="html5.js">

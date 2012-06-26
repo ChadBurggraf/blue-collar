@@ -7496,6 +7496,32 @@ var NavCollection = Backbone.Collection.extend({
     }
 });
 /**
+ * Models a queue entry.
+ *
+ * @constructor
+ */
+var QueueModel = CollarModel.extend({
+    defaults: {
+        'Id': 0,
+        'Data': null,
+        'JobName': null,
+        'JobType': null,
+        'QueueName': null,
+        'ScheduleName': null,
+        'QueuedOn': null,
+        'TryNumber': 0
+    }
+});
+
+/**
+ * Represents a collection of {QueueModel}s.
+ *
+ * @constructor
+ */
+var QueueCollection = CollarCollection.extend({
+    model: QueueModel
+});
+/**
  * Models a set of simple counts.
  *
  * @constructor
@@ -7907,6 +7933,38 @@ var HistoryController = CollarController.extend({
         this.fetch();
     }
 });
+/**
+ * Queue area controller implementation.
+ *
+ * @constructor
+ * @extends {CollarController}
+ */
+var QueueController = CollarController.extend({
+    collection: QueueCollection,
+    fragment: 'queue',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.view = new QueueView({el: this.page, model: this.model});
+        this.view.bind('fetch', this.fetch, this);
+    },
+
+    /**
+     * Renders the index view.
+     *
+     * @param {String} search The search string to filter the view on.
+     * @param {Number} page The page number to filter the view on.
+     */
+    index: function(search, page) {
+        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
+        this.view.render();
+        this.fetch();
+    }
+});
 
 /**
  * Base router implementation.
@@ -8045,25 +8103,50 @@ var HistoryRouter = CollarRouter.extend({
  */
 var QueueRouter = CollarRouter.extend({
     routes: {
-        'queue': 'index'
+        'queue': 'index',
+        'queue/:search/p:page': 'index',
+        'queue//p:page': 'page',
+        'queue/*search': 'search'
     },
 
     /**
      * Initialization.
      *
      * @param {App} app The root application object.
-     * @param {Object} options Additional initialization options.
+     * @param {Object} options Initialization options.
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
+        this.controller = this.createController(QueueController, 'queue', this.options);
     },
 
     /**
      * Handles the root #queue route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
      */
-    index: function() {
-        
+    index: function(search, page) {
+        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
+        this.trigger('nav', this, {name: 'Queue'});
+    },
+
+    /**
+     * Handles the empty-search paging route.
+     *
+     * @param {Number} page The requested page number.
+     */
+    page: function(page) {
+        this.index('', page);
+    },
+
+    /**
+     * Handles the non-paged search route.
+     *
+     * @param {String} search The requested search string.
+     */
+    search: function(search) {
+        this.index(search, 1);
     }
 });
 /**
@@ -8827,6 +8910,105 @@ var SearchView = FormView.extend({
     }
 });
 /**
+ * Serves as the base for area views.
+ *
+ * @constructor
+ */
+var AreaView = Backbone.View.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.bind('change', this.render, this);
+
+        this.searchView = new SearchView({model: this.model});
+        this.searchView.bind('submit', this.submitSearch, this);
+        this.searchView.bind('cancel', this.cancelSearch, this);
+
+        this.topPagerView = new PagerView({model: this.model});
+        this.topPagerView.bind('page', this.page, this);
+
+        this.bottomPagerView = new PagerView({model: this.model});
+        this.bottomPagerView.bind('page', this.page, this);
+    },
+
+    /**
+     * Handles the search view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    cancelSearch: function(sender, args) {
+        this.model.set({PageNumber: 1, Search: ''});
+        this.trigger('fetch', this);
+    },
+
+    /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {},
+
+    /**
+     * Handles a pager view's page event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    page: function(sender, args) {
+        this.model.set({PageNumber: args.PageNumber});  
+        this.trigger('fetch', this);
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {HistoryView} This instance.
+     */
+    render: function() {
+        var searchEl,
+            pagingHeaderEl,
+            listEl,
+            pagingFooterEl,
+            detailsEl;
+
+        this.searchView.$el.detach();
+        this.topPagerView.$el.detach();
+        this.listView.$el.detach();
+        this.bottomPagerView.$el.detach();
+
+        this.$el.html(this.template(this.model.toJSON()));
+
+        searchEl = this.$('.search');
+        pagingHeaderEl = this.$('.paging-header');
+        listEl = this.$('.list');
+        pagingFooterEl = this.$('.paging-footer');
+        detailsEl = this.$('.details');
+
+        searchEl.html(this.searchView.render().el);
+        pagingHeaderEl.html(this.topPagerView.render().el);
+        listEl.html(this.listView.render().el);
+        pagingFooterEl.html(this.bottomPagerView.render().el);
+
+        return this;
+    },
+
+    /**
+     * Handle's the search view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    submitSearch: function(sender, args) {
+        this.model.set({PageNumber: 1, Search: args.Search});
+        this.trigger('fetch', this);
+    }
+});
+/**
  * Manages the root dashboard view.
  *
  * @constructor
@@ -9079,8 +9261,9 @@ var HistoryRowView = RowView.extend({
  * Manages the root history view.
  *
  * @constructor
+ * @extends {AreaView}
  */
-var HistoryView = Backbone.View.extend({
+var HistoryView = AreaView.extend({
     template: _.template($('#history-template').html()),
 
     /**
@@ -9089,31 +9272,9 @@ var HistoryView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
-
-        this.searchView = new SearchView({model: this.model});
-        this.searchView.bind('submit', this.submitSearch, this);
-        this.searchView.bind('cancel', this.cancelSearch, this);
-
-        this.topPagerView = new PagerView({model: this.model});
-        this.topPagerView.bind('page', this.page, this);
-
+        AreaView.prototype.initialize.call(this, options);
         this.listView = new HistoryListView({model: this.model});
         this.listView.bind('display', this.display, this);
-
-        this.bottomPagerView = new PagerView({model: this.model});
-        this.bottomPagerView.bind('page', this.page, this);
-    },
-
-    /**
-     * Handles the search view's cancel event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    cancelSearch: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: ''});
-        this.trigger('fetch', this);
     },
 
     /**
@@ -9124,61 +9285,6 @@ var HistoryView = Backbone.View.extend({
      */
     display: function(sender, args) {
 
-    },
-
-    /**
-     * Handles a pager view's page event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    page: function(sender, args) {
-        this.model.set({PageNumber: args.PageNumber});  
-        this.trigger('fetch', this);
-    },
-
-    /**
-     * Renders the view.
-     *
-     * @return {HistoryView} This instance.
-     */
-    render: function() {
-        var searchEl,
-            pagingHeaderEl,
-            listEl,
-            pagingFooterEl,
-            detailsEl;
-
-        this.searchView.$el.detach();
-        this.topPagerView.$el.detach();
-        this.listView.$el.detach();
-        this.bottomPagerView.$el.detach();
-
-        this.$el.html(this.template(this.model.toJSON()));
-
-        searchEl = this.$('.search');
-        pagingHeaderEl = this.$('.paging-header');
-        listEl = this.$('.list');
-        pagingFooterEl = this.$('.paging-footer');
-        detailsEl = this.$('.details');
-
-        searchEl.html(this.searchView.render().el);
-        pagingHeaderEl.html(this.topPagerView.render().el);
-        listEl.html(this.listView.render().el);
-        pagingFooterEl.html(this.bottomPagerView.render().el);
-
-        return this;
-    },
-
-    /**
-     * Handle's the search view's submit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    submitSearch: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: args.Search});
-        this.trigger('fetch', this);
     }
 });
 /**
@@ -9391,6 +9497,107 @@ _.extend(NoticeView, {
                 NoticeView.destroying = false;
             });
         }
+    }
+});
+/**
+ * Manages the queue list view.
+ *
+ * @constructor
+ * @extends {ListView}
+ */
+var QueueListView = ListView.extend({
+    cols: 5,
+    template: _.template($('#queue-list-template').html()),
+
+    /**
+     * Renders the view's row collection.
+     *
+     * @param {jQuery} tbody The list's tbody element.
+     * @param {CollarCollection} collection The collection to render rows for.
+     * @return {ListView} This instance.
+     */
+    renderRows: function(tbody, collection) {
+        var model,
+            i,
+            n;
+        
+        for (i = 0, n = collection.length; i < n; i++) {
+            model = collection.at(i);
+            view = new QueueRowView({model: model}).render();
+            view.bind('display', this.display, this);
+            tbody.append(view.el);
+        }
+
+        return this;
+    }
+});
+/**
+ * Manages the row view for the queue list.
+ *
+ * @constructor
+ * @extends {RowView}
+ */
+var QueueRowView = RowView.extend({
+    template: _.template($('#queue-row-template').html()),
+
+    /**
+     * Renders the view.
+     *
+     * @return {RowView} This instance.
+     */
+    render: function() {
+        var status,
+            css;
+
+        RowView.prototype.render.call(this);
+
+        /*status = this.model.get('Status');
+
+        switch (status) {
+            case 'Succeeded':
+                css = 'green';
+                break;
+            case 'Failed':
+            case 'TimedOut':
+                css = 'red';
+                break;
+            default:
+                css = '';
+                break;
+        }
+
+        this.$('.status').removeClass('red green').addClass(css);*/
+        return this;
+    }
+});
+/**
+ * Manages the root queue view.
+ *
+ * @constructor
+ * @extends {AreaView}
+ */
+var QueueView = AreaView.extend({
+    template: _.template($('#queue-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        AreaView.prototype.initialize.call(this, options);
+        this.listView = new QueueListView({model: this.model});
+        this.listView.bind('display', this.display, this);
+    },
+
+    /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+
     }
 });
 

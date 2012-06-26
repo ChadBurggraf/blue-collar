@@ -140,6 +140,45 @@ History
 </ul>
 </form>
 </script>
+<script type="text/template" id="queue-row-template">
+<td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
+<td><%- ScheduleName || '' %></td>
+<td><%- QueueName || '' %></td>
+<td>
+<span class="list-date"><% print(QueuedOn.toString('MMM d, yyyy')); %></span>
+<small class="list-time light"><% print(QueuedOn.toString('h:mm:ss tt')); %></small>
+</td>
+<td><%- TryNumber %></td>
+</script>
+<script type="text/template" id="queue-list-template">
+<thead>
+<tr>
+<th>Job</th>
+<th>Schedule</th>
+<th>Queue</th>
+<th>Queued On</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody></tbody>
+</script>
+<script type="text/template" id="queue-template">
+<div class="page-header">
+<h1>
+Queue
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="paging-header"></div>
+<div class="list"></div>
+<div class="paging-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
+</script>
 <script type="text/template" id="search-template">
 <fieldset>
 <input type="search" name="q" class="span6 search-query">
