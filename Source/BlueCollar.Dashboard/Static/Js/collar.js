@@ -7230,8 +7230,6 @@ _.extend(CollarModel, {
      */
     initialize: function(models, options) {
         options = options || {};
-        this.pageNumber = 1;
-        this.search = '';
         this.urlRoot = options.urlRoot || '/';
 
         // Reset is called by the true Backbone.Collection constructor
@@ -7254,9 +7252,11 @@ _.extend(CollarModel, {
     /**
      * Performs a fetch opteration on this collection.
      *
-     * @
+     * @param {Object} options The fetch options to use.
+     * @return {jqXHR} The XHR object used to perform the fetch.
+     */
     fetch: function(options) {
-        return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options);
+        return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options));
     },
 
     /**
@@ -7268,13 +7268,16 @@ _.extend(CollarModel, {
      */
     reset: function(models, options) {
         models = models || {};
-
-        if (models.PageCount || models.PageNumber || models.TotalCount) {
-            this.trigger('area', this, {pageCount: models.PageCount, pageNumber: models.PageNumber, totalCount: models.TotalCount});
-        }
+        options = options || {};
         
-        if (models.Counts) {
-            this.trigger('counts', this, {counts: models.Counts});
+        if (!options.silent) {
+            if (models.PageCount || models.PageNumber || models.TotalCount) {
+                this.trigger('area', this, {PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+            }
+        
+            if (models.Counts) {
+                this.trigger('counts', this, {Counts: models.Counts});
+            }
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);
@@ -7307,6 +7310,11 @@ _.extend(CollarModel, {
         return url;
     }
  });
+/**
+ * Models an application area, consisting of list and details panes.
+ *
+ * @constructor
+ */
 var AreaModel = Backbone.Model.extend({
     defaults: {
         ApplicationName: 'Default',
@@ -7318,12 +7326,28 @@ var AreaModel = Backbone.Model.extend({
         TotalCount: 0
     },
 
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
     initialize: function(options) {
-        this.collection.bind('reset', this.reset, this);
+        this.get('Collection').bind('area', this.area, this);
     },
 
-    reset: function() {
-
+    /**
+     * Handles the collection's area event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    area: function(sender, args) {
+        this.set({
+            Loading: false,
+            PageCount: args.PageCount,
+            PageNumber: args.PageNumber,
+            TotalCount: args.TotalCount
+        });
     }
 });
 /**
@@ -7675,7 +7699,6 @@ var CollarController = function(applicationName, urlRoot, page, options) {
 
     collection = new this.collection(null, {urlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
-    collection.bind('reset', this.reset, this);
 
     this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection});
     this.initialize(this.options);
@@ -7719,10 +7742,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
             view.hideLoading();
         }
 
-        if (collection) {
-            collection.each(function(m) { 
-                m.set({Editing: false}); 
-            });
+        if (collection && _.isFunction(collection.clearEditing)) {
+            collection.clearEditing();
         }
 
         this.model.set({Loading: false});
@@ -7773,9 +7794,14 @@ _.extend(CollarController.prototype, Backbone.Events, {
         var collection = this.getCollection();
 
         if (collection) {
-            collection.pageNumber = this.model.get('PageNumber');
-            collection.search = this.model.get('Search');
-            collection.fetch({error: _.bind(this.ajaxError, this, null)});
+            this.model.set({Loading: true});
+
+            collection.fetch({
+                pageNumber: this.model.get('PageNumber'),
+                search: this.model.get('Search'),
+                error: _.bind(this.ajaxError, this, null)
+            });
+            
             this.navigate();
         }
     },
@@ -7796,9 +7822,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
     navigate: function() {
         var fragment = this.navigateFragment(),
             search = this.model.get('Search'),
-            page = this.model.get('PageNumber');
+            pageNumber = this.model.get('PageNumber');
 
-        this.trigger('navigate', this, {fragment: fragment, search: search, page: page});
+        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber});
     },
 
     /**
@@ -7808,18 +7834,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
      */
     navigateFragment: function() {
         return this.fragment || '';
-    },
-
-    /**
-     * Handles reset events sent to this instance.
-     */
-    reset: function() {
-        var collection = this.getCollection();
-
-        if (collection && collection.length === 0 && collection.pageNumber > 1) {
-            collection.pageNumber = 1;
-            this.navigate();
-        }
     }
 });
 /**
@@ -7921,15 +7935,19 @@ var CollarRouter = Backbone.Router.extend({
         var url;
 
         args = _.extend({
-            fragment: '',
-            search: '',
-            page: 1
+            Fragment: '',
+            Search: '',
+            PageNumber: 1
         }, args);
 
-        url = args.fragment;
+        url = args.Fragment;
 
-        if (args.search || args.page > 1) {
-            url += '/' + encodeURIComponent(args.search) + '/p' + encodeURIComponent(args.page.toString());
+        if (args.Search || args.PageNumber > 1) {
+            url += '/' + encodeURIComponent(args.Search || '');
+
+            if (args.PageNumber > 1) {
+                url += '/p' + encodeURIComponent(args.PageNumber.toString());
+            }
         }
 
         this.navigate(url);
@@ -7975,6 +7993,8 @@ var HistoryRouter = CollarRouter.extend({
     routes: {
         'history': 'index',
         'history/:search/p:page': 'index',
+        'history//p:page': 'page',
+        'history/*search': 'search'
     },
 
     /**
@@ -7995,8 +8015,26 @@ var HistoryRouter = CollarRouter.extend({
      * @param {Number} page The requested page number.
      */
     index: function(search, page) {
-        this.controller.index(search, page);
+        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
         this.trigger('nav', this, {name: 'History'});
+    },
+
+    /**
+     * Handles the empty-search paging route.
+     *
+     * @param {Number} page The requested page number.
+     */
+    page: function(page) {
+        this.index('', page);
+    },
+
+    /**
+     * Handles the non-paged search route.
+     *
+     * @param {String} search The requested search string.
+     */
+    search: function(search) {
+        this.index(search, 1);
     }
 });
 /**
@@ -8548,10 +8586,10 @@ var ListView = Backbone.View.extend({
         this.$el.html(this.template());
         tbody = this.$('tbody');
 
-        if (!loading && this.collection.length > 0) {
+        if (!loading && collection.length > 0) {
             this.renderRows(tbody, collection);
         } else if (loading) { 
-            this.html(this.loading());
+            tbody.html(this.loading());
         } else {
             tbody.html(this.empty('There are no jobs to display.'));
         }
@@ -9051,7 +9089,7 @@ var HistoryView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.get('Collection').bind('reset', this.reset, this);
+        this.model.bind('change', this.render, this);
 
         this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
@@ -9067,18 +9105,36 @@ var HistoryView = Backbone.View.extend({
         this.bottomPagerView.bind('page', this.page, this);
     },
 
+    /**
+     * Handles the search view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     cancelSearch: function(sender, args) {
-        //this.model.set({Search: ''});
-        //this.triggerFetch();
+        this.model.set({PageNumber: 1, Search: ''});
+        this.trigger('fetch', this);
     },
 
+    /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     display: function(sender, args) {
 
     },
 
+    /**
+     * Handles a pager view's page event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     page: function(sender, args) {
-        //this.model.set({PageNumber: args.PageNumber});  
-        //this.triggerFetch();
+        this.model.set({PageNumber: args.PageNumber});  
+        this.trigger('fetch', this);
     },
 
     /**
@@ -9086,14 +9142,18 @@ var HistoryView = Backbone.View.extend({
      *
      * @return {HistoryView} This instance.
      */
-    render: function(options) {
+    render: function() {
         var searchEl,
             pagingHeaderEl,
             listEl,
             pagingFooterEl,
             detailsEl;
 
-        options = options || {};
+        this.searchView.$el.detach();
+        this.topPagerView.$el.detach();
+        this.listView.$el.detach();
+        this.bottomPagerView.$el.detach();
+
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -9102,27 +9162,23 @@ var HistoryView = Backbone.View.extend({
         pagingFooterEl = this.$('.paging-footer');
         detailsEl = this.$('.details');
 
-        searchEl.html(this.searchView.render(options).el);
-        pagingHeaderEl.html(this.topPagerView.render(options).el);
-        listEl.html(this.listView.render(options).el);
-        pagingFooterEl.html(this.bottomPagerView.render(options).el);
+        searchEl.html(this.searchView.render().el);
+        pagingHeaderEl.html(this.topPagerView.render().el);
+        listEl.html(this.listView.render().el);
+        pagingFooterEl.html(this.bottomPagerView.render().el);
 
         return this;
     },
 
-    reset: function() {
-        //var collection = this.model.get('Collection');
-        //this.model.set({PageNumber: collection.pageNumber, PageCount: collection.pageCount});
-    },
-
+    /**
+     * Handle's the search view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     submitSearch: function(sender, args) {
-        //this.model.set({Search: args.Search});
-        //this.triggerFetch();
-    },
-
-    triggerFetch: function() {
-        //this.model.set({Loading: true});
-        //this.trigger('fetch', this);
+        this.model.set({PageNumber: 1, Search: args.Search});
+        this.trigger('fetch', this);
     }
 });
 /**
@@ -9397,7 +9453,7 @@ _.extend(App.prototype, {
      */
     counts: function(sender, args) {
         if (args && args.counts) {
-            this.navView.collection.reset(this.navView.collection.parse(args.counts));
+            this.navView.collection.reset(this.navView.collection.parse(args.Counts));
         }
     },
 

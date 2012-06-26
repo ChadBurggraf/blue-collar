@@ -49,10 +49,10 @@ var ListView = Backbone.View.extend({
         this.$el.html(this.template());
         tbody = this.$('tbody');
 
-        if (!loading && this.collection.length > 0) {
+        if (!loading && collection.length > 0) {
             this.renderRows(tbody, collection);
         } else if (loading) { 
-            this.html(this.loading());
+            tbody.html(this.loading());
         } else {
             tbody.html(this.empty('There are no jobs to display.'));
         }

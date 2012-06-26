@@ -12,7 +12,7 @@ var HistoryView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.get('Collection').bind('reset', this.reset, this);
+        this.model.bind('change', this.render, this);
 
         this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
@@ -28,18 +28,36 @@ var HistoryView = Backbone.View.extend({
         this.bottomPagerView.bind('page', this.page, this);
     },
 
+    /**
+     * Handles the search view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     cancelSearch: function(sender, args) {
-        //this.model.set({Search: ''});
-        //this.triggerFetch();
+        this.model.set({PageNumber: 1, Search: ''});
+        this.trigger('fetch', this);
     },
 
+    /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     display: function(sender, args) {
 
     },
 
+    /**
+     * Handles a pager view's page event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     page: function(sender, args) {
-        //this.model.set({PageNumber: args.PageNumber});  
-        //this.triggerFetch();
+        this.model.set({PageNumber: args.PageNumber});  
+        this.trigger('fetch', this);
     },
 
     /**
@@ -47,14 +65,18 @@ var HistoryView = Backbone.View.extend({
      *
      * @return {HistoryView} This instance.
      */
-    render: function(options) {
+    render: function() {
         var searchEl,
             pagingHeaderEl,
             listEl,
             pagingFooterEl,
             detailsEl;
 
-        options = options || {};
+        this.searchView.$el.detach();
+        this.topPagerView.$el.detach();
+        this.listView.$el.detach();
+        this.bottomPagerView.$el.detach();
+
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -63,26 +85,22 @@ var HistoryView = Backbone.View.extend({
         pagingFooterEl = this.$('.paging-footer');
         detailsEl = this.$('.details');
 
-        searchEl.html(this.searchView.render(options).el);
-        pagingHeaderEl.html(this.topPagerView.render(options).el);
-        listEl.html(this.listView.render(options).el);
-        pagingFooterEl.html(this.bottomPagerView.render(options).el);
+        searchEl.html(this.searchView.render().el);
+        pagingHeaderEl.html(this.topPagerView.render().el);
+        listEl.html(this.listView.render().el);
+        pagingFooterEl.html(this.bottomPagerView.render().el);
 
         return this;
     },
 
-    reset: function() {
-        //var collection = this.model.get('Collection');
-        //this.model.set({PageNumber: collection.pageNumber, PageCount: collection.pageCount});
-    },
-
+    /**
+     * Handle's the search view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     submitSearch: function(sender, args) {
-        //this.model.set({Search: args.Search});
-        //this.triggerFetch();
-    },
-
-    triggerFetch: function() {
-        //this.model.set({Loading: true});
-        //this.trigger('fetch', this);
+        this.model.set({PageNumber: 1, Search: args.Search});
+        this.trigger('fetch', this);
     }
 });

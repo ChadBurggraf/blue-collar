@@ -25,15 +25,19 @@ var CollarRouter = Backbone.Router.extend({
         var url;
 
         args = _.extend({
-            fragment: '',
-            search: '',
-            page: 1
+            Fragment: '',
+            Search: '',
+            PageNumber: 1
         }, args);
 
-        url = args.fragment;
+        url = args.Fragment;
 
-        if (args.search || args.page > 1) {
-            url += '/' + encodeURIComponent(args.search) + '/p' + encodeURIComponent(args.page.toString());
+        if (args.Search || args.PageNumber > 1) {
+            url += '/' + encodeURIComponent(args.Search || '');
+
+            if (args.PageNumber > 1) {
+                url += '/p' + encodeURIComponent(args.PageNumber.toString());
+            }
         }
 
         this.navigate(url);

@@ -12,8 +12,6 @@
      */
     initialize: function(models, options) {
         options = options || {};
-        this.pageNumber = 1;
-        this.search = '';
         this.urlRoot = options.urlRoot || '/';
 
         // Reset is called by the true Backbone.Collection constructor
@@ -36,9 +34,11 @@
     /**
      * Performs a fetch opteration on this collection.
      *
-     * @
+     * @param {Object} options The fetch options to use.
+     * @return {jqXHR} The XHR object used to perform the fetch.
+     */
     fetch: function(options) {
-        return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options);
+        return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options));
     },
 
     /**
@@ -50,13 +50,16 @@
      */
     reset: function(models, options) {
         models = models || {};
-
-        if (models.PageCount || models.PageNumber || models.TotalCount) {
-            this.trigger('area', this, {pageCount: models.PageCount, pageNumber: models.PageNumber, totalCount: models.TotalCount});
-        }
+        options = options || {};
         
-        if (models.Counts) {
-            this.trigger('counts', this, {counts: models.Counts});
+        if (!options.silent) {
+            if (models.PageCount || models.PageNumber || models.TotalCount) {
+                this.trigger('area', this, {PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+            }
+        
+            if (models.Counts) {
+                this.trigger('counts', this, {Counts: models.Counts});
+            }
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);

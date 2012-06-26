@@ -17,7 +17,6 @@ var CollarController = function(applicationName, urlRoot, page, options) {
 
     collection = new this.collection(null, {urlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
-    collection.bind('reset', this.reset, this);
 
     this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection});
     this.initialize(this.options);
@@ -61,10 +60,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
             view.hideLoading();
         }
 
-        if (collection) {
-            collection.each(function(m) { 
-                m.set({Editing: false}); 
-            });
+        if (collection && _.isFunction(collection.clearEditing)) {
+            collection.clearEditing();
         }
 
         this.model.set({Loading: false});
@@ -115,9 +112,14 @@ _.extend(CollarController.prototype, Backbone.Events, {
         var collection = this.getCollection();
 
         if (collection) {
-            collection.pageNumber = this.model.get('PageNumber');
-            collection.search = this.model.get('Search');
-            collection.fetch({error: _.bind(this.ajaxError, this, null)});
+            this.model.set({Loading: true});
+
+            collection.fetch({
+                pageNumber: this.model.get('PageNumber'),
+                search: this.model.get('Search'),
+                error: _.bind(this.ajaxError, this, null)
+            });
+            
             this.navigate();
         }
     },
@@ -138,9 +140,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
     navigate: function() {
         var fragment = this.navigateFragment(),
             search = this.model.get('Search'),
-            page = this.model.get('PageNumber');
+            pageNumber = this.model.get('PageNumber');
 
-        this.trigger('navigate', this, {fragment: fragment, search: search, page: page});
+        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber});
     },
 
     /**
@@ -150,17 +152,5 @@ _.extend(CollarController.prototype, Backbone.Events, {
      */
     navigateFragment: function() {
         return this.fragment || '';
-    },
-
-    /**
-     * Handles reset events sent to this instance.
-     */
-    reset: function() {
-        var collection = this.getCollection();
-
-        if (collection && collection.length === 0 && collection.pageNumber > 1) {
-            collection.pageNumber = 1;
-            this.navigate();
-        }
     }
 });

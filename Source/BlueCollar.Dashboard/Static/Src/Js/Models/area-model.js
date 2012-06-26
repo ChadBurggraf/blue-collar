@@ -1,4 +1,9 @@
-﻿var AreaModel = Backbone.Model.extend({
+﻿/**
+ * Models an application area, consisting of list and details panes.
+ *
+ * @constructor
+ */
+var AreaModel = Backbone.Model.extend({
     defaults: {
         ApplicationName: 'Default',
         Collection: new CollarCollection(),
@@ -9,11 +14,27 @@
         TotalCount: 0
     },
 
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
     initialize: function(options) {
-        this.collection.bind('reset', this.reset, this);
+        this.get('Collection').bind('area', this.area, this);
     },
 
-    reset: function() {
-
+    /**
+     * Handles the collection's area event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    area: function(sender, args) {
+        this.set({
+            Loading: false,
+            PageCount: args.PageCount,
+            PageNumber: args.PageNumber,
+            TotalCount: args.TotalCount
+        });
     }
 });

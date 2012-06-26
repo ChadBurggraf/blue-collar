@@ -8,6 +8,8 @@ var HistoryRouter = CollarRouter.extend({
     routes: {
         'history': 'index',
         'history/:search/p:page': 'index',
+        'history//p:page': 'page',
+        'history/*search': 'search'
     },
 
     /**
@@ -28,7 +30,25 @@ var HistoryRouter = CollarRouter.extend({
      * @param {Number} page The requested page number.
      */
     index: function(search, page) {
-        this.controller.index(search, page);
+        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
         this.trigger('nav', this, {name: 'History'});
+    },
+
+    /**
+     * Handles the empty-search paging route.
+     *
+     * @param {Number} page The requested page number.
+     */
+    page: function(page) {
+        this.index('', page);
+    },
+
+    /**
+     * Handles the non-paged search route.
+     *
+     * @param {String} search The requested search string.
+     */
+    search: function(search) {
+        this.index(search, 1);
     }
 });

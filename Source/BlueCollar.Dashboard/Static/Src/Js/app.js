@@ -57,7 +57,7 @@ _.extend(App.prototype, {
      */
     counts: function(sender, args) {
         if (args && args.counts) {
-            this.navView.collection.reset(this.navView.collection.parse(args.counts));
+            this.navView.collection.reset(this.navView.collection.parse(args.Counts));
         }
     },
 
