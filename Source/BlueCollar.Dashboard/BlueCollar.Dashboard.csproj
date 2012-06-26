@@ -127,6 +127,7 @@
     <Content Include="Static\Src\Js\Controllers\dashboard-controller.js" />
     <Content Include="Static\Src\Js\Controllers\history-controller.js" />
     <Content Include="Static\Src\Js\Controllers\queue-controller.js" />
+    <Content Include="Static\Src\Js\Controllers\workers-controller.js" />
     <Content Include="Static\Src\Js\copyright.js" />
     <Content Include="Static\Src\Js\form-serializer.js" />
     <Content Include="Static\Src\Js\form-validator.js" />
@@ -137,6 +138,7 @@
     <Content Include="Static\Src\Js\Models\nav-model.js" />
     <Content Include="Static\Src\Js\Models\queue-model.js" />
     <Content Include="Static\Src\Js\Models\stats-model.js" />
+    <Content Include="Static\Src\Js\Models\worker-model.js" />
     <Content Include="Static\Src\Js\Routers\collar-router.js" />
     <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
     <Content Include="Static\Src\Js\Routers\history-router.js" />
@@ -184,6 +186,9 @@
     <Content Include="Static\Src\Js\Views\queue-view.js" />
     <Content Include="Static\Src\Js\Views\row-view.js" />
     <Content Include="Static\Src\Js\Views\search-view.js" />
+    <Content Include="Static\Src\Js\Views\workers-list-view.js" />
+    <Content Include="Static\Src\Js\Views\workers-row-view.js" />
+    <Content Include="Static\Src\Js\Views\workers-view.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -218,6 +223,7 @@
     <Content Include="Views\Shared\Templates\_Search.cshtml" />
     <Content Include="Views\Shared\Templates\_Pager.cshtml" />
     <Content Include="Views\Shared\Templates\_Queue.cshtml" />
+    <Content Include="Views\Shared\Templates\_Workers.cshtml" />
     <None Include="Web.config.template">
       <SubType>Designer</SubType>
     </None>

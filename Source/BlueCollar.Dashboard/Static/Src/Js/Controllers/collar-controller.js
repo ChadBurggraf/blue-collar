@@ -135,6 +135,18 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Renders the index view.
+     *
+     * @param {String} search The search string to filter the view on.
+     * @param {Number} page The page number to filter the view on.
+     */
+    index: function(search, page) {
+        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
+        this.view.render();
+        this.fetch();
+    },
+
+    /**
      * Performs navigation on behalf of this controller.
      */
     navigate: function() {

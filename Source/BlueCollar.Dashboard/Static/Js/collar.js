@@ -7705,6 +7705,49 @@ var StatsModel = CollarModel.extend({
         return this.urlRoot;
     }
 });
+/**
+ * Models a worker.
+ *
+ * @constructor
+ */
+var WorkerModel = CollarModel.extend({
+    defaults: {
+        'Id': 0,
+        'MachineAddress': '',
+        'MachineName': '',
+        'Name': null,
+        'QueueNames': null,
+        'Startup': 'Automatic'
+    }
+});
+
+/**
+ * Models a worker signal.
+ *
+ * @constructor
+ */
+var WorkerSignalModel = CollarModel.extend({
+    defaults: {
+        'Id': 0,
+        'MachineAddress': '',
+        'MachineName': '',
+        'Name': null,
+        'Signal': 'None'
+    },
+
+    url: function() {
+        return CollarModel.prototype.url.call(this).appendUrlPath('signal');
+    }
+});
+
+/**
+ * Represents a collection of {WorkerModel}s.
+ *
+ * @constructor
+ */
+var WorkerCollection = CollarCollection.extend({
+    model: WorkerModel
+});
 
 /**
  * Base controller implementation.
@@ -7843,6 +7886,18 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Renders the index view.
+     *
+     * @param {String} search The search string to filter the view on.
+     * @param {Number} page The page number to filter the view on.
+     */
+    index: function(search, page) {
+        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
+        this.view.render();
+        this.fetch();
+    },
+
+    /**
      * Performs navigation on behalf of this controller.
      */
     navigate: function() {
@@ -7919,18 +7974,6 @@ var HistoryController = CollarController.extend({
     initialize: function(options) {
         this.view = new HistoryView({el: this.page, model: this.model});
         this.view.bind('fetch', this.fetch, this);
-    },
-
-    /**
-     * Renders the index view.
-     *
-     * @param {String} search The search string to filter the view on.
-     * @param {Number} page The page number to filter the view on.
-     */
-    index: function(search, page) {
-        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
-        this.view.render();
-        this.fetch();
     }
 });
 /**
@@ -7963,6 +8006,26 @@ var QueueController = CollarController.extend({
         this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
+    }
+});
+/**
+ * Workers area controller implementation.
+ *
+ * @constructor
+ * @extends {CollarController}
+ */
+var WorkersController = CollarController.extend({
+    collection: WorkerCollection,
+    fragment: 'workers',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.view = new WorkersView({el: this.page, model: this.model});
+        this.view.bind('fetch', this.fetch, this);
     }
 });
 
@@ -8039,6 +8102,35 @@ var CollarRouter = Backbone.Router.extend({
         controller.bind('counts', this.counts, this);
         controller.bind('navigate', this.controllerNavigate, this);
         return controller;
+    },
+
+    /**
+     * Handles the index route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
+     */
+    index: function(search, page) {
+        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
+        this.trigger('nav', this, {name: this.name});
+    },
+
+    /**
+     * Handles the empty-search paging route.
+     *
+     * @param {Number} page The requested page number.
+     */
+    page: function(page) {
+        this.index('', page);
+    },
+
+    /**
+     * Handles the non-paged search route.
+     *
+     * @param {String} search The requested search string.
+     */
+    search: function(search) {
+        this.index(search, 1);
     }
 });
 /**
@@ -8048,6 +8140,7 @@ var CollarRouter = Backbone.Router.extend({
  * @extends {CollarRouter}
  */
 var HistoryRouter = CollarRouter.extend({
+    name: 'History',
     routes: {
         'history': 'index',
         'history/:search/p:page': 'index',
@@ -8064,35 +8157,6 @@ var HistoryRouter = CollarRouter.extend({
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
         this.controller = this.createController(HistoryController, 'history', this.options);
-    },
-
-    /**
-     * Handles the root #history route.
-     *
-     * @param {String} search The requested search string.
-     * @param {Number} page The requested page number.
-     */
-    index: function(search, page) {
-        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
-        this.trigger('nav', this, {name: 'History'});
-    },
-
-    /**
-     * Handles the empty-search paging route.
-     *
-     * @param {Number} page The requested page number.
-     */
-    page: function(page) {
-        this.index('', page);
-    },
-
-    /**
-     * Handles the non-paged search route.
-     *
-     * @param {String} search The requested search string.
-     */
-    search: function(search) {
-        this.index(search, 1);
     }
 });
 /**
@@ -8102,6 +8166,7 @@ var HistoryRouter = CollarRouter.extend({
  * @extends {CollarRouter}
  */
 var QueueRouter = CollarRouter.extend({
+    name: 'Queue',
     routes: {
         'queue': 'index',
         'queue/:search/p:page': 'index',
@@ -8118,35 +8183,6 @@ var QueueRouter = CollarRouter.extend({
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
         this.controller = this.createController(QueueController, 'queue', this.options);
-    },
-
-    /**
-     * Handles the root #queue route.
-     *
-     * @param {String} search The requested search string.
-     * @param {Number} page The requested page number.
-     */
-    index: function(search, page) {
-        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
-        this.trigger('nav', this, {name: 'Queue'});
-    },
-
-    /**
-     * Handles the empty-search paging route.
-     *
-     * @param {Number} page The requested page number.
-     */
-    page: function(page) {
-        this.index('', page);
-    },
-
-    /**
-     * Handles the non-paged search route.
-     *
-     * @param {String} search The requested search string.
-     */
-    search: function(search) {
-        this.index(search, 1);
     }
 });
 /**
@@ -8185,26 +8221,23 @@ var SchedulesRouter = CollarRouter.extend({
  * @extends {CollarRouter}
  */
 var WorkersRouter = CollarRouter.extend({
+    name: 'Workers',
     routes: {
-        'workers': 'index'
+        'workers': 'index',
+        'workers/:search/p:page': 'index',
+        'workers//p:page': 'page',
+        'workers/*search': 'search'
     },
 
     /**
      * Initialization.
      *
      * @param {App} app The root application object.
-     * @param {Object} options Additional initialization options.
+     * @param {Object} options Initialization options.
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
-    },
-
-    /**
-     * Handles the root #workers route.
-     */
-    index: function() {
-        
+        this.controller = this.createController(WorkersController, 'workers', this.options);
     }
 });
 /**
@@ -8243,6 +8276,7 @@ var WorkingRouter = CollarRouter.extend({
  * @extends {CollarRouter}
  */
 var DashboardRouter = CollarRouter.extend({
+    name: 'Dashboard',
     routes: {
         'dashboard': 'index',
         '*path': 'index'
@@ -8257,14 +8291,6 @@ var DashboardRouter = CollarRouter.extend({
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
         this.controller = this.createController(DashboardController, 'stats', this.options);
-    },
-
-    /**
-     * Handles the root #dashboard route.
-     */
-    index: function() {
-        this.controller.index();
-        this.trigger('nav', this, {name: 'Dashboard'});
     }
 });
 
@@ -9538,37 +9564,7 @@ var QueueListView = ListView.extend({
  * @extends {RowView}
  */
 var QueueRowView = RowView.extend({
-    template: _.template($('#queue-row-template').html()),
-
-    /**
-     * Renders the view.
-     *
-     * @return {RowView} This instance.
-     */
-    render: function() {
-        var status,
-            css;
-
-        RowView.prototype.render.call(this);
-
-        /*status = this.model.get('Status');
-
-        switch (status) {
-            case 'Succeeded':
-                css = 'green';
-                break;
-            case 'Failed':
-            case 'TimedOut':
-                css = 'red';
-                break;
-            default:
-                css = '';
-                break;
-        }
-
-        this.$('.status').removeClass('red green').addClass(css);*/
-        return this;
-    }
+    template: _.template($('#queue-row-template').html())
 });
 /**
  * Manages the root queue view.
@@ -9587,6 +9583,77 @@ var QueueView = AreaView.extend({
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
         this.listView = new QueueListView({model: this.model});
+        this.listView.bind('display', this.display, this);
+    },
+
+    /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+
+    }
+});
+/**
+ * Manages the workers list view.
+ *
+ * @constructor
+ * @extends {ListView}
+ */
+var WorkersListView = ListView.extend({
+    cols: 6,
+    template: _.template($('#workers-list-template').html()),
+
+    /**
+     * Renders the view's row collection.
+     *
+     * @param {jQuery} tbody The list's tbody element.
+     * @param {CollarCollection} collection The collection to render rows for.
+     * @return {ListView} This instance.
+     */
+    renderRows: function(tbody, collection) {
+        var model,
+            i,
+            n;
+        
+        for (i = 0, n = collection.length; i < n; i++) {
+            model = collection.at(i);
+            view = new WorkersRowView({model: model}).render();
+            view.bind('display', this.display, this);
+            tbody.append(view.el);
+        }
+
+        return this;
+    }
+});
+/**
+ * Manages the row view for the workers list.
+ *
+ * @constructor
+ * @extends {RowView}
+ */
+var WorkersRowView = RowView.extend({
+    template: _.template($('#workers-row-template').html())
+});
+/**
+ * Manages the root workers view.
+ *
+ * @constructor
+ * @extends {AreaView}
+ */
+var WorkersView = AreaView.extend({
+    template: _.template($('#workers-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        AreaView.prototype.initialize.call(this, options);
+        this.listView = new WorkersListView({model: this.model});
         this.listView.bind('display', this.display, this);
     },
 

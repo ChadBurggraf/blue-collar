@@ -186,3 +186,41 @@ Queue
 <button type="button" class="btn btn-reset">Clear</button>
 </fieldset>
 </script>
+<script type="text/template" id="workers-row-template">
+<td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
+<td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
+<td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
+<td><%- Status %></td>
+<td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+<td><%- Startup %></td>
+</script>
+<script type="text/template" id="workers-list-template">
+<thead>
+<tr>
+<th>Name</th>
+<th>Machine</th>
+<th>Queues</th>
+<th>Status</th>
+<th>Signal</th>
+<th>Startup</th>
+</tr>
+</thead>
+<tbody></tbody>
+</script>
+<script type="text/template" id="workers-template">
+<div class="page-header">
+<h1>
+Workers
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="paging-header"></div>
+<div class="list"></div>
+<div class="paging-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
+</script>

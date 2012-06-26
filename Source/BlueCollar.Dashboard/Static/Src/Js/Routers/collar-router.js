@@ -71,5 +71,34 @@ var CollarRouter = Backbone.Router.extend({
         controller.bind('counts', this.counts, this);
         controller.bind('navigate', this.controllerNavigate, this);
         return controller;
+    },
+
+    /**
+     * Handles the index route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
+     */
+    index: function(search, page) {
+        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
+        this.trigger('nav', this, {name: this.name});
+    },
+
+    /**
+     * Handles the empty-search paging route.
+     *
+     * @param {Number} page The requested page number.
+     */
+    page: function(page) {
+        this.index('', page);
+    },
+
+    /**
+     * Handles the non-paged search route.
+     *
+     * @param {String} search The requested search string.
+     */
+    search: function(search) {
+        this.index(search, 1);
     }
 });
