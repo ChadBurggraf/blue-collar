@@ -7251,8 +7251,12 @@ _.extend(CollarModel, {
         });
     },
 
+    /**
+     * Performs a fetch opteration on this collection.
+     *
+     * @
     fetch: function(options) {
-        
+        return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options);
     },
 
     /**
@@ -7264,9 +7268,10 @@ _.extend(CollarModel, {
      */
     reset: function(models, options) {
         models = models || {};
-        this.pageCount = models.PageCount || 1;
-        this.pageNumber = models.PageNumber || 1;
-        this.totalCount = models.TotalCount || 0;
+
+        if (models.PageCount || models.PageNumber || models.TotalCount) {
+            this.trigger('area', this, {pageCount: models.PageCount, pageNumber: models.PageNumber, totalCount: models.TotalCount});
+        }
         
         if (models.Counts) {
             this.trigger('counts', this, {counts: models.Counts});
@@ -7278,11 +7283,17 @@ _.extend(CollarModel, {
     /**
      * Gets the URL to use when interacting with the collection on the server.
      *
+     * @param {Object} options The options to use when generating the URL.
      * @return {String} The collection's server URL.
      */
-    url: function() {
+    url: function(options) {
         var url = this.urlRoot || '/',
             queryIndex = url.indexOf('?');
+
+        options = _.extend({
+            pageNumber: 1,
+            search: ''
+        }, options);
 
         if (queryIndex < 0) {
             url += '?';
@@ -7290,8 +7301,8 @@ _.extend(CollarModel, {
             url += '&';
         }
 
-        url += 'q=' + encodeURIComponent(this.search || '');
-        url += '&p=' + encodeURIComponent((this.pageNumber || 1).toString());
+        url += 'q=' + encodeURIComponent(options.search || '');
+        url += '&p=' + encodeURIComponent((options.pageNumber || 1).toString());
 
         return url;
     }
