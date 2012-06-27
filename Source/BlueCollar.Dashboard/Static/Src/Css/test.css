@@ -1,0 +1,17 @@
+h1#qunit-header {
+  margin-top: 18px;
+}
+
+input[type="checkbox"] {
+  margin: 0 5px;
+}
+
+label {
+  display: inline;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+
+ol#qunit-tests {
+  margin-bottom: 18px;
+}

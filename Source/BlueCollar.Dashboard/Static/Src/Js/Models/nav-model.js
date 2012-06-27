@@ -60,7 +60,7 @@ var NavCollection = Backbone.Collection.extend({
         push(i++, 'Schedules', response['ScheduleCount'], '#schedules');
 
         if (this.testLink) {
-            push(i++, 'Tests', null, 'test');
+            push(i++, 'Tests', null, 'test?noglobals=true');
         }
 
         if (!current) {

@@ -1,12 +1,19 @@
-﻿<h1 id="qunit-header">Blue Collar Tests</h1>
-<h2 id="qunit-banner"></h2>
-<div id="qunit-testrunner-toolbar"></div>
-<h2 id="qunit-userAgent"></h2>
-<ol id="qunit-tests"></ol>
-<div id="qunit-fixture"></div>
+﻿<div class="row">
+    <div class="span12">
+        <h1 id="qunit-header">
+            Tests
+            <small>@BlueCollarSection.Section.ApplicationName</small>
+        </h1>
+        <h2 id="qunit-banner"></h2>
+        <div id="qunit-testrunner-toolbar"></div>
+        <h2 id="qunit-userAgent"></h2>
+        <ol id="qunit-tests"></ol>
+        <div id="qunit-fixture"></div>
+    </div>
+</div>
 
 @section style {
-<link rel="stylesheet" type="text/css" href="@Url.Content("~/Static/test.css")">
+<link rel="stylesheet" type="text/css" href="@Url.Content("~/Static/Css/test.css")">
 }
 
 @section script {
@@ -22,15 +29,17 @@
         jsonUrlRoot += '/';
     }
 </script>
-<script type="text/javascript" src="@Url.Content("~/Static/test.js")"></script>
+<script type="text/javascript" src="@Url.Content("~/Static/Js/test.js")"></script>
 <script type="text/javascript">
-    var navList = new NavigationItemList();
-    navList.urlRoot = urlRoot;
-    navList.showCounts = false;
-    navList.testLink = true;
-    navList.reset(navList.parse());
-    navList.setCurrent('Tests');
+    $(function() {
+        var navCollection = new NavCollection();
+        navCollection.urlRoot = urlRoot;
+        navCollection.showCounts = false;
+        navCollection.testLink = true;
+        navCollection.reset(navCollection.parse());
+        navCollection.setCurrent('Tests');
 
-    new NavigationView({collection: navList}).render();
+        new NavView({collection: navCollection, el: $('#nav')}).render();
+    });
 </script>
 }

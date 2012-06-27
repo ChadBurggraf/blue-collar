@@ -56,7 +56,7 @@ _.extend(App.prototype, {
      * @param {Object} args The event arguments.
      */
     counts: function(sender, args) {
-        if (args && args.counts) {
+        if (args && args.Counts) {
             this.navView.collection.reset(this.navView.collection.parse(args.Counts));
         }
     },

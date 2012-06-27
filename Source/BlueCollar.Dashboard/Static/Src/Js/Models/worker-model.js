@@ -28,6 +28,11 @@ var WorkerSignalModel = CollarModel.extend({
         'Signal': 'None'
     },
 
+    /**
+     * Gets the URL to use when interacting with the model on the server.
+     *
+     * @return {String} The model's server URL.
+     */
     url: function() {
         return CollarModel.prototype.url.call(this).appendUrlPath('signal');
     }

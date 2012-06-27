@@ -68,9 +68,9 @@ namespace BlueCollar.Dashboard
 
             /*using (IRepository repository = new ConfigurationRepositoryFactory().Create())
             {
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 100; i++)
                 {
-                    var job = new BlueCollar.Examples.SleepJob();
+                    var job = new BlueCollar.Examples.SleepJob() { Duration = 60000 };
 
                     repository.CreateQueued(
                         new QueueRecord()

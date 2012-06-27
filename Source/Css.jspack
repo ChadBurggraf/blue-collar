@@ -9,4 +9,11 @@
     <input path="copyright.css"/>
     <input path="collar.css"/>
   </output>
+
+  <output path="test.css">
+    <action name="MinifyCss"/>
+    <input path="qunit.css"/>
+    <input path="copyright.css"/>
+    <input path="test.css"/>
+  </output>
 </jspack>

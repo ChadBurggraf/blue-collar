@@ -153,7 +153,7 @@ var RegexFormValidator = FormValidator.extend({
  * @constructor
  * @extends {FormValidator}
  */
-var RequiredValidator = FormValidator.extend({
+var RequiredFormValidator = FormValidator.extend({
     /**
      * Executes validation against the given value.
      *

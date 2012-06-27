@@ -5,25 +5,22 @@
  * @extends {CollarRouter}
  */
 var WorkingRouter = CollarRouter.extend({
+    name: 'Working',
     routes: {
-        'working': 'index'
+        'working': 'index',
+        'working/:search/p:page': 'index',
+        'working//p:page': 'page',
+        'working/*search': 'search'
     },
 
     /**
      * Initialization.
      *
      * @param {App} app The root application object.
-     * @param {Object} options Additional initialization options.
+     * @param {Object} options Initialization options.
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
-    },
-
-    /**
-     * Handles the root #working route.
-     */
-    index: function() {
-        
+        this.controller = this.createController(WorkingController, 'working', this.options);
     }
 });

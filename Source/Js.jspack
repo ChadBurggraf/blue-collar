@@ -20,6 +20,7 @@
     <input path="Controllers\queue-controller.js"/>
     <input path="Controllers\schedules-controller.js"/>
     <input path="Controllers\workers-controller.js"/>
+    <input path="Controllers\working-controller.js"/>
   </output>
 
   <output name="DateJs" path="date.js" temporary="true">
@@ -40,6 +41,7 @@
     <input path="Models\schedule-model.js"/>
     <input path="Models\stats-model.js"/>
     <input path="Models\worker-model.js"/>
+    <input path="Models\working-model.js"/>
   </output>
 
   <output name="Routers" path="routers.js" temporary="true">
@@ -74,6 +76,31 @@
     <input path="Views\workers-list-view.js"/>
     <input path="Views\workers-row-view.js"/>
     <input path="Views\workers-view.js"/>
+    <input path="Views\working-list-view.js"/>
+    <input path="Views\working-row-view.js"/>
+    <input path="Views\working-view.js"/>
+  </output>
+
+  <output name="Lib" temporary="true">
+    <import name="Backbone"/>
+    <import name="Bootstrap"/>
+    <import name="DateJs"/>
+  </output>
+
+  <output name="App" temporary="true">
+    <input path="Vendor\extend.js"/>
+    <input path="Vendor\relative-date.js"/>
+    <input path="date.js"/>
+    <input path="number.js"/>
+    <input path="string.js"/>
+    <input path="jquery.js"/>
+    <input path="form-serializer.js"/>
+    <input path="form-validator.js"/>
+    <import name="Models"/>
+    <import name="Controllers"/>
+    <import name="Routers"/>
+    <import name="Views"/>
+    <input path="app.js"/>
   </output>
 
   <output path="html5.js">
@@ -83,19 +110,22 @@
 
   <output path="collar.js">
     <action name="CompileJs"/>
-    <import name="Backbone"/>
-    <import name="Bootstrap"/>
-    <import name="DateJs"/>
+    <import name="Lib"/>
     <input path="copyright.js"/>
-    <input path="Vendor\extend.js"/>
-    <input path="util.js"/>
-    <input path="form-serializer.js"/>
-    <input path="form-validator.js"/>
-    <import name="Models"/>
-    <import name="Controllers"/>
-    <import name="Routers"/>
-    <import name="Views"/>
-    <input path="app.js"/>
+    <import name="App"/>
     <input path="close.js"/>
+  </output>
+
+  <output path="test.js">
+    <action name="CompileJs"/>
+    <import name="Lib"/>
+    <import name="App"/>
+    <input path="Vendor\qunit-1.9.0pre.js"/>
+    <input path="Tests\test-util.js"/>
+    <input path="Tests\ajax-tests.js"/>
+    <input path="Tests\model-tests.js"/>
+    <input path="Tests\serializer-tests.js"/>
+    <input path="Tests\utility-tests.js"/>
+    <input path="Tests\validate-tests.js"/>
   </output>
 </jspack>

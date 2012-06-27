@@ -1,0 +1,51 @@
+﻿<script type="text/template" id="working-row-template">
+    <td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
+    <td><%- ScheduleName || '' %></td>
+    <td><%- QueueName || '' %></td>
+    <td>
+        <%- WorkerName %>
+        <small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
+    </td>
+    <td>
+        <% print(QueuedOn.toString('MMM d, yyyy h:mm tt')); %>
+        <small class="light"><strong>Started On</strong></span>
+        <small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
+    </td>
+    <td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+    <td><%- TryNumber %></td>
+</script>
+
+<script type="text/template" id="working-list-template">
+    <thead>
+        <tr>
+            <th>Job</th>
+            <th>Schedule</th>
+            <th>Queue</th>
+            <th>Worker</th>
+            <th>Queued On</th>
+            <th>Signal</th>
+            <th>Try</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="working-template">
+    <div class="page-header">
+        <h1>
+            Working
+            <small><%- ApplicationName %></small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+            <div class="search"></div>
+            <div class="paging-header"></div>
+            <div class="list"></div>
+            <div class="paging-footer"></div>
+        </div>
+
+        <div class="span4 details"></div>
+    </div>
+</script>

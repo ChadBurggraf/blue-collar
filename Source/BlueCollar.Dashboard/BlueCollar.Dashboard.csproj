@@ -105,6 +105,7 @@
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Static\Css\collar.css" />
+    <Content Include="Static\Css\test.css" />
     <Content Include="Static\Img\glyphicons-halflings-white.png" />
     <Content Include="Static\Img\glyphicons-halflings.png" />
     <Content Include="Static\Img\loading-list.gif" />
@@ -112,10 +113,13 @@
     <Content Include="Static\Img\tc-badge.png" />
     <Content Include="Static\Js\collar.js" />
     <Content Include="Static\Js\html5.js" />
+    <Content Include="Static\Js\test.js" />
     <Content Include="Static\Src\Css\bootstrap-responsive.css" />
     <Content Include="Static\Src\Css\bootstrap.css" />
     <Content Include="Static\Src\Css\collar.css" />
     <Content Include="Static\Src\Css\copyright.css" />
+    <Content Include="Static\Src\Css\qunit.css" />
+    <Content Include="Static\Src\Css\test.css" />
     <Content Include="Static\Src\Img\glyphicons-halflings-white.png" />
     <Content Include="Static\Src\Img\glyphicons-halflings.png" />
     <Content Include="Static\Src\Img\loading-list.gif" />
@@ -129,9 +133,12 @@
     <Content Include="Static\Src\Js\Controllers\queue-controller.js" />
     <Content Include="Static\Src\Js\Controllers\schedules-controller.js" />
     <Content Include="Static\Src\Js\Controllers\workers-controller.js" />
+    <Content Include="Static\Src\Js\Controllers\working-controller.js" />
     <Content Include="Static\Src\Js\copyright.js" />
+    <Content Include="Static\Src\Js\date.js" />
     <Content Include="Static\Src\Js\form-serializer.js" />
     <Content Include="Static\Src\Js\form-validator.js" />
+    <Content Include="Static\Src\Js\jquery.js" />
     <Content Include="Static\Src\Js\Models\collar-collection.js" />
     <Content Include="Static\Src\Js\Models\collar-model.js" />
     <Content Include="Static\Src\Js\Models\history-model.js" />
@@ -141,6 +148,8 @@
     <Content Include="Static\Src\Js\Models\schedule-model.js" />
     <Content Include="Static\Src\Js\Models\stats-model.js" />
     <Content Include="Static\Src\Js\Models\worker-model.js" />
+    <Content Include="Static\Src\Js\Models\working-model.js" />
+    <Content Include="Static\Src\Js\number.js" />
     <Content Include="Static\Src\Js\Routers\collar-router.js" />
     <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
     <Content Include="Static\Src\Js\Routers\history-router.js" />
@@ -148,7 +157,13 @@
     <Content Include="Static\Src\Js\Routers\schedules-router.js" />
     <Content Include="Static\Src\Js\Routers\workers-router.js" />
     <Content Include="Static\Src\Js\Routers\working-router.js" />
-    <Content Include="Static\Src\Js\util.js" />
+    <Content Include="Static\Src\Js\string.js" />
+    <Content Include="Static\Src\Js\Tests\ajax-tests.js" />
+    <Content Include="Static\Src\Js\Tests\model-tests.js" />
+    <Content Include="Static\Src\Js\Tests\serializer-tests.js" />
+    <Content Include="Static\Src\Js\Tests\test-util.js" />
+    <Content Include="Static\Src\Js\Tests\utility-tests.js" />
+    <Content Include="Static\Src\Js\Tests\validate-tests.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-alert.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-button.js" />
     <Content Include="Static\Src\Js\Vendor\Bootstrap\bootstrap-carousel.js" />
@@ -171,6 +186,7 @@
     <Content Include="Static\Src\Js\Vendor\html5.js" />
     <Content Include="Static\Src\Js\Vendor\jquery-1.7.js" />
     <Content Include="Static\Src\Js\Vendor\json2.js" />
+    <Content Include="Static\Src\Js\Vendor\qunit-1.9.0pre.js" />
     <Content Include="Static\Src\Js\Vendor\relative-date.js" />
     <Content Include="Static\Src\Js\Vendor\underscore-1.3.3.js" />
     <Content Include="Static\Src\Js\Views\area-view.js" />
@@ -194,6 +210,9 @@
     <Content Include="Static\Src\Js\Views\workers-list-view.js" />
     <Content Include="Static\Src\Js\Views\workers-row-view.js" />
     <Content Include="Static\Src\Js\Views\workers-view.js" />
+    <Content Include="Static\Src\Js\Views\working-list-view.js" />
+    <Content Include="Static\Src\Js\Views\working-row-view.js" />
+    <Content Include="Static\Src\Js\Views\working-view.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -230,6 +249,11 @@
     <Content Include="Views\Shared\Templates\_Queue.cshtml" />
     <Content Include="Views\Shared\Templates\_Workers.cshtml" />
     <Content Include="Views\Shared\Templates\_Schedules.cshtml" />
+    <Content Include="Views\Shared\Templates\_Working.cshtml" />
+    <None Include="Static\Src\Less\test.less">
+      <Compile>True</Compile>
+      <Minify>True</Minify>
+    </None>
     <None Include="Web.config.template">
       <SubType>Designer</SubType>
     </None>
