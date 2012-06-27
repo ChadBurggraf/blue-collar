@@ -1,5 +1,49 @@
 ﻿<script type="text/template" id="schedules-row-template">
-    <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
+    <td>
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-edit"><%- Name %></a>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Start On</th>
+                        <td>
+                            <% print(StartOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(StartOn.toString('h:mm:ss tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>End On</th>
+                        <td>
+                            <% if (EndOn) { print(EndOn.toString('MMM d, yyyy') + ' <span class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</span>'); } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Queue</th>
+                        <td><% print($.htmlEncode(QueueName || '*')); %></td>
+                    </tr>
+                    <tr>
+                        <th>Repeat</th>
+                        <td>
+                            <% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Enabled</th>
+                        <td>
+                            <% if (Enabled) { print('Yes'); } else { print('No'); } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Jobs</th>
+                        <td><a href="javascript:void(0);" class="btn-manage">Manage (<%- JobCount %>)</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
     <td>
         <span class="list-date"><% print(StartOn.toString('MMM d, yyyy')); %></span>
         <small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
@@ -8,9 +52,9 @@
         <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('MMM d, yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
     </td>
     <td><% print($.htmlEncode(QueueName || '*')); %></td>
-    <td><% if (RepeatType && RepeatType !== 'None') { print('Every ' + RepeatValue + ' ' + RepeatType.toLowerCase()); } else { print('No'); } %></td>
+    <td><% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %></td>
     <td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
-    <td><a href="javascript:void(0);" class="manage">Manage (<%- JobCount %>)</a></td>
+    <td><a href="javascript:void(0);" class="btn-manage">Manage (<%- JobCount %>)</a></td>
 </script>
 
 <script type="text/template" id="schedules-list-template">

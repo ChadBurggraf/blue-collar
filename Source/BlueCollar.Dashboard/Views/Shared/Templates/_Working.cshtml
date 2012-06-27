@@ -1,17 +1,66 @@
 ﻿<script type="text/template" id="working-row-template">
-    <td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
+    <td>
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
+            <small class="code light"><%- JobType %></small>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Schedule</th>
+                        <td><%- ScheduleName || '' %></td>
+                    </tr>
+                    <tr>
+                        <th>Queue</th>
+                        <td><%- QueueName || '' %></td>
+                    </tr>
+                    <tr>
+                        <th>Worker</th>
+                        <td>
+                            <%- WorkerName %>
+                            <span class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Queued On</th>
+                        <td>
+                            <% print(QueuedOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(QueuedOn.toString('h:mm tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Started On</th>
+                        <td>
+                            <% print(StartedOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(StartedOn.toString('h:mm tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Signal</th>
+                        <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+                    </tr>
+                    <tr>
+                        <th>Try</th>
+                        <td><%- TryNumber %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
     <td><%- ScheduleName || '' %></td>
     <td><%- QueueName || '' %></td>
     <td>
         <%- WorkerName %>
-        <small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
+        <small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></small>
     </td>
     <td>
         <% print(QueuedOn.toString('MMM d, yyyy h:mm tt')); %>
-        <small class="light"><strong>Started On</strong></span>
+        <small class="light"><strong>Started On</strong></small>
         <small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
     </td>
-    <td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+    <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
     <td><%- TryNumber %></td>
 </script>
 

@@ -6349,6 +6349,28 @@ _.extend(Number.prototype, {
  */
 _.extend(String, {
     /**
+     * Gets a display string representing a job history status.
+     *
+     * @param {String} value The status value to get a display string for.
+     * @return A job history status display string.
+     */
+    historyStatusDisplay: function(value) {
+        var str = (value || '').toUpperCase();
+
+        switch (str) {
+            case 'SUCCEEDED':
+            case 'FAILED':
+            case 'CANCELED':
+            case 'INTERRUPTED':
+                return value;
+            case 'TIMEDOUT':
+                return 'Timed Out';
+            default:
+                return 'None';
+        }
+    },
+
+    /**
      * Gets a display string identifying a Blue Collar machine.
      *
      * @param {String} name The machine name.
@@ -6416,6 +6438,19 @@ _.extend(String, {
         return value.length === 0 || _.any(value, function(s) { return s === '*'; })
             ? '*'
             : value.join(', ');
+    },
+
+    /**
+     * Gets a display string for a schedule's repeat settings.
+     *
+     * @param {String} repeatType The schedule's repeat type.
+     * @param {Number} repeatValue The schedule's repeat value.
+     * @return {String} A display string for the schedule's repeat settings.
+     */
+    scheduleRepeatTypeDisplay: function(repeatType, repeatValue) {
+        return repeatType && repeatType !== 'None'
+            ? 'Every ' + repeatValue + ' ' + repeatType.toLowerCase()
+            : 'No';
     }
 });
 

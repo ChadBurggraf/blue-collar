@@ -5839,6 +5839,7 @@ a.badge:hover {
 }
 
 .chart {
+  margin-bottom: 40px;
   border: solid 1px #e5e5e5;
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
@@ -5860,10 +5861,6 @@ a.badge:hover {
 
 .code {
   font-family: Consolas, Courier, monospace;
-}
-
-.dashboard-row {
-  margin-bottom: 40px;
 }
 
 .form input[type="text"],
@@ -6080,6 +6077,10 @@ a.badge:hover {
   border: none;
 }
 
+.row-data table {
+  margin-top: 4px;
+}
+
 .row-data th,
 .row-data td {
   padding: 4px 16px;
@@ -6100,12 +6101,12 @@ a.badge:hover {
   top: 50%;
   right: 0;
   display: none;
-  margin-top: -15px;
+  margin-top: -14px;
 }
 
 .stats-group {
   float: left;
-  margin: 18px 30px 0 0;
+  margin: 18px 30px 40px 0;
   background-color: #f2f2f2;
   background-image: -moz-linear-gradient(top, #fafafa, #e5e5e5);
   background-image: -ms-linear-gradient(top, #fafafa, #e5e5e5);
@@ -6287,7 +6288,15 @@ a.badge:hover {
   .form-search input[type="search"] {
     margin-bottom: 3px;
   }
+  .pagination input {
+    margin-right: 4px;
+    margin-left: 4px;
+  }
+  .pagination label span {
+    display: none;
+  }
   .row-title {
+    min-height: 28px;
     padding-right: 41px;
   }
   .row-title .btn-row-data {

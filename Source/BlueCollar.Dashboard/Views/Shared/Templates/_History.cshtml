@@ -32,7 +32,7 @@
                     </tr>
                     <tr>
                         <th>Status</th>
-                        <td><span class="status"><%- Status %></span></td>
+                        <td><span class="status"><% print(String.historyStatusDisplay(Status)); %></span></td>
                     </tr>
                     <tr>
                         <th>Try</th>
@@ -52,7 +52,7 @@
         <span class="list-date"><% print(FinishedOn.toString('MMM d, yyyy')); %></span>
         <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
     </td>
-    <td><span class="status"><%- Status %></span></td>
+    <td><span class="status"><% print(String.historyStatusDisplay(Status)); %></span></td>
     <td><%- TryNumber %></td>
 </script>
 

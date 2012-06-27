@@ -42,6 +42,7 @@ namespace BlueCollar.Examples
             set
             {
                 this.duration = value;
+                Properties["Duration"] = value.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -51,6 +52,24 @@ namespace BlueCollar.Examples
         public override string Name
         {
             get { return "Sleep"; }
+        }
+
+        /// <summary>
+        /// Gets the maximum timeout, in miliseconds, this job is allowed to run in.
+        /// </summary>
+        public override int Timeout
+        {
+            get
+            {
+                if (this.Duration > 0)
+                {
+                    return this.Duration + 10;
+                }
+                else
+                {
+                    return base.Timeout;
+                }
+            }
         }
 
         /// <summary>

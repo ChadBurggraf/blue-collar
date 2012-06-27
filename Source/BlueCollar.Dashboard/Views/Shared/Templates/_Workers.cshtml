@@ -1,9 +1,40 @@
 ﻿<script type="text/template" id="workers-row-template">
-    <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
+    <td>
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-edit"><%- Name %></a>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Machine</th>
+                        <td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
+                    </tr>
+                    <tr>
+                        <th>Queues</th>
+                        <td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td><%- Status %></td>
+                    </tr>
+                    <tr>
+                        <th>Signal</th>
+                        <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+                    </tr>
+                    <tr>
+                        <th>Startu</th>
+                        <td><%- Startup %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
     <td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
     <td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
     <td><%- Status %></td>
-    <td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+    <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
     <td><%- Startup %></td>
 </script>
 

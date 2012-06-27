@@ -64,4 +64,8 @@
       </assemblies>
     </compilation>
   </system.web>
+
+  <system.webServer>
+    <validation validateIntegratedModeConfiguration="false"/>
+  </system.webServer>
 </configuration>
