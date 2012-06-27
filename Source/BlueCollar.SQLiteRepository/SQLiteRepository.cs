@@ -723,7 +723,11 @@ WHERE
 
                 if (queueFilters.Exclude.Count() > 0)
                 {
-                    sb.Append("\n    AND [QueueName] NOT IN @ExcludeQueueNames");
+                    sb.Append("\n    AND");
+                    sb.Append("\n    (");
+                    sb.Append("\n        [QueueName] IS NULL");
+                    sb.Append("\n        OR [QueueName] NOT IN @ExcludeQueueNames");
+                    sb.Append("\n    )");
                 }
             }
 
