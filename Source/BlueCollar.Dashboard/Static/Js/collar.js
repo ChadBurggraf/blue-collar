@@ -7522,6 +7522,32 @@ var QueueCollection = CollarCollection.extend({
     model: QueueModel
 });
 /**
+ * Models a schedule.
+ *
+ * @constructor
+ */
+var ScheduleModel = CollarModel.extend({
+    defaults: {
+        'Id': 0,
+        'QueueName': null,
+        'Name': null,
+        'StartOn': null,
+        'EndOn': null,
+        'RepeatType': 'None',
+        'RepeatValue': null,
+        'Enabled': true
+    }
+});
+
+/**
+ * Represents a collection of {ScheduleModel}s.
+ *
+ * @constructor
+ */
+var ScheduleCollection = CollarCollection.extend({
+    model: ScheduleModel
+});
+/**
  * Models a set of simple counts.
  *
  * @constructor
@@ -8009,6 +8035,26 @@ var QueueController = CollarController.extend({
     }
 });
 /**
+ * Schedules area controller implementation.
+ *
+ * @constructor
+ * @extends {CollarController}
+ */
+var SchedulesController = CollarController.extend({
+    collection: ScheduleCollection,
+    fragment: 'schedules',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.view = new SchedulesView({el: this.page, model: this.model});
+        this.view.bind('fetch', this.fetch, this);
+    }
+});
+/**
  * Workers area controller implementation.
  *
  * @constructor
@@ -8192,26 +8238,23 @@ var QueueRouter = CollarRouter.extend({
  * @extends {CollarRouter}
  */
 var SchedulesRouter = CollarRouter.extend({
+    name: 'Schedules',
     routes: {
-        'schedules': 'index'
+        'schedules': 'index',
+        'schedules/:search/p:page': 'index',
+        'schedules//p:page': 'page',
+        'schedules/*search': 'search'
     },
 
     /**
      * Initialization.
      *
      * @param {App} app The root application object.
-     * @param {Object} options Additional initialization options.
+     * @param {Object} options Initialization options.
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.options = _.extend({}, options);
-    },
-
-    /**
-     * Handles the root #schedules route.
-     */
-    index: function() {
-        
+        this.controller = this.createController(SchedulesController, 'schedules', this.options);
     }
 });
 /**
@@ -9583,6 +9626,77 @@ var QueueView = AreaView.extend({
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
         this.listView = new QueueListView({model: this.model});
+        this.listView.bind('display', this.display, this);
+    },
+
+    /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+
+    }
+});
+/**
+ * Manages the schedules list view.
+ *
+ * @constructor
+ * @extends {ListView}
+ */
+var SchedulesListView = ListView.extend({
+    cols: 7,
+    template: _.template($('#schedules-list-template').html()),
+
+    /**
+     * Renders the view's row collection.
+     *
+     * @param {jQuery} tbody The list's tbody element.
+     * @param {CollarCollection} collection The collection to render rows for.
+     * @return {ListView} This instance.
+     */
+    renderRows: function(tbody, collection) {
+        var model,
+            i,
+            n;
+        
+        for (i = 0, n = collection.length; i < n; i++) {
+            model = collection.at(i);
+            view = new SchedulesRowView({model: model}).render();
+            view.bind('display', this.display, this);
+            tbody.append(view.el);
+        }
+
+        return this;
+    }
+});
+/**
+ * Manages the row view for the schedules list.
+ *
+ * @constructor
+ * @extends {RowView}
+ */
+var SchedulesRowView = RowView.extend({
+    template: _.template($('#schedules-row-template').html())
+});
+/**
+ * Manages the root schedules view.
+ *
+ * @constructor
+ * @extends {AreaView}
+ */
+var SchedulesView = AreaView.extend({
+    template: _.template($('#schedules-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        AreaView.prototype.initialize.call(this, options);
+        this.listView = new SchedulesListView({model: this.model});
         this.listView.bind('display', this.display, this);
     },
 

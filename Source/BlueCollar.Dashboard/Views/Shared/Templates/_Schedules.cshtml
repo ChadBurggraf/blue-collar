@@ -1,0 +1,49 @@
+﻿<script type="text/template" id="schedules-row-template">
+    <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
+    <td>
+        <span class="list-date"><% print(StartOn.toString('MMM d, yyyy')); %></span>
+        <small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
+    </td>
+    <td>
+        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('MMM d, yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
+    </td>
+    <td><% print($.htmlEncode(QueueName || '*')); %></td>
+    <td><% if (RepeatType && RepeatType !== 'None') { print('Every ' + RepeatValue + ' ' + RepeatType.toLowerCase()); } else { print('No'); } %></td>
+    <td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
+    <td><a href="javascript:void(0);" class="manage">Manage (<%- JobCount %>)</a></td>
+</script>
+
+<script type="text/template" id="schedules-list-template">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Start On</th>
+            <th>End On</th>
+            <th>Queue</th>
+            <th>Repeat</th>
+            <th>Enabled</th>
+            <th>Jobs</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="schedules-template">
+    <div class="page-header">
+        <h1>
+            Schedules
+            <small><%- ApplicationName %></small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+            <div class="search"></div>
+            <div class="paging-header"></div>
+            <div class="list"></div>
+            <div class="paging-footer"></div>
+        </div>
+
+        <div class="span4 details"></div>
+    </div>
+</script>
