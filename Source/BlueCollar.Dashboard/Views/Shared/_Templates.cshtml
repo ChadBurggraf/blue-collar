@@ -67,7 +67,49 @@ Dashboard
 </div>
 </script>
 <script type="text/template" id="history-row-template">
-<td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
+<td>
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="display"><%- JobName %></a>
+<small class="code light"><%- JobType %></small>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Schedule</th>
+<td><%- ScheduleName || '' %></td>
+</tr>
+<tr>
+<th>Queue</th>
+<td><%- QueueName || '' %></td>
+</tr>
+<tr>
+<th>Started On</th>
+<td>
+<% print(StartedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(StartedOn.toString('h:mm:ss tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Finished On</th>
+<td>
+<% print(FinishedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(FinishedOn.toString('h:mm:ss tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Status</th>
+<td><span class="status"><%- Status %></span></td>
+</tr>
+<tr>
+<th>Try</th>
+<td><%- TryNumber %></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
 <td><%- ScheduleName || '' %></td>
 <td><%- QueueName || '' %></td>
 <td>

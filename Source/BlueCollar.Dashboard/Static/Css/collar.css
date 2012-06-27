@@ -6091,6 +6091,18 @@ a.badge:hover {
   padding-left: 0;
 }
 
+.row-title {
+  position: relative;
+}
+
+.row-title .btn-row-data {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: none;
+  margin-top: -15px;
+}
+
 .stats-group {
   float: left;
   margin: 18px 30px 0 0;
@@ -6148,6 +6160,10 @@ a.badge:hover {
 .stats-group tr td:last-child,
 .stats-group tr th:last-child {
   border: none;
+}
+
+.table > tbody > tr td:first-child > a.btn-row-data {
+  display: none;
 }
 
 .table-paged {
@@ -6259,6 +6275,24 @@ a.badge:hover {
 }
 
 @media (max-width: 767px) {
+  body {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  #page {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .form-search input[type="text"],
+  .form-search input[type="search"] {
+    margin-bottom: 3px;
+  }
+  .row-title {
+    padding-right: 41px;
+  }
+  .row-title .btn-row-data {
+    display: block;
+  }
   .table > thead > tr > th,
   .table > tbody > tr > td {
     display: none;
@@ -6268,10 +6302,6 @@ a.badge:hover {
   .table > tbody > tr td:first-child {
     display: table-cell;
     visibility: visible;
-  }
-  .form-search input[type="text"],
-  .form-search input[type="search"] {
-    margin-bottom: 3px;
   }
 }
 
