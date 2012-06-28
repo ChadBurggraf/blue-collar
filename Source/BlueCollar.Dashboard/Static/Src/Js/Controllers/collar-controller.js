@@ -60,8 +60,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
             view.hideLoading();
         }
 
-        if (collection && _.isFunction(collection.clearEditing)) {
-            collection.clearEditing();
+        if (collection && _.isFunction(collection.clearSelected)) {
+            collection.clearSelected();
         }
 
         this.model.set({Loading: false});

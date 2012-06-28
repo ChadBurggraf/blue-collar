@@ -35,14 +35,6 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
-     * Handles the list view's display event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    display: function(sender, args) {},
-
-    /**
      * Handles a pager view's page event.
      *
      * @param {Object} sender The event sender.
@@ -70,6 +62,10 @@ var AreaView = Backbone.View.extend({
         this.listView.$el.detach();
         this.bottomPagerView.$el.detach();
 
+        if (this.editView) {
+            this.editView.$el.detach();
+        }
+
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -82,6 +78,10 @@ var AreaView = Backbone.View.extend({
         pagingHeaderEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
+
+        if (this.model.get('Editing') && this.editView) {
+            detailsEl.html(this.editView.render().el);
+        }
 
         return this;
     },

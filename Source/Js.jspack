@@ -73,6 +73,7 @@
     <input path="Views\schedules-list-view.js"/>
     <input path="Views\schedules-row-view.js"/>
     <input path="Views\schedules-view.js"/>
+    <input path="Views\workers-edit-view.js"/>
     <input path="Views\workers-list-view.js"/>
     <input path="Views\workers-row-view.js"/>
     <input path="Views\workers-view.js"/>
@@ -95,7 +96,7 @@
     <input path="string.js"/>
     <input path="jquery.js"/>
     <input path="form-serializer.js"/>
-    <input path="form-validator.js"/>
+    <input path="field-validator.js"/>
     <import name="Models"/>
     <import name="Controllers"/>
     <import name="Routers"/>

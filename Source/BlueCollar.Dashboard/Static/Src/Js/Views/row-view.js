@@ -5,7 +5,9 @@
  */
 var RowView = Backbone.View.extend({
     events: {
-        'a.display': 'display'
+        'click .btn-display': 'display',
+        'click .btn-edit': 'edit',
+        'click .btn-signal': 'signal'
     },
     tagName: 'tr',
 
@@ -22,7 +24,14 @@ var RowView = Backbone.View.extend({
      * Handles the row's display event.
      */
     display: function() {
-        this.trigger('display', this);
+        this.trigger('display', this, {Model: this.model});
+    },
+
+    /**
+     * Handles the row's edit event.
+     */
+    edit: function() {
+        this.trigger('edit', this, {Model: this.model});
     },
 
     /**
@@ -33,12 +42,19 @@ var RowView = Backbone.View.extend({
     render: function() {
         this.$el.html(this.template(this.model.toJSON()));
 
-        if (this.model.get('Editing')) {
-            this.$el.addClass('editing');
+        if (this.model.get('Selected')) {
+            this.$el.addClass('selected');
         } else {
-            this.$el.removeClass('editing');   
+            this.$el.removeClass('selected');   
         }
 
         return this;
+    },
+
+    /**
+     * Handles the row's signal event.
+     */
+    signal: function() {
+        this.trigger('signal', this, {Model: this.model});
     }
 });

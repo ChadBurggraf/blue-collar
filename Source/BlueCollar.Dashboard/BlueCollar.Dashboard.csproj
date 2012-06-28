@@ -137,7 +137,7 @@
     <Content Include="Static\Src\Js\copyright.js" />
     <Content Include="Static\Src\Js\date.js" />
     <Content Include="Static\Src\Js\form-serializer.js" />
-    <Content Include="Static\Src\Js\form-validator.js" />
+    <Content Include="Static\Src\Js\field-validator.js" />
     <Content Include="Static\Src\Js\jquery.js" />
     <Content Include="Static\Src\Js\Models\collar-collection.js" />
     <Content Include="Static\Src\Js\Models\collar-model.js" />
@@ -207,6 +207,7 @@
     <Content Include="Static\Src\Js\Views\schedules-row-view.js" />
     <Content Include="Static\Src\Js\Views\schedules-view.js" />
     <Content Include="Static\Src\Js\Views\search-view.js" />
+    <Content Include="Static\Src\Js\Views\workers-edit-view.js" />
     <Content Include="Static\Src\Js\Views\workers-list-view.js" />
     <Content Include="Static\Src\Js\Views\workers-row-view.js" />
     <Content Include="Static\Src\Js\Views\workers-view.js" />

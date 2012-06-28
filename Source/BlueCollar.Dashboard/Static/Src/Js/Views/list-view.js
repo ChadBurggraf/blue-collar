@@ -8,9 +8,34 @@ var ListView = Backbone.View.extend({
     cols: 1,
     tagName: 'table',
 
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
     initialize: function(options) {
         this.model.get('Collection').bind('reset', this.render, this);
     },  
+
+    /**
+     * Handles a row's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+        this.trigger('display', this, args);
+    },
+
+    /**
+     * Handles a row's edit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    edit: function(sender, args) {
+        this.trigger('edit', this, args);
+    },
 
     /**
      * Gets an element suitable for displaying an empty list message.
@@ -69,5 +94,15 @@ var ListView = Backbone.View.extend({
      */
     renderRows: function(tbody, collection) {
         return this;
+    },
+
+    /**
+     * Handles a row's signal event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signal: function(sender, args) {
+        this.trigger('signal', this, args);
     }
 });

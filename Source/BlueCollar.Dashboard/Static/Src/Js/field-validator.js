@@ -1,18 +1,18 @@
 ﻿/**
- * Provides form validation services.
+ * Provides field validation services.
  *
  * @constructor
  * @param {Object} options Initialization options.
  */
-var FormValidator = function(options) {
+var FieldValidator = function(options) {
     this.options = _.extend({}, options);
     this.initialize(options);
 };
 
 /**
- * Static {FormValidator} functions.
+ * Static {FieldValidator} functions.
  */
-_.extend(FormValidator, {
+_.extend(FieldValidator, {
     /**
      * Inheritence behavior mixin.
      */
@@ -20,9 +20,9 @@ _.extend(FormValidator, {
 });
 
 /**
- * Prototype {FormValidator} functions.
+ * Prototype {FieldValidator} functions.
  */
-_.extend(FormValidator.prototype, {
+_.extend(FieldValidator.prototype, {
     /**
      * Initialization.
      *
@@ -44,12 +44,12 @@ _.extend(FormValidator.prototype, {
 });
 
 /**
- * Extends {FormValidator} to validate enumerations.
+ * Extends {FieldValidator} to validate enumerations.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var EnumFormValidator = FormValidator.extend({
+var EnumFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -68,12 +68,12 @@ var EnumFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate string length.
+ * Extends {FieldValidator} to validate string length.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var LengthFormValidator = FormValidator.extend({
+var LengthFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -92,12 +92,12 @@ var LengthFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate number or date ranges.
+ * Extends {FieldValidator} to validate number or date ranges.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var RangeFormValidator = FormValidator.extend({
+var RangeFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -120,12 +120,12 @@ var RangeFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate against a regular expression.
+ * Extends {FieldValidator} to validate against a regular expression.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var RegexFormValidator = FormValidator.extend({
+var RegexFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -148,12 +148,12 @@ var RegexFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate required values.
+ * Extends {FieldValidator} to validate required values.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var RequiredFormValidator = FormValidator.extend({
+var RequiredFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *

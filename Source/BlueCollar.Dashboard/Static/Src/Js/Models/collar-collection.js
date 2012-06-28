@@ -23,11 +23,15 @@
     },
 
     /**
-     * Clears the 'editing' attribute from each model in the collection.
+     * Clears the 'Selected' attribute from each model in the collection.
+     *
+     * @param {Object} options The set options to use.
      */
-    clearEditing: function() {
+    clearSelected: function(options) {
+        options = options || {};
+
         this.each(function(m) { 
-            m.set({editing: false}); 
+            m.set({Selected: false}, options); 
         });
     },
 

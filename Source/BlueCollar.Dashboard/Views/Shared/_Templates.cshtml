@@ -348,6 +348,17 @@ Schedules
 <button type="button" class="btn btn-reset">Clear</button>
 </fieldset>
 </script>
+<script type="text/template" id="workers-edit-template">
+<fieldset>
+<p class="legend"><% if (!Id) { print('Add Worker'); } else { print('Edit Worker'); } %></p>
+<div class="alert alert-block error"></div>
+<label class="field">
+<span>Name <em>*</em></span>
+<input type="text" name="Name">
+<span class="error"></span>
+</label>
+</fieldset>
+</script>
 <script type="text/template" id="workers-row-template">
 <td>
 <div class="row-title">

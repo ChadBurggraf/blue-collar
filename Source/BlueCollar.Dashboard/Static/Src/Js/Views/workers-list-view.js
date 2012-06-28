@@ -24,6 +24,8 @@ var WorkersListView = ListView.extend({
             model = collection.at(i);
             view = new WorkersRowView({model: model}).render();
             view.bind('display', this.display, this);
+            view.bind('edit', this.edit, this);
+            view.bind('signal', this.signal, this);
             tbody.append(view.el);
         }
 

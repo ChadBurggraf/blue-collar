@@ -6241,6 +6241,15 @@ a.badge:hover {
   background: url(../img/loading-list.gif) no-repeat;
 }
 
+.table-paged tr.selected td {
+  color: #205791;
+  background: #c7eefe !important;
+}
+
+.table-paged tr.selected td .light {
+  color: #205791;
+}
+
 @media (min-width: 1200px) {
   .form input[type="text"],
   .form textarea {

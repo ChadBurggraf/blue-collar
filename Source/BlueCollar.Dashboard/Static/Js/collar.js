@@ -7003,20 +7003,20 @@ var QueueNamesSerializer = FieldSerializer.extend({
     }
 });
 /**
- * Provides form validation services.
+ * Provides field validation services.
  *
  * @constructor
  * @param {Object} options Initialization options.
  */
-var FormValidator = function(options) {
+var FieldValidator = function(options) {
     this.options = _.extend({}, options);
     this.initialize(options);
 };
 
 /**
- * Static {FormValidator} functions.
+ * Static {FieldValidator} functions.
  */
-_.extend(FormValidator, {
+_.extend(FieldValidator, {
     /**
      * Inheritence behavior mixin.
      */
@@ -7024,9 +7024,9 @@ _.extend(FormValidator, {
 });
 
 /**
- * Prototype {FormValidator} functions.
+ * Prototype {FieldValidator} functions.
  */
-_.extend(FormValidator.prototype, {
+_.extend(FieldValidator.prototype, {
     /**
      * Initialization.
      *
@@ -7048,12 +7048,12 @@ _.extend(FormValidator.prototype, {
 });
 
 /**
- * Extends {FormValidator} to validate enumerations.
+ * Extends {FieldValidator} to validate enumerations.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var EnumFormValidator = FormValidator.extend({
+var EnumFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -7072,12 +7072,12 @@ var EnumFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate string length.
+ * Extends {FieldValidator} to validate string length.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var LengthFormValidator = FormValidator.extend({
+var LengthFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -7096,12 +7096,12 @@ var LengthFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate number or date ranges.
+ * Extends {FieldValidator} to validate number or date ranges.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var RangeFormValidator = FormValidator.extend({
+var RangeFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -7124,12 +7124,12 @@ var RangeFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate against a regular expression.
+ * Extends {FieldValidator} to validate against a regular expression.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var RegexFormValidator = FormValidator.extend({
+var RegexFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -7152,12 +7152,12 @@ var RegexFormValidator = FormValidator.extend({
 });
 
 /**
- * Extends {FormValidator} to validate required values.
+ * Extends {FieldValidator} to validate required values.
  *
  * @constructor
- * @extends {FormValidator}
+ * @extends {FieldValidator}
  */
-var RequiredFormValidator = FormValidator.extend({
+var RequiredFieldValidator = FieldValidator.extend({
     /**
      * Executes validation against the given value.
      *
@@ -7335,11 +7335,15 @@ _.extend(CollarModel, {
     },
 
     /**
-     * Clears the 'editing' attribute from each model in the collection.
+     * Clears the 'Selected' attribute from each model in the collection.
+     *
+     * @param {Object} options The set options to use.
      */
-    clearEditing: function() {
+    clearSelected: function(options) {
+        options = options || {};
+
         this.each(function(m) { 
-            m.set({editing: false}); 
+            m.set({Selected: false}, options); 
         });
     },
 
@@ -7990,8 +7994,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
             view.hideLoading();
         }
 
-        if (collection && _.isFunction(collection.clearEditing)) {
-            collection.clearEditing();
+        if (collection && _.isFunction(collection.clearSelected)) {
+            collection.clearSelected();
         }
 
         this.model.set({Loading: false});
@@ -8867,9 +8871,34 @@ var ListView = Backbone.View.extend({
     cols: 1,
     tagName: 'table',
 
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
     initialize: function(options) {
         this.model.get('Collection').bind('reset', this.render, this);
     },  
+
+    /**
+     * Handles a row's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+        this.trigger('display', this, args);
+    },
+
+    /**
+     * Handles a row's edit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    edit: function(sender, args) {
+        this.trigger('edit', this, args);
+    },
 
     /**
      * Gets an element suitable for displaying an empty list message.
@@ -8928,6 +8957,16 @@ var ListView = Backbone.View.extend({
      */
     renderRows: function(tbody, collection) {
         return this;
+    },
+
+    /**
+     * Handles a row's signal event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signal: function(sender, args) {
+        this.trigger('signal', this, args);
     }
 });
 /**
@@ -9062,7 +9101,9 @@ var PagerView = Backbone.View.extend({
  */
 var RowView = Backbone.View.extend({
     events: {
-        'a.display': 'display'
+        'click .btn-display': 'display',
+        'click .btn-edit': 'edit',
+        'click .btn-signal': 'signal'
     },
     tagName: 'tr',
 
@@ -9079,7 +9120,14 @@ var RowView = Backbone.View.extend({
      * Handles the row's display event.
      */
     display: function() {
-        this.trigger('display', this);
+        this.trigger('display', this, {Model: this.model});
+    },
+
+    /**
+     * Handles the row's edit event.
+     */
+    edit: function() {
+        this.trigger('edit', this, {Model: this.model});
     },
 
     /**
@@ -9090,13 +9138,20 @@ var RowView = Backbone.View.extend({
     render: function() {
         this.$el.html(this.template(this.model.toJSON()));
 
-        if (this.model.get('Editing')) {
-            this.$el.addClass('editing');
+        if (this.model.get('Selected')) {
+            this.$el.addClass('selected');
         } else {
-            this.$el.removeClass('editing');   
+            this.$el.removeClass('selected');   
         }
 
         return this;
+    },
+
+    /**
+     * Handles the row's signal event.
+     */
+    signal: function() {
+        this.trigger('signal', this, {Model: this.model});
     }
 });
 /**
@@ -9185,14 +9240,6 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
-     * Handles the list view's display event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    display: function(sender, args) {},
-
-    /**
      * Handles a pager view's page event.
      *
      * @param {Object} sender The event sender.
@@ -9220,6 +9267,10 @@ var AreaView = Backbone.View.extend({
         this.listView.$el.detach();
         this.bottomPagerView.$el.detach();
 
+        if (this.editView) {
+            this.editView.$el.detach();
+        }
+
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -9232,6 +9283,10 @@ var AreaView = Backbone.View.extend({
         pagingHeaderEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
+
+        if (this.model.get('Editing') && this.editView) {
+            detailsEl.html(this.editView.render().el);
+        }
 
         return this;
     },
@@ -9880,6 +9935,29 @@ var SchedulesView = AreaView.extend({
 
     }
 });
+var WorkersEditView = FormView.extend({
+    serializers: {
+        "Id": new IntFieldSerializer(),
+        "QueueNames": new QueueNamesSerializer()
+    },
+    template: _.template($('#workers-edit-template').html()),
+    validators: {
+        "Name": [
+            new RequiredFieldValidator({message: 'Name is required.'}),
+            new LengthFieldValidator({maxLength: 64, message: 'Name cannot be longer than 64 characters.'})
+        ],
+        "MachineAddress": [
+            new LengthFieldValidator({maxLength: 64, message: 'Machine address cannot be longer than 64 characters.'})
+        ],
+        "MachineName": [
+            new LengthFieldValidator({maxLength: 128, message: 'Machine name cannot be longer than 128 characters.'})
+        ],
+        "Startup": [
+            new RequiredFieldValidator({message: 'Startup is required.'}),
+            new EnumFieldValidator({possibleValues: ['Automatic', 'Manual'], message: 'Startup must be either Automatic or Manual.'})
+        ]
+    }
+});
 /**
  * Manages the workers list view.
  *
@@ -9906,6 +9984,8 @@ var WorkersListView = ListView.extend({
             model = collection.at(i);
             view = new WorkersRowView({model: model}).render();
             view.bind('display', this.display, this);
+            view.bind('edit', this.edit, this);
+            view.bind('signal', this.signal, this);
             tbody.append(view.el);
         }
 
@@ -9937,18 +10017,23 @@ var WorkersView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
+
         this.listView = new WorkersListView({model: this.model});
-        this.listView.bind('display', this.display, this);
+        this.listView.bind('edit', this.edit, this);
+
+        this.editView = new WorkersFormView({model: this.model});
     },
 
     /**
-     * Handles the list view's display event.
+     * Handles the list view's edit event.
      *
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    display: function(sender, args) {
-
+    edit: function(sender, args) {
+        this.model.get('Collection').clearSelected({silent: true});
+        args.Model.set({Selected: true}, {silent: true});
+        this.model.set({Editing: args.Model});
     }
 });
 /**
@@ -10009,17 +10094,19 @@ var WorkingView = AreaView.extend({
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
         this.listView = new WorkingListView({model: this.model});
-        this.listView.bind('display', this.display, this);
+        this.listView.bind('edit', this.edit, this);
     },
 
     /**
-     * Handles the list view's display event.
+     * Handles the list view's edit event.
      *
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    display: function(sender, args) {
-
+    edit: function(sender, args) {
+        debugger;
+        var editView = new WorkersEditView({model: args.Model});
+        this.$('.details').html(editView.render().el);
     }
 });
 

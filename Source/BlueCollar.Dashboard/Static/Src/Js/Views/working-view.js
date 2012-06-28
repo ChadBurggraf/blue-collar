@@ -15,16 +15,18 @@ var WorkingView = AreaView.extend({
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
         this.listView = new WorkingListView({model: this.model});
-        this.listView.bind('display', this.display, this);
+        this.listView.bind('edit', this.edit, this);
     },
 
     /**
-     * Handles the list view's display event.
+     * Handles the list view's edit event.
      *
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    display: function(sender, args) {
-
+    edit: function(sender, args) {
+        debugger;
+        var editView = new WorkersEditView({model: args.Model});
+        this.$('.details').html(editView.render().el);
     }
 });
