@@ -18,7 +18,7 @@ var WorkersView = AreaView.extend({
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
 
-        this.editView = new WorkersFormView({model: this.model});
+        //this.editView = new WorkersFormView({model: this.model});
     },
 
     /**
@@ -28,8 +28,8 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     edit: function(sender, args) {
-        this.model.get('Collection').clearSelected({silent: true});
+        /*this.model.get('Collection').clearSelected({silent: true});
         args.Model.set({Selected: true}, {silent: true});
-        this.model.set({Editing: args.Model});
+        this.model.set({Editing: args.Model});*/
     }
 });

@@ -22,7 +22,8 @@ var PagerView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
+        this.model.bind('change:PageNumber', this.render, this);
+        this.model.bind('change:PageCount', this.render, this);
     },
 
     /**

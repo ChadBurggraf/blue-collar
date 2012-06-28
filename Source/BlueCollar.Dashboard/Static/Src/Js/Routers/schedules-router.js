@@ -8,9 +8,13 @@ var SchedulesRouter = CollarRouter.extend({
     name: 'Schedules',
     routes: {
         'schedules': 'index',
-        'schedules/:search/p:page': 'index',
-        'schedules//p:page': 'page',
-        'schedules/*search': 'search'
+        'schedules/id/:id': 'id',
+        'schedules/q/:search': 'search',
+        'schedules/q/:search/id/:id': 'searchId',
+        'schedules/p/:page': 'page',
+        'schedules/p/:page/id/:id': 'pageId',
+        'schedules/q/:search/p/:page': 'searchPage',
+        'schedules/q/:search/p/:page/id/:id': 'index'
     },
 
     /**

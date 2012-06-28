@@ -14,6 +14,7 @@ var ListView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.model.bind('change:Loading', this.render, this);
         this.model.get('Collection').bind('reset', this.render, this);
     },  
 

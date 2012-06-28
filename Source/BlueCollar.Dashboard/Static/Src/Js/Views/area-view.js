@@ -10,8 +10,6 @@ var AreaView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
-
         this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
         this.searchView.bind('cancel', this.cancelSearch, this);
@@ -62,10 +60,6 @@ var AreaView = Backbone.View.extend({
         this.listView.$el.detach();
         this.bottomPagerView.$el.detach();
 
-        if (this.editView) {
-            this.editView.$el.detach();
-        }
-
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -78,10 +72,6 @@ var AreaView = Backbone.View.extend({
         pagingHeaderEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
-
-        if (this.model.get('Editing') && this.editView) {
-            detailsEl.html(this.editView.render().el);
-        }
 
         return this;
     },

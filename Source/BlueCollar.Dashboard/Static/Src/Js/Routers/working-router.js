@@ -8,9 +8,13 @@ var WorkingRouter = CollarRouter.extend({
     name: 'Working',
     routes: {
         'working': 'index',
-        'working/:search/p:page': 'index',
-        'working//p:page': 'page',
-        'working/*search': 'search'
+        'working/id/:id': 'id',
+        'working/q/:search': 'search',
+        'working/q/:search/id/:id': 'searchId',
+        'working/p/:page': 'page',
+        'working/p/:page/id/:id': 'pageId',
+        'working/q/:search/p/:page': 'searchPage',
+        'working/q/:search/p/:page/id/:id': 'index'
     },
 
     /**

@@ -8073,9 +8073,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
      *
      * @param {String} search The search string to filter the view on.
      * @param {Number} page The page number to filter the view on.
+     * @param {Number} id The requested record ID to display.
      */
-    index: function(search, page) {
-        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
+    index: function(search, page, id) {
+        this.model.set({Search: search || '', PageNumber: page || 1, Id: id || 0, Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
     },
@@ -8086,9 +8087,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
     navigate: function() {
         var fragment = this.navigateFragment(),
             search = this.model.get('Search'),
-            pageNumber = this.model.get('PageNumber');
+            pageNumber = this.model.get('PageNumber'),
+            id = this.model.get('Id');
 
-        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber});
+        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id});
     },
 
     /**
@@ -8280,18 +8282,23 @@ var CollarRouter = Backbone.Router.extend({
 
         args = _.extend({
             Fragment: '',
-            Search: '',
-            PageNumber: 1
+            Id: 0,
+            PageNumber: 1,
+            Search: ''
         }, args);
 
         url = args.Fragment;
 
-        if (args.Search || args.PageNumber > 1) {
-            url += '/' + encodeURIComponent(args.Search || '');
+        if (args.Search) {
+            url += '/q/' + encodeURIComponent(args.Search.toString());
+        }
 
-            if (args.PageNumber > 1) {
-                url += '/p' + encodeURIComponent(args.PageNumber.toString());
-            }
+        if (args.PageNumber > 1) {
+            url += '/p/' + encodeURIComponent(args.PageNumber.toString());
+        }
+
+        if (args.Id > 0) {
+            url += '/id/' + encodeURIComponent(args.Id.toString());
         }
 
         this.navigate(url);
@@ -8328,32 +8335,76 @@ var CollarRouter = Backbone.Router.extend({
     },
 
     /**
+     * Handles the ID route.
+     *
+     * @param {Number} id The requested record ID.
+     */
+    id: function(id) {
+        this.index('', 1, id);
+    },
+
+    /**
      * Handles the index route.
      *
      * @param {String} search The requested search string.
      * @param {Number} page The requested page number.
+     * @param {Number} id The requested record ID.
      */
-    index: function(search, page) {
-        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
+    index: function(search, page, id) {
+        this.controller.index(
+            decodeURIComponent((search || '').toString()), 
+            decodeURIComponent((page || '1').toString()), 
+            decodeURIComponent((id || '').toString()));
+
         this.trigger('nav', this, {name: this.name});
     },
 
     /**
-     * Handles the empty-search paging route.
+     * Handles the paging route.
      *
      * @param {Number} page The requested page number.
      */
     page: function(page) {
-        this.index('', page);
+        this.index('', page, '');
     },
 
     /**
-     * Handles the non-paged search route.
+     * Handles paging + ID route.
+     *
+     * @param {Number} search The requested page number.
+     * @param {Number} id The requested record ID.
+     */
+    pageId: function(page, id) {
+        this.index('', page, id);
+    },
+
+    /**
+     * Handles the search route.
      *
      * @param {String} search The requested search string.
      */
     search: function(search) {
-        this.index(search, 1);
+        this.index(search, 1, '');
+    },
+
+    /**
+     * Handles the search + ID route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} id The requested record ID.
+     */
+    searchId: function(search, id) {
+        this.index(search, 1, id);
+    },
+
+    /**
+     * Handles the search + paging route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
+     */
+    searchPage: function(search, page) {
+        this.index(search, page, '');
     }
 });
 /**
@@ -8366,9 +8417,13 @@ var HistoryRouter = CollarRouter.extend({
     name: 'History',
     routes: {
         'history': 'index',
-        'history/:search/p:page': 'index',
-        'history//p:page': 'page',
-        'history/*search': 'search'
+        'history/id/:id': 'id',
+        'history/q/:search': 'search',
+        'history/q/:search/id/:id': 'searchId',
+        'history/p/:page': 'page',
+        'history/p/:page/id/:id': 'pageId',
+        'history/q/:search/p/:page': 'searchPage',
+        'history/q/:search/p/:page/id/:id': 'index'
     },
 
     /**
@@ -8380,7 +8435,7 @@ var HistoryRouter = CollarRouter.extend({
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
         this.controller = this.createController(HistoryController, 'history', this.options);
-    }
+    },
 });
 /**
  * Queue area router implementation.
@@ -8392,9 +8447,13 @@ var QueueRouter = CollarRouter.extend({
     name: 'Queue',
     routes: {
         'queue': 'index',
-        'queue/:search/p:page': 'index',
-        'queue//p:page': 'page',
-        'queue/*search': 'search'
+        'queue/id/:id': 'id',
+        'queue/q/:search': 'search',
+        'queue/q/:search/id/:id': 'searchId',
+        'queue/p/:page': 'page',
+        'queue/p/:page/id/:id': 'pageId',
+        'queue/q/:search/p/:page': 'searchPage',
+        'queue/q/:search/p/:page/id/:id': 'index'
     },
 
     /**
@@ -8418,9 +8477,13 @@ var SchedulesRouter = CollarRouter.extend({
     name: 'Schedules',
     routes: {
         'schedules': 'index',
-        'schedules/:search/p:page': 'index',
-        'schedules//p:page': 'page',
-        'schedules/*search': 'search'
+        'schedules/id/:id': 'id',
+        'schedules/q/:search': 'search',
+        'schedules/q/:search/id/:id': 'searchId',
+        'schedules/p/:page': 'page',
+        'schedules/p/:page/id/:id': 'pageId',
+        'schedules/q/:search/p/:page': 'searchPage',
+        'schedules/q/:search/p/:page/id/:id': 'index'
     },
 
     /**
@@ -8444,9 +8507,13 @@ var WorkersRouter = CollarRouter.extend({
     name: 'Workers',
     routes: {
         'workers': 'index',
-        'workers/:search/p:page': 'index',
-        'workers//p:page': 'page',
-        'workers/*search': 'search'
+        'workers/id/:id': 'id',
+        'workers/q/:search': 'search',
+        'workers/q/:search/id/:id': 'searchId',
+        'workers/p/:page': 'page',
+        'workers/p/:page/id/:id': 'pageId',
+        'workers/q/:search/p/:page': 'searchPage',
+        'workers/q/:search/p/:page/id/:id': 'index'
     },
 
     /**
@@ -8470,9 +8537,13 @@ var WorkingRouter = CollarRouter.extend({
     name: 'Working',
     routes: {
         'working': 'index',
-        'working/:search/p:page': 'index',
-        'working//p:page': 'page',
-        'working/*search': 'search'
+        'working/id/:id': 'id',
+        'working/q/:search': 'search',
+        'working/q/:search/id/:id': 'searchId',
+        'working/p/:page': 'page',
+        'working/p/:page/id/:id': 'pageId',
+        'working/q/:search/p/:page': 'searchPage',
+        'working/q/:search/p/:page/id/:id': 'index'
     },
 
     /**
@@ -8877,6 +8948,7 @@ var ListView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.model.bind('change:Loading', this.render, this);
         this.model.get('Collection').bind('reset', this.render, this);
     },  
 
@@ -8993,7 +9065,8 @@ var PagerView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
+        this.model.bind('change:PageNumber', this.render, this);
+        this.model.bind('change:PageCount', this.render, this);
     },
 
     /**
@@ -9215,8 +9288,6 @@ var AreaView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.model.bind('change', this.render, this);
-
         this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
         this.searchView.bind('cancel', this.cancelSearch, this);
@@ -9267,10 +9338,6 @@ var AreaView = Backbone.View.extend({
         this.listView.$el.detach();
         this.bottomPagerView.$el.detach();
 
-        if (this.editView) {
-            this.editView.$el.detach();
-        }
-
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
@@ -9283,10 +9350,6 @@ var AreaView = Backbone.View.extend({
         pagingHeaderEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
-
-        if (this.model.get('Editing') && this.editView) {
-            detailsEl.html(this.editView.render().el);
-        }
 
         return this;
     },
@@ -10021,7 +10084,7 @@ var WorkersView = AreaView.extend({
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
 
-        this.editView = new WorkersFormView({model: this.model});
+        //this.editView = new WorkersFormView({model: this.model});
     },
 
     /**
@@ -10031,9 +10094,9 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     edit: function(sender, args) {
-        this.model.get('Collection').clearSelected({silent: true});
+        /*this.model.get('Collection').clearSelected({silent: true});
         args.Model.set({Selected: true}, {silent: true});
-        this.model.set({Editing: args.Model});
+        this.model.set({Editing: args.Model});*/
     }
 });
 /**

@@ -8,9 +8,13 @@ var QueueRouter = CollarRouter.extend({
     name: 'Queue',
     routes: {
         'queue': 'index',
-        'queue/:search/p:page': 'index',
-        'queue//p:page': 'page',
-        'queue/*search': 'search'
+        'queue/id/:id': 'id',
+        'queue/q/:search': 'search',
+        'queue/q/:search/id/:id': 'searchId',
+        'queue/p/:page': 'page',
+        'queue/p/:page/id/:id': 'pageId',
+        'queue/q/:search/p/:page': 'searchPage',
+        'queue/q/:search/p/:page/id/:id': 'index'
     },
 
     /**

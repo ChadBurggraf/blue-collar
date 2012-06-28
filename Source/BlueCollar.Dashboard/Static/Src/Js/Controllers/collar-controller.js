@@ -139,9 +139,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
      *
      * @param {String} search The search string to filter the view on.
      * @param {Number} page The page number to filter the view on.
+     * @param {Number} id The requested record ID to display.
      */
-    index: function(search, page) {
-        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
+    index: function(search, page, id) {
+        this.model.set({Search: search || '', PageNumber: page || 1, Id: id || 0, Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
     },
@@ -152,9 +153,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
     navigate: function() {
         var fragment = this.navigateFragment(),
             search = this.model.get('Search'),
-            pageNumber = this.model.get('PageNumber');
+            pageNumber = this.model.get('PageNumber'),
+            id = this.model.get('Id');
 
-        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber});
+        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id});
     },
 
     /**

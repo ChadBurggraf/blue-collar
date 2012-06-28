@@ -8,9 +8,13 @@ var WorkersRouter = CollarRouter.extend({
     name: 'Workers',
     routes: {
         'workers': 'index',
-        'workers/:search/p:page': 'index',
-        'workers//p:page': 'page',
-        'workers/*search': 'search'
+        'workers/id/:id': 'id',
+        'workers/q/:search': 'search',
+        'workers/q/:search/id/:id': 'searchId',
+        'workers/p/:page': 'page',
+        'workers/p/:page/id/:id': 'pageId',
+        'workers/q/:search/p/:page': 'searchPage',
+        'workers/q/:search/p/:page/id/:id': 'index'
     },
 
     /**

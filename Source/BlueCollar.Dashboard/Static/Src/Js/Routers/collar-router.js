@@ -26,18 +26,23 @@ var CollarRouter = Backbone.Router.extend({
 
         args = _.extend({
             Fragment: '',
-            Search: '',
-            PageNumber: 1
+            Id: 0,
+            PageNumber: 1,
+            Search: ''
         }, args);
 
         url = args.Fragment;
 
-        if (args.Search || args.PageNumber > 1) {
-            url += '/' + encodeURIComponent(args.Search || '');
+        if (args.Search) {
+            url += '/q/' + encodeURIComponent(args.Search.toString());
+        }
 
-            if (args.PageNumber > 1) {
-                url += '/p' + encodeURIComponent(args.PageNumber.toString());
-            }
+        if (args.PageNumber > 1) {
+            url += '/p/' + encodeURIComponent(args.PageNumber.toString());
+        }
+
+        if (args.Id > 0) {
+            url += '/id/' + encodeURIComponent(args.Id.toString());
         }
 
         this.navigate(url);
@@ -74,31 +79,75 @@ var CollarRouter = Backbone.Router.extend({
     },
 
     /**
+     * Handles the ID route.
+     *
+     * @param {Number} id The requested record ID.
+     */
+    id: function(id) {
+        this.index('', 1, id);
+    },
+
+    /**
      * Handles the index route.
      *
      * @param {String} search The requested search string.
      * @param {Number} page The requested page number.
+     * @param {Number} id The requested record ID.
      */
-    index: function(search, page) {
-        this.controller.index(decodeURIComponent(search || ''), decodeURIComponent(page || '1'));
+    index: function(search, page, id) {
+        this.controller.index(
+            decodeURIComponent((search || '').toString()), 
+            decodeURIComponent((page || '1').toString()), 
+            decodeURIComponent((id || '').toString()));
+
         this.trigger('nav', this, {name: this.name});
     },
 
     /**
-     * Handles the empty-search paging route.
+     * Handles the paging route.
      *
      * @param {Number} page The requested page number.
      */
     page: function(page) {
-        this.index('', page);
+        this.index('', page, '');
     },
 
     /**
-     * Handles the non-paged search route.
+     * Handles paging + ID route.
+     *
+     * @param {Number} search The requested page number.
+     * @param {Number} id The requested record ID.
+     */
+    pageId: function(page, id) {
+        this.index('', page, id);
+    },
+
+    /**
+     * Handles the search route.
      *
      * @param {String} search The requested search string.
      */
     search: function(search) {
-        this.index(search, 1);
+        this.index(search, 1, '');
+    },
+
+    /**
+     * Handles the search + ID route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} id The requested record ID.
+     */
+    searchId: function(search, id) {
+        this.index(search, 1, id);
+    },
+
+    /**
+     * Handles the search + paging route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
+     */
+    searchPage: function(search, page) {
+        this.index(search, page, '');
     }
 });
