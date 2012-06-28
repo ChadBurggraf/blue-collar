@@ -26,6 +26,7 @@
      * Clears the 'Selected' attribute from each model in the collection.
      *
      * @param {Object} options The set options to use.
+     * @return {CollarCollection} This instance.
      */
     clearSelected: function(options) {
         options = options || {};
@@ -33,6 +34,8 @@
         this.each(function(m) { 
             m.set({Selected: false}, options); 
         });
+
+        return this;
     },
 
     /**
@@ -43,6 +46,17 @@
      */
     fetch: function(options) {
         return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options));
+    },
+
+    /**
+     * Gets the selected model.
+     *
+     * @return {CollarModel} The selected model, or undefined if none are selected.
+     */
+    getSelected: function() {
+        return this.find(function(m) {
+            return m.get('Selected');
+        });
     },
 
     /**
@@ -67,6 +81,33 @@
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);
+    },
+
+    /**
+     * Sets the selected model by ID.
+     *
+     * @param {Number} id The ID of the model to set as selected.
+     * @param {Object} options The set options to use.
+     * @return {CollarCollection} This instance.
+     */
+    setSelected: function(id, options) {
+        var model,
+            i,
+            n;
+
+        options = options || {};
+        
+        for (i = 0, n = this.length; i < n; i++) {
+            model = this.at(i);
+
+            if (model.get('Id') === id) {
+                model.set({Selected: true}, options);
+            } else {
+                model.set({Selected: false}, options);
+            }
+        }
+
+        return this;
     },
 
     /**

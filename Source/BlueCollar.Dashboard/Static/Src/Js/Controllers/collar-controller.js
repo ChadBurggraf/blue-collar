@@ -106,7 +106,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
     /**
      * Performs an Ajax fetch on this instance's collection.
-     *
      */
     fetch: function() {
         var collection = this.getCollection();
@@ -142,7 +141,19 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {Number} id The requested record ID to display.
      */
     index: function(search, page, id) {
-        this.model.set({Search: search || '', PageNumber: page || 1, Id: id || 0, Loading: true}, {silent: true});
+        if (page && !_.isNumber(page)) {
+            page = parseInt(page, 10);
+        } else {
+            page = 1;
+        }
+
+        if (id && !_.isNumber(id)) {
+            id = parseInt(id, 10);
+        } else {
+            id = 0;
+        }
+
+        this.model.set({Search: search || '', PageNumber: page, Id: id, Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
     },

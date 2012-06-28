@@ -3,16 +3,22 @@
 @section script {
 <script type="text/javascript" src="@Url.Content("~/Static/Js/collar.js")"></script>
 <script type="text/javascript">
-    function onLoad() {
-        $(function() {
-            new App('@BlueCollarSection.Section.ApplicationName', '@Url.Content("~/")', {
-                jsonUrlRoot: '@Url.Content(BlueCollarSection.Section.Dashboard.HandlerUrl)',
-                stats: @Html.Raw(Model.StatsJson), 
-                testLink: true
-            });
+    var app;
+    $(function() {
+        app = new App('@BlueCollarSection.Section.ApplicationName', '@Url.Content("~/")', {
+            chartsLoaded: false,
+            jsonUrlRoot: '@Url.Content(BlueCollarSection.Section.Dashboard.HandlerUrl)',
+            stats: @Html.Raw(Model.StatsJson), 
+            testLink: true
         });
-    }
-
-    google.setOnLoadCallback(onLoad);
+    });
 </script>
+<!--
+<script type="text/javascript" src="//www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
+<script type="text/javascript">
+    google.setOnLoadCallback(function() {
+        app.setChartsLoaded(true); 
+    });
+</script>
+-->
 }

@@ -53,11 +53,24 @@ var DashboardView = Backbone.View.extend({
             notSucceededEl.addClass('red');
         }
 
+        if (this.options.chartsLoaded) {
+            this.renderCharts(json);
+        }
+
+        return this;
+    },
+
+    /**
+     * Renders the view's charts.
+     *
+     * @param {Object} json The JSON data to use when rendering the charts.
+     */
+    renderCharts: function(json) {
+        json = json || this.model.toJSON();
+
         this.renderStatusChart(this.$('.chart-job-status .chart-contents')[0], json.HistoryStatusDistant);
         this.renderWorkerLoadChart(this.$('.chart-worker-load .chart-contents')[0], json.JobsPerWorker);
         this.renderJobsPerHourChart(this.$('.chart-jobs-per-hour .chart-contents')[0], json.JobsPerHourByDay);
-
-        return this;
     },
 
     /**
@@ -67,8 +80,8 @@ var DashboardView = Backbone.View.extend({
      * @param {Object} json The raw object representing the data to render.
      */
     renderJobsPerHourChart: function(el, json) {
-        var data = new google.visualization.DataTable(),
-            chart = new google.visualization.ColumnChart(el),
+        var data,
+            chart,
             queues,
             dates,
             prop,
@@ -80,49 +93,54 @@ var DashboardView = Backbone.View.extend({
             j,
             n,
             m;
+        
+        if (el && json) {
+            data = new google.visualization.DataTable();
+            chart = new google.visualization.ColumnChart(el);
 
-        data.addColumn('string', 'Date');
-        queues = _.groupBy(json, function(d) { return d.QueueName || '*'; });
+            data.addColumn('string', 'Date');
+            queues = _.groupBy(json, function(d) { return d.QueueName || '*'; });
 
-        i = 1;
-        for (prop in queues) {
-            if (queues.hasOwnProperty(prop)) {
-                queueDays = queues[prop];
-                data.addColumn('number', prop);
+            i = 1;
+            for (prop in queues) {
+                if (queues.hasOwnProperty(prop)) {
+                    queueDays = queues[prop];
+                    data.addColumn('number', prop);
 
-                for (j = 0, m = queueDays.length; j < m; j++) {
-                    queueDays[j].Index = i;
-                }
-
-                i++;
-            }
-        }
-
-        cols = data.getNumberOfColumns();
-        dates = _.groupBy(json, function(d) { return d.Date.toString('MMM d')});
-
-        i = 0;
-        for (prop in dates) {
-            if (dates.hasOwnProperty(prop)) {
-                dayQueues = dates[prop];
-                data.addRow();
-                data.setValue(i, 0, prop);
-
-                for (j = 1; j < cols; j++) {
-                    day = _.find(dayQueues, function(d) { return d.Index === j; });
-
-                    if (day) {
-                        data.setValue(i, j, day.JobsPerHour);
-                    } else {
-                        data.setValue(i, j, 0);
+                    for (j = 0, m = queueDays.length; j < m; j++) {
+                        queueDays[j].Index = i;
                     }
+
+                    i++;
                 }
-
-                i++;
             }
-        }
 
-        chart.draw(data, {width:'100%', height:300, vAxis:{title:'Jobs per hour'}});
+            cols = data.getNumberOfColumns();
+            dates = _.groupBy(json, function(d) { return d.Date.toString('MMM d')});
+
+            i = 0;
+            for (prop in dates) {
+                if (dates.hasOwnProperty(prop)) {
+                    dayQueues = dates[prop];
+                    data.addRow();
+                    data.setValue(i, 0, prop);
+
+                    for (j = 1; j < cols; j++) {
+                        day = _.find(dayQueues, function(d) { return d.Index === j; });
+
+                        if (day) {
+                            data.setValue(i, j, day.JobsPerHour);
+                        } else {
+                            data.setValue(i, j, 0);
+                        }
+                    }
+
+                    i++;
+                }
+            }
+
+            chart.draw(data, {width:'100%', height:300, vAxis:{title:'Jobs per hour'}});
+        }
     },
 
     /**
@@ -132,24 +150,29 @@ var DashboardView = Backbone.View.extend({
      * @param {Object} json The raw object representing the data to render.
      */
     renderStatusChart: function(el, json) {
-        var data = new google.visualization.DataTable(),
+        var data,
+            chart;
+
+        if (el && json) {
+            data = new google.visualization.DataTable();
             chart = new google.visualization.PieChart(el);
 
-        data.addColumn('string', 'Status');
-        data.addColumn('number', 'Job Count');
-        data.addRows(5);
-        data.setValue(0, 0, 'Succeeded');
-        data.setValue(0, 1, json.SucceededCount);
-        data.setValue(1, 0, 'Failed');
-        data.setValue(1, 1, json.FailedCount);
-        data.setValue(2, 0, 'Canceled');
-        data.setValue(2, 1, json.CanceledCount);
-        data.setValue(3, 0, 'Interrupted');
-        data.setValue(3, 1, json.InterruptedCount);
-        data.setValue(4, 0, 'Timed Out');
-        data.setValue(4, 1, json.TimedOutCount);
+            data.addColumn('string', 'Status');
+            data.addColumn('number', 'Job Count');
+            data.addRows(5);
+            data.setValue(0, 0, 'Succeeded');
+            data.setValue(0, 1, json.SucceededCount);
+            data.setValue(1, 0, 'Failed');
+            data.setValue(1, 1, json.FailedCount);
+            data.setValue(2, 0, 'Canceled');
+            data.setValue(2, 1, json.CanceledCount);
+            data.setValue(3, 0, 'Interrupted');
+            data.setValue(3, 1, json.InterruptedCount);
+            data.setValue(4, 0, 'Timed Out');
+            data.setValue(4, 1, json.TimedOutCount);
 
-        chart.draw(data, {width:'100%', height:300});
+            chart.draw(data, {width:'100%', height:300});
+        }
     },
 
     /**
@@ -159,20 +182,38 @@ var DashboardView = Backbone.View.extend({
      * @param {Object} json The raw object representing the data to render.
      */
     renderWorkerLoadChart: function(el, json) {
-        var data = new google.visualization.DataTable(),
-            chart = new google.visualization.PieChart(el),
+        var data,
+            chart,
             worker,
             i,
             n;
+        
+        if (el && json) {
+            data = new google.visualization.DataTable();
+            chart = new google.visualization.PieChart(el);
 
-        data.addColumn('string', 'Worker');
-        data.addColumn('number', 'Job Count');
+            data.addColumn('string', 'Worker');
+            data.addColumn('number', 'Job Count');
 
-        for (i = 0, n = json.length; i < n; i++) {
-            worker = json[i];
-            data.addRow([worker.Name + ' - ' + String.machineDisplay(worker.MachineName, worker.MachineAddress), worker.Count]);
+            for (i = 0, n = json.length; i < n; i++) {
+                worker = json[i];
+                data.addRow([worker.Name + ' - ' + String.machineDisplay(worker.MachineName, worker.MachineAddress), worker.Count]);
+            }
+
+            chart.draw(data, {width:'!00%', height:300});
         }
+    },
 
-        chart.draw(data, {width:'!00%', height:300});
+    /**
+     * Sets a value indicating whether the charts API has been loaded.
+     *
+     * @param {boolean} loaded A value indicating whether the charts API has been loaded.
+     */
+    setChartsLoaded: function(loaded) {
+        this.options.chartsLoaded = loaded;
+        
+        if (loaded) {
+            this.renderCharts();
+        }
     }
 });

@@ -11,6 +11,18 @@ var WorkerModel = CollarModel.extend({
         'Name': null,
         'QueueNames': null,
         'Startup': 'Automatic'
+    },
+
+    /**
+     * Gets a machine descriptor object for this instance.
+     *
+     * @return {Object} A machine descriptor.
+     */
+    machine: function() {
+        return {
+            Name: this.get('MachineName') || '', 
+            Address: this.get('MachineAddress') || ''
+        };
     }
 });
 

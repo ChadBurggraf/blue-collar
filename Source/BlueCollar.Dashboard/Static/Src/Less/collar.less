@@ -25,13 +25,17 @@
     input[type="text"],
     textarea {
         width: 250px;
+		margin-bottom: 0;
     }
 
     select {
         width: 258px;
+		margin-bottom: 0;
     }
 
     .field {
+		margin-bottom: 9px;
+
         span {
             display: block;
             font-weight: bold;
@@ -42,6 +46,23 @@
             }
         }
     }
+
+	.field-stacked {
+		margin-bottom: 9px;
+
+		input {
+			margin-bottom: 0;
+		}
+
+		label {
+			margin-bottom: 0;
+			margin-top: 3px;
+
+			span {
+				font-weight: normal;
+			}
+		}
+	}
 
     .form-actions {
         padding-bottom: 0;
@@ -65,7 +86,7 @@
     .help-block{
         font-weight: normal !important;
         line-height: normal !important;
-        color: #999;
+        color: #999 !important;
     }
 
     .help-block-above {
@@ -79,6 +100,24 @@
         color: #333;
         border-bottom: solid 1px #e5e5e5;
     }
+
+	.error {
+		input,
+		textarea {
+			border-color: #e9322d;
+		}
+
+		span {
+			color: #b94a48;
+		}
+
+		.error {
+			position: relative;
+			margin-top: -9px;
+			font-weight: normal;
+			line-height: normal;
+		}
+	}
 }
 
 .form-search {

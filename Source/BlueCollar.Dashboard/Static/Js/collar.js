@@ -7338,6 +7338,7 @@ _.extend(CollarModel, {
      * Clears the 'Selected' attribute from each model in the collection.
      *
      * @param {Object} options The set options to use.
+     * @return {CollarCollection} This instance.
      */
     clearSelected: function(options) {
         options = options || {};
@@ -7345,6 +7346,8 @@ _.extend(CollarModel, {
         this.each(function(m) { 
             m.set({Selected: false}, options); 
         });
+
+        return this;
     },
 
     /**
@@ -7355,6 +7358,17 @@ _.extend(CollarModel, {
      */
     fetch: function(options) {
         return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options));
+    },
+
+    /**
+     * Gets the selected model.
+     *
+     * @return {CollarModel} The selected model, or undefined if none are selected.
+     */
+    getSelected: function() {
+        return this.find(function(m) {
+            return m.get('Selected');
+        });
     },
 
     /**
@@ -7379,6 +7393,33 @@ _.extend(CollarModel, {
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);
+    },
+
+    /**
+     * Sets the selected model by ID.
+     *
+     * @param {Number} id The ID of the model to set as selected.
+     * @param {Object} options The set options to use.
+     * @return {CollarCollection} This instance.
+     */
+    setSelected: function(id, options) {
+        var model,
+            i,
+            n;
+
+        options = options || {};
+        
+        for (i = 0, n = this.length; i < n; i++) {
+            model = this.at(i);
+
+            if (model.get('Id') === id) {
+                model.set({Selected: true}, options);
+            } else {
+                model.set({Selected: false}, options);
+            }
+        }
+
+        return this;
     },
 
     /**
@@ -7417,6 +7458,7 @@ var AreaModel = Backbone.Model.extend({
     defaults: {
         ApplicationName: 'Default',
         Collection: new CollarCollection(),
+        Id: 0,
         Loading: false,
         PageCount: 0,
         PageNumber: 1,
@@ -7430,7 +7472,9 @@ var AreaModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.bind('change:Id', this.id, this);
         this.get('Collection').bind('area', this.area, this);
+        this.get('Collection').bind('reset', this.reset, this);
     },
 
     /**
@@ -7446,6 +7490,20 @@ var AreaModel = Backbone.Model.extend({
             PageNumber: args.PageNumber,
             TotalCount: args.TotalCount
         });
+    },
+
+    /**
+     * Handles this instance's ID-change event.
+     */
+    id: function() {
+        this.get('Collection').setSelected(this.get('Id'));
+    },
+
+    /**
+     * Handles this instance's collection's reset event.
+     */
+    reset: function() {
+        this.get('Collection').setSelected(this.get('Id'));
     }
 });
 /**
@@ -7842,6 +7900,18 @@ var WorkerModel = CollarModel.extend({
         'Name': null,
         'QueueNames': null,
         'Startup': 'Automatic'
+    },
+
+    /**
+     * Gets a machine descriptor object for this instance.
+     *
+     * @return {Object} A machine descriptor.
+     */
+    machine: function() {
+        return {
+            Name: this.get('MachineName') || '', 
+            Address: this.get('MachineAddress') || ''
+        };
     }
 });
 
@@ -8040,7 +8110,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
     /**
      * Performs an Ajax fetch on this instance's collection.
-     *
      */
     fetch: function() {
         var collection = this.getCollection();
@@ -8076,7 +8145,19 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {Number} id The requested record ID to display.
      */
     index: function(search, page, id) {
-        this.model.set({Search: search || '', PageNumber: page || 1, Id: id || 0, Loading: true}, {silent: true});
+        if (page && !_.isNumber(page)) {
+            page = parseInt(page, 10);
+        } else {
+            page = 1;
+        }
+
+        if (id && !_.isNumber(id)) {
+            id = parseInt(id, 10);
+        } else {
+            id = 0;
+        }
+
+        this.model.set({Search: search || '', PageNumber: page, Id: id, Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
     },
@@ -8115,17 +8196,19 @@ var DashboardController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        options = options || {};
+
         this.model = new StatsModel({ApplicationName: this.applicationName});
         this.model.urlRoot = this.urlRoot;
         this.model.bind('counts', this.counts, this);
         this.fetchOnIndex = true;
 
-        if (options && options.stats) {
+        if (options.stats) {
             this.model.set(this.model.parse(options.stats), {silent: true});
             this.fetchOnIndex = false;
         }
 
-        this.view = new DashboardView({el: this.page, model: this.model});
+        this.view = new DashboardView({el: this.page, model: this.model, chartsLoaded: options.chartsLoaded});
     },
 
     /**
@@ -8139,6 +8222,16 @@ var DashboardController = CollarController.extend({
         } else {
             this.fetchOnIndex = true;
         }
+    },
+
+    /**
+     * Sets a value indicating whether the charts API has been loaded.
+     *
+     * @param {boolean} loaded A value indicating whether the charts API has been loaded.
+     */
+    setChartsLoaded: function(loaded) {
+        this.options.chartsLoaded = loaded;
+        this.view.setChartsLoaded(loaded);
     }
 });
 /**
@@ -8229,8 +8322,51 @@ var WorkersController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new WorkersView({el: this.page, model: this.model});
+        this.machines = [];
+
+        this.model.get('Collection').bind('reset', this.reset, this);
+
+        this.view = new WorkersView({el: this.page, model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
+        this.view.bind('edit', this.navigate, this);
+        this.view.bind('editCancel', this.navigate, this);
+    },
+
+    /**
+     * Handles this instance's collection's reset event.
+     */
+    reset: function() {
+        var collection = this.model.get('Collection'),
+            lookup = {},
+            worker,
+            name,
+            address,
+            key,
+            machine,
+            i,
+            n;
+
+        this.machines = [];
+
+        for (i = 0, n = collection.length; i < n; i++) {
+            worker = collection.at(i);
+            name = worker.get('MachineName');
+            address = worker.get('MachineAddress') || '';
+            key = (name || '' + address || '').toUpperCase();
+            machine = {Name: name, Address: address};
+
+            if (key) {
+                if (_.isUndefined(lookup[key])) {
+                    lookup[key] = [machine];
+                    this.machines.push(machine);
+                } else if (!_.any(lookup[key], function(m) { return m.Name.toUpperCase() === name.toUpperCase() || m.Address.toUpperCase() === address.toUpperCase(); })) {
+                    lookup[key].push(machine);
+                    this.machines.push(machine);
+                }
+            }
+        }
+
+        this.view.machines = this.machines = _.sortBy(this.machines, 'Name');
     }
 });
 /**
@@ -8579,6 +8715,16 @@ var DashboardRouter = CollarRouter.extend({
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
         this.controller = this.createController(DashboardController, 'stats', this.options);
+    },
+
+    /**
+     * Sets a value indicating whether the charts API has been loaded.
+     *
+     * @param {boolean} loaded A value indicating whether the charts API has been loaded.
+     */
+    setChartsLoaded: function(loaded) {
+        this.options.chartsLoaded = loaded;
+        this.controller.setChartsLoaded(loaded);
     }
 });
 
@@ -8592,7 +8738,7 @@ var FormView = Backbone.View.extend({
     events: {
         'submit': 'submit',
         'click button.btn-reset': 'cancel',
-        'click a.delete': 'del',
+        'click a.btn-delete': 'del',
         'click button.btn-confirm-delete': 'confirmDelete',
         'click button.btn-cancel-delete': 'cancelDelete'
     },
@@ -8609,7 +8755,7 @@ var FormView = Backbone.View.extend({
             errorClassName: 'error',
             fieldSelector: '.field',
             validationSummaryMessage: 'Please correct the errors below.',
-            validationSummarySelector: '.alert.alert-block.error'
+            validationSummarySelector: '.alert-error'
         }, this.options);
 
         this.model.bind('change', this.change, this);
@@ -8762,7 +8908,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors();
 
         actions = this.$('.form-actions:not(.form-actions-delete)').show();
-        actionsDelete = actions.find('a.delete');
+        actionsDelete = actions.find('a.btn-delete');
         del = this.$('.form-actions-delete').hide();
 
         if (!this.model.get('Id')) {
@@ -9288,6 +9434,9 @@ var AreaView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.model.bind('change:Id', this.renderId, this);
+        this.model.get('Collection').bind('reset', this.renderId, this);
+
         this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
         this.searchView.bind('cancel', this.cancelSearch, this);
@@ -9311,6 +9460,28 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
+     * Handles the list view's edit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    edit: function(sender, args) {
+        this.model.set({Id: args.Model.get('Id')});
+        this.trigger('edit', this);
+    },
+
+    /**
+     * Handles the edit view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editCancel: function(sender, args) {
+        this.model.set({Id: 0});
+        this.trigger('editCancel', this);
+    },
+
+    /**
      * Handles a pager view's page event.
      *
      * @param {Object} sender The event sender.
@@ -9330,8 +9501,7 @@ var AreaView = Backbone.View.extend({
         var searchEl,
             pagingHeaderEl,
             listEl,
-            pagingFooterEl,
-            detailsEl;
+            pagingFooterEl;
 
         this.searchView.$el.detach();
         this.topPagerView.$el.detach();
@@ -9344,15 +9514,43 @@ var AreaView = Backbone.View.extend({
         pagingHeaderEl = this.$('.paging-header');
         listEl = this.$('.list');
         pagingFooterEl = this.$('.paging-footer');
-        detailsEl = this.$('.details');
-
+        
         searchEl.html(this.searchView.render().el);
         pagingHeaderEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
 
+        this.renderId();
+
         return this;
     },
+
+    /**
+     * Checks whether the view for the selected ID should be rendered,
+     * and calls renderIdView if necessary.
+     */
+    renderId: function() {
+        var el = this.$('.details').html(''),
+            model;
+
+        if (this.model.get('Id')) {
+            model = this.model.get('Collection').getSelected();
+
+            if (model && model.get('Id') === this.model.get('Id')) {
+                this.renderIdView(el, model);
+            }
+        }
+
+        return this;
+    },
+
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     */
+    renderIdView: function(el, model) {},
 
     /**
      * Handle's the search view's submit event.
@@ -9420,11 +9618,24 @@ var DashboardView = Backbone.View.extend({
             notSucceededEl.addClass('red');
         }
 
+        if (this.options.chartsLoaded) {
+            this.renderCharts(json);
+        }
+
+        return this;
+    },
+
+    /**
+     * Renders the view's charts.
+     *
+     * @param {Object} json The JSON data to use when rendering the charts.
+     */
+    renderCharts: function(json) {
+        json = json || this.model.toJSON();
+
         this.renderStatusChart(this.$('.chart-job-status .chart-contents')[0], json.HistoryStatusDistant);
         this.renderWorkerLoadChart(this.$('.chart-worker-load .chart-contents')[0], json.JobsPerWorker);
         this.renderJobsPerHourChart(this.$('.chart-jobs-per-hour .chart-contents')[0], json.JobsPerHourByDay);
-
-        return this;
     },
 
     /**
@@ -9434,8 +9645,8 @@ var DashboardView = Backbone.View.extend({
      * @param {Object} json The raw object representing the data to render.
      */
     renderJobsPerHourChart: function(el, json) {
-        var data = new google.visualization.DataTable(),
-            chart = new google.visualization.ColumnChart(el),
+        var data,
+            chart,
             queues,
             dates,
             prop,
@@ -9447,49 +9658,54 @@ var DashboardView = Backbone.View.extend({
             j,
             n,
             m;
+        
+        if (el && json) {
+            data = new google.visualization.DataTable();
+            chart = new google.visualization.ColumnChart(el);
 
-        data.addColumn('string', 'Date');
-        queues = _.groupBy(json, function(d) { return d.QueueName || '*'; });
+            data.addColumn('string', 'Date');
+            queues = _.groupBy(json, function(d) { return d.QueueName || '*'; });
 
-        i = 1;
-        for (prop in queues) {
-            if (queues.hasOwnProperty(prop)) {
-                queueDays = queues[prop];
-                data.addColumn('number', prop);
+            i = 1;
+            for (prop in queues) {
+                if (queues.hasOwnProperty(prop)) {
+                    queueDays = queues[prop];
+                    data.addColumn('number', prop);
 
-                for (j = 0, m = queueDays.length; j < m; j++) {
-                    queueDays[j].Index = i;
-                }
-
-                i++;
-            }
-        }
-
-        cols = data.getNumberOfColumns();
-        dates = _.groupBy(json, function(d) { return d.Date.toString('MMM d')});
-
-        i = 0;
-        for (prop in dates) {
-            if (dates.hasOwnProperty(prop)) {
-                dayQueues = dates[prop];
-                data.addRow();
-                data.setValue(i, 0, prop);
-
-                for (j = 1; j < cols; j++) {
-                    day = _.find(dayQueues, function(d) { return d.Index === j; });
-
-                    if (day) {
-                        data.setValue(i, j, day.JobsPerHour);
-                    } else {
-                        data.setValue(i, j, 0);
+                    for (j = 0, m = queueDays.length; j < m; j++) {
+                        queueDays[j].Index = i;
                     }
+
+                    i++;
                 }
-
-                i++;
             }
-        }
 
-        chart.draw(data, {width:'100%', height:300, vAxis:{title:'Jobs per hour'}});
+            cols = data.getNumberOfColumns();
+            dates = _.groupBy(json, function(d) { return d.Date.toString('MMM d')});
+
+            i = 0;
+            for (prop in dates) {
+                if (dates.hasOwnProperty(prop)) {
+                    dayQueues = dates[prop];
+                    data.addRow();
+                    data.setValue(i, 0, prop);
+
+                    for (j = 1; j < cols; j++) {
+                        day = _.find(dayQueues, function(d) { return d.Index === j; });
+
+                        if (day) {
+                            data.setValue(i, j, day.JobsPerHour);
+                        } else {
+                            data.setValue(i, j, 0);
+                        }
+                    }
+
+                    i++;
+                }
+            }
+
+            chart.draw(data, {width:'100%', height:300, vAxis:{title:'Jobs per hour'}});
+        }
     },
 
     /**
@@ -9499,24 +9715,29 @@ var DashboardView = Backbone.View.extend({
      * @param {Object} json The raw object representing the data to render.
      */
     renderStatusChart: function(el, json) {
-        var data = new google.visualization.DataTable(),
+        var data,
+            chart;
+
+        if (el && json) {
+            data = new google.visualization.DataTable();
             chart = new google.visualization.PieChart(el);
 
-        data.addColumn('string', 'Status');
-        data.addColumn('number', 'Job Count');
-        data.addRows(5);
-        data.setValue(0, 0, 'Succeeded');
-        data.setValue(0, 1, json.SucceededCount);
-        data.setValue(1, 0, 'Failed');
-        data.setValue(1, 1, json.FailedCount);
-        data.setValue(2, 0, 'Canceled');
-        data.setValue(2, 1, json.CanceledCount);
-        data.setValue(3, 0, 'Interrupted');
-        data.setValue(3, 1, json.InterruptedCount);
-        data.setValue(4, 0, 'Timed Out');
-        data.setValue(4, 1, json.TimedOutCount);
+            data.addColumn('string', 'Status');
+            data.addColumn('number', 'Job Count');
+            data.addRows(5);
+            data.setValue(0, 0, 'Succeeded');
+            data.setValue(0, 1, json.SucceededCount);
+            data.setValue(1, 0, 'Failed');
+            data.setValue(1, 1, json.FailedCount);
+            data.setValue(2, 0, 'Canceled');
+            data.setValue(2, 1, json.CanceledCount);
+            data.setValue(3, 0, 'Interrupted');
+            data.setValue(3, 1, json.InterruptedCount);
+            data.setValue(4, 0, 'Timed Out');
+            data.setValue(4, 1, json.TimedOutCount);
 
-        chart.draw(data, {width:'100%', height:300});
+            chart.draw(data, {width:'100%', height:300});
+        }
     },
 
     /**
@@ -9526,21 +9747,39 @@ var DashboardView = Backbone.View.extend({
      * @param {Object} json The raw object representing the data to render.
      */
     renderWorkerLoadChart: function(el, json) {
-        var data = new google.visualization.DataTable(),
-            chart = new google.visualization.PieChart(el),
+        var data,
+            chart,
             worker,
             i,
             n;
+        
+        if (el && json) {
+            data = new google.visualization.DataTable();
+            chart = new google.visualization.PieChart(el);
 
-        data.addColumn('string', 'Worker');
-        data.addColumn('number', 'Job Count');
+            data.addColumn('string', 'Worker');
+            data.addColumn('number', 'Job Count');
 
-        for (i = 0, n = json.length; i < n; i++) {
-            worker = json[i];
-            data.addRow([worker.Name + ' - ' + String.machineDisplay(worker.MachineName, worker.MachineAddress), worker.Count]);
+            for (i = 0, n = json.length; i < n; i++) {
+                worker = json[i];
+                data.addRow([worker.Name + ' - ' + String.machineDisplay(worker.MachineName, worker.MachineAddress), worker.Count]);
+            }
+
+            chart.draw(data, {width:'!00%', height:300});
         }
+    },
 
-        chart.draw(data, {width:'!00%', height:300});
+    /**
+     * Sets a value indicating whether the charts API has been loaded.
+     *
+     * @param {boolean} loaded A value indicating whether the charts API has been loaded.
+     */
+    setChartsLoaded: function(loaded) {
+        this.options.chartsLoaded = loaded;
+        
+        if (loaded) {
+            this.renderCharts();
+        }
     }
 });
 /**
@@ -9998,6 +10237,12 @@ var SchedulesView = AreaView.extend({
 
     }
 });
+/**
+ * Implements the workers edit form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
 var WorkersEditView = FormView.extend({
     serializers: {
         "Id": new IntFieldSerializer(),
@@ -10019,6 +10264,192 @@ var WorkersEditView = FormView.extend({
             new RequiredFieldValidator({message: 'Startup is required.'}),
             new EnumFieldValidator({possibleValues: ['Automatic', 'Manual'], message: 'Startup must be either Automatic or Manual.'})
         ]
+    },
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FormView.prototype.initialize.call(this, options);
+        this.machines = this.options.machines || [];
+
+        this.events = _.extend(this.events, {
+            'click .field-choose a': 'choose',
+            'click .field-enter a': 'enter'
+        });
+
+        this.delegateEvents();
+    },
+
+    /**
+     * Handles the choose link click event.
+     */
+    choose: function() {
+        this.$('.field-choose').hide();
+        this.$('.field-enter').show().find('input[name="MachineName"]').focus();
+    },
+
+    /**
+     * De-serializes the given attributes hash into this view's form fields.
+     *
+     * @param {Object} attributes A hash of attribute values to fill this instance with.
+     * @return {FormView} This instance.
+     */
+    deserialize: function(attributes) {
+        FormView.prototype.deserialize.call(this, attributes);
+        this.deserializeMachineSelect();
+
+        if (this.machines.length > 0) {
+            this.$('.field-choose').show();
+            this.$('.field-enter').hide();
+        } else {
+            this.$('.field-choose').remove();
+            this.$('.field-enter a').remove();
+        }
+
+        return this;
+    },
+
+    /**
+     * De-serializes the machine select input.
+     *
+     * @return {WorkerEditView} This instance.
+     */
+    deserializeMachineSelect: function() {
+        var modelMachine = this.machineOptionValue(this.model.machine()),
+            chooseSelect = this.$('.field-choose select')[0],
+            enter = this.$('.field-enter'),
+            text,
+            value,
+            i,
+            n,
+            s = 0;
+
+        for (i = 0, n = this.machines.length; i < n; i++) {
+            text = this.machineOptionText(this.machines[i]);
+            value = this.machineOptionValue(this.machines[i]);
+            chooseSelect.options[i] = new Option(text, value);
+
+            if (value === modelMachine) {
+                s = i;
+            }
+        }
+
+        chooseSelect.selectedIndex = s;
+        return this;
+    },
+
+    /**
+     * Handles the enter link click event.
+     */
+    enter: function() {
+        this.$('.field-choose').show();
+        this.$('.field-enter').hide();
+    },
+
+    /**
+     * Focuses the first element in the form.
+     */
+    focus: function() {
+        this.$('input[name="Name"]').focus();
+        return this;
+    },
+
+    /**
+     * Gets a machine object from the given option value.
+     *
+     * @param {String} value The option value describing the machine.
+     * @return {Object} A machine object, or null if none was found.
+     */
+    machineFromOptionValue: function(value) {
+        var name,
+            address,
+            i,
+            n;
+
+        value = _.map($.splitAndTrim(decodeURIComponent(value || ''), '&'), function(s) { return decodeURIComponent(s); });
+        
+        if (value.length === 2) {
+            name = _.find(value, function(s) { return s.indexOf('n=') === 0; });
+            name = name ? name.substr(2) : '';
+
+            address = _.find(value, function(s) { return s.indexOf('a=') === 0; });
+            address = address ? address.substr(2) : '';
+            
+            for (i = 0, n = this.machines.length; i < n; i++) {
+                if (this.machines[i].Name === name && this.machines[i].Address === address) {
+                    return this.machines[i];
+                }
+            }
+        }
+
+        return null;
+    },
+
+    /**
+     * Gets option display text for the given machine object.
+     *
+     * @param {Object} machine The machine object to get option display text for.
+     * @return {String} Option display text.
+     */
+    machineOptionText: function(machine) {
+        var t = '';
+
+        if (machine.Name) {
+            t = machine.Name;
+        };
+
+        if (machine.Address) {
+            if (machine.Name) {
+                t += ' (';
+            }
+
+            t += machine.Address;
+
+            if (machine.Name) {
+                t += ')';
+            }
+        }
+
+        return t;
+    },
+
+    /**
+     * Gets an option value string for the given machine object.
+     *
+     * @param {Object} machine The machine object to get an option value string for.
+     * @return {String} An option value string.
+     */
+    machineOptionValue: function(machine) {
+        return encodeURIComponent('n=' + encodeURIComponent(machine.Name) + '&a=' + encodeURIComponent(machine.Address));
+    },
+
+    /**
+     * Serializes the form.
+     *
+     * @return {Object} The serialized form attributes.
+     */
+    serialize: function() {
+        var obj = FormView.prototype.serialize.call(this),
+            machine = null;
+
+        if (this.machines.length > 0 && this.$('.field-choose').is(':visible')) {
+            machine = this.machineFromOptionValue(this.$('.field-choose select').val());
+        }
+        
+        if (!machine && this.$('.field-enter').is(':visible')) {
+            machine = {
+                Name: this.$('.field-enter input[name="MachineName"]').val(), 
+                Address: this.$('.enter input[name="MachineAddress"]').val()
+            };
+        }
+
+        obj.MachineName = machine.Name;
+        obj.MachineAddress = machine.Address;
+        debugger;
+        return obj;
     }
 });
 /**
@@ -10081,22 +10512,46 @@ var WorkersView = AreaView.extend({
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
 
+        this.machines = options.machines || [];
+        this.model.get('Collection').bind('reset', this.renderId, this);
+
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
-
-        //this.editView = new WorkersFormView({model: this.model});
     },
 
     /**
-     * Handles the list view's edit event.
+     * Handles the edit view's delete event.
      *
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    edit: function(sender, args) {
-        /*this.model.get('Collection').clearSelected({silent: true});
-        args.Model.set({Selected: true}, {silent: true});
-        this.model.set({Editing: args.Model});*/
+    editDelete: function(sender, args) {
+
+    },
+
+    /**
+     * Handles the edit view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+
+    },
+
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     */
+    renderIdView: function(el, model) {
+        var view = new WorkersEditView({model: model, machines: this.machines});
+        view.bind('cancel', this.editCancel, this);
+        view.bind('delete', this.editDelete, this);
+        view.bind('submit', this.editSubmit, this);
+        el.html(view.render().el);
+        view.focus();
     }
 });
 /**
@@ -10185,6 +10640,7 @@ var WorkingView = AreaView.extend({
     var navCollection;
 
     this.options = options = _.extend({
+        chartsLoaded: false,
         stats: null,
         showCounts: true,
         testLink: false
@@ -10210,12 +10666,12 @@ var WorkingView = AreaView.extend({
         navCollection.fetch();
     }
 
-    this.createRouter(DashboardRouter);
-    this.createRouter(HistoryRouter);
-    this.createRouter(QueueRouter);
-    this.createRouter(SchedulesRouter);
-    this.createRouter(WorkersRouter);
-    this.createRouter(WorkingRouter);
+    this.dashboardRouter = this.createRouter(DashboardRouter);
+    this.historyRouter = this.createRouter(HistoryRouter);
+    this.queueRouter = this.createRouter(QueueRouter);
+    this.schedulesRouter = this.createRouter(SchedulesRouter);
+    this.workersRouter = this.createRouter(WorkersRouter);
+    this.workingRouter = this.createRouter(WorkingRouter);
       
     Backbone.history.start();
 };
@@ -10259,6 +10715,16 @@ _.extend(App.prototype, {
         if (args && args.name) {
             this.navView.collection.setCurrent(args.name);
         }
+    },
+
+    /**
+     * Sets a value indicating whether the charts API has been loaded.
+     *
+     * @param {boolean} loaded A value indicating whether the charts API has been loaded.
+     */
+    setChartsLoaded: function(loaded) {
+        this.options.chartsLoaded = loaded;
+        this.dashboardRouter.setChartsLoaded(loaded);
     }
 });
 

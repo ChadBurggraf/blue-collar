@@ -5866,10 +5866,16 @@ a.badge:hover {
 .form input[type="text"],
 .form textarea {
   width: 250px;
+  margin-bottom: 0;
 }
 
 .form select {
   width: 258px;
+  margin-bottom: 0;
+}
+
+.form .field {
+  margin-bottom: 9px;
 }
 
 .form .field span {
@@ -5880,6 +5886,23 @@ a.badge:hover {
 
 .form .field span em {
   color: #f00;
+}
+
+.form .field-stacked {
+  margin-bottom: 9px;
+}
+
+.form .field-stacked input {
+  margin-bottom: 0;
+}
+
+.form .field-stacked label {
+  margin-top: 3px;
+  margin-bottom: 0;
+}
+
+.form .field-stacked label span {
+  font-weight: normal;
 }
 
 .form .form-actions {
@@ -5906,7 +5929,7 @@ a.badge:hover {
 .form .help-block {
   font-weight: normal !important;
   line-height: normal !important;
-  color: #999;
+  color: #999 !important;
 }
 
 .form .help-block-above {
@@ -5919,6 +5942,22 @@ a.badge:hover {
   line-height: 36px;
   color: #333;
   border-bottom: solid 1px #e5e5e5;
+}
+
+.form .error input,
+.form .error textarea {
+  border-color: #e9322d;
+}
+
+.form .error span {
+  color: #b94a48;
+}
+
+.form .error .error {
+  position: relative;
+  margin-top: -9px;
+  font-weight: normal;
+  line-height: normal;
 }
 
 .form-search {

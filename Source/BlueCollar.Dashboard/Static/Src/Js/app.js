@@ -10,6 +10,7 @@
     var navCollection;
 
     this.options = options = _.extend({
+        chartsLoaded: false,
         stats: null,
         showCounts: true,
         testLink: false
@@ -35,12 +36,12 @@
         navCollection.fetch();
     }
 
-    this.createRouter(DashboardRouter);
-    this.createRouter(HistoryRouter);
-    this.createRouter(QueueRouter);
-    this.createRouter(SchedulesRouter);
-    this.createRouter(WorkersRouter);
-    this.createRouter(WorkingRouter);
+    this.dashboardRouter = this.createRouter(DashboardRouter);
+    this.historyRouter = this.createRouter(HistoryRouter);
+    this.queueRouter = this.createRouter(QueueRouter);
+    this.schedulesRouter = this.createRouter(SchedulesRouter);
+    this.workersRouter = this.createRouter(WorkersRouter);
+    this.workingRouter = this.createRouter(WorkingRouter);
       
     Backbone.history.start();
 };
@@ -84,5 +85,15 @@ _.extend(App.prototype, {
         if (args && args.name) {
             this.navView.collection.setCurrent(args.name);
         }
+    },
+
+    /**
+     * Sets a value indicating whether the charts API has been loaded.
+     *
+     * @param {boolean} loaded A value indicating whether the charts API has been loaded.
+     */
+    setChartsLoaded: function(loaded) {
+        this.options.chartsLoaded = loaded;
+        this.dashboardRouter.setChartsLoaded(loaded);
     }
 });

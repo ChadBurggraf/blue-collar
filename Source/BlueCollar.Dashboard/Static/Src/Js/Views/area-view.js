@@ -10,6 +10,9 @@ var AreaView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.model.bind('change:Id', this.renderId, this);
+        this.model.get('Collection').bind('reset', this.renderId, this);
+
         this.searchView = new SearchView({model: this.model});
         this.searchView.bind('submit', this.submitSearch, this);
         this.searchView.bind('cancel', this.cancelSearch, this);
@@ -33,6 +36,28 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
+     * Handles the list view's edit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    edit: function(sender, args) {
+        this.model.set({Id: args.Model.get('Id')});
+        this.trigger('edit', this);
+    },
+
+    /**
+     * Handles the edit view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editCancel: function(sender, args) {
+        this.model.set({Id: 0});
+        this.trigger('editCancel', this);
+    },
+
+    /**
      * Handles a pager view's page event.
      *
      * @param {Object} sender The event sender.
@@ -52,8 +77,7 @@ var AreaView = Backbone.View.extend({
         var searchEl,
             pagingHeaderEl,
             listEl,
-            pagingFooterEl,
-            detailsEl;
+            pagingFooterEl;
 
         this.searchView.$el.detach();
         this.topPagerView.$el.detach();
@@ -66,15 +90,43 @@ var AreaView = Backbone.View.extend({
         pagingHeaderEl = this.$('.paging-header');
         listEl = this.$('.list');
         pagingFooterEl = this.$('.paging-footer');
-        detailsEl = this.$('.details');
-
+        
         searchEl.html(this.searchView.render().el);
         pagingHeaderEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
 
+        this.renderId();
+
         return this;
     },
+
+    /**
+     * Checks whether the view for the selected ID should be rendered,
+     * and calls renderIdView if necessary.
+     */
+    renderId: function() {
+        var el = this.$('.details').html(''),
+            model;
+
+        if (this.model.get('Id')) {
+            model = this.model.get('Collection').getSelected();
+
+            if (model && model.get('Id') === this.model.get('Id')) {
+                this.renderIdView(el, model);
+            }
+        }
+
+        return this;
+    },
+
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     */
+    renderIdView: function(el, model) {},
 
     /**
      * Handle's the search view's submit event.

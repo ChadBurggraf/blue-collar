@@ -8,7 +8,7 @@ var FormView = Backbone.View.extend({
     events: {
         'submit': 'submit',
         'click button.btn-reset': 'cancel',
-        'click a.delete': 'del',
+        'click a.btn-delete': 'del',
         'click button.btn-confirm-delete': 'confirmDelete',
         'click button.btn-cancel-delete': 'cancelDelete'
     },
@@ -25,7 +25,7 @@ var FormView = Backbone.View.extend({
             errorClassName: 'error',
             fieldSelector: '.field',
             validationSummaryMessage: 'Please correct the errors below.',
-            validationSummarySelector: '.alert.alert-block.error'
+            validationSummarySelector: '.alert-error'
         }, this.options);
 
         this.model.bind('change', this.change, this);
@@ -178,7 +178,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors();
 
         actions = this.$('.form-actions:not(.form-actions-delete)').show();
-        actionsDelete = actions.find('a.delete');
+        actionsDelete = actions.find('a.btn-delete');
         del = this.$('.form-actions-delete').hide();
 
         if (!this.model.get('Id')) {

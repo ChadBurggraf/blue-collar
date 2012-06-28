@@ -7,6 +7,7 @@ var AreaModel = Backbone.Model.extend({
     defaults: {
         ApplicationName: 'Default',
         Collection: new CollarCollection(),
+        Id: 0,
         Loading: false,
         PageCount: 0,
         PageNumber: 1,
@@ -20,7 +21,9 @@ var AreaModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.bind('change:Id', this.id, this);
         this.get('Collection').bind('area', this.area, this);
+        this.get('Collection').bind('reset', this.reset, this);
     },
 
     /**
@@ -36,5 +39,19 @@ var AreaModel = Backbone.Model.extend({
             PageNumber: args.PageNumber,
             TotalCount: args.TotalCount
         });
+    },
+
+    /**
+     * Handles this instance's ID-change event.
+     */
+    id: function() {
+        this.get('Collection').setSelected(this.get('Id'));
+    },
+
+    /**
+     * Handles this instance's collection's reset event.
+     */
+    reset: function() {
+        this.get('Collection').setSelected(this.get('Id'));
     }
 });
