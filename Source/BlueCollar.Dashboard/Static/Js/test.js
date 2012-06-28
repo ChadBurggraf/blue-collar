@@ -10527,7 +10527,7 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     editSubmit: function(sender, args) {
-
+        
     },
 
     /**
