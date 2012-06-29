@@ -17,11 +17,10 @@ var WorkersController = CollarController.extend({
         this.machines = [];
 
         this.model.get('Collection').bind('reset', this.reset, this);
-
+        
         this.view = new WorkersView({el: this.page, model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
-        this.view.bind('edit', this.navigate, this);
-        this.view.bind('editCancel', this.navigate, this);
+        this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
     },
 
@@ -33,7 +32,8 @@ var WorkersController = CollarController.extend({
      */
     editDelete: function(sender, args) {
         args.Model.destroy({
-            error: _.bind(this.error, this, args.Model)
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args)
         });
     },
 
@@ -45,26 +45,16 @@ var WorkersController = CollarController.extend({
      */
     editSubmit: function(sender, args) {
         args.Model.save(args.Attributes, {
-            error: _.bind(this.error, this, args.Model)
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
         });
-
-        this.navigate();
     },
 
     /**
-     * Handles an error response from the server.
-     *
-     * @param {CollarModel} model The model that caused the error.
-     * @param {jqXHR} response The response received from the server.
+     * Refreshes this instance's machine list.
      */
-    error: function(model, response) {
-        
-    },
-
-    /**
-     * Handles this instance's collection's reset event.
-     */
-    reset: function() {
+    refreshMachines: function() {
         var collection = this.model.get('Collection'),
             lookup = {},
             worker,
@@ -99,15 +89,9 @@ var WorkersController = CollarController.extend({
     },
 
     /**
-     * Handles a success response from the server.
-     *
-     * @param {CollarModel} model The model that was saved.
-     * @param {jqXHR} response The response received from the server.
+     * Handles this instance's collection's reset event.
      */
-    success: function(model, response) {
-        NoticeView.create({
-            className: 'alert-success',
-            model: {Title: 'Success!', Message: 'The worker ' + model.get('Name') + ' was saved successfully.'}
-        });
+    reset: function() {
+        this.refreshMachines();
     }
 });

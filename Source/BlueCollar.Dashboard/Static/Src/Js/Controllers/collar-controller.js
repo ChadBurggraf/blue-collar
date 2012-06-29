@@ -18,7 +18,9 @@ var CollarController = function(applicationName, urlRoot, page, options) {
     collection = new this.collection(null, {urlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: this.urlRoot});
+    this.model.bind('change:Id', this.navigate, this);
+
     this.initialize(this.options);
 };
 
@@ -47,27 +49,39 @@ _.extend(CollarController.prototype, Backbone.Events, {
     initialize: function(options) {},
 
     /**
-     * Generic handler for Ajax-related errors.
+     * Handles counts update events.
      *
-     * @param {Backbone.View} view The view the error is related to.
-     * @param {Backbone.Model} model The model the error is related to.
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        this.trigger('counts', this, args);
+    },
+
+    /**
+     * Handles an error response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
      * @param {jqXHR} response The response received from the server.
      */
-    ajaxError: function(view, model, response) {
-        var collection = this.getCollection();
+    error: function(args, model, response) {
+        var handled = false,
+            message;
 
-        if (view && _.isFunction(view.hideLoading)) {
-            view.hideLoading();
+        if (args && args.View) {
+            args.View.hideLoading();
+
+            if (args.View.error(response)) {
+                handled = true;
+            } else {
+                args.View.remove();
+            }
         }
-
-        if (collection && _.isFunction(collection.clearSelected)) {
-            collection.clearSelected();
-        }
-
-        this.model.set({Loading: false});
-
-        if (!view || !view.ajaxError(model, response)) {
-            var message;
+        
+        if (!handled) {
+            this.model.set({Id: 0});
+            this.fetch();
 
             switch (response.status) {
                 case 400:
@@ -88,20 +102,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
             }
 
             NoticeView.create({
-                className: 'error',
+                className: 'alert-error',
                 model: {Title: 'Uh Oh, That Kinda Hurt', Message: message}
             });
         }
-    },
-
-    /**
-     * Handles counts update events.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    counts: function(sender, args) {
-        this.trigger('counts', this, args);
     },
 
     /**
@@ -116,7 +120,7 @@ _.extend(CollarController.prototype, Backbone.Events, {
             collection.fetch({
                 pageNumber: this.model.get('PageNumber'),
                 search: this.model.get('Search'),
-                error: _.bind(this.ajaxError, this, null)
+                error: _.bind(this.error, this, null)
             });
             
             this.navigate();
@@ -177,5 +181,31 @@ _.extend(CollarController.prototype, Backbone.Events, {
      */
     navigateFragment: function() {
         return this.fragment || '';
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        this.model.set({Id: 0});
+
+        if (args.View) {
+            args.View.remove();
+        }
+
+        if (args.Action === 'created' || args.Action === 'deleted') {
+            this.fetch();
+        } else {
+            this.refreshMachines();
+        }
+
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The worker ' + args.Model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });

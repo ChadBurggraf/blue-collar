@@ -32,7 +32,7 @@ var AreaView = Backbone.View.extend({
      */
     cancelSearch: function(sender, args) {
         this.model.set({PageNumber: 1, Search: ''});
-        this.trigger('fetch', this);
+        this.trigger('fetch', this, args);
     },
 
     /**
@@ -43,7 +43,7 @@ var AreaView = Backbone.View.extend({
      */
     edit: function(sender, args) {
         this.model.set({Id: args.Model.get('Id')});
-        this.trigger('edit', this);
+        this.trigger('edit', this, args);
     },
 
     /**
@@ -54,7 +54,31 @@ var AreaView = Backbone.View.extend({
      */
     editCancel: function(sender, args) {
         this.model.set({Id: 0});
-        this.trigger('editCancel', this);
+        sender.remove();
+        this.trigger('editCancel', this, args);
+    },
+
+    /**
+     * Handles the edit view's delete event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editDelete: function(sender, args) {
+        this.model.set({Id: 0});
+        sender.remove();
+        this.trigger('editDelete', this, args);
+    },
+
+    /**
+     * Handles the edit view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+        sender.showLoading();
+        this.trigger('editSubmit', this, _.extend({}, args, {View: sender}));
     },
 
     /**
@@ -65,7 +89,7 @@ var AreaView = Backbone.View.extend({
      */
     page: function(sender, args) {
         this.model.set({PageNumber: args.PageNumber});  
-        this.trigger('fetch', this);
+        this.trigger('fetch', this, args);
     },
 
     /**
@@ -108,7 +132,7 @@ var AreaView = Backbone.View.extend({
     renderId: function() {
         var el = this.$('.details').html(''),
             model;
-
+        
         if (this.model.get('Id')) {
             model = this.model.get('Collection').getSelected();
 
@@ -136,6 +160,6 @@ var AreaView = Backbone.View.extend({
      */
     submitSearch: function(sender, args) {
         this.model.set({PageNumber: 1, Search: args.Search});
-        this.trigger('fetch', this);
+        this.trigger('fetch', this, args);
     }
 });

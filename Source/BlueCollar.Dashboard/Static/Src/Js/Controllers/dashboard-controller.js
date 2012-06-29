@@ -33,7 +33,7 @@ var DashboardController = CollarController.extend({
         this.view.render();
 
         if (this.fetchOnIndex) {
-            this.model.fetch({error: _.bind(this.ajaxError, this, null)});
+            this.model.fetch({error: _.bind(this.error, this, null)});
         } else {
             this.fetchOnIndex = true;
         }

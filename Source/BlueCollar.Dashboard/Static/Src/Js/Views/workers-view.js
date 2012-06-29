@@ -5,6 +5,9 @@
  * @extends {AreaView}
  */
 var WorkersView = AreaView.extend({
+    events: {
+        'click button.btn-add': 'add'
+    },
     template: _.template($('#workers-template').html()),
 
     /**
@@ -23,27 +26,13 @@ var WorkersView = AreaView.extend({
     },
 
     /**
-     * Handles the edit view's delete event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * Handle's the add button's click event.
      */
-    editDelete: function(sender, args) {
+    add: function() {
+        var model = new WorkerModel();
+        model.urlRoot = this.model.get('UrlRoot');
         this.model.set({Id: 0});
-        sender.remove();
-        this.trigger('editDelete', this, args);
-    },
-
-    /**
-     * Handles the edit view's submit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    editSubmit: function(sender, args) {
-        this.model.set({Id: 0});
-        sender.remove();
-        this.trigger('editSubmit', this, args);
+        this.renderIdView($('.details'), model);
     },
 
     /**

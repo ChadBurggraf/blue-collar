@@ -8022,7 +8022,9 @@ var CollarController = function(applicationName, urlRoot, page, options) {
     collection = new this.collection(null, {urlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: this.urlRoot});
+    this.model.bind('change:Id', this.navigate, this);
+
     this.initialize(this.options);
 };
 
@@ -8051,27 +8053,39 @@ _.extend(CollarController.prototype, Backbone.Events, {
     initialize: function(options) {},
 
     /**
-     * Generic handler for Ajax-related errors.
+     * Handles counts update events.
      *
-     * @param {Backbone.View} view The view the error is related to.
-     * @param {Backbone.Model} model The model the error is related to.
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    counts: function(sender, args) {
+        this.trigger('counts', this, args);
+    },
+
+    /**
+     * Handles an error response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
      * @param {jqXHR} response The response received from the server.
      */
-    ajaxError: function(view, model, response) {
-        var collection = this.getCollection();
+    error: function(args, model, response) {
+        var handled = false,
+            message;
 
-        if (view && _.isFunction(view.hideLoading)) {
-            view.hideLoading();
+        if (args && args.View) {
+            args.View.hideLoading();
+
+            if (args.View.error(response)) {
+                handled = true;
+            } else {
+                args.View.remove();
+            }
         }
-
-        if (collection && _.isFunction(collection.clearSelected)) {
-            collection.clearSelected();
-        }
-
-        this.model.set({Loading: false});
-
-        if (!view || !view.ajaxError(model, response)) {
-            var message;
+        
+        if (!handled) {
+            this.model.set({Id: 0});
+            this.fetch();
 
             switch (response.status) {
                 case 400:
@@ -8092,20 +8106,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
             }
 
             NoticeView.create({
-                className: 'error',
+                className: 'alert-error',
                 model: {Title: 'Uh Oh, That Kinda Hurt', Message: message}
             });
         }
-    },
-
-    /**
-     * Handles counts update events.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    counts: function(sender, args) {
-        this.trigger('counts', this, args);
     },
 
     /**
@@ -8120,7 +8124,7 @@ _.extend(CollarController.prototype, Backbone.Events, {
             collection.fetch({
                 pageNumber: this.model.get('PageNumber'),
                 search: this.model.get('Search'),
-                error: _.bind(this.ajaxError, this, null)
+                error: _.bind(this.error, this, null)
             });
             
             this.navigate();
@@ -8181,6 +8185,32 @@ _.extend(CollarController.prototype, Backbone.Events, {
      */
     navigateFragment: function() {
         return this.fragment || '';
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        this.model.set({Id: 0});
+
+        if (args.View) {
+            args.View.remove();
+        }
+
+        if (args.Action === 'created' || args.Action === 'deleted') {
+            this.fetch();
+        } else {
+            this.refreshMachines();
+        }
+
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The worker ' + args.Model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });
 /**
@@ -8218,7 +8248,7 @@ var DashboardController = CollarController.extend({
         this.view.render();
 
         if (this.fetchOnIndex) {
-            this.model.fetch({error: _.bind(this.ajaxError, this, null)});
+            this.model.fetch({error: _.bind(this.error, this, null)});
         } else {
             this.fetchOnIndex = true;
         }
@@ -8325,11 +8355,10 @@ var WorkersController = CollarController.extend({
         this.machines = [];
 
         this.model.get('Collection').bind('reset', this.reset, this);
-
+        
         this.view = new WorkersView({el: this.page, model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
-        this.view.bind('edit', this.navigate, this);
-        this.view.bind('editCancel', this.navigate, this);
+        this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
     },
 
@@ -8341,8 +8370,8 @@ var WorkersController = CollarController.extend({
      */
     editDelete: function(sender, args) {
         args.Model.destroy({
-            success: _.bind(this.success, this, args.Model),
-            error: _.bind(this.error, this, args.Model)
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args)
         });
     },
 
@@ -8354,27 +8383,16 @@ var WorkersController = CollarController.extend({
      */
     editSubmit: function(sender, args) {
         args.Model.save(args.Attributes, {
-            success: _.bind(this.success, this, args.Model),
-            error: _.bind(this.error, this, args.Model)
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
         });
-
-        this.navigate();
     },
 
     /**
-     * Handles an error response from the server.
-     *
-     * @param {CollarModel} model The model that caused the error.
-     * @param {jqXHR} response The response received from the server.
+     * Refreshes this instance's machine list.
      */
-    error: function(model, response) {
-
-    },
-
-    /**
-     * Handles this instance's collection's reset event.
-     */
-    reset: function() {
+    refreshMachines: function() {
         var collection = this.model.get('Collection'),
             lookup = {},
             worker,
@@ -8409,16 +8427,10 @@ var WorkersController = CollarController.extend({
     },
 
     /**
-     * Handles a success response from the server.
-     *
-     * @param {CollarModel} model The model that was saved.
-     * @param {jqXHR} response The response received from the server.
+     * Handles this instance's collection's reset event.
      */
-    success: function(model, response) {
-        NoticeView.create({
-            className: 'alert-success',
-            model: {Title: 'Success!', Message: 'The worker ' + model.get('Name') + ' was saved successfully.'}
-        });
+    reset: function() {
+        this.refreshMachines();
     }
 });
 /**
@@ -8816,31 +8828,6 @@ var FormView = Backbone.View.extend({
     },
 
     /**
-     * Attempts to render an error response generated by the server.
-     *
-     * @param {CollarModel} model The model that caused the error to be generated.
-     * @param {jqXHR} response The Ajax response object indicating the error.
-     * @return {boolean} True if the error was handled by this function, false otherwise.
-     */
-    ajaxError: function(model, response) {
-        if (/^application\/json/i.test(response.getResponseHeader('Content-Type'))) {
-            var json = null;
-
-            try {
-                json = JSON.parse(response.responseText);
-            } catch (e) {
-            }
-
-            if (json && !_.isEmpty(json)) {
-                this.renderErrors(json);
-                return true;
-            }
-        }
-
-        return false;
-    },
-
-    /**
      * Handles the non-delete cancel button press.
      */
     cancel: function() {
@@ -8868,7 +8855,7 @@ var FormView = Backbone.View.extend({
      * Handles the confirm-delete button press.
      */
     confirmDelete: function() {
-        this.trigger('delete', this);
+        this.trigger('delete', this, {Model: this.model, Attributes: {}, Action: 'deleted'});
     },
 
     /**
@@ -8890,6 +8877,30 @@ var FormView = Backbone.View.extend({
     deserialize: function(attributes) {
         new FormSerializer().deserialize(this.$el, attributes, this.serializers);
         return this;
+    },
+
+    /**
+     * Attempts to render an error response generated by the server.
+     *
+     * @param {jqXHR} response The Ajax response object indicating the error.
+     * @return {boolean} True if the error was handled by this function, false otherwise.
+     */
+    error: function(response) {
+        if (/^application\/json/i.test(response.getResponseHeader('Content-Type'))) {
+            var json = null;
+
+            try {
+                json = JSON.parse(response.responseText);
+            } catch (e) {
+            }
+
+            if (json && !_.isEmpty(json)) {
+                this.renderErrors(json);
+                return true;
+            }
+        }
+
+        return false;
     },
 
     /**
@@ -9122,7 +9133,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors(errors);
 
         if (!errors) {
-            this.trigger('submit', this, {Model: this.model, Attributes: attributes});
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: this.model.isNew() ? 'created' : 'updated'});
         }
 
         return this;
@@ -9547,7 +9558,7 @@ var AreaView = Backbone.View.extend({
      */
     cancelSearch: function(sender, args) {
         this.model.set({PageNumber: 1, Search: ''});
-        this.trigger('fetch', this);
+        this.trigger('fetch', this, args);
     },
 
     /**
@@ -9558,7 +9569,7 @@ var AreaView = Backbone.View.extend({
      */
     edit: function(sender, args) {
         this.model.set({Id: args.Model.get('Id')});
-        this.trigger('edit', this);
+        this.trigger('edit', this, args);
     },
 
     /**
@@ -9569,7 +9580,31 @@ var AreaView = Backbone.View.extend({
      */
     editCancel: function(sender, args) {
         this.model.set({Id: 0});
-        this.trigger('editCancel', this);
+        sender.remove();
+        this.trigger('editCancel', this, args);
+    },
+
+    /**
+     * Handles the edit view's delete event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editDelete: function(sender, args) {
+        this.model.set({Id: 0});
+        sender.remove();
+        this.trigger('editDelete', this, args);
+    },
+
+    /**
+     * Handles the edit view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+        sender.showLoading();
+        this.trigger('editSubmit', this, _.extend({}, args, {View: sender}));
     },
 
     /**
@@ -9580,7 +9615,7 @@ var AreaView = Backbone.View.extend({
      */
     page: function(sender, args) {
         this.model.set({PageNumber: args.PageNumber});  
-        this.trigger('fetch', this);
+        this.trigger('fetch', this, args);
     },
 
     /**
@@ -9623,7 +9658,7 @@ var AreaView = Backbone.View.extend({
     renderId: function() {
         var el = this.$('.details').html(''),
             model;
-
+        
         if (this.model.get('Id')) {
             model = this.model.get('Collection').getSelected();
 
@@ -9651,7 +9686,7 @@ var AreaView = Backbone.View.extend({
      */
     submitSearch: function(sender, args) {
         this.model.set({PageNumber: 1, Search: args.Search});
-        this.trigger('fetch', this);
+        this.trigger('fetch', this, args);
     }
 });
 /**
@@ -10594,6 +10629,9 @@ var WorkersRowView = RowView.extend({
  * @extends {AreaView}
  */
 var WorkersView = AreaView.extend({
+    events: {
+        'click button.btn-add': 'add'
+    },
     template: _.template($('#workers-template').html()),
 
     /**
@@ -10612,27 +10650,13 @@ var WorkersView = AreaView.extend({
     },
 
     /**
-     * Handles the edit view's delete event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * Handle's the add button's click event.
      */
-    editDelete: function(sender, args) {
+    add: function() {
+        var model = new WorkerModel();
+        model.urlRoot = this.model.get('UrlRoot');
         this.model.set({Id: 0});
-        sender.remove();
-        this.trigger('editDelete', this, args);
-    },
-
-    /**
-     * Handles the edit view's submit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    editSubmit: function(sender, args) {
-        this.model.set({Id: 0});
-        sender.remove();
-        this.trigger('editSubmit', this, args);
+        this.renderIdView($('.details'), model);
     },
 
     /**

@@ -61,7 +61,7 @@
         </div>
 
         <div class="form-actions">
-            <input type="submit" class="btn btn-primary" value="Update Worker">
+            <input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Worker'); } else { print('Create Worker'); } %>">
             <button type="button" class="btn btn-reset">Cancel</button>
             <a class="btn-delete" href="javascript:void(0);">delete</a>
         </div>
@@ -132,6 +132,10 @@
 
 <script type="text/template" id="workers-template">
     <div class="page-header">
+        <button class="btn btn-success btn-add pull-right">
+            <i class="icon-plus icon-white"></i>
+            Add worker
+        </button>
         <h1>
             Workers
             <small><%- ApplicationName %></small>

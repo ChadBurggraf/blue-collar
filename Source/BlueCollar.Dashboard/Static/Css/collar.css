@@ -5843,7 +5843,7 @@ a.badge:hover {
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1020;
   padding: 8px 0;
   margin-top: 40px;
   margin-bottom: 0;
@@ -5980,8 +5980,6 @@ a.badge:hover {
 }
 
 .form .error .error {
-  position: relative;
-  margin-top: -9px;
   font-weight: normal;
   line-height: normal;
 }
@@ -6228,7 +6226,7 @@ a.badge:hover {
   border: none;
 }
 
-.table > tbody > tr td:first-child > a.btn-row-data {
+.table > tbody > tr td:first-child > .btn-row-data {
   display: none;
 }
 
@@ -6275,8 +6273,8 @@ a.badge:hover {
   line-height: 13px;
 }
 
-.table-paged tr.empty p,
-.table-paged tr.loading p {
+.table-paged .empty p,
+.table-paged .loading p {
   position: relative;
   padding: 0;
   margin: 0;
@@ -6285,16 +6283,16 @@ a.badge:hover {
   text-align: center;
 }
 
-.table-paged tr.empty td,
-.table-paged tr.loading td {
+.table-paged .empty td,
+.table-paged .loading td {
   background-color: #fff !important;
 }
 
-.table-paged tr.loading p {
+.table-paged .loading p {
   height: 39px;
 }
 
-.table-paged tr.loading span.loading {
+.table-paged .loading .loading {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -6306,12 +6304,12 @@ a.badge:hover {
   background: url(../img/loading-list.gif) no-repeat;
 }
 
-.table-paged tr.selected td {
+.table-paged .selected td {
   color: #205791;
   background: #c7eefe !important;
 }
 
-.table-paged tr.selected td .light {
+.table-paged .selected td .light {
   color: #205791;
 }
 
