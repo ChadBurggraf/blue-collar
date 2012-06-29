@@ -29,7 +29,9 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     editDelete: function(sender, args) {
-
+        this.model.set({Id: 0});
+        sender.remove();
+        this.trigger('editDelete', this, args);
     },
 
     /**
@@ -39,7 +41,9 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     editSubmit: function(sender, args) {
-        
+        this.model.set({Id: 0});
+        sender.remove();
+        this.trigger('editSubmit', this, args);
     },
 
     /**

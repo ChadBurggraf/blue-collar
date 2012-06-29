@@ -8321,6 +8321,45 @@ var WorkersController = CollarController.extend({
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('edit', this.navigate, this);
         this.view.bind('editCancel', this.navigate, this);
+        this.view.bind('editSubmit', this.editSubmit, this);
+    },
+
+    /**
+     * Handle's this instance's view's editDelete event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editDelete: function(sender, args) {
+        args.Model.destroy({
+            success: _.bind(this.success, this, args.Model),
+            error: _.bind(this.error, this, args.Model)
+        });
+    },
+
+    /**
+     * Handle's this instance's view's editSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args.Model),
+            error: _.bind(this.error, this, args.Model)
+        });
+
+        this.navigate();
+    },
+
+    /**
+     * Handles an error response from the server.
+     *
+     * @param {CollarModel} model The model that caused the error.
+     * @param {jqXHR} response The response received from the server.
+     */
+    error: function(model, response) {
+
     },
 
     /**
@@ -8358,6 +8397,19 @@ var WorkersController = CollarController.extend({
         }
 
         this.view.machines = this.machines = _.sortBy(this.machines, 'Name');
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {CollarModel} model The model that was saved.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(model, response) {
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The worker ' + model.get('Name') + ' was saved successfully.'}
+        });
     }
 });
 /**
@@ -8865,15 +8917,37 @@ var FormView = Backbone.View.extend({
             i,
             n;
 
+        function il(e) {
+            var d = e.data('FormView:Loading');
+
+            if (d) {
+                e[0].disabled = d.disabled;
+            }
+
+            e.removeData('FormView:Loading');
+        }
+
         if (this.isLoading) {
             elements = this.$(this.inputSelector);
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('button');
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('a');
 
             for (i = 0, n = elements.length; i < n; i++) {
                 el = $(elements[i]);
                 data = el.data('FormView:Loading');
 
                 if (data) {
-                    el[0].disabled = data.disabled;
+                    el.css('display', data.display);
                 }
 
                 el.removeData('FormView:Loading');
@@ -8996,14 +9070,31 @@ var FormView = Backbone.View.extend({
             i,
             n;
 
+        function il(e) {
+            e.data('FormView:Loading', {disabled: e[0].disabled});
+            e.attr('disabled', 'disabled');
+        }
+
         if (!this.isLoading) {
             this.isLoading = true;
             elements = this.$(this.inputSelector);
 
             for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('button');
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('a');
+
+            for (i = 0, n = elements.length; i < n; i++) {
                 el = $(elements[i]);
-                el.data('FormView:Loading', {disabled: el[0].disabled});
-                el.attr('disabled', 'disabled');
+                el.data('FormView:Loading', {display: el.css('display')});
+                el.css('display', 'none');
             }
         }   
     },
@@ -9022,7 +9113,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors(errors);
 
         if (!errors) {
-            this.trigger('submit', this, attributes);
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes});
         }
 
         return this;
@@ -9953,7 +10044,7 @@ var NavView = Backbone.View.extend({
  * @constructor
  */
 var NoticeView = Backbone.View.extend({
-    className: 'alert alert-block',
+    className: 'alert alert-block alert-notice',
     events: {
         "click a.close": "destroy"
     },
@@ -9967,8 +10058,12 @@ var NoticeView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.resize();
-        $(window).resize(_.bind(this.resize, this));
+        this.options = _.extend({
+            margin: 40
+        }, options);
+
+        this.scroll();
+        $(window).on('scroll', _.bind(this.scroll, this));
     },
 
     /**
@@ -9978,6 +10073,11 @@ var NoticeView = Backbone.View.extend({
         NoticeView.destroy();
     },
 
+    /**
+     * Renders the view.
+     *
+     * @return {NaviItemView} This instance.
+     */
     render: function() {
         this.$el
             .css('display', 'none')
@@ -9987,20 +10087,16 @@ var NoticeView = Backbone.View.extend({
     },
 
     /**
-     * Renders the view.
-     *
-     * @return {NaviItemView} This instance.
+     * Handles the window's scroll event.
      */
-    resize: function() {
-        var sub = this.$el.outerWidth() - this.$el.width(),
-            page = $('#page'),
-            pageWidth = page.outerWidth(),
-            pageOffset = page.offset();
-        
-        this.$el.css({
-            width: (pageWidth - sub) + 'px',
-            left: pageOffset.left + 'px'
-        });
+    scroll: function() {
+        var margin = this.options.margin - $(window).scrollTop();
+
+        if (margin > 0) {
+            this.$el.css('marginTop', margin + 'px');
+        } else {
+            this.$el.css('marginTop', '0');
+        }
     }
 });
 
@@ -10024,7 +10120,7 @@ _.extend(NoticeView, {
 
         options = _.extend({
             destroy: true,
-            scroll: true,
+            margin: 40,
             timeout: 7500
         }, options);
 
@@ -10051,12 +10147,8 @@ _.extend(NoticeView, {
         }
 
         $('body').append(el);
-        view.resize();
+        view.scroll();
         el.fadeIn();
-
-        if (options.scroll) {
-            scrollTo(0, 0);
-        }
 
         if (options.destroy) {
             if (NoticeView.timeout) {
@@ -10439,7 +10531,7 @@ var WorkersEditView = FormView.extend({
 
         obj.MachineName = machine.Name;
         obj.MachineAddress = machine.Address;
-        debugger;
+
         return obj;
     }
 });
@@ -10517,7 +10609,9 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     editDelete: function(sender, args) {
-
+        this.model.set({Id: 0});
+        sender.remove();
+        this.trigger('editDelete', this, args);
     },
 
     /**
@@ -10527,7 +10621,9 @@ var WorkersView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     editSubmit: function(sender, args) {
-        
+        this.model.set({Id: 0});
+        sender.remove();
+        this.trigger('editSubmit', this, args);
     },
 
     /**
@@ -10604,18 +10700,6 @@ var WorkingView = AreaView.extend({
         AreaView.prototype.initialize.call(this, options);
         this.listView = new WorkingListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
-    },
-
-    /**
-     * Handles the list view's edit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    edit: function(sender, args) {
-        debugger;
-        var editView = new WorkersEditView({model: args.Model});
-        this.$('.details').html(editView.render().el);
     }
 });
 

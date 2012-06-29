@@ -209,7 +209,7 @@ var WorkersEditView = FormView.extend({
 
         obj.MachineName = machine.Name;
         obj.MachineAddress = machine.Address;
-        debugger;
+
         return obj;
     }
 });

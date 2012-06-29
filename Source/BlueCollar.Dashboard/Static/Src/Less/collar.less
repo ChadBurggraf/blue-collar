@@ -1,4 +1,27 @@
+@import "../../../../../Bootstrap/less/variables.less";
 @import "../../../../../Bootstrap/less/mixins.less";
+
+.alert-notice {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 1020;
+	padding: 8px 0;
+	margin-top: 40px;
+	margin-bottom: 0;
+	.border-radius(0);
+    .box-shadow(0 1px 5px rgba(0,0,0,.1));
+
+	p {
+		margin: 0;
+		text-align: center;
+	}
+}
+
+.alert-notice .container {
+	#grid > .core > .span(@gridColumns);
+}
 
 .chart  {
 	margin-bottom: 40px; 
@@ -55,9 +78,9 @@
 		}
 
 		label {
-			margin-bottom: 0;
 			margin-top: 3px;
-
+			margin-bottom: 0;
+			
 			span {
 				font-weight: normal;
 			}
@@ -221,9 +244,9 @@
 		float: left;
 		padding: 0 14px;
 		line-height: 30px;
+		color: #999;
 		border: solid 1px #ddd;
 		.border-radius(3px 0 0 3px);
-		color: #999;
 	}
 
     ul {
@@ -290,10 +313,10 @@
 
 	.btn-row-data {
 		position: absolute;
-		right: 0;
 		top: 50%;
-		margin-top: -14px;
+		right: 0;
 		display: none;
+		margin-top: -14px;
 	}
 }
 
@@ -344,7 +367,7 @@
 	}
 }
 
-.table > tbody > tr td:first-child > a.btn-row-data {
+.table > tbody > tr td:first-child > .btn-row-data {
     display: none;
 }
 
@@ -388,8 +411,8 @@
 		line-height: 13px;
 	}
 
-	tr.empty,
-	tr.loading {
+	.empty,
+	.loading {
 		p {
 			position: relative;
 			padding: 0;
@@ -404,35 +427,39 @@
 		}
 	}
 
-	tr.loading {
+	.loading {
 		p {
 			height: 39px;
 		}
 
-		span.loading {
+		.loading {
 			position: absolute;
+			top: 50%;
+			left: 50%;
 			display: block;
 			width: 16px;
 			height: 16px;
-			background: url(../img/loading-list.gif) no-repeat;
-			left: 50%;
-			margin-left: -8px;
-			top: 50%;
 			margin-top: -8px;
+			margin-left: -8px;
+			background: url(../img/loading-list.gif) no-repeat;
 		}
 	}
 
-	tr.selected td {
-		background: #c7eefe !important;
+	.selected td {
 		color: #205791;
+		background: #c7eefe !important;
 	}
 
-	tr.selected td .light {
+	.selected td .light {
 		color: #205791;
 	}
 }
 
 @media (min-width: 1200px) {
+	.alert-notice .container {
+		width: 1170px;
+	}
+
     .form {
         input[type="text"],
         textarea {
@@ -446,6 +473,10 @@
 }
 
 @media (max-width: 979px) and (min-width: 768px) {
+	.alert-notice .container {
+		width: 724px;
+	}
+
     .form {
         input[type="text"],
         textarea {
@@ -483,7 +514,16 @@
 		padding-right: 0;
 	}
 
-	#page {
+	.alert-notice {
+		padding-left: 20px;
+		padding-right: 20px;
+		
+		.container {
+			width: auto;
+		}
+	}
+
+	.container-page {
 		padding-left: 20px;
 		padding-right: 20px;
 	}

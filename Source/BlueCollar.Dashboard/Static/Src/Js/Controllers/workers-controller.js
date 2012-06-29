@@ -22,6 +22,43 @@ var WorkersController = CollarController.extend({
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('edit', this.navigate, this);
         this.view.bind('editCancel', this.navigate, this);
+        this.view.bind('editSubmit', this.editSubmit, this);
+    },
+
+    /**
+     * Handle's this instance's view's editDelete event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editDelete: function(sender, args) {
+        args.Model.destroy({
+            error: _.bind(this.error, this, args.Model)
+        });
+    },
+
+    /**
+     * Handle's this instance's view's editSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+        args.Model.save(args.Attributes, {
+            error: _.bind(this.error, this, args.Model)
+        });
+
+        this.navigate();
+    },
+
+    /**
+     * Handles an error response from the server.
+     *
+     * @param {CollarModel} model The model that caused the error.
+     * @param {jqXHR} response The response received from the server.
+     */
+    error: function(model, response) {
+        
     },
 
     /**
@@ -59,5 +96,18 @@ var WorkersController = CollarController.extend({
         }
 
         this.view.machines = this.machines = _.sortBy(this.machines, 'Name');
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {CollarModel} model The model that was saved.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(model, response) {
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The worker ' + model.get('Name') + ' was saved successfully.'}
+        });
     }
 });

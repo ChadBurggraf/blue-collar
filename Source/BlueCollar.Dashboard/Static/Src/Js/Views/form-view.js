@@ -144,15 +144,37 @@ var FormView = Backbone.View.extend({
             i,
             n;
 
+        function il(e) {
+            var d = e.data('FormView:Loading');
+
+            if (d) {
+                e[0].disabled = d.disabled;
+            }
+
+            e.removeData('FormView:Loading');
+        }
+
         if (this.isLoading) {
             elements = this.$(this.inputSelector);
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('button');
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('a');
 
             for (i = 0, n = elements.length; i < n; i++) {
                 el = $(elements[i]);
                 data = el.data('FormView:Loading');
 
                 if (data) {
-                    el[0].disabled = data.disabled;
+                    el.css('display', data.display);
                 }
 
                 el.removeData('FormView:Loading');
@@ -275,14 +297,31 @@ var FormView = Backbone.View.extend({
             i,
             n;
 
+        function il(e) {
+            e.data('FormView:Loading', {disabled: e[0].disabled});
+            e.attr('disabled', 'disabled');
+        }
+
         if (!this.isLoading) {
             this.isLoading = true;
             elements = this.$(this.inputSelector);
 
             for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('button');
+
+            for (i = 0, n = elements.length; i < n; i++) {
+                il($(elements[i]));
+            }
+
+            elements = this.$('a');
+
+            for (i = 0, n = elements.length; i < n; i++) {
                 el = $(elements[i]);
-                el.data('FormView:Loading', {disabled: el[0].disabled});
-                el.attr('disabled', 'disabled');
+                el.data('FormView:Loading', {display: el.css('display')});
+                el.css('display', 'none');
             }
         }   
     },
@@ -301,7 +340,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors(errors);
 
         if (!errors) {
-            this.trigger('submit', this, attributes);
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes});
         }
 
         return this;

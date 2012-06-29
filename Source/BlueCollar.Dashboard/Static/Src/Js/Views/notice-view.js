@@ -4,7 +4,7 @@
  * @constructor
  */
 var NoticeView = Backbone.View.extend({
-    className: 'alert alert-block',
+    className: 'alert alert-block alert-notice',
     events: {
         "click a.close": "destroy"
     },
@@ -18,8 +18,12 @@ var NoticeView = Backbone.View.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.resize();
-        $(window).resize(_.bind(this.resize, this));
+        this.options = _.extend({
+            margin: 40
+        }, options);
+
+        this.scroll();
+        $(window).on('scroll', _.bind(this.scroll, this));
     },
 
     /**
@@ -29,6 +33,11 @@ var NoticeView = Backbone.View.extend({
         NoticeView.destroy();
     },
 
+    /**
+     * Renders the view.
+     *
+     * @return {NaviItemView} This instance.
+     */
     render: function() {
         this.$el
             .css('display', 'none')
@@ -38,20 +47,16 @@ var NoticeView = Backbone.View.extend({
     },
 
     /**
-     * Renders the view.
-     *
-     * @return {NaviItemView} This instance.
+     * Handles the window's scroll event.
      */
-    resize: function() {
-        var sub = this.$el.outerWidth() - this.$el.width(),
-            page = $('#page'),
-            pageWidth = page.outerWidth(),
-            pageOffset = page.offset();
-        
-        this.$el.css({
-            width: (pageWidth - sub) + 'px',
-            left: pageOffset.left + 'px'
-        });
+    scroll: function() {
+        var margin = this.options.margin - $(window).scrollTop();
+
+        if (margin > 0) {
+            this.$el.css('marginTop', margin + 'px');
+        } else {
+            this.$el.css('marginTop', '0');
+        }
     }
 });
 
@@ -75,7 +80,7 @@ _.extend(NoticeView, {
 
         options = _.extend({
             destroy: true,
-            scroll: true,
+            margin: 40,
             timeout: 7500
         }, options);
 
@@ -102,12 +107,8 @@ _.extend(NoticeView, {
         }
 
         $('body').append(el);
-        view.resize();
+        view.scroll();
         el.fadeIn();
-
-        if (options.scroll) {
-            scrollTo(0, 0);
-        }
 
         if (options.destroy) {
             if (NoticeView.timeout) {

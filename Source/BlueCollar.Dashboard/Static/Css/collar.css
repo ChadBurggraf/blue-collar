@@ -5838,6 +5838,32 @@ a.badge:hover {
           box-sizing: border-box;
 }
 
+.alert-notice {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  padding: 8px 0;
+  margin-top: 40px;
+  margin-bottom: 0;
+  -webkit-border-radius: 0;
+     -moz-border-radius: 0;
+          border-radius: 0;
+  -webkit-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+     -moz-box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.alert-notice p {
+  margin: 0;
+  text-align: center;
+}
+
+.alert-notice .container {
+  width: 940px;
+}
+
 .chart {
   margin-bottom: 40px;
   border: solid 1px #e5e5e5;
@@ -6290,6 +6316,9 @@ a.badge:hover {
 }
 
 @media (min-width: 1200px) {
+  .alert-notice .container {
+    width: 1170px;
+  }
   .form input[type="text"],
   .form textarea {
     width: 320px;
@@ -6300,6 +6329,9 @@ a.badge:hover {
 }
 
 @media (max-width: 979px) and (min-width: 768px) {
+  .alert-notice .container {
+    width: 724px;
+  }
   .form input[type="text"],
   .form textarea {
     width: 178px;
@@ -6328,7 +6360,14 @@ a.badge:hover {
     padding-right: 0;
     padding-left: 0;
   }
-  #page {
+  .alert-notice {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  .alert-notice .container {
+    width: auto;
+  }
+  .container-page {
     padding-right: 20px;
     padding-left: 20px;
   }
