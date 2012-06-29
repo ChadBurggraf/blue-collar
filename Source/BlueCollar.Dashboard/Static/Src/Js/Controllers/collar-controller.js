@@ -20,6 +20,7 @@ var CollarController = function(applicationName, urlRoot, page, options) {
 
     this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: this.urlRoot});
     this.model.bind('change:Id', this.navigate, this);
+    this.model.bind('change:Action', this.navigate, this);
 
     this.initialize(this.options);
 };
@@ -80,7 +81,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
         }
         
         if (!handled) {
-            this.model.set({Id: 0});
+            if (_.isFunction(this.model.clearId)) {
+                this.model.clearId();
+            }
+
             this.fetch();
 
             switch (response.status) {
@@ -143,8 +147,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {String} search The search string to filter the view on.
      * @param {Number} page The page number to filter the view on.
      * @param {Number} id The requested record ID to display.
+     * @param {String} action The requested record action to take.
      */
-    index: function(search, page, id) {
+    index: function(search, page, id, action) {
         if (page && !_.isNumber(page)) {
             page = parseInt(page, 10);
         } else {
@@ -156,8 +161,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
         } else {
             id = 0;
         }
-
-        this.model.set({Search: search || '', PageNumber: page, Id: id, Loading: true}, {silent: true});
+        
+        this.model.set({Search: search || '', PageNumber: page, Id: id, Action: action || '', Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
     },
@@ -169,9 +174,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
         var fragment = this.navigateFragment(),
             search = this.model.get('Search'),
             pageNumber = this.model.get('PageNumber'),
-            id = this.model.get('Id');
+            id = this.model.get('Id'),
+            action = this.model.get('Action');
 
-        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id});
+        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id, Action: action});
     },
 
     /**
@@ -191,7 +197,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
-        this.model.set({Id: 0});
+        if (_.isFunction(this.model.clearId)) {
+            this.model.clearId();
+        }
 
         if (args.View) {
             args.View.remove();

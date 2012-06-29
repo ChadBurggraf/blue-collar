@@ -23,6 +23,7 @@ var WorkersView = AreaView.extend({
 
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
+        this.listView.bind('signal', this.signal, this);
     },
 
     /**
@@ -31,7 +32,7 @@ var WorkersView = AreaView.extend({
     add: function() {
         var model = new WorkerModel();
         model.urlRoot = this.model.get('UrlRoot');
-        this.model.set({Id: 0});
+        this.model.clearId();
         this.renderIdView($('.details'), model);
     },
 
@@ -42,10 +43,18 @@ var WorkersView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var view = new WorkersEditView({model: model, machines: this.machines});
-        view.bind('cancel', this.editCancel, this);
-        view.bind('delete', this.editDelete, this);
-        view.bind('submit', this.editSubmit, this);
+        var view;
+
+        if (this.model.get('Action') === 'signal') {
+            view = new WorkersSignalView({model: model});
+            view.bind('cancel', this.editCancel, this);
+        } else {
+            view = new WorkersEditView({model: model, machines: this.machines});
+            view.bind('cancel', this.editCancel, this);
+            view.bind('delete', this.editDelete, this);
+            view.bind('submit', this.editSubmit, this);
+        }
+
         el.html(view.render().el);
         view.focus();
     }

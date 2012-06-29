@@ -36,7 +36,7 @@ var WorkersEditView = FormView.extend({
         FormView.prototype.initialize.call(this, options);
         this.machines = this.options.machines || [];
 
-        this.events = _.extend(this.events, {
+        this.events = _.extend({}, this.events, {
             'click .field-choose a': 'choose',
             'click .field-enter a': 'enter'
         });

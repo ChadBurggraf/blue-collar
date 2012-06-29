@@ -7493,6 +7493,13 @@ var AreaModel = Backbone.Model.extend({
     },
 
     /**
+     * Clears this instance's selected ID.
+     */
+    clearId: function(options) {
+        this.set({Id: 0, Action: ''}, options);
+    },
+
+    /**
      * Handles this instance's ID-change event.
      */
     id: function() {
@@ -8024,6 +8031,7 @@ var CollarController = function(applicationName, urlRoot, page, options) {
 
     this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: this.urlRoot});
     this.model.bind('change:Id', this.navigate, this);
+    this.model.bind('change:Action', this.navigate, this);
 
     this.initialize(this.options);
 };
@@ -8084,7 +8092,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
         }
         
         if (!handled) {
-            this.model.set({Id: 0});
+            if (_.isFunction(this.model.clearId)) {
+                this.model.clearId();
+            }
+
             this.fetch();
 
             switch (response.status) {
@@ -8147,8 +8158,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {String} search The search string to filter the view on.
      * @param {Number} page The page number to filter the view on.
      * @param {Number} id The requested record ID to display.
+     * @param {String} action The requested record action to take.
      */
-    index: function(search, page, id) {
+    index: function(search, page, id, action) {
         if (page && !_.isNumber(page)) {
             page = parseInt(page, 10);
         } else {
@@ -8160,8 +8172,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
         } else {
             id = 0;
         }
-
-        this.model.set({Search: search || '', PageNumber: page, Id: id, Loading: true}, {silent: true});
+        
+        this.model.set({Search: search || '', PageNumber: page, Id: id, Action: action || '', Loading: true}, {silent: true});
         this.view.render();
         this.fetch();
     },
@@ -8173,9 +8185,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
         var fragment = this.navigateFragment(),
             search = this.model.get('Search'),
             pageNumber = this.model.get('PageNumber'),
-            id = this.model.get('Id');
+            id = this.model.get('Id'),
+            action = this.model.get('Action');
 
-        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id});
+        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id, Action: action});
     },
 
     /**
@@ -8195,7 +8208,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
-        this.model.set({Id: 0});
+        if (_.isFunction(this.model.clearId)) {
+            this.model.clearId();
+        }
 
         if (args.View) {
             args.View.remove();
@@ -8481,6 +8496,7 @@ var CollarRouter = Backbone.Router.extend({
         var url;
 
         args = _.extend({
+            Action: '',
             Fragment: '',
             Id: 0,
             PageNumber: 1,
@@ -8499,6 +8515,10 @@ var CollarRouter = Backbone.Router.extend({
 
         if (args.Id > 0) {
             url += '/id/' + encodeURIComponent(args.Id.toString());
+            
+            if (args.Action) {
+                url += '/' + encodeURIComponent(args.Action.toString());
+            }
         }
 
         this.navigate(url);
@@ -8544,17 +8564,29 @@ var CollarRouter = Backbone.Router.extend({
     },
 
     /**
+     * Handles the ID + action route.
+     *
+     * @param {Number} id The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    idAction: function(id, action) {
+        this.index('', 1, id, action);
+    },
+
+    /**
      * Handles the index route.
      *
      * @param {String} search The requested search string.
      * @param {Number} page The requested page number.
      * @param {Number} id The requested record ID.
+     * @param {String} action The requested record action.
      */
-    index: function(search, page, id) {
+    index: function(search, page, id, action) {
         this.controller.index(
             decodeURIComponent((search || '').toString()), 
             decodeURIComponent((page || '1').toString()), 
-            decodeURIComponent((id || '').toString()));
+            decodeURIComponent((id || '').toString()),
+            decodeURIComponent((action || '').toString()));
 
         this.trigger('nav', this, {name: this.name});
     },
@@ -8579,6 +8611,17 @@ var CollarRouter = Backbone.Router.extend({
     },
 
     /**
+     * Handles paging + ID + action route.
+     *
+     * @param {Number} search The requested page number.
+     * @param {Number} id The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    pageIdAction: function(page, id, action) {
+        this.index('', page, id, action);
+    },
+
+    /**
      * Handles the search route.
      *
      * @param {String} search The requested search string.
@@ -8595,6 +8638,17 @@ var CollarRouter = Backbone.Router.extend({
      */
     searchId: function(search, id) {
         this.index(search, 1, id);
+    },
+
+    /**
+     * Handles the search + ID + action route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} id The requested record ID.
+     * @param {Action} action The requested record action.
+     */
+    searchIdAction: function(search, id, action) {
+        this.index(search, 1, id, action);
     },
 
     /**
@@ -8708,12 +8762,15 @@ var WorkersRouter = CollarRouter.extend({
     routes: {
         'workers': 'index',
         'workers/id/:id': 'id',
+        'workers/id/:id/:action': 'idAction',
         'workers/q/:search': 'search',
         'workers/q/:search/id/:id': 'searchId',
+        'workers/q/:search/id/:id/:action': 'searchIdAction',
         'workers/p/:page': 'page',
         'workers/p/:page/id/:id': 'pageId',
+        'workers/p/:page/id/:id/:action': 'pageIdAction',
         'workers/q/:search/p/:page': 'searchPage',
-        'workers/q/:search/p/:page/id/:id': 'index'
+        'workers/q/:search/p/:page/id/:id/:action': 'index'
     },
 
     /**
@@ -9537,6 +9594,7 @@ var AreaView = Backbone.View.extend({
      */
     initialize: function(options) {
         this.model.bind('change:Id', this.renderId, this);
+        this.model.bind('change:Action', this.renderId, this);
         this.model.get('Collection').bind('reset', this.renderId, this);
 
         this.searchView = new SearchView({model: this.model});
@@ -9568,7 +9626,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     edit: function(sender, args) {
-        this.model.set({Id: args.Model.get('Id')});
+        this.model.set({Id: args.Model.get('Id'), Action: ''});
         this.trigger('edit', this, args);
     },
 
@@ -9579,7 +9637,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     editCancel: function(sender, args) {
-        this.model.set({Id: 0});
+        this.model.clearId();
         sender.remove();
         this.trigger('editCancel', this, args);
     },
@@ -9591,7 +9649,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     editDelete: function(sender, args) {
-        this.model.set({Id: 0});
+        this.model.clearId();
         sender.remove();
         this.trigger('editDelete', this, args);
     },
@@ -9677,6 +9735,17 @@ var AreaView = Backbone.View.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {},
+
+    /**
+     * Handles the list view's signal event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signal: function(sender, args) {
+        this.model.set({Id: args.Model.get('Id'), Action: 'signal'});
+        this.trigger('signal', this, args);
+    },
 
     /**
      * Handle's the search view's submit event.
@@ -10402,7 +10471,7 @@ var WorkersEditView = FormView.extend({
         FormView.prototype.initialize.call(this, options);
         this.machines = this.options.machines || [];
 
-        this.events = _.extend(this.events, {
+        this.events = _.extend({}, this.events, {
             'click .field-choose a': 'choose',
             'click .field-enter a': 'enter'
         });
@@ -10623,6 +10692,28 @@ var WorkersRowView = RowView.extend({
     template: _.template($('#workers-row-template').html())
 });
 /**
+ * Implements the workers signal form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var WorkersSignalView = FormView.extend({
+    serializers: {
+        "Id": new IntFieldSerializer()
+    },
+    template: _.template($('#workers-signal-template').html()),
+    validators: {
+        "Id": [
+            new RequiredFieldValidator({message: 'Id is required.'}),
+            new RangeFieldValidator({min: 1, max: Number.MAX_VALUE, message: 'Id must be greater than 0.'})
+        ],
+        "Signal": [
+            new RequiredFieldValidator({message: 'Signal is required.'}),
+            new EnumFieldValidator({possibleValues: ['Start', 'Stop'], message: 'Signal must be either Start or Stop.'})
+        ]
+    }
+});
+/**
  * Manages the root workers view.
  *
  * @constructor
@@ -10647,6 +10738,7 @@ var WorkersView = AreaView.extend({
 
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
+        this.listView.bind('signal', this.signal, this);
     },
 
     /**
@@ -10655,7 +10747,7 @@ var WorkersView = AreaView.extend({
     add: function() {
         var model = new WorkerModel();
         model.urlRoot = this.model.get('UrlRoot');
-        this.model.set({Id: 0});
+        this.model.clearId();
         this.renderIdView($('.details'), model);
     },
 
@@ -10666,10 +10758,18 @@ var WorkersView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var view = new WorkersEditView({model: model, machines: this.machines});
-        view.bind('cancel', this.editCancel, this);
-        view.bind('delete', this.editDelete, this);
-        view.bind('submit', this.editSubmit, this);
+        var view;
+
+        if (this.model.get('Action') === 'signal') {
+            view = new WorkersSignalView({model: model});
+            view.bind('cancel', this.editCancel, this);
+        } else {
+            view = new WorkersEditView({model: model, machines: this.machines});
+            view.bind('cancel', this.editCancel, this);
+            view.bind('delete', this.editDelete, this);
+            view.bind('submit', this.editSubmit, this);
+        }
+
         el.html(view.render().el);
         view.focus();
     }

@@ -42,6 +42,13 @@ var AreaModel = Backbone.Model.extend({
     },
 
     /**
+     * Clears this instance's selected ID.
+     */
+    clearId: function(options) {
+        this.set({Id: 0, Action: ''}, options);
+    },
+
+    /**
      * Handles this instance's ID-change event.
      */
     id: function() {

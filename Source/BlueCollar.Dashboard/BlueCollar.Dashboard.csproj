@@ -210,6 +210,7 @@
     <Content Include="Static\Src\Js\Views\workers-edit-view.js" />
     <Content Include="Static\Src\Js\Views\workers-list-view.js" />
     <Content Include="Static\Src\Js\Views\workers-row-view.js" />
+    <Content Include="Static\Src\Js\Views\workers-signal-view.js" />
     <Content Include="Static\Src\Js\Views\workers-view.js" />
     <Content Include="Static\Src\Js\Views\working-list-view.js" />
     <Content Include="Static\Src\Js\Views\working-row-view.js" />

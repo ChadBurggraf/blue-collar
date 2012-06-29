@@ -9,12 +9,15 @@ var WorkersRouter = CollarRouter.extend({
     routes: {
         'workers': 'index',
         'workers/id/:id': 'id',
+        'workers/id/:id/:action': 'idAction',
         'workers/q/:search': 'search',
         'workers/q/:search/id/:id': 'searchId',
+        'workers/q/:search/id/:id/:action': 'searchIdAction',
         'workers/p/:page': 'page',
         'workers/p/:page/id/:id': 'pageId',
+        'workers/p/:page/id/:id/:action': 'pageIdAction',
         'workers/q/:search/p/:page': 'searchPage',
-        'workers/q/:search/p/:page/id/:id': 'index'
+        'workers/q/:search/p/:page/id/:id/:action': 'index'
     },
 
     /**

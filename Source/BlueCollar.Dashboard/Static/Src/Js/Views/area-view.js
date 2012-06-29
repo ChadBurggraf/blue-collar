@@ -11,6 +11,7 @@ var AreaView = Backbone.View.extend({
      */
     initialize: function(options) {
         this.model.bind('change:Id', this.renderId, this);
+        this.model.bind('change:Action', this.renderId, this);
         this.model.get('Collection').bind('reset', this.renderId, this);
 
         this.searchView = new SearchView({model: this.model});
@@ -42,7 +43,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     edit: function(sender, args) {
-        this.model.set({Id: args.Model.get('Id')});
+        this.model.set({Id: args.Model.get('Id'), Action: ''});
         this.trigger('edit', this, args);
     },
 
@@ -53,7 +54,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     editCancel: function(sender, args) {
-        this.model.set({Id: 0});
+        this.model.clearId();
         sender.remove();
         this.trigger('editCancel', this, args);
     },
@@ -65,7 +66,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     editDelete: function(sender, args) {
-        this.model.set({Id: 0});
+        this.model.clearId();
         sender.remove();
         this.trigger('editDelete', this, args);
     },
@@ -151,6 +152,17 @@ var AreaView = Backbone.View.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {},
+
+    /**
+     * Handles the list view's signal event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signal: function(sender, args) {
+        this.model.set({Id: args.Model.get('Id'), Action: 'signal'});
+        this.trigger('signal', this, args);
+    },
 
     /**
      * Handle's the search view's submit event.

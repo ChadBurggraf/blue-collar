@@ -417,6 +417,32 @@ Manual
 <div><input type="hidden" name="Id" value="<%= Id %>"></div>
 </fieldset>
 </script>
+<script type="text/template" id="workers-signal-template">
+<fieldset>
+<p class="legend">
+Signal <em><%- Name %></em>
+<small>On machine <% print(String.machineDisplayParens(MachineName, MachineAddress)); %></small>
+</p>
+<div class="alert alert-block alert-error"></div>
+<div class="field">
+<span>Signal <em>*</em></span>
+<label class="radio">
+<input type="radio" name="Signal" value="Start">
+Start
+</label>
+<label class="radio">
+<input type="radio" name="Signal" value="Stop">
+Stop
+</label>
+<span class="error"></span>
+</div>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="Signal Worker">
+<button type="button" class="btn btn-reset">Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
+</script>
 <script type="text/template" id="workers-row-template">
 <td>
 <div class="row-title">

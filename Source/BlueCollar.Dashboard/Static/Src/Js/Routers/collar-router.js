@@ -25,6 +25,7 @@ var CollarRouter = Backbone.Router.extend({
         var url;
 
         args = _.extend({
+            Action: '',
             Fragment: '',
             Id: 0,
             PageNumber: 1,
@@ -43,6 +44,10 @@ var CollarRouter = Backbone.Router.extend({
 
         if (args.Id > 0) {
             url += '/id/' + encodeURIComponent(args.Id.toString());
+            
+            if (args.Action) {
+                url += '/' + encodeURIComponent(args.Action.toString());
+            }
         }
 
         this.navigate(url);
@@ -88,17 +93,29 @@ var CollarRouter = Backbone.Router.extend({
     },
 
     /**
+     * Handles the ID + action route.
+     *
+     * @param {Number} id The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    idAction: function(id, action) {
+        this.index('', 1, id, action);
+    },
+
+    /**
      * Handles the index route.
      *
      * @param {String} search The requested search string.
      * @param {Number} page The requested page number.
      * @param {Number} id The requested record ID.
+     * @param {String} action The requested record action.
      */
-    index: function(search, page, id) {
+    index: function(search, page, id, action) {
         this.controller.index(
             decodeURIComponent((search || '').toString()), 
             decodeURIComponent((page || '1').toString()), 
-            decodeURIComponent((id || '').toString()));
+            decodeURIComponent((id || '').toString()),
+            decodeURIComponent((action || '').toString()));
 
         this.trigger('nav', this, {name: this.name});
     },
@@ -123,6 +140,17 @@ var CollarRouter = Backbone.Router.extend({
     },
 
     /**
+     * Handles paging + ID + action route.
+     *
+     * @param {Number} search The requested page number.
+     * @param {Number} id The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    pageIdAction: function(page, id, action) {
+        this.index('', page, id, action);
+    },
+
+    /**
      * Handles the search route.
      *
      * @param {String} search The requested search string.
@@ -139,6 +167,17 @@ var CollarRouter = Backbone.Router.extend({
      */
     searchId: function(search, id) {
         this.index(search, 1, id);
+    },
+
+    /**
+     * Handles the search + ID + action route.
+     *
+     * @param {String} search The requested search string.
+     * @param {Number} id The requested record ID.
+     * @param {Action} action The requested record action.
+     */
+    searchIdAction: function(search, id, action) {
+        this.index(search, 1, id, action);
     },
 
     /**
