@@ -18,5 +18,25 @@ var WorkersSignalView = FormView.extend({
             new RequiredFieldValidator({message: 'Signal is required.'}),
             new EnumFieldValidator({possibleValues: ['Start', 'Stop'], message: 'Signal must be either Start or Stop.'})
         ]
-    }
+    },
+
+    /**
+     * Submits this form by serializing and validating the current inputs
+     * If validation passes, the 'submit' event is raised. Otherwise, the
+     * validation failure message(s) are rendered.
+     *
+     * @return {FormView} This instance.
+     */
+    submit: function() {
+        var attributes = this.serialize(),
+            errors = this.validate(attributes);
+
+        this.renderErrors(errors);
+
+        if (!errors) {
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: 'signalled'});
+        }
+
+        return this;
+    },
 });

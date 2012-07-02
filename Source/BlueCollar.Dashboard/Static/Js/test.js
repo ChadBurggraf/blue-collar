@@ -8062,6 +8062,33 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Handle's this instance's view's editDelete event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editDelete: function(sender, args) {
+        args.Model.destroy({
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args)
+        });
+    },
+
+    /**
+     * Handle's this instance's view's editSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
+        });
+    },
+
+    /**
      * Handles an error response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.
@@ -8160,6 +8187,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
         if (id && !_.isNumber(id)) {
             id = parseInt(id, 10);
+
+            if (id < 0 || isNaN(id)) {
+                id = 0;
+            }
         } else {
             id = 0;
         }
@@ -8192,6 +8223,31 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Handle's this instance's view's signalSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        var collection = this.getCollection(),
+            model;
+
+        if (collection) {
+            model = collection.find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+        
+            if (model) {
+                model.set({Signal: args.Attributes.Signal});
+            }
+        }
+
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
+        });
+    },
+
+    /**
      * Handles a success response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.
@@ -8210,11 +8266,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
         if (args.Action === 'created' || args.Action === 'deleted') {
             this.fetch();
         }
-
-        NoticeView.create({
-            className: 'alert-success',
-            model: {Title: 'Success!', Message: 'The worker ' + args.Model.get('Name') + ' was ' + args.Action + ' successfully.'}
-        });
     }
 });
 /**
@@ -8368,33 +8419,6 @@ var WorkersController = CollarController.extend({
     },
 
     /**
-     * Handle's this instance's view's editDelete event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    editDelete: function(sender, args) {
-        args.Model.destroy({
-            success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args)
-        });
-    },
-
-    /**
-     * Handle's this instance's view's editSubmit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    editSubmit: function(sender, args) {
-        args.Model.save(args.Attributes, {
-            success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args),
-            wait: true
-        });
-    },
-
-    /**
      * Refreshes this instance's machine list.
      */
     refreshMachines: function() {
@@ -8439,20 +8463,6 @@ var WorkersController = CollarController.extend({
     },
 
     /**
-     * Handle's this instance's view's signalSubmit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    signalSubmit: function(sender, args) {
-        args.Model.save(args.Attributes, {
-            success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args),
-            wait: true
-        });
-    },
-
-    /**
      * Handles a success response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.
@@ -8460,11 +8470,20 @@ var WorkersController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
+        var model;
+
+        CollarController.prototype.success.call(this, args, model, response);
+
+        model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+
         if (args.Action === 'updated') {
             this.refreshMachines();
         }
 
-        CollarController.prototype.success.call(this, args, model, response);
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The worker ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });
 /**
@@ -10741,7 +10760,27 @@ var WorkersSignalView = FormView.extend({
             new RequiredFieldValidator({message: 'Signal is required.'}),
             new EnumFieldValidator({possibleValues: ['Start', 'Stop'], message: 'Signal must be either Start or Stop.'})
         ]
-    }
+    },
+
+    /**
+     * Submits this form by serializing and validating the current inputs
+     * If validation passes, the 'submit' event is raised. Otherwise, the
+     * validation failure message(s) are rendered.
+     *
+     * @return {FormView} This instance.
+     */
+    submit: function() {
+        var attributes = this.serialize(),
+            errors = this.validate(attributes);
+
+        this.renderErrors(errors);
+
+        if (!errors) {
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: 'signalled'});
+        }
+
+        return this;
+    },
 });
 /**
  * Manages the root workers view.
@@ -10788,24 +10827,33 @@ var WorkersView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var view,
+        var render = false,
+            view,
             signalModel;
 
         if (this.model.get('Action') === 'signal') {
-            signalModel = new WorkerSignalModel(model.attributes);
-            signalModel.urlRoot = this.model.get('UrlRoot');
-            view = new WorkersSignalView({model: signalModel});
-            view.bind('cancel', this.editCancel, this);
-            view.bind('submit', this.signalSubmit, this);
+            if (model.get('Signal') === 'None') {
+                signalModel = new WorkerSignalModel(model.attributes);
+                signalModel.urlRoot = this.model.get('UrlRoot');
+                view = new WorkersSignalView({model: signalModel});
+                view.bind('cancel', this.editCancel, this);
+                view.bind('submit', this.signalSubmit, this);
+                render = true;
+            } else {
+                this.model.set({Id: 0, Action: ''});
+            }
         } else {
             view = new WorkersEditView({model: model, machines: this.machines});
             view.bind('cancel', this.editCancel, this);
             view.bind('delete', this.editDelete, this);
             view.bind('submit', this.editSubmit, this);
+            render = true;
         }
 
-        el.html(view.render().el);
-        view.focus();
+        if (render) {
+            el.html(view.render().el);
+            view.focus();
+        }
     }
 });
 /**

@@ -43,23 +43,32 @@ var WorkersView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var view,
+        var render = false,
+            view,
             signalModel;
 
         if (this.model.get('Action') === 'signal') {
-            signalModel = new WorkerSignalModel(model.attributes);
-            signalModel.urlRoot = this.model.get('UrlRoot');
-            view = new WorkersSignalView({model: signalModel});
-            view.bind('cancel', this.editCancel, this);
-            view.bind('submit', this.signalSubmit, this);
+            if (model.get('Signal') === 'None') {
+                signalModel = new WorkerSignalModel(model.attributes);
+                signalModel.urlRoot = this.model.get('UrlRoot');
+                view = new WorkersSignalView({model: signalModel});
+                view.bind('cancel', this.editCancel, this);
+                view.bind('submit', this.signalSubmit, this);
+                render = true;
+            } else {
+                this.model.set({Id: 0, Action: ''});
+            }
         } else {
             view = new WorkersEditView({model: model, machines: this.machines});
             view.bind('cancel', this.editCancel, this);
             view.bind('delete', this.editDelete, this);
             view.bind('submit', this.editSubmit, this);
+            render = true;
         }
 
-        el.html(view.render().el);
-        view.focus();
+        if (render) {
+            el.html(view.render().el);
+            view.focus();
+        }
     }
 });

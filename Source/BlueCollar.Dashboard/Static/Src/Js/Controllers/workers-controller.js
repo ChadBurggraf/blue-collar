@@ -26,33 +26,6 @@ var WorkersController = CollarController.extend({
     },
 
     /**
-     * Handle's this instance's view's editDelete event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    editDelete: function(sender, args) {
-        args.Model.destroy({
-            success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args)
-        });
-    },
-
-    /**
-     * Handle's this instance's view's editSubmit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    editSubmit: function(sender, args) {
-        args.Model.save(args.Attributes, {
-            success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args),
-            wait: true
-        });
-    },
-
-    /**
      * Refreshes this instance's machine list.
      */
     refreshMachines: function() {
@@ -97,20 +70,6 @@ var WorkersController = CollarController.extend({
     },
 
     /**
-     * Handle's this instance's view's signalSubmit event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    signalSubmit: function(sender, args) {
-        args.Model.save(args.Attributes, {
-            success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args),
-            wait: true
-        });
-    },
-
-    /**
      * Handles a success response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.
@@ -118,10 +77,19 @@ var WorkersController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
+        var model;
+
+        CollarController.prototype.success.call(this, args, model, response);
+
+        model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+
         if (args.Action === 'updated') {
             this.refreshMachines();
         }
 
-        CollarController.prototype.success.call(this, args, model, response);
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The worker ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });

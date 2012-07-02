@@ -60,6 +60,33 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Handle's this instance's view's editDelete event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editDelete: function(sender, args) {
+        args.Model.destroy({
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args)
+        });
+    },
+
+    /**
+     * Handle's this instance's view's editSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    editSubmit: function(sender, args) {
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
+        });
+    },
+
+    /**
      * Handles an error response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.
@@ -158,6 +185,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
         if (id && !_.isNumber(id)) {
             id = parseInt(id, 10);
+
+            if (id < 0 || isNaN(id)) {
+                id = 0;
+            }
         } else {
             id = 0;
         }
@@ -190,6 +221,31 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Handle's this instance's view's signalSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        var collection = this.getCollection(),
+            model;
+
+        if (collection) {
+            model = collection.find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+        
+            if (model) {
+                model.set({Signal: args.Attributes.Signal});
+            }
+        }
+
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
+        });
+    },
+
+    /**
      * Handles a success response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.
@@ -208,10 +264,5 @@ _.extend(CollarController.prototype, Backbone.Events, {
         if (args.Action === 'created' || args.Action === 'deleted') {
             this.fetch();
         }
-
-        NoticeView.create({
-            className: 'alert-success',
-            model: {Title: 'Success!', Message: 'The worker ' + args.Model.get('Name') + ' was ' + args.Action + ' successfully.'}
-        });
     }
 });
