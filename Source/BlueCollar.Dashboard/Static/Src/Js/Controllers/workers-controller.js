@@ -22,6 +22,7 @@ var WorkersController = CollarController.extend({
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
+        this.view.bind('signalSubmit', this.signalSubmit, this);
     },
 
     /**
@@ -93,5 +94,34 @@ var WorkersController = CollarController.extend({
      */
     reset: function() {
         this.refreshMachines();
+    },
+
+    /**
+     * Handle's this instance's view's signalSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
+        });
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        if (args.Action === 'updated') {
+            this.refreshMachines();
+        }
+
+        CollarController.prototype.success.call(this, args, model, response);
     }
 });

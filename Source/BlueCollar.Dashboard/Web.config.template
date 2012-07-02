@@ -10,7 +10,7 @@
     <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
   </appSettings>
 
-  <blueCollar applicationName="BlueCollar">
+  <blueCollar applicationName="BlueCollar" schedulerEnabled="false">
     <dashboard handlerUrl="collar" mode="LocalOnly"/>
     <machine serviceExecutionEnabled="false"/>
     <repository type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository" connectionStringName="BlueCollarSQLite"/>

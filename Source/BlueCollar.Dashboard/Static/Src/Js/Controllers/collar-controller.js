@@ -207,8 +207,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
         if (args.Action === 'created' || args.Action === 'deleted') {
             this.fetch();
-        } else {
-            this.refreshMachines();
         }
 
         NoticeView.create({

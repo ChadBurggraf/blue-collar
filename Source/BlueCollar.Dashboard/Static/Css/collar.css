@@ -5970,6 +5970,13 @@ a.badge:hover {
   border-bottom: solid 1px #e5e5e5;
 }
 
+.form .legend small {
+  display: block;
+  margin: -6px 0 8px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
 .form .error input,
 .form .error textarea {
   border-color: #e9322d;

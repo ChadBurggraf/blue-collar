@@ -8209,8 +8209,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
         if (args.Action === 'created' || args.Action === 'deleted') {
             this.fetch();
-        } else {
-            this.refreshMachines();
         }
 
         NoticeView.create({
@@ -8366,6 +8364,7 @@ var WorkersController = CollarController.extend({
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
+        this.view.bind('signalSubmit', this.signalSubmit, this);
     },
 
     /**
@@ -8437,6 +8436,35 @@ var WorkersController = CollarController.extend({
      */
     reset: function() {
         this.refreshMachines();
+    },
+
+    /**
+     * Handle's this instance's view's signalSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        args.Model.save(args.Attributes, {
+            success: _.bind(this.success, this, args),
+            error: _.bind(this.error, this, args),
+            wait: true
+        });
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        if (args.Action === 'updated') {
+            this.refreshMachines();
+        }
+
+        CollarController.prototype.success.call(this, args, model, response);
     }
 });
 /**
@@ -9739,6 +9767,17 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
+     * Handles the signal view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        sender.showLoading();
+        this.trigger('signalSubmit', this, _.extend({}, args, {View: sender}));
+    },
+
+    /**
      * Handle's the search view's submit event.
      *
      * @param {Object} sender The event sender.
@@ -10749,11 +10788,15 @@ var WorkersView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var view;
+        var view,
+            signalModel;
 
         if (this.model.get('Action') === 'signal') {
-            view = new WorkersSignalView({model: model});
+            signalModel = new WorkerSignalModel(model.attributes);
+            signalModel.urlRoot = this.model.get('UrlRoot');
+            view = new WorkersSignalView({model: signalModel});
             view.bind('cancel', this.editCancel, this);
+            view.bind('submit', this.signalSubmit, this);
         } else {
             view = new WorkersEditView({model: model, machines: this.machines});
             view.bind('cancel', this.editCancel, this);

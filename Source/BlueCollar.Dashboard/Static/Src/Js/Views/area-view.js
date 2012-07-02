@@ -165,6 +165,17 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
+     * Handles the signal view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        sender.showLoading();
+        this.trigger('signalSubmit', this, _.extend({}, args, {View: sender}));
+    },
+
+    /**
      * Handle's the search view's submit event.
      *
      * @param {Object} sender The event sender.
