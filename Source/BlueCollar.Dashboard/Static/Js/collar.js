@@ -8271,7 +8271,7 @@ _.extend(CollarController.prototype, Backbone.Events, {
         }
         
         this.model.set({Search: search || '', PageNumber: page, Id: id, Action: action || '', Loading: true}, {silent: true});
-        this.view.render();
+        this.page.html(this.view.render().el);
         this.fetch();
     },
 
@@ -8368,14 +8368,14 @@ var DashboardController = CollarController.extend({
             this.fetchOnIndex = false;
         }
 
-        this.view = new DashboardView({el: this.page, model: this.model, chartsLoaded: options.chartsLoaded});
+        this.view = new DashboardView({model: this.model, chartsLoaded: options.chartsLoaded});
     },
 
     /**
      * Renders the index view.
      */
     index: function() {
-        this.view.render();
+        this.page.html(this.view.render().el);
 
         if (this.fetchOnIndex) {
             this.model.fetch({error: _.bind(this.error, this, null)});
@@ -8410,7 +8410,7 @@ var HistoryController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new HistoryView({el: this.page, model: this.model});
+        this.view = new HistoryView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
     }
 });
@@ -8430,20 +8430,8 @@ var QueueController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new QueueView({el: this.page, model: this.model});
+        this.view = new QueueView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
-    },
-
-    /**
-     * Renders the index view.
-     *
-     * @param {String} search The search string to filter the view on.
-     * @param {Number} page The page number to filter the view on.
-     */
-    index: function(search, page) {
-        this.model.set({Search: search || '', PageNumber: page || 1, Loading: true}, {silent: true});
-        this.view.render();
-        this.fetch();
     }
 });
 /**
@@ -8462,7 +8450,7 @@ var SchedulesController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new SchedulesView({el: this.page, model: this.model});
+        this.view = new SchedulesView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
@@ -8476,7 +8464,6 @@ var SchedulesController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
-        var model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         CollarController.prototype.success.call(this, args, model, response);
 
         NoticeView.create({
@@ -8505,7 +8492,7 @@ var WorkersController = CollarController.extend({
 
         this.model.get('Collection').bind('reset', this.reset, this);
         
-        this.view = new WorkersView({el: this.page, model: this.model, machines: this.machines});
+        this.view = new WorkersView({model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
@@ -8593,7 +8580,7 @@ var WorkingController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new WorkingView({el: this.page, model: this.model});
+        this.view = new WorkingView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
     }
 });
@@ -10647,8 +10634,7 @@ var SchedulesView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        debugger;
-        var model = new ScheduleModel();
+        var model = new ScheduleModel({StartOn: Date.today()});
         model.urlRoot = this.model.get('UrlRoot');
         this.model.clearId();
         this.renderIdView($('.details'), model);
@@ -10986,7 +10972,6 @@ var WorkersView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        debugger;
         var model = new WorkerModel();
         model.urlRoot = this.model.get('UrlRoot');
         this.model.clearId();

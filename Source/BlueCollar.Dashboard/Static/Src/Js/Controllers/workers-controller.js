@@ -18,7 +18,7 @@ var WorkersController = CollarController.extend({
 
         this.model.get('Collection').bind('reset', this.reset, this);
         
-        this.view = new WorkersView({el: this.page, model: this.model, machines: this.machines});
+        this.view = new WorkersView({model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);

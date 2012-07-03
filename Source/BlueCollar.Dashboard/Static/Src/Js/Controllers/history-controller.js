@@ -14,7 +14,7 @@ var HistoryController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new HistoryView({el: this.page, model: this.model});
+        this.view = new HistoryView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
     }
 });

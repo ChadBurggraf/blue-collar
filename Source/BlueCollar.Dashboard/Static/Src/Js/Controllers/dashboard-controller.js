@@ -23,14 +23,14 @@ var DashboardController = CollarController.extend({
             this.fetchOnIndex = false;
         }
 
-        this.view = new DashboardView({el: this.page, model: this.model, chartsLoaded: options.chartsLoaded});
+        this.view = new DashboardView({model: this.model, chartsLoaded: options.chartsLoaded});
     },
 
     /**
      * Renders the index view.
      */
     index: function() {
-        this.view.render();
+        this.page.html(this.view.render().el);
 
         if (this.fetchOnIndex) {
             this.model.fetch({error: _.bind(this.error, this, null)});

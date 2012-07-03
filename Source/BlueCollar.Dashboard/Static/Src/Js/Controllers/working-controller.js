@@ -14,7 +14,7 @@ var WorkingController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
-        this.view = new WorkingView({el: this.page, model: this.model});
+        this.view = new WorkingView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
     }
 });

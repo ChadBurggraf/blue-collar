@@ -25,8 +25,7 @@ var SchedulesView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        debugger;
-        var model = new ScheduleModel();
+        var model = new ScheduleModel({StartOn: Date.today()});
         model.urlRoot = this.model.get('UrlRoot');
         this.model.clearId();
         this.renderIdView($('.details'), model);
