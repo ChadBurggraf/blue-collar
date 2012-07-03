@@ -8423,6 +8423,27 @@ var QueueController = CollarController.extend({
     initialize: function(options) {
         this.view = new QueueView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
+        this.view.bind('signalSubmit', this.signalSubmit, this);
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        CollarController.prototype.success.call(this, args, model, response);
+
+        if (args.Action === 'signalled') {
+            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+        }
+
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The job ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });
 /**
@@ -8542,10 +8563,11 @@ var WorkersController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
-        var model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         CollarController.prototype.success.call(this, args, model, response);
         
-        if (args.Action === 'updated') {
+        if (args.Action === 'signalled') {
+            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+        } else if (args.Action === 'updated') {
             this.refreshMachines();
         }
 
@@ -8809,12 +8831,15 @@ var QueueRouter = CollarRouter.extend({
     routes: {
         'queue': 'index',
         'queue/id/:id': 'id',
+        'queue/id/:id/:action': 'idAction',
         'queue/q/:search': 'search',
         'queue/q/:search/id/:id': 'searchId',
+        'queue/q/:search/id/:id/:action': 'searchIdAction',
         'queue/p/:page': 'page',
         'queue/p/:page/id/:id': 'pageId',
+        'queue/p/:page/id/:id/:action': 'pageIdAction',
         'queue/q/:search/p/:page': 'searchPage',
-        'queue/q/:search/p/:page/id/:id': 'index'
+        'queue/q/:search/p/:page/id/:id/:action': 'index'
     },
 
     /**
@@ -9743,6 +9768,17 @@ var AreaView = Backbone.View.extend({
     add: function() {},
 
     /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+        this.model.set({Id: args.Model.get('Id'), Action: ''});
+        this.trigger('display', this, args);
+    },
+
+    /**
      * Handles the list view's edit event.
      *
      * @param {Object} sender The event sender.
@@ -10493,18 +10529,40 @@ var QueueView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
+
+        this.model.get('Collection').bind('reset', this.renderId, this);
+
         this.listView = new QueueListView({model: this.model});
         this.listView.bind('display', this.display, this);
+        this.listView.bind('signal', this.signal, this);
     },
 
     /**
-     * Handles the list view's display event.
+     * Renders the ID view for the given model in the given details element.
      *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
      */
-    display: function(sender, args) {
+    renderIdView: function(el, model) {
+        var render = false,
+            view,
+            signalModel;
 
+        if (this.model.get('Action') === 'signal') {
+            if (model.get('Signal') === 'None') {
+
+            } else {
+                this.model.set({Id: 0, Action: ''});
+            }
+        } else {
+            view = new QueueDisplayView({model: model});
+            render = true;
+        }
+
+        if (render) {
+            el.html(view.render().el);
+            view.focus();
+        }
     }
 });
 /**

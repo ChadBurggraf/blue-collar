@@ -9,12 +9,15 @@ var QueueRouter = CollarRouter.extend({
     routes: {
         'queue': 'index',
         'queue/id/:id': 'id',
+        'queue/id/:id/:action': 'idAction',
         'queue/q/:search': 'search',
         'queue/q/:search/id/:id': 'searchId',
+        'queue/q/:search/id/:id/:action': 'searchIdAction',
         'queue/p/:page': 'page',
         'queue/p/:page/id/:id': 'pageId',
+        'queue/p/:page/id/:id/:action': 'pageIdAction',
         'queue/q/:search/p/:page': 'searchPage',
-        'queue/q/:search/p/:page/id/:id': 'index'
+        'queue/q/:search/p/:page/id/:id/:action': 'index'
     },
 
     /**

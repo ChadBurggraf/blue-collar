@@ -199,6 +199,7 @@
     <Content Include="Static\Src\Js\Views\nav-view.js" />
     <Content Include="Static\Src\Js\Views\notice-view.js" />
     <Content Include="Static\Src\Js\Views\pager-view.js" />
+    <Content Include="Static\Src\Js\Views\queue-display-view.js" />
     <Content Include="Static\Src\Js\Views\queue-list-view.js" />
     <Content Include="Static\Src\Js\Views\queue-row-view.js" />
     <Content Include="Static\Src\Js\Views\queue-view.js" />

@@ -35,6 +35,17 @@ var AreaView = Backbone.View.extend({
     add: function() {},
 
     /**
+     * Handles the list view's display event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    display: function(sender, args) {
+        this.model.set({Id: args.Model.get('Id'), Action: ''});
+        this.trigger('display', this, args);
+    },
+
+    /**
      * Handles the list view's edit event.
      *
      * @param {Object} sender The event sender.
