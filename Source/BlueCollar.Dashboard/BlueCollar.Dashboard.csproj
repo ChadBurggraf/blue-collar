@@ -118,6 +118,7 @@
     <Content Include="Static\Src\Css\bootstrap.css" />
     <Content Include="Static\Src\Css\collar.css" />
     <Content Include="Static\Src\Css\copyright.css" />
+    <Content Include="Static\Src\Css\prettify.css" />
     <Content Include="Static\Src\Css\qunit.css" />
     <Content Include="Static\Src\Css\test.css" />
     <Content Include="Static\Src\Img\glyphicons-halflings-white.png" />
@@ -186,6 +187,7 @@
     <Content Include="Static\Src\Js\Vendor\html5.js" />
     <Content Include="Static\Src\Js\Vendor\jquery-1.7.js" />
     <Content Include="Static\Src\Js\Vendor\json2.js" />
+    <Content Include="Static\Src\Js\Vendor\prettify.js" />
     <Content Include="Static\Src\Js\Vendor\qunit-1.9.0pre.js" />
     <Content Include="Static\Src\Js\Vendor\relative-date.js" />
     <Content Include="Static\Src\Js\Vendor\underscore-1.3.3.js" />
@@ -200,6 +202,7 @@
     <Content Include="Static\Src\Js\Views\notice-view.js" />
     <Content Include="Static\Src\Js\Views\pager-view.js" />
     <Content Include="Static\Src\Js\Views\queue-display-view.js" />
+    <Content Include="Static\Src\Js\Views\queue-edit-view.js" />
     <Content Include="Static\Src\Js\Views\queue-list-view.js" />
     <Content Include="Static\Src\Js\Views\queue-row-view.js" />
     <Content Include="Static\Src\Js\Views\queue-view.js" />

@@ -67,6 +67,8 @@
     <input path="Views\history-view.js"/>
     <input path="Views\nav-view.js"/>
     <input path="Views\notice-view.js"/>
+    <input path="Views\queue-display-view.js"/>
+    <input path="Views\queue-edit-view.js"/>
     <input path="Views\queue-list-view.js"/>
     <input path="Views\queue-row-view.js"/>
     <input path="Views\queue-view.js"/>
@@ -88,6 +90,7 @@
     <import name="Backbone"/>
     <import name="Bootstrap"/>
     <import name="DateJs"/>
+    <input path="Vendor\prettify.js"/>
   </output>
 
   <output name="App" temporary="true">

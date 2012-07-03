@@ -13,6 +13,31 @@ var QueueModel = CollarModel.extend({
         'ScheduleName': null,
         'QueuedOn': null,
         'TryNumber': 0
+    },
+
+    /**
+     * Parses the model's data as returned by the server.
+     *
+     * @param {Object} response The raw response object received from the server.
+     * @return {Object} The parsed response object.
+     */
+    parse: function(response) {
+        response = CollarModel.prototype.parse.call(this, response);
+
+        if (!response.Data) {
+            response.Data = '{}';
+        }
+
+        if (_.isString(response.Data)) {
+            try {
+                response.Data = JSON.parse(response.Data);
+            } catch (e) {
+                response.Data = '{}';
+            }
+        }
+
+        response.Data = JSON.stringify(response.Data, null, 2);
+        return response;
     }
 });
 

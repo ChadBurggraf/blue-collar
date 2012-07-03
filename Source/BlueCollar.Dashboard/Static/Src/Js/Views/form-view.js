@@ -202,7 +202,7 @@ var FormView = Backbone.View.extend({
             actions,
             actionsDelete,
             del;
-
+        
         this.$el.html(this.template(attributes));
         this.deserialize(attributes);
         this.renderErrors();

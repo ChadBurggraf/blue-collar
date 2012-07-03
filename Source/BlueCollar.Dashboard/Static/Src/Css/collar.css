@@ -106,6 +106,16 @@
   color: #f00;
 }
 
+.form .field pre {
+  border: none;
+}
+
+.form .field pre span {
+  display: inline;
+  font-weight: normal;
+  line-height: normal;
+}
+
 .form .field-schedule-repeat input[type="text"] {
   width: 60px;
 }
@@ -153,12 +163,14 @@
 }
 
 .form .help-block {
+  margin-top: 2px;
   font-weight: normal !important;
   line-height: normal !important;
   color: #999 !important;
 }
 
 .form .help-block-above {
+  margin-top: 0;
   margin-bottom: 0;
 }
 

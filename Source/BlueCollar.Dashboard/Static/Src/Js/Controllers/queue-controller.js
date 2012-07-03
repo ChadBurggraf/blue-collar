@@ -15,8 +15,25 @@ var QueueController = CollarController.extend({
      */
     initialize: function(options) {
         this.view = new QueueView({model: this.model});
+        this.view.bind('details', this.details, this);
         this.view.bind('fetch', this.fetch, this);
-        this.view.bind('signalSubmit', this.signalSubmit, this);
+        this.view.bind('editDelete', this.editDelete, this);
+        this.view.bind('editSubmit', this.editSubmit, this);
+    },
+
+    /**
+     * Handle's this instance's view's details event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    details: function(sender, args) {
+        args.Model.fetch({
+            success: function() {
+                args.Model.set({DetailsLoaded: true}, {silent: true});
+            },
+            error: _.bind(this.error, this)
+        });
     },
 
     /**
@@ -27,15 +44,12 @@ var QueueController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
+        var name = model.get('JobName') || model.get('JobType');
         CollarController.prototype.success.call(this, args, model, response);
-
-        if (args.Action === 'signalled') {
-            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
-        }
 
         NoticeView.create({
             className: 'alert-success',
-            model: {Title: 'Success!', Message: 'The job ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+            model: {Title: 'Success!', Message: 'The job ' + name + ' was ' + args.Action + ' successfully.'}
         });
     }
 });

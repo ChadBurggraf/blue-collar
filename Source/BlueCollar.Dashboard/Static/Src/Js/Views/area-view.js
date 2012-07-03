@@ -46,6 +46,18 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
+     * Handles the display view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    displayCancel: function(sender, args) {
+        this.model.clearId();
+        sender.remove();
+        this.trigger('editCancel', this, args);
+    },
+
+    /**
      * Handles the list view's edit event.
      *
      * @param {Object} sender The event sender.

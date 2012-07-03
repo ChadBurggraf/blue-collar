@@ -68,6 +68,24 @@ var EnumFieldValidator = FieldValidator.extend({
 });
 
 /**
+ * Extends {FieldValidator} to validate JSON input.
+ *
+ * @constructor
+ * @extends {FieldValidator}
+ */
+var JSONFieldValidator = FieldValidator.extend({
+    validate: function(value) {
+        value = $.trim((value || '{}').toString());
+
+        try {
+            JSON.parse(value);
+        } catch (e) {
+            return this.options.message;
+        }
+    }
+});
+
+/**
  * Extends {FieldValidator} to validate string length.
  *
  * @constructor
