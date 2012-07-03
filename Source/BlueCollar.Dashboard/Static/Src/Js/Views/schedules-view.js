@@ -14,17 +14,36 @@ var SchedulesView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
+
+        this.model.get('Collection').bind('reset', this.renderId, this);
+
         this.listView = new SchedulesListView({model: this.model});
-        this.listView.bind('display', this.display, this);
+        this.listView.bind('edit', this.edit, this);
     },
 
     /**
-     * Handles the list view's display event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * Handle's the add button's click event.
      */
-    display: function(sender, args) {
+    add: function() {
+        debugger;
+        var model = new ScheduleModel();
+        model.urlRoot = this.model.get('UrlRoot');
+        this.model.clearId();
+        this.renderIdView($('.details'), model);
+    },
 
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     */
+    renderIdView: function(el, model) {
+        var view = new SchedulesEditView({model: model});
+        view.bind('cancel', this.editCancel, this);
+        view.bind('delete', this.editDelete, this);
+        view.bind('submit', this.editSubmit, this);
+        el.html(view.render().el);
+        view.focus();
     }
 });

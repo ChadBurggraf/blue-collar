@@ -5,9 +5,6 @@
  * @extends {AreaView}
  */
 var WorkersView = AreaView.extend({
-    events: {
-        'click button.btn-add': 'add'
-    },
     template: _.template($('#workers-template').html()),
 
     /**
@@ -30,6 +27,7 @@ var WorkersView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
+        debugger;
         var model = new WorkerModel();
         model.urlRoot = this.model.get('UrlRoot');
         this.model.clearId();

@@ -124,6 +124,15 @@ var FormView = Backbone.View.extend({
     },
 
     /**
+     * Gets the name of the action performed by this instance upon submission.
+     *
+     * @return {String} The name of the action performed by this instance.
+     */
+    getAction: function() {
+        return this.model.isNew() ? 'created' : 'updated';
+    },
+
+    /**
      * Gets the attributes hash to use during serialization and de-serialization.
      *
      * @return {Object} This instance's attributes hash.
@@ -339,7 +348,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors(errors);
 
         if (!errors) {
-            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: this.model.isNew() ? 'created' : 'updated'});
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: this.getAction()});
         }
 
         return this;

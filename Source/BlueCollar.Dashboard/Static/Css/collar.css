@@ -5914,6 +5914,14 @@ a.badge:hover {
   color: #f00;
 }
 
+.form .field-schedule-repeat input[type="text"] {
+  width: 60px;
+}
+
+.form .field-schedule-repeat select {
+  width: 186px;
+}
+
 .form .field-stacked {
   margin-bottom: 9px;
 }
@@ -6331,6 +6339,9 @@ a.badge:hover {
   .form select {
     width: 328px;
   }
+  .form .field-schedule-repeat select {
+    width: 256px;
+  }
 }
 
 @media (max-width: 979px) and (min-width: 768px) {
@@ -6343,6 +6354,9 @@ a.badge:hover {
   }
   .form select {
     width: 186px;
+  }
+  .form .field-schedule-repeat select {
+    width: 114px;
   }
   .form-actions {
     padding-right: 0;

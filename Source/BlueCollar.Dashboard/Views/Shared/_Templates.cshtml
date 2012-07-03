@@ -253,6 +253,69 @@ Queue
 <div class="span4 details"></div>
 </div>
 </script>
+<script type="text/template" id="schedules-edit-template">
+<fieldset>
+<p class="legend"><% if (!Id) { print('Add Schedule'); } else { print('Edit Schedule'); } %></p>
+<div class="alert alert-block alert-error"></div>
+<label class="field">
+<span>Name <em>*</em></span>
+<input type="text" name="Name">
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Queue name <em>*</em></span>
+<input type="text" name="QueueName">
+<span class="help-block">Optional. Jobs created by this schedule will be processed on this queue.</span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Start on <em>*</em></span>
+<input type="text" name="StartOn">
+<span class="error"></span>
+</label>
+<label class="field">
+<span>End on</span>
+<input type="text" name="EndOn">
+<span class="error"></span>
+</label>
+<div class="field field-schedule-repeat">
+<span>Repeat every <em>*</em></span>
+<input type="text" name="RepeatValue">
+<select name="RepeatType">
+<option value="None">Don't repeat</option>
+<option value="Seconds">Seconds</option>
+<option value="Minutes">Minutes</option>
+<option value="Hours">Hours</option>
+<option value="Days">Days</option>
+<option value="Weeks">Weeks</option>
+</select>
+<span class="error"></span>
+</div>
+<div class="field">
+<span>Enabled <em>*</em></span>
+<label class="radio">
+<input type="radio" name="Enabled" value="true">
+Yes
+</label>
+<label class="radio">
+<input type="radio" name="Enabled" value="false">
+No
+</label>
+<span class="error"></span>
+</div>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Schedule'); } else { print('Create Schedule'); } %>">
+<button type="button" class="btn btn-reset">Cancel</button>
+<a class="btn-delete" href="javascript:void(0);">delete</a>
+</div>
+<div class="form-actions form-actions-delete">
+<label>Are you sure?</label>
+<button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+<button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
+</script>
 <script type="text/template" id="schedules-row-template">
 <td>
 <div class="row-title">
@@ -327,6 +390,10 @@ Queue
 </script>
 <script type="text/template" id="schedules-template">
 <div class="page-header">
+<button class="btn btn-success btn-add pull-right">
+<i class="icon-plus icon-white"></i>
+Add schedule
+</button>
 <h1>
 Schedules
 <small><%- ApplicationName %></small>
@@ -385,7 +452,7 @@ Enter a name and/or IP address.<br>
 </div>
 <label class="field">
 <span>Queues</span>
-<textarea rows="5" name="QueueNames"><%- QueueNames %></textarea>
+<textarea rows="5" name="QueueNames"></textarea>
 <span class="help-block">
 Optional. Limit which queues the worker will process by entering one queue name per line.
 Blacklist instead of whitelist a queue by prefixing its name with <code>not:</code>

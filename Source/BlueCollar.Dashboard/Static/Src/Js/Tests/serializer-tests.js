@@ -9,6 +9,18 @@ test('FieldSerializerBasicInputs', function() {
     equal(ser.serialize(el.find('select')), 'Two');
 });
 
+test('FieldSerializerBooleans', function() {
+    var el = $('<form><input type="radio" name="Enabled" value="true" checked="checked"/><input type="radio" name="Enabled" value="false"/></form>'),
+        ser = new BooleanFieldSerializer(),
+        result;
+
+    result = ser.serialize(el.find('input'));
+    equal(true, result);
+
+    ser.deserialize(false, el.find('input'));
+    equal(el.find('input').val(), 'false');
+});
+
 test('FieldSerializerCheckboxes', function() {
     var el = $('<form><input type="checkbox" name="State" value="Arizona" checked="checked"/><input type="checkbox" name="State" value="Colorado" checked="checked"/><input type="checkbox" name="State" value="California"/></form>'),
         ser = new FieldSerializer(),

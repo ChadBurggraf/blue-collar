@@ -23,7 +23,7 @@ var SchedulesListView = ListView.extend({
         for (i = 0, n = collection.length; i < n; i++) {
             model = collection.at(i);
             view = new SchedulesRowView({model: model}).render();
-            view.bind('display', this.display, this);
+            view.bind('edit', this.edit, this);
             tbody.append(view.el);
         }
 

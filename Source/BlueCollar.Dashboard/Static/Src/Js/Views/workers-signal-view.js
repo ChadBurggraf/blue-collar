@@ -21,22 +21,11 @@ var WorkersSignalView = FormView.extend({
     },
 
     /**
-     * Submits this form by serializing and validating the current inputs
-     * If validation passes, the 'submit' event is raised. Otherwise, the
-     * validation failure message(s) are rendered.
+     * Gets the name of the action performed by this instance upon submission.
      *
-     * @return {FormView} This instance.
+     * @return {String} The name of the action performed by this instance.
      */
-    submit: function() {
-        var attributes = this.serialize(),
-            errors = this.validate(attributes);
-
-        this.renderErrors(errors);
-
-        if (!errors) {
-            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: 'signalled'});
-        }
-
-        return this;
-    },
+    getAction: function() {
+        return 'signalled';
+    }
 });

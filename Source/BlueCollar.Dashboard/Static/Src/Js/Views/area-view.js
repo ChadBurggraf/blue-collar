@@ -4,6 +4,10 @@
  * @constructor
  */
 var AreaView = Backbone.View.extend({
+    events: {
+        'click button.btn-add': 'add'
+    },
+
     /**
      * Initialization.
      *
@@ -15,8 +19,8 @@ var AreaView = Backbone.View.extend({
         this.model.get('Collection').bind('reset', this.renderId, this);
 
         this.searchView = new SearchView({model: this.model});
-        this.searchView.bind('submit', this.submitSearch, this);
-        this.searchView.bind('cancel', this.cancelSearch, this);
+        this.searchView.bind('submit', this.searchSubmit, this);
+        this.searchView.bind('cancel', this.searchCancel, this);
 
         this.topPagerView = new PagerView({model: this.model});
         this.topPagerView.bind('page', this.page, this);
@@ -26,15 +30,9 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
-     * Handles the search view's cancel event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * Handle's the add button's click event.
      */
-    cancelSearch: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: ''});
-        this.trigger('fetch', this, args);
-    },
+    add: function() {},
 
     /**
      * Handles the list view's edit event.
@@ -165,14 +163,14 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
-     * Handles the signal view's submit event.
+     * Handles the search view's cancel event.
      *
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    signalSubmit: function(sender, args) {
-        sender.showLoading();
-        this.trigger('signalSubmit', this, _.extend({}, args, {View: sender}));
+    searchCancel: function(sender, args) {
+        this.model.set({PageNumber: 1, Search: ''});
+        this.trigger('fetch', this, args);
     },
 
     /**
@@ -181,8 +179,19 @@ var AreaView = Backbone.View.extend({
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    submitSearch: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: args.Search});
+    searchSubmit: function(sender, args) {
+        this.model.set({PageNumber: 1, Search: args.Attributes.Search});
         this.trigger('fetch', this, args);
+    },
+
+    /**
+     * Handles the signal view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        sender.showLoading();
+        this.trigger('signalSubmit', this, _.extend({}, args, {View: sender}));
     }
 });

@@ -77,12 +77,9 @@ var WorkersController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
-        var model;
-
+        var model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         CollarController.prototype.success.call(this, args, model, response);
-
-        model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
-
+        
         if (args.Action === 'updated') {
             this.refreshMachines();
         }

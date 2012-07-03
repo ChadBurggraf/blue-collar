@@ -6863,6 +6863,72 @@ var DateFieldSerializer = FieldSerializer.extend({
 });
 
 /**
+ * Extends {FieldSerializer} to serialize boolean values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var BooleanFieldSerializer = FieldSerializer.extend({
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (!_.isUndefined(value) && !_.isNull(value)) {
+            value = value.toString().toUpperCase();
+
+            switch (value) {
+                case 'TRUE':
+                case 'YES':
+                case '1':
+                    value = 'true';
+                    break;
+                case 'FALSE':
+                case 'NO':
+                case '0':
+                    value = 'false';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        FieldSerializer.prototype.deserialize.call(this, value, el);
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value;
+
+        if (FormSerializer.isJQuery(el)) {
+            value = el.val().toUpperCase();
+
+            switch (value) {
+                case 'TRUE':
+                case 'YES':
+                case '1':
+                    return true;
+                case 'FALSE':
+                case 'NO':
+                case '0':
+                    return false;
+                default:
+                    break;
+            }      
+        }
+
+        return null;
+    }
+});
+
+/**
  * Extends {FieldSerializer} to serialize double values.
  *
  * @constructor
@@ -8398,6 +8464,25 @@ var SchedulesController = CollarController.extend({
     initialize: function(options) {
         this.view = new SchedulesView({el: this.page, model: this.model});
         this.view.bind('fetch', this.fetch, this);
+        this.view.bind('editDelete', this.editDelete, this);
+        this.view.bind('editSubmit', this.editSubmit, this);
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        var model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+        CollarController.prototype.success.call(this, args, model, response);
+
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The schedule ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });
 /**
@@ -8479,12 +8564,9 @@ var WorkersController = CollarController.extend({
      * @param {jqXHR} response The response received from the server.
      */
     success: function(args, model, response) {
-        var model;
-
+        var model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         CollarController.prototype.success.call(this, args, model, response);
-
-        model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
-
+        
         if (args.Action === 'updated') {
             this.refreshMachines();
         }
@@ -9022,6 +9104,15 @@ var FormView = Backbone.View.extend({
     },
 
     /**
+     * Gets the name of the action performed by this instance upon submission.
+     *
+     * @return {String} The name of the action performed by this instance.
+     */
+    getAction: function() {
+        return this.model.isNew() ? 'created' : 'updated';
+    },
+
+    /**
      * Gets the attributes hash to use during serialization and de-serialization.
      *
      * @return {Object} This instance's attributes hash.
@@ -9237,7 +9328,7 @@ var FormView = Backbone.View.extend({
         this.renderErrors(errors);
 
         if (!errors) {
-            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: this.model.isNew() ? 'created' : 'updated'});
+            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: this.getAction()});
         }
 
         return this;
@@ -9620,6 +9711,15 @@ var SearchView = FormView.extend({
     },
 
     /**
+     * Gets the name of the action performed by this instance upon submission.
+     *
+     * @return {String} The name of the action performed by this instance.
+     */
+    getAction: function() {
+        return 'searched';
+    },
+
+    /**
      * Serializes the form.
      *
      * @return {Object} The serialized form attributes.
@@ -9634,6 +9734,10 @@ var SearchView = FormView.extend({
  * @constructor
  */
 var AreaView = Backbone.View.extend({
+    events: {
+        'click button.btn-add': 'add'
+    },
+
     /**
      * Initialization.
      *
@@ -9645,8 +9749,8 @@ var AreaView = Backbone.View.extend({
         this.model.get('Collection').bind('reset', this.renderId, this);
 
         this.searchView = new SearchView({model: this.model});
-        this.searchView.bind('submit', this.submitSearch, this);
-        this.searchView.bind('cancel', this.cancelSearch, this);
+        this.searchView.bind('submit', this.searchSubmit, this);
+        this.searchView.bind('cancel', this.searchCancel, this);
 
         this.topPagerView = new PagerView({model: this.model});
         this.topPagerView.bind('page', this.page, this);
@@ -9656,15 +9760,9 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
-     * Handles the search view's cancel event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * Handle's the add button's click event.
      */
-    cancelSearch: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: ''});
-        this.trigger('fetch', this, args);
-    },
+    add: function() {},
 
     /**
      * Handles the list view's edit event.
@@ -9795,14 +9893,14 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
-     * Handles the signal view's submit event.
+     * Handles the search view's cancel event.
      *
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    signalSubmit: function(sender, args) {
-        sender.showLoading();
-        this.trigger('signalSubmit', this, _.extend({}, args, {View: sender}));
+    searchCancel: function(sender, args) {
+        this.model.set({PageNumber: 1, Search: ''});
+        this.trigger('fetch', this, args);
     },
 
     /**
@@ -9811,9 +9909,20 @@ var AreaView = Backbone.View.extend({
      * @param {Object} sender The event sender.
      * @param {Object} args The event arguments.
      */
-    submitSearch: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: args.Search});
+    searchSubmit: function(sender, args) {
+        this.model.set({PageNumber: 1, Search: args.Attributes.Search});
         this.trigger('fetch', this, args);
+    },
+
+    /**
+     * Handles the signal view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    signalSubmit: function(sender, args) {
+        sender.showLoading();
+        this.trigger('signalSubmit', this, _.extend({}, args, {View: sender}));
     }
 });
 /**
@@ -10421,6 +10530,56 @@ var QueueView = AreaView.extend({
     }
 });
 /**
+ * Implements the schedules edit form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var SchedulesEditView = FormView.extend({
+    serializers: {
+        "EndOn": new DateFieldSerializer(),
+        "Id": new IntFieldSerializer(),
+        "RepeatValue": new IntFieldSerializer(),
+        "StartOn": new DateFieldSerializer(),
+        "Enabled": new BooleanFieldSerializer()
+    },
+    template: _.template($('#schedules-edit-template').html()),
+    validators: {
+        "QueueName": [
+            new LengthFieldValidator({maxLength: 24, message: 'Queue cannot be longer than 24 characters.'})
+        ],
+        "Name": [
+            new RequiredFieldValidator({message: 'Name is required.'}),
+            new LengthFieldValidator({maxLength: 24, message: 'Name cannot be longer than 24 characters.'})
+        ],
+        "StartOn": [
+            new RequiredFieldValidator({message: 'Start on is required.'}),
+            new RangeFieldValidator({min: Date.parse('1900-01-01'), max: Date.parse('2100-01-01'), message: 'Start on must be between 1900-01-01 and 2100-01-01.'})
+        ],
+        "EndOn": [
+            new RangeFieldValidator({min: Date.parse('1900-01-01'), max: Date.parse('2100-01-01'), message: 'End on must be between 1900-01-01 and 2100-01-01.'})
+        ],
+        "RepeatType": [
+            new RequiredFieldValidator({message: 'Repeat type is required.'}),
+            new EnumFieldValidator({possibleValues: ['None', 'Seconds', 'Minutes', 'Hours', 'Days', 'Weeks'], message: 'Repeat type must be one of None, Seconds, Minutes, Hours, Days or Weeks.'})
+        ],
+        "RepeatValue": [
+            new RangeFieldValidator({min: 1, max: Number.MAX_VALUE, message: 'Repeat value must be greater than 0.'})
+        ],
+        "Enabled": [
+            new RequiredFieldValidator({message: 'Enabled is required.'})
+        ]
+    },
+
+    /**
+     * Focuses the first element in the form.
+     */
+    focus: function() {
+        this.$('input[name="Name"]').focus();
+        return this;
+    }
+});
+/**
  * Manages the schedules list view.
  *
  * @constructor
@@ -10445,7 +10604,7 @@ var SchedulesListView = ListView.extend({
         for (i = 0, n = collection.length; i < n; i++) {
             model = collection.at(i);
             view = new SchedulesRowView({model: model}).render();
-            view.bind('display', this.display, this);
+            view.bind('edit', this.edit, this);
             tbody.append(view.el);
         }
 
@@ -10477,18 +10636,37 @@ var SchedulesView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
+
+        this.model.get('Collection').bind('reset', this.renderId, this);
+
         this.listView = new SchedulesListView({model: this.model});
-        this.listView.bind('display', this.display, this);
+        this.listView.bind('edit', this.edit, this);
     },
 
     /**
-     * Handles the list view's display event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * Handle's the add button's click event.
      */
-    display: function(sender, args) {
+    add: function() {
+        debugger;
+        var model = new ScheduleModel();
+        model.urlRoot = this.model.get('UrlRoot');
+        this.model.clearId();
+        this.renderIdView($('.details'), model);
+    },
 
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     */
+    renderIdView: function(el, model) {
+        var view = new SchedulesEditView({model: model});
+        view.bind('cancel', this.editCancel, this);
+        view.bind('delete', this.editDelete, this);
+        view.bind('submit', this.editSubmit, this);
+        el.html(view.render().el);
+        view.focus();
     }
 });
 /**
@@ -10731,7 +10909,6 @@ var WorkersListView = ListView.extend({
         for (i = 0, n = collection.length; i < n; i++) {
             model = collection.at(i);
             view = new WorkersRowView({model: model}).render();
-            view.bind('display', this.display, this);
             view.bind('edit', this.edit, this);
             view.bind('signal', this.signal, this);
             tbody.append(view.el);
@@ -10772,24 +10949,13 @@ var WorkersSignalView = FormView.extend({
     },
 
     /**
-     * Submits this form by serializing and validating the current inputs
-     * If validation passes, the 'submit' event is raised. Otherwise, the
-     * validation failure message(s) are rendered.
+     * Gets the name of the action performed by this instance upon submission.
      *
-     * @return {FormView} This instance.
+     * @return {String} The name of the action performed by this instance.
      */
-    submit: function() {
-        var attributes = this.serialize(),
-            errors = this.validate(attributes);
-
-        this.renderErrors(errors);
-
-        if (!errors) {
-            this.trigger('submit', this, {Model: this.model, Attributes: attributes, Action: 'signalled'});
-        }
-
-        return this;
-    },
+    getAction: function() {
+        return 'signalled';
+    }
 });
 /**
  * Manages the root workers view.
@@ -10798,9 +10964,6 @@ var WorkersSignalView = FormView.extend({
  * @extends {AreaView}
  */
 var WorkersView = AreaView.extend({
-    events: {
-        'click button.btn-add': 'add'
-    },
     template: _.template($('#workers-template').html()),
 
     /**
@@ -10823,6 +10986,7 @@ var WorkersView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
+        debugger;
         var model = new WorkerModel();
         model.urlRoot = this.model.get('UrlRoot');
         this.model.clearId();

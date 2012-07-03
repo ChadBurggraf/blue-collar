@@ -39,6 +39,15 @@ var SearchView = FormView.extend({
     },
 
     /**
+     * Gets the name of the action performed by this instance upon submission.
+     *
+     * @return {String} The name of the action performed by this instance.
+     */
+    getAction: function() {
+        return 'searched';
+    },
+
+    /**
      * Serializes the form.
      *
      * @return {Object} The serialized form attributes.

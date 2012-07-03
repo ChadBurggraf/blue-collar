@@ -303,6 +303,72 @@ var DateFieldSerializer = FieldSerializer.extend({
 });
 
 /**
+ * Extends {FieldSerializer} to serialize boolean values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var BooleanFieldSerializer = FieldSerializer.extend({
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (!_.isUndefined(value) && !_.isNull(value)) {
+            value = value.toString().toUpperCase();
+
+            switch (value) {
+                case 'TRUE':
+                case 'YES':
+                case '1':
+                    value = 'true';
+                    break;
+                case 'FALSE':
+                case 'NO':
+                case '0':
+                    value = 'false';
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        FieldSerializer.prototype.deserialize.call(this, value, el);
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        var value;
+
+        if (FormSerializer.isJQuery(el)) {
+            value = el.val().toUpperCase();
+
+            switch (value) {
+                case 'TRUE':
+                case 'YES':
+                case '1':
+                    return true;
+                case 'FALSE':
+                case 'NO':
+                case '0':
+                    return false;
+                default:
+                    break;
+            }      
+        }
+
+        return null;
+    }
+});
+
+/**
  * Extends {FieldSerializer} to serialize double values.
  *
  * @constructor

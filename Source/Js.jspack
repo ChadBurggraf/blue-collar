@@ -70,6 +70,7 @@
     <input path="Views\queue-list-view.js"/>
     <input path="Views\queue-row-view.js"/>
     <input path="Views\queue-view.js"/>
+    <input path="Views\schedules-edit-view.js"/>
     <input path="Views\schedules-list-view.js"/>
     <input path="Views\schedules-row-view.js"/>
     <input path="Views\schedules-view.js"/>
