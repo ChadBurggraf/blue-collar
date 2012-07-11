@@ -1,8 +1,47 @@
-﻿<script type="text/template" id="history-row-template">
+﻿<script type="text/template" id="history-display-template">
+     <fieldset>
+        <p class="legend"><%- JobName %></p>
+
+        <div class="field">
+            <span>Executed on machine</span>
+            <p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
+        </div>
+
+        <div class="field">
+            <span>Executed by worker</span>
+            <p><%- WorkerName || '' %></p>
+        </div>
+
+        <div class="field">
+            <span>Queued on</span>
+            <p>
+                <%= String.dateDisplayLight(QueuedOn) %>
+            </p>
+        </div>
+
+        <div class="field">
+            <span>Data</span>
+            <pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+        </div>
+
+        <div class="field exception">
+            <span>Exception</span>
+            <% print(String.exceptionDisplay(Exception)); %>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-reset">Done</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="history-row-template">
     <td>
         <div class="row-title">
             <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
-            <a href="javascript:void(0);" class="display"><%- JobName %></a>
+            <a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
             <small class="code light"><%- JobType %></small>
         </div>
         <div id="row-data-<%- Id %>" class="row-data collapse">

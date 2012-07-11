@@ -45,6 +45,29 @@ var CollarModel = Backbone.Model.extend({
     },
 
     /**
+     * Parses the model's response.Data attribute as returned by the server.
+     *
+     * @param {Object} response The response to parse/ensure a Data attribute for.
+     * @return {Object} The parsed response object.
+     */
+    parseData: function(response) {
+        if (!response.Data) {
+            response.Data = '{}';
+        }
+
+        if (_.isString(response.Data)) {
+            try {
+                response.Data = JSON.parse(response.Data);
+            } catch (e) {
+                response.Data = '{}';
+            }
+        }
+
+        response.Data = JSON.stringify(response.Data, null, 2);
+        return response;
+    },
+
+    /**
      * Sets the given attributes on this instance.
      *
      * @param {Object} attributes The attributes to set.

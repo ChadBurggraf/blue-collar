@@ -6,32 +6,13 @@
 var HistoryModel = CollarModel.extend({
     defaults: {
         'Id': 0,
-        'FinishedOn': null,
-        'JobName': null,
-        'JobType': null,
-        'QueueName': null,
-        'ScheduleName': null,
-        'StartedOn': null,
-        'Status': 'None',
-        'TryNumber': 0
-    }
-});
-
-/**
- * Models the full details of a history entry.
- *
- * @constructor
- */
-var HistoryDetailsModel = CollarModel.extend({
-    defaults: {
-        'Id': null,
         'Data': null,
         'Exception': null,
         'FinishedOn': null,
         'JobName': null,
         'JobType': null,
-        'QueuedOn': null,
         'QueueName': null,
+        'QueuedOn': null,
         'ScheduleName': null,
         'StartedOn': null,
         'Status': 'None',
@@ -39,6 +20,17 @@ var HistoryDetailsModel = CollarModel.extend({
         'WorkerMachineAddress': null,
         'WorkerMachineName': null,
         'WorkerName': null
+    },
+
+    /**
+     * Parses the model's data as returned by the server.
+     *
+     * @param {Object} response The raw response object received from the server.
+     * @return {Object} The parsed response object.
+     */
+    parse: function(response) {
+        response = CollarModel.prototype.parse.call(this, response);
+        return this.parseData(response);
     }
 });
 

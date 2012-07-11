@@ -3,6 +3,55 @@
  */
 _.extend(String, {
     /**
+     * Gets a display string for the given date value, with the
+     * time portion wrapped in "light" markup.
+     *
+     * @param {Date} value The date to get the display string for.
+     * @return A date display string with a light time portion.
+     */
+    dateDisplayLight: function(value) {
+        var result = '';
+
+        if (value) {
+            result = value.toString('MMM d, yyyy')
+                + ' <span class="light">'
+                + value.toString('h:mm:ss tt')
+                + '</span>';
+        }
+
+        return result;
+    },
+
+    /**
+     * Gets a display string of HTML for the given exception XML.
+     *
+     * @param {String} ex An XML fragment describing an exception.
+     * @return {String} A display exception string of HTML.
+     */
+    exceptionDisplay: function(ex) {
+        var result = '',
+            message,
+            frames;
+
+        if (ex) {
+            ex = $($.parseXML(ex));
+            message = ex.find('Message').text();
+            frames = ex.find('Frame');
+
+            if (message) {
+                result += $('<p/>').text(message).outerHtml();
+            }
+
+            if (frames) {
+                frames = _.map(frames, function(f) { return '<code>' + $(f).text() + '</code>'; }).join('\n');
+                result += $('<div class="code"/>').html(frames).outerHtml();
+            }
+        }
+
+        return result;
+    },
+
+    /**
      * Gets a display string representing a job history status.
      *
      * @param {String} value The status value to get a display string for.

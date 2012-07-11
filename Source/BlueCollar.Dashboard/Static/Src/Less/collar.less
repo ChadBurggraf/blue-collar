@@ -56,8 +56,45 @@
 		margin-bottom: 0;
     }
 
+	.exception {
+		code {
+			display: block;
+			padding: 0;
+			margin: 5px 0 0;
+			background-color: transparent;
+			border: none;
+			color: #666;
+		}
+
+		p {
+			color: #b94a48;
+		}
+	}
+
     .field {
 		margin-bottom: 9px;
+
+		p {
+			margin-bottom: 0;
+
+			span {
+				display: inline;
+				font-weight: normal;
+				line-height: normal;
+			}
+		}
+
+		pre {
+			padding: 0;
+			margin-bottom: 0;
+			border: none;
+
+			span {
+				display: inline;
+				font-weight: normal;
+				line-height: normal;
+			}
+		}
 
         span {
             display: block;
@@ -68,16 +105,6 @@
                 color: #f00;
             }
         }
-
-		pre {
-			border: none;
-
-			span {
-				display: inline;
-				font-weight: normal;
-				line-height: normal;
-			}
-		}
     }
 
 	.field-schedule-repeat {

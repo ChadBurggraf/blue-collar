@@ -23,21 +23,7 @@ var QueueModel = CollarModel.extend({
      */
     parse: function(response) {
         response = CollarModel.prototype.parse.call(this, response);
-
-        if (!response.Data) {
-            response.Data = '{}';
-        }
-
-        if (_.isString(response.Data)) {
-            try {
-                response.Data = JSON.parse(response.Data);
-            } catch (e) {
-                response.Data = '{}';
-            }
-        }
-
-        response.Data = JSON.stringify(response.Data, null, 2);
-        return response;
+        return this.parseData(response);
     }
 });
 

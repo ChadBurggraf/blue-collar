@@ -22,21 +22,6 @@ var QueueController = CollarController.extend({
     },
 
     /**
-     * Handle's this instance's view's details event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    details: function(sender, args) {
-        args.Model.fetch({
-            success: function() {
-                args.Model.set({DetailsLoaded: true}, {silent: true});
-            },
-            error: _.bind(this.error, this)
-        });
-    },
-
-    /**
      * Handles a success response from the server.
      *
      * @param {Object} args The original event arguments that initiated the server action.

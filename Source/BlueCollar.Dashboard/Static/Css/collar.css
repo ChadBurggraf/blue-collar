@@ -5901,8 +5901,43 @@ a.badge:hover {
   margin-bottom: 0;
 }
 
+.form .exception code {
+  display: block;
+  padding: 0;
+  margin: 5px 0 0;
+  color: #666;
+  background-color: transparent;
+  border: none;
+}
+
+.form .exception p {
+  color: #b94a48;
+}
+
 .form .field {
   margin-bottom: 9px;
+}
+
+.form .field p {
+  margin-bottom: 0;
+}
+
+.form .field p span {
+  display: inline;
+  font-weight: normal;
+  line-height: normal;
+}
+
+.form .field pre {
+  padding: 0;
+  margin-bottom: 0;
+  border: none;
+}
+
+.form .field pre span {
+  display: inline;
+  font-weight: normal;
+  line-height: normal;
 }
 
 .form .field span {
@@ -5913,16 +5948,6 @@ a.badge:hover {
 
 .form .field span em {
   color: #f00;
-}
-
-.form .field pre {
-  border: none;
-}
-
-.form .field pre span {
-  display: inline;
-  font-weight: normal;
-  line-height: normal;
 }
 
 .form .field-schedule-repeat input[type="text"] {

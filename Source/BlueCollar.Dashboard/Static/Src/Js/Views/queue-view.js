@@ -46,30 +46,15 @@ var QueueView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var render = false,
-            view,
-            signalModel;
+        var view = new QueueDisplayView({model: model});
+        view.bind('cancel', this.displayCancel, this);
+        view.bind('delete', this.editDelete, this);
 
-        if (this.model.get('Action') === 'signal') {
-            if (model.get('Signal') === 'None') {
-
-            } else {
-                this.model.set({Id: 0, Action: ''});
-            }
-        } else {
-            view = new QueueDisplayView({model: model});
-            view.bind('cancel', this.displayCancel, this);
-            view.bind('delete', this.editDelete, this);
-            render = true;
-
-            if (!model.get('DetailsLoaded')) {
-                this.trigger('details', this, {Model: model});
-            }
-        }
-
-        if (render) {
-            el.html(view.render().el);
-            view.focus();
+        el.html(view.render().el);
+        view.focus();
+        
+        if (!model.get('DetailsLoaded')) {
+            this.trigger('details', this, {Model: model});
         }
     }
 });

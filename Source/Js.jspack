@@ -62,6 +62,7 @@
     <input path="Views\search-view.js"/>
     <input path="Views\area-view.js"/>
     <input path="Views\dashboard-view.js"/>
+    <input path="Views\history-display-view.js"/>
     <input path="Views\history-list-view.js"/>
     <input path="Views\history-row-view.js"/>
     <input path="Views\history-view.js"/>

@@ -6387,6 +6387,55 @@ _.extend(Number.prototype, {
  */
 _.extend(String, {
     /**
+     * Gets a display string for the given date value, with the
+     * time portion wrapped in "light" markup.
+     *
+     * @param {Date} value The date to get the display string for.
+     * @return A date display string with a light time portion.
+     */
+    dateDisplayLight: function(value) {
+        var result = '';
+
+        if (value) {
+            result = value.toString('MMM d, yyyy')
+                + ' <span class="light">'
+                + value.toString('h:mm:ss tt')
+                + '</span>';
+        }
+
+        return result;
+    },
+
+    /**
+     * Gets a display string of HTML for the given exception XML.
+     *
+     * @param {String} ex An XML fragment describing an exception.
+     * @return {String} A display exception string of HTML.
+     */
+    exceptionDisplay: function(ex) {
+        var result = '',
+            message,
+            frames;
+
+        if (ex) {
+            ex = $($.parseXML(ex));
+            message = ex.find('Message').text();
+            frames = ex.find('Frame');
+
+            if (message) {
+                result += $('<p/>').text(message).outerHtml();
+            }
+
+            if (frames) {
+                frames = _.map(frames, function(f) { return '<code>' + $(f).text() + '</code>'; }).join('\n');
+                result += $('<div class="code"/>').html(frames).outerHtml();
+            }
+        }
+
+        return result;
+    },
+
+    /**
      * Gets a display string representing a job history status.
      *
      * @param {String} value The status value to get a display string for.
@@ -7336,6 +7385,29 @@ var CollarModel = Backbone.Model.extend({
     },
 
     /**
+     * Parses the model's response.Data attribute as returned by the server.
+     *
+     * @param {Object} response The response to parse/ensure a Data attribute for.
+     * @return {Object} The parsed response object.
+     */
+    parseData: function(response) {
+        if (!response.Data) {
+            response.Data = '{}';
+        }
+
+        if (_.isString(response.Data)) {
+            try {
+                response.Data = JSON.parse(response.Data);
+            } catch (e) {
+                response.Data = '{}';
+            }
+        }
+
+        response.Data = JSON.stringify(response.Data, null, 2);
+        return response;
+    },
+
+    /**
      * Sets the given attributes on this instance.
      *
      * @param {Object} attributes The attributes to set.
@@ -7635,32 +7707,13 @@ var AreaModel = Backbone.Model.extend({
 var HistoryModel = CollarModel.extend({
     defaults: {
         'Id': 0,
-        'FinishedOn': null,
-        'JobName': null,
-        'JobType': null,
-        'QueueName': null,
-        'ScheduleName': null,
-        'StartedOn': null,
-        'Status': 'None',
-        'TryNumber': 0
-    }
-});
-
-/**
- * Models the full details of a history entry.
- *
- * @constructor
- */
-var HistoryDetailsModel = CollarModel.extend({
-    defaults: {
-        'Id': null,
         'Data': null,
         'Exception': null,
         'FinishedOn': null,
         'JobName': null,
         'JobType': null,
-        'QueuedOn': null,
         'QueueName': null,
+        'QueuedOn': null,
         'ScheduleName': null,
         'StartedOn': null,
         'Status': 'None',
@@ -7668,6 +7721,17 @@ var HistoryDetailsModel = CollarModel.extend({
         'WorkerMachineAddress': null,
         'WorkerMachineName': null,
         'WorkerName': null
+    },
+
+    /**
+     * Parses the model's data as returned by the server.
+     *
+     * @param {Object} response The raw response object received from the server.
+     * @return {Object} The parsed response object.
+     */
+    parse: function(response) {
+        response = CollarModel.prototype.parse.call(this, response);
+        return this.parseData(response);
     }
 });
 
@@ -7821,21 +7885,7 @@ var QueueModel = CollarModel.extend({
      */
     parse: function(response) {
         response = CollarModel.prototype.parse.call(this, response);
-
-        if (!response.Data) {
-            response.Data = '{}';
-        }
-
-        if (_.isString(response.Data)) {
-            try {
-                response.Data = JSON.parse(response.Data);
-            } catch (e) {
-                response.Data = '{}';
-            }
-        }
-
-        response.Data = JSON.stringify(response.Data, null, 2);
-        return response;
+        return this.parseData(response);
     }
 });
 
@@ -8234,6 +8284,21 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Handle's this instance's view's details event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    details: function(sender, args) {
+        args.Model.fetch({
+            success: function() {
+                args.Model.set({DetailsLoaded: true}, {silent: true});
+            },
+            error: _.bind(this.error, this)
+        });
+    },
+
+    /**
      * Handle's this instance's view's editDelete event.
      *
      * @param {Object} sender The event sender.
@@ -8498,6 +8563,7 @@ var HistoryController = CollarController.extend({
      */
     initialize: function(options) {
         this.view = new HistoryView({model: this.model});
+        this.view.bind('details', this.details, this);
         this.view.bind('fetch', this.fetch, this);
     }
 });
@@ -8522,21 +8588,6 @@ var QueueController = CollarController.extend({
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
-    },
-
-    /**
-     * Handle's this instance's view's details event.
-     *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
-     */
-    details: function(sender, args) {
-        args.Model.fetch({
-            success: function() {
-                args.Model.set({DetailsLoaded: true}, {silent: true});
-            },
-            error: _.bind(this.error, this)
-        });
     },
 
     /**
@@ -10294,6 +10345,38 @@ var DashboardView = Backbone.View.extend({
     }
 });
 /**
+ * Implements the history display form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var HistoryDisplayView = FormView.extend({
+    template: _.template($('#history-display-template').html()),
+
+    /**
+     * Handles model change events.
+     */
+    change: function() {
+        this.render();
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {FormView} This instance.
+     */
+    render: function() {
+        FormView.prototype.render.call(this);
+
+        if (!this.model.get('Exception')) {
+            this.$('.exception').remove();
+        }
+
+        setTimeout(prettyPrint, 100);
+        return this;
+    }
+});
+/**
  * Manages the history list view.
  *
  * @constructor
@@ -10380,18 +10463,43 @@ var HistoryView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
+
         this.listView = new HistoryListView({model: this.model});
         this.listView.bind('display', this.display, this);
+        this.listView.bind('signal', this.signal, this);
     },
 
     /**
-     * Handles the list view's display event.
+     * Renders the ID view for the given model in the given details element.
      *
-     * @param {Object} sender The event sender.
-     * @param {Object} args The event arguments.
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
      */
-    display: function(sender, args) {
+    renderIdView: function(el, model) {
+        var render = false,
+            view,
+            signalModel;
 
+        if (this.model.get('Action') === 'signal') {
+            if (model.get('Signal') === 'None') {
+
+            } else {
+                this.model.set({Id: 0, Action: ''});
+            }
+        } else {
+            view = new HistoryDisplayView({model: model});
+            view.bind('cancel', this.displayCancel, this);
+            render = true;
+
+            if (!model.get('DetailsLoaded')) {
+                this.trigger('details', this, {Model: model});
+            }
+        }
+
+        if (render) {
+            el.html(view.render().el);
+            view.focus();
+        }
     }
 });
 /**
@@ -10755,30 +10863,15 @@ var QueueView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var render = false,
-            view,
-            signalModel;
+        var view = new QueueDisplayView({model: model});
+        view.bind('cancel', this.displayCancel, this);
+        view.bind('delete', this.editDelete, this);
 
-        if (this.model.get('Action') === 'signal') {
-            if (model.get('Signal') === 'None') {
-
-            } else {
-                this.model.set({Id: 0, Action: ''});
-            }
-        } else {
-            view = new QueueDisplayView({model: model});
-            view.bind('cancel', this.displayCancel, this);
-            view.bind('delete', this.editDelete, this);
-            render = true;
-
-            if (!model.get('DetailsLoaded')) {
-                this.trigger('details', this, {Model: model});
-            }
-        }
-
-        if (render) {
-            el.html(view.render().el);
-            view.focus();
+        el.html(view.render().el);
+        view.focus();
+        
+        if (!model.get('DetailsLoaded')) {
+            this.trigger('details', this, {Model: model});
         }
     }
 });

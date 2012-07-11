@@ -60,6 +60,21 @@ _.extend(CollarController.prototype, Backbone.Events, {
     },
 
     /**
+     * Handle's this instance's view's details event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    details: function(sender, args) {
+        args.Model.fetch({
+            success: function() {
+                args.Model.set({DetailsLoaded: true}, {silent: true});
+            },
+            error: _.bind(this.error, this)
+        });
+    },
+
+    /**
      * Handle's this instance's view's editDelete event.
      *
      * @param {Object} sender The event sender.
