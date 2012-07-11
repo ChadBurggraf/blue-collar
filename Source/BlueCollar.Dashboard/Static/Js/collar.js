@@ -6538,6 +6538,18 @@ _.extend(String, {
         return repeatType && repeatType !== 'None'
             ? 'Every ' + repeatValue + ' ' + repeatType.toLowerCase()
             : 'No';
+    },
+
+    /**
+     * Gets a display string for a signal.
+     *
+     * @param {String} signal The signal to get the display string for.
+     * @return {String} An HTML display string for the signal.
+     */
+    signalDisplay: function(signal) {
+        return signal === 'None'
+            ? $('<a class="btn-signal" href="javascript:void(0);"/>').text(signal).outerHtml()
+            : $.htmlEncode(signal);
     }
 });
 
@@ -8209,7 +8221,7 @@ var WorkingSignalModel = CollarModel.extend({
      * @return {String} The model's server URL.
      */
     url: function() {
-        return BlueCollarModel.prototype.url.call(this).appendUrlPath('signal');
+        return CollarModel.prototype.url.call(this).appendUrlPath('signal');
     }
 });
 
@@ -8755,7 +8767,29 @@ var WorkingController = CollarController.extend({
      */
     initialize: function(options) {
         this.view = new WorkingView({model: this.model});
+        this.view.bind('details', this.details, this);
         this.view.bind('fetch', this.fetch, this);
+        this.view.bind('signalSubmit', this.signalSubmit, this);
+    },
+
+    /**
+     * Handles a success response from the server.
+     *
+     * @param {Object} args The original event arguments that initiated the server action.
+     * @param {CollarModel} model The model that the server action was taken on behalf of.
+     * @param {jqXHR} response The response received from the server.
+     */
+    success: function(args, model, response) {
+        CollarController.prototype.success.call(this, args, model, response);
+        
+        if (args.Action === 'signalled') {
+            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+        }
+
+        NoticeView.create({
+            className: 'alert-success',
+            model: {Title: 'Success!', Message: 'The job ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+        });
     }
 });
 
@@ -9088,12 +9122,15 @@ var WorkingRouter = CollarRouter.extend({
     routes: {
         'working': 'index',
         'working/id/:id': 'id',
+        'working/id/:id/:action': 'idAction',
         'working/q/:search': 'search',
         'working/q/:search/id/:id': 'searchId',
+        'working/q/:search/id/:id/:action': 'searchIdAction',
         'working/p/:page': 'page',
         'working/p/:page/id/:id': 'pageId',
+        'working/p/:page/id/:id/:action': 'pageIdAction',
         'working/q/:search/p/:page': 'searchPage',
-        'working/q/:search/p/:page/id/:id': 'index'
+        'working/q/:search/p/:page/id/:id/:action': 'index'
     },
 
     /**
@@ -10476,29 +10513,14 @@ var HistoryView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var render = false,
-            view,
-            signalModel;
+        var view = new HistoryDisplayView({model: model});
+        view.bind('cancel', this.displayCancel, this);
 
-        if (this.model.get('Action') === 'signal') {
-            if (model.get('Signal') === 'None') {
+        el.html(view.render().el);
+        view.focus();
 
-            } else {
-                this.model.set({Id: 0, Action: ''});
-            }
-        } else {
-            view = new HistoryDisplayView({model: model});
-            view.bind('cancel', this.displayCancel, this);
-            render = true;
-
-            if (!model.get('DetailsLoaded')) {
-                this.trigger('details', this, {Model: model});
-            }
-        }
-
-        if (render) {
-            el.html(view.render().el);
-            view.focus();
+        if (!model.get('DetailsLoaded')) {
+            this.trigger('details', this, {Model: model});
         }
     }
 });
@@ -11374,6 +11396,33 @@ var WorkersView = AreaView.extend({
     }
 });
 /**
+ * Implements the working display form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var WorkingDisplayView = FormView.extend({
+    template: _.template($('#working-display-template').html()),
+
+    /**
+     * Handles model change events.
+     */
+    change: function() {
+        this.render();
+    },
+
+    /**
+     * Renders the view.
+     *
+     * @return {FormView} This instance.
+     */
+    render: function() {
+        FormView.prototype.render.call(this);
+        setTimeout(prettyPrint, 100);
+        return this;
+    }
+});
+/**
  * Manages the working job list view.
  *
  * @constructor
@@ -11399,6 +11448,7 @@ var WorkingListView = ListView.extend({
             model = collection.at(i);
             view = new WorkingRowView({model: model}).render();
             view.bind('display', this.display, this);
+            view.bind('signal', this.signal, this);
             tbody.append(view.el);
         }
 
@@ -11413,6 +11463,37 @@ var WorkingListView = ListView.extend({
  */
 var WorkingRowView = RowView.extend({
     template: _.template($('#working-row-template').html())
+});
+/**
+ * Implements the working signal form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var WorkingSignalView = FormView.extend({
+    serializers: {
+        "Id": new IntFieldSerializer()
+    },
+    template: _.template($('#working-signal-template').html()),
+    validators: {
+        "Id": [
+            new RequiredFieldValidator({message: 'Id is required.'}),
+            new RangeFieldValidator({min: 1, max: Number.MAX_VALUE, message: 'Id must be greater than 0.'})
+        ],
+        "Signal": [
+            new RequiredFieldValidator({message: 'Signal is required.'}),
+            new EnumFieldValidator({possibleValues: ['Cancel'], message: 'Signal must be either Start or Stop.'})
+        ]
+    },
+
+    /**
+     * Gets the name of the action performed by this instance upon submission.
+     *
+     * @return {String} The name of the action performed by this instance.
+     */
+    getAction: function() {
+        return 'signalled';
+    }
 });
 /**
  * Manages the root working jobs view.
@@ -11430,8 +11511,48 @@ var WorkingView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
+
         this.listView = new WorkingListView({model: this.model});
-        this.listView.bind('edit', this.edit, this);
+        this.listView.bind('display', this.display, this);
+        this.listView.bind('signal', this.signal, this);
+    },
+
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     */
+    renderIdView: function(el, model) {
+        var render = false,
+            view,
+            signalModel;
+
+        if (this.model.get('Action') === 'signal') {
+            if (model.get('Signal') === 'None') {
+                signalModel = new WorkingSignalModel(model.attributes);
+                signalModel.urlRoot = this.model.get('UrlRoot');
+                view = new WorkingSignalView({model: signalModel});
+                view.bind('cancel', this.editCancel, this);
+                view.bind('submit', this.signalSubmit, this);
+                render = true;
+            } else {
+                this.model.set({Id: 0, Action: ''});
+            }
+        } else {
+            view = new WorkingDisplayView({model: model});
+            view.bind('cancel', this.displayCancel, this);
+            render = true;
+        }
+
+        if (render) {
+            el.html(view.render().el);
+            view.focus();
+
+            if (!model.get('DetailsLoaded')) {
+                this.trigger('details', this, {Model: model});
+            }
+        }
     }
 });
 

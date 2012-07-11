@@ -27,29 +27,14 @@ var HistoryView = AreaView.extend({
      * @param {CollarModel} model The model to render the ID view for.
      */
     renderIdView: function(el, model) {
-        var render = false,
-            view,
-            signalModel;
+        var view = new HistoryDisplayView({model: model});
+        view.bind('cancel', this.displayCancel, this);
 
-        if (this.model.get('Action') === 'signal') {
-            if (model.get('Signal') === 'None') {
+        el.html(view.render().el);
+        view.focus();
 
-            } else {
-                this.model.set({Id: 0, Action: ''});
-            }
-        } else {
-            view = new HistoryDisplayView({model: model});
-            view.bind('cancel', this.displayCancel, this);
-            render = true;
-
-            if (!model.get('DetailsLoaded')) {
-                this.trigger('details', this, {Model: model});
-            }
-        }
-
-        if (render) {
-            el.html(view.render().el);
-            view.focus();
+        if (!model.get('DetailsLoaded')) {
+            this.trigger('details', this, {Model: model});
         }
     }
 });

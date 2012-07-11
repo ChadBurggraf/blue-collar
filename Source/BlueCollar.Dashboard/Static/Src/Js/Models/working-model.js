@@ -40,7 +40,7 @@ var WorkingSignalModel = CollarModel.extend({
      * @return {String} The model's server URL.
      */
     url: function() {
-        return BlueCollarModel.prototype.url.call(this).appendUrlPath('signal');
+        return CollarModel.prototype.url.call(this).appendUrlPath('signal');
     }
 });
 

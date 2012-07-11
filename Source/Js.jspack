@@ -82,8 +82,10 @@
     <input path="Views\workers-row-view.js"/>
     <input path="Views\workers-signal-view.js"/>
     <input path="Views\workers-view.js"/>
+    <input path="Views\working-display-view.js"/>
     <input path="Views\working-list-view.js"/>
     <input path="Views\working-row-view.js"/>
+    <input path="Views\working-signal-view.js"/>
     <input path="Views\working-view.js"/>
   </output>
 

@@ -194,6 +194,7 @@
     <Content Include="Static\Src\Js\Views\area-view.js" />
     <Content Include="Static\Src\Js\Views\dashboard-view.js" />
     <Content Include="Static\Src\Js\Views\form-view.js" />
+    <Content Include="Static\Src\Js\Views\history-display-view.js" />
     <Content Include="Static\Src\Js\Views\history-list-view.js" />
     <Content Include="Static\Src\Js\Views\history-row-view.js" />
     <Content Include="Static\Src\Js\Views\history-view.js" />
@@ -217,8 +218,10 @@
     <Content Include="Static\Src\Js\Views\workers-row-view.js" />
     <Content Include="Static\Src\Js\Views\workers-signal-view.js" />
     <Content Include="Static\Src\Js\Views\workers-view.js" />
+    <Content Include="Static\Src\Js\Views\working-display-view.js" />
     <Content Include="Static\Src\Js\Views\working-list-view.js" />
     <Content Include="Static\Src\Js\Views\working-row-view.js" />
+    <Content Include="Static\Src\Js\Views\working-signal-view.js" />
     <Content Include="Static\Src\Js\Views\working-view.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

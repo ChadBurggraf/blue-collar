@@ -24,6 +24,7 @@ var WorkingListView = ListView.extend({
             model = collection.at(i);
             view = new WorkingRowView({model: model}).render();
             view.bind('display', this.display, this);
+            view.bind('signal', this.signal, this);
             tbody.append(view.el);
         }
 

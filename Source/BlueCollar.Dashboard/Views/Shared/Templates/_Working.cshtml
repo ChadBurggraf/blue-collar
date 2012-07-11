@@ -1,4 +1,58 @@
-﻿<script type="text/template" id="working-row-template">
+﻿<script type="text/template" id="working-display-template">
+    <fieldset>
+        <p class="legend"><%- JobName %></p>
+
+        <div class="field">
+            <span>Executing on machine</span>
+            <p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
+        </div>
+
+        <div class="field">
+            <span>Executing by worker</span>
+            <p><%- WorkerName || '' %></p>
+        </div>
+
+        <div class="field">
+            <span>Data</span>
+            <pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-reset">Done</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="working-signal-template">
+    <fieldset>
+        <p class="legend">
+            Signal <em><%- JobName %></em>
+            <small>On worker <%- WorkerName %></small>
+        </p>
+
+        <div class="alert alert-block alert-error"></div>
+
+        <div class="field">
+            <span>Signal <em>*</em></span>
+            <label class="radio">
+                <input type="radio" name="Signal" value="Cancel">
+                Cancel
+            </label>
+            <span class="error"></span>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="Signal Job">
+            <button type="button" class="btn btn-reset">Cancel</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="working-row-template">
     <td>
         <div class="row-title">
             <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
@@ -39,7 +93,7 @@
                     </tr>
                     <tr>
                         <th>Signal</th>
-                        <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+                        <td><% print(String.signalDisplay(Signal)); %></td>
                     </tr>
                     <tr>
                         <th>Try</th>
@@ -60,7 +114,7 @@
         <small class="light"><strong>Started On</strong></small>
         <small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
     </td>
-    <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+    <td><% print(String.signalDisplay(Signal)); %></td>
     <td><%- TryNumber %></td>
 </script>
 

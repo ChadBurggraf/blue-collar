@@ -130,7 +130,7 @@
                     </tr>
                     <tr>
                         <th>Signal</th>
-                        <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+                        <td><% print(String.signalDisplay(Signal)); %></td>
                     </tr>
                     <tr>
                         <th>Startu</th>
@@ -143,7 +143,7 @@
     <td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
     <td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
     <td><%- Status %></td>
-    <td><% if (Signal === 'None') { print('<a class="btn-signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
+    <td><% print(String.signalDisplay(Signal)); %></td>
     <td><%- Startup %></td>
 </script>
 

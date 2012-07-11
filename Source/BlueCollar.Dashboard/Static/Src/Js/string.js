@@ -154,6 +154,18 @@ _.extend(String, {
         return repeatType && repeatType !== 'None'
             ? 'Every ' + repeatValue + ' ' + repeatType.toLowerCase()
             : 'No';
+    },
+
+    /**
+     * Gets a display string for a signal.
+     *
+     * @param {String} signal The signal to get the display string for.
+     * @return {String} An HTML display string for the signal.
+     */
+    signalDisplay: function(signal) {
+        return signal === 'None'
+            ? $('<a class="btn-signal" href="javascript:void(0);"/>').text(signal).outerHtml()
+            : $.htmlEncode(signal);
     }
 });
 
