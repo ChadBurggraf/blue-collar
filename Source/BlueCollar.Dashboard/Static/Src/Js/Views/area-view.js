@@ -35,6 +35,19 @@ var AreaView = Backbone.View.extend({
     add: function() {},
 
     /**
+     * Delegates delcarative events for the view.
+     *
+     * @param {Object} events A hash of additional events to delegate.
+     */
+    delegateEvents: function(events) {
+        Backbone.View.prototype.delegateEvents.call(this, events);
+        this.searchView.delegateEvents();
+        this.topPagerView.delegateEvents();
+        this.listView.delegateEvents();
+        this.bottomPagerView.delegateEvents();
+    },
+
+    /**
      * Handles the list view's display event.
      *
      * @param {Object} sender The event sender.

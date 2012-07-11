@@ -16,9 +16,9 @@ test('FieldSerializerBooleans', function() {
 
     result = ser.serialize(el.find('input'));
     equal(true, result);
-
+    
     ser.deserialize(false, el.find('input'));
-    equal(el.find('input').val(), 'false');
+    equal(el.find('input:checked').val(), 'false');
 });
 
 test('FieldSerializerCheckboxes', function() {

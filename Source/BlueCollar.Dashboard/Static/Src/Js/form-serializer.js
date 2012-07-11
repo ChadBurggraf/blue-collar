@@ -252,57 +252,6 @@ _.extend(FieldSerializer.prototype, {
 });
 
 /**
- * Extends {FieldSerializer} to serialize date values.
- *
- * @constructor
- * @extends {FieldSerielizer}
- */
-var DateFieldSerializer = FieldSerializer.extend({
-    /**
-     * Initialization.
-     *
-     * @param {Object} options Initialization options.
-     */
-    initialize: function(options) {
-        FieldSerializer.prototype.initialize.call(this, options);
-
-        this.options = _.extend({
-            format: 'yyyy-MM-dd h:mm tt'
-        }, this.options);
-    },
-
-    /**
-     * De-serializes the given value into the given field element.
-     *
-     * @param {Object} value The value to de-serialize.
-     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
-     */
-    deserialize: function(value, el) {
-        if (FormSerializer.isJQuery(el)) {
-            if (!_.isUndefined(value) && _.isDate(value)) {
-                el.val(value.toString(this.options.format));
-            } else {
-                FieldSerializer.prototype.deserialize.call(this, value, el);
-            }
-        }
-    },
-
-    /**
-     * Serializes the given field element into a primitive value.
-     *
-     * @param {jQuery} el A jQuery object containing a field element to serialize.
-     * @return {Object} The serialized primitive value.
-     */
-    serialize: function(el) {
-        if (FormSerializer.isJQuery(el)) {
-            return Date.parse(el.val());
-        }
-
-        return null;
-    }
-});
-
-/**
  * Extends {FieldSerializer} to serialize boolean values.
  *
  * @constructor
@@ -362,6 +311,58 @@ var BooleanFieldSerializer = FieldSerializer.extend({
                 default:
                     break;
             }      
+        }
+
+        return null;
+    }
+});
+
+
+/**
+ * Extends {FieldSerializer} to serialize date values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var DateFieldSerializer = FieldSerializer.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FieldSerializer.prototype.initialize.call(this, options);
+
+        this.options = _.extend({
+            format: 'yyyy-MM-dd h:mm tt'
+        }, this.options);
+    },
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isDate(value)) {
+                el.val(value.toString(this.options.format));
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        if (FormSerializer.isJQuery(el)) {
+            return Date.parse(el.val());
         }
 
         return null;

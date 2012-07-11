@@ -194,6 +194,7 @@ _.extend(CollarController.prototype, Backbone.Events, {
         }
         
         this.model.set({Search: search || '', PageNumber: page, Id: id, Action: action || '', Loading: true}, {silent: true});
+        this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();
     },

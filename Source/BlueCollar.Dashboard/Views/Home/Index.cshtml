@@ -7,8 +7,8 @@
     $(function() {
         app = new App('@BlueCollarSection.Section.ApplicationName', '@Url.Content("~/")', {
             chartsLoaded: false,
+            counts: @Html.Raw(Model.CountsJson),
             jsonUrlRoot: '@Url.Content(BlueCollarSection.Section.Dashboard.HandlerUrl)',
-            stats: @Html.Raw(Model.StatsJson), 
             testLink: true
         });
     });

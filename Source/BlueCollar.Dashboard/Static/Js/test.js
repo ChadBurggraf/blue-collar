@@ -6832,57 +6832,6 @@ _.extend(FieldSerializer.prototype, {
 });
 
 /**
- * Extends {FieldSerializer} to serialize date values.
- *
- * @constructor
- * @extends {FieldSerielizer}
- */
-var DateFieldSerializer = FieldSerializer.extend({
-    /**
-     * Initialization.
-     *
-     * @param {Object} options Initialization options.
-     */
-    initialize: function(options) {
-        FieldSerializer.prototype.initialize.call(this, options);
-
-        this.options = _.extend({
-            format: 'yyyy-MM-dd h:mm tt'
-        }, this.options);
-    },
-
-    /**
-     * De-serializes the given value into the given field element.
-     *
-     * @param {Object} value The value to de-serialize.
-     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
-     */
-    deserialize: function(value, el) {
-        if (FormSerializer.isJQuery(el)) {
-            if (!_.isUndefined(value) && _.isDate(value)) {
-                el.val(value.toString(this.options.format));
-            } else {
-                FieldSerializer.prototype.deserialize.call(this, value, el);
-            }
-        }
-    },
-
-    /**
-     * Serializes the given field element into a primitive value.
-     *
-     * @param {jQuery} el A jQuery object containing a field element to serialize.
-     * @return {Object} The serialized primitive value.
-     */
-    serialize: function(el) {
-        if (FormSerializer.isJQuery(el)) {
-            return Date.parse(el.val());
-        }
-
-        return null;
-    }
-});
-
-/**
  * Extends {FieldSerializer} to serialize boolean values.
  *
  * @constructor
@@ -6942,6 +6891,58 @@ var BooleanFieldSerializer = FieldSerializer.extend({
                 default:
                     break;
             }      
+        }
+
+        return null;
+    }
+});
+
+
+/**
+ * Extends {FieldSerializer} to serialize date values.
+ *
+ * @constructor
+ * @extends {FieldSerielizer}
+ */
+var DateFieldSerializer = FieldSerializer.extend({
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FieldSerializer.prototype.initialize.call(this, options);
+
+        this.options = _.extend({
+            format: 'yyyy-MM-dd h:mm tt'
+        }, this.options);
+    },
+
+    /**
+     * De-serializes the given value into the given field element.
+     *
+     * @param {Object} value The value to de-serialize.
+     * @param {jQuery} el The jQuery object containing the field element to de-serialize into.
+     */
+    deserialize: function(value, el) {
+        if (FormSerializer.isJQuery(el)) {
+            if (!_.isUndefined(value) && _.isDate(value)) {
+                el.val(value.toString(this.options.format));
+            } else {
+                FieldSerializer.prototype.deserialize.call(this, value, el);
+            }
+        }
+    },
+
+    /**
+     * Serializes the given field element into a primitive value.
+     *
+     * @param {jQuery} el A jQuery object containing a field element to serialize.
+     * @return {Object} The serialized primitive value.
+     */
+    serialize: function(el) {
+        if (FormSerializer.isJQuery(el)) {
+            return Date.parse(el.val());
         }
 
         return null;
@@ -7685,6 +7686,17 @@ var NavCollection = Backbone.Collection.extend({
     model: NavModel,
 
     /**
+     * Initialization.
+     *
+     * @param {Array} models The initial set of models to fill the collection with.
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(models, options) {
+        Backbone.Collection.prototype.initialize.call(models, options);
+        this.currentName = null;
+    },
+
+    /**
      * Gets the current nav item.
      *
      * @return {NavModel} The current nav item, or null if none is current.
@@ -7697,6 +7709,10 @@ var NavCollection = Backbone.Collection.extend({
         if (!item && this.length > 0) {
             this.setCurrent(this.at(0).get('Name'));
             item = this.at(0);
+        }
+
+        if (!item && this.currentName) {
+            item = new NavModel({Name: this.currentName});
         }
 
         return item || null;
@@ -7720,7 +7736,14 @@ var NavCollection = Backbone.Collection.extend({
 
         function push(id, name, count, url) {
             count = count !== null && showCounts ? count || 0 : null;
-            m.push({id: id.toString(), Name: name, Count: count, Current: !!(current && current.get('Name') === name), Url: urlRoot + url});
+
+            m.push({
+                id: id.toString(), 
+                Name: name, 
+                Count: count,
+                Current: !!(current && current.get('Name') === name), 
+                Url: urlRoot + url
+            });
         }
 
         push(i++, 'Dashboard', null, '#dashboard');
@@ -7760,6 +7783,8 @@ var NavCollection = Backbone.Collection.extend({
                 item.set({Current: false});
             }
         }
+
+        this.currentName = name;
     }
 });
 /**
@@ -8334,6 +8359,7 @@ _.extend(CollarController.prototype, Backbone.Events, {
         }
         
         this.model.set({Search: search || '', PageNumber: page, Id: id, Action: action || '', Loading: true}, {silent: true});
+        this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();
     },
@@ -8424,13 +8450,7 @@ var DashboardController = CollarController.extend({
         this.model = new StatsModel({ApplicationName: this.applicationName});
         this.model.urlRoot = this.urlRoot;
         this.model.bind('counts', this.counts, this);
-        this.fetchOnIndex = true;
-
-        if (options.stats) {
-            this.model.set(this.model.parse(options.stats), {silent: true});
-            this.fetchOnIndex = false;
-        }
-
+        
         this.view = new DashboardView({model: this.model, chartsLoaded: options.chartsLoaded});
     },
 
@@ -8439,12 +8459,7 @@ var DashboardController = CollarController.extend({
      */
     index: function() {
         this.page.html(this.view.render().el);
-
-        if (this.fetchOnIndex) {
-            this.model.fetch({error: _.bind(this.error, this, null)});
-        } else {
-            this.fetchOnIndex = true;
-        }
+        this.model.fetch({error: _.bind(this.error, this, null)});
     },
 
     /**
@@ -9854,6 +9869,19 @@ var AreaView = Backbone.View.extend({
     add: function() {},
 
     /**
+     * Delegates delcarative events for the view.
+     *
+     * @param {Object} events A hash of additional events to delegate.
+     */
+    delegateEvents: function(events) {
+        Backbone.View.prototype.delegateEvents.call(this, events);
+        this.searchView.delegateEvents();
+        this.topPagerView.delegateEvents();
+        this.listView.delegateEvents();
+        this.bottomPagerView.delegateEvents();
+    },
+
+    /**
      * Handles the list view's display event.
      *
      * @param {Object} sender The event sender.
@@ -10692,12 +10720,12 @@ var QueueView = AreaView.extend({
         this.listView = new QueueListView({model: this.model});
         this.listView.bind('display', this.display, this);
         this.listView.bind('signal', this.signal, this);
-    }//,
+    },
 
     /**
      * Handle's the add button's click event.
      */
-    /*add: function() {
+    add: function() {
         var model = new QueueModel(),
             view = new QueueEditView({model: model});
 
@@ -10709,7 +10737,7 @@ var QueueView = AreaView.extend({
 
         this.$('.details').html(view.render().el);
         view.focus();
-    },*/
+    },
 
     /**
      * Renders the ID view for the given model in the given details element.
@@ -10717,7 +10745,7 @@ var QueueView = AreaView.extend({
      * @param {jQuery} el The jQuery object containing the details element to render into.
      * @param {CollarModel} model The model to render the ID view for.
      */
-    /*renderIdView: function(el, model) {
+    renderIdView: function(el, model) {
         var render = false,
             view,
             signalModel;
@@ -10743,7 +10771,7 @@ var QueueView = AreaView.extend({
             el.html(view.render().el);
             view.focus();
         }
-    }*/
+    }
 });
 /**
  * Implements the schedules edit form.
@@ -11337,8 +11365,8 @@ var WorkingView = AreaView.extend({
     navCollection.url = this.jsonUrlRoot + 'counts';
     this.navView = new NavView({collection: navCollection, el: this.nav});
 
-    if (options.stats && options.stats.Counts) {
-        navCollection.reset(navCollection.parse(options.stats.Counts));
+    if (options.counts) {
+        navCollection.reset(navCollection.parse(options.counts));
     } else {
         navCollection.fetch();
     }
@@ -13348,9 +13376,9 @@ test('FieldSerializerBooleans', function() {
 
     result = ser.serialize(el.find('input'));
     equal(true, result);
-
+    
     ser.deserialize(false, el.find('input'));
-    equal(el.find('input').val(), 'false');
+    equal(el.find('input:checked').val(), 'false');
 });
 
 test('FieldSerializerCheckboxes', function() {

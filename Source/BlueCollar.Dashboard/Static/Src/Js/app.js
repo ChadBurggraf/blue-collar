@@ -30,8 +30,8 @@
     navCollection.url = this.jsonUrlRoot + 'counts';
     this.navView = new NavView({collection: navCollection, el: this.nav});
 
-    if (options.stats && options.stats.Counts) {
-        navCollection.reset(navCollection.parse(options.stats.Counts));
+    if (options.counts) {
+        navCollection.reset(navCollection.parse(options.counts));
     } else {
         navCollection.fetch();
     }

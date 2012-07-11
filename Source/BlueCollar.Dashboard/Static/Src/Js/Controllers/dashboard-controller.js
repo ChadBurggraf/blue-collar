@@ -16,13 +16,7 @@ var DashboardController = CollarController.extend({
         this.model = new StatsModel({ApplicationName: this.applicationName});
         this.model.urlRoot = this.urlRoot;
         this.model.bind('counts', this.counts, this);
-        this.fetchOnIndex = true;
-
-        if (options.stats) {
-            this.model.set(this.model.parse(options.stats), {silent: true});
-            this.fetchOnIndex = false;
-        }
-
+        
         this.view = new DashboardView({model: this.model, chartsLoaded: options.chartsLoaded});
     },
 
@@ -31,12 +25,7 @@ var DashboardController = CollarController.extend({
      */
     index: function() {
         this.page.html(this.view.render().el);
-
-        if (this.fetchOnIndex) {
-            this.model.fetch({error: _.bind(this.error, this, null)});
-        } else {
-            this.fetchOnIndex = true;
-        }
+        this.model.fetch({error: _.bind(this.error, this, null)});
     },
 
     /**
