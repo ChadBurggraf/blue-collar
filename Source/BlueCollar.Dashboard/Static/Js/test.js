@@ -11199,6 +11199,29 @@ var QueueView = AreaView.extend({
     }
 });
 /**
+ * Implements the scheduled jobs edit form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var ScheduledJobsEditView = FormView.extend({
+    serializers: {
+        "Id": new IntFieldSerializer()
+    },
+    template: _.template($('#scheduled-jobs-edit-template').html()),
+    validators: {
+
+    },
+
+    /**
+     * Focuses the first element in the form.
+     */
+    focus: function() {
+        this.$('input[name="JobType"]').focus();
+        return this;
+    }
+});
+/**
  * Manages the scheduled jobs list view.
  *
  * @constructor
@@ -11262,9 +11285,9 @@ var ScheduledJobsView = AreaView.extend({
 
     /**
      * Handle's the add button's click event.
-     *
+     */
     add: function() {
-        var model = new ScheduleModel({StartOn: Date.today()});
+        var model = new ScheduledJobModel();
         model.urlRoot = this.model.get('UrlRoot');
         this.model.clearId();
         this.renderIdView($('.details'), model);
@@ -11275,15 +11298,15 @@ var ScheduledJobsView = AreaView.extend({
      *
      * @param {jQuery} el The jQuery object containing the details element to render into.
      * @param {CollarModel} model The model to render the ID view for.
-     *
+     */
     renderIdView: function(el, model) {
-        var view = new SchedulesEditView({model: model});
+        var view = new ScheduledJobsEditView({model: model});
         view.bind('cancel', this.editCancel, this);
         view.bind('delete', this.editDelete, this);
         view.bind('submit', this.editSubmit, this);
         el.html(view.render().el);
         view.focus();
-    }*/
+    },
 
     /**
      * Renders the current schedule's name in its container.
