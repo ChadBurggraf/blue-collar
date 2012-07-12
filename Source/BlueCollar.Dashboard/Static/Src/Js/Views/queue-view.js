@@ -14,9 +14,6 @@ var QueueView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
-        this.model.get('Collection').bind('reset', this.renderId, this);
-
         this.listView = new QueueListView({model: this.model});
         this.listView.bind('display', this.display, this);
         this.listView.bind('signal', this.signal, this);

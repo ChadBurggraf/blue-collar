@@ -6087,6 +6087,16 @@ a.badge:hover {
           border-radius: 0;
 }
 
+.page-header h1 small {
+  font-size: 30px;
+  line-height: 1;
+  color: #bfbfbf;
+}
+
+.page-header h4 {
+  color: #bfbfbf;
+}
+
 .pagination {
   margin: 0;
 }

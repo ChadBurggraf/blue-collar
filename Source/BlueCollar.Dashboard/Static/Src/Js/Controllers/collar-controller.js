@@ -216,15 +216,16 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
     /**
      * Performs navigation on behalf of this controller.
+     *
+     * @param {Object} options A set of options to pass to Backbone.Router.navigate.
      */
-    navigate: function() {
-        var fragment = this.navigateFragment(),
-            search = this.model.get('Search'),
-            pageNumber = this.model.get('PageNumber'),
-            id = this.model.get('Id'),
-            action = this.model.get('Action');
+    navigate: function(options) {
+        var args = _.extend(this.model.toJSON(), {
+            Fragment: this.navigateFragment(),
+            Options: options
+        });
 
-        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id, Action: action});
+        this.trigger('navigate', this, args);
     },
 
     /**

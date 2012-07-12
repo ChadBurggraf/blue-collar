@@ -7576,13 +7576,8 @@ _.extend(CollarModel, {
         options = options || {};
         
         if (!options.silent) {
-            if (models.PageCount || models.PageNumber || models.TotalCount) {
-                this.trigger('area', this, {PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
-            }
-        
-            if (models.Counts) {
-                this.trigger('counts', this, {Counts: models.Counts});
-            }
+            this.triggerArea(models);
+            this.triggerCounts(models);
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);
@@ -7613,6 +7608,28 @@ _.extend(CollarModel, {
         }
 
         return this;
+    },
+
+    /**
+     * Triggers the area event for this instance, if the givem models object area information.
+     *
+     * @param {Object} models The models object being used to reset this instance.
+     */
+    triggerArea: function(models) {
+        if (models.PageCount || models.PageNumber || models.TotalCount) {
+            this.trigger('area', this, {PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+        }
+    },
+
+    /**
+     * Triggers the counts event for this instance, if the givem models object contains a counts object.
+     *
+     * @param {Object} models The models object being used to reset this instance.
+     */
+    triggerCounts: function(models) {
+        if (models.Counts) {
+            this.trigger('counts', this, {Counts: models.Counts});
+        }
     },
 
     /**
@@ -7677,12 +7694,9 @@ var AreaModel = Backbone.Model.extend({
      * @param {Object} args The event arguments.
      */
     area: function(sender, args) {
-        this.set({
-            Loading: false,
-            PageCount: args.PageCount,
-            PageNumber: args.PageNumber,
-            TotalCount: args.TotalCount
-        });
+        this.set(_.extend({}, args, {
+            Loading: false
+        }));
     },
 
     /**
@@ -7929,6 +7943,38 @@ var ScheduleModel = CollarModel.extend({
  */
 var ScheduleCollection = CollarCollection.extend({
     model: ScheduleModel
+});
+/**
+ * Models a scheduled job.
+ *
+ * @constructor
+ */
+var ScheduledJobModel = CollarModel.extend({
+    defaults: {
+        'Id': 0,
+        'JobType': null,
+        'Properties': '{}'
+    }
+});
+
+/**
+ * Represents a collection of {ScheduledJobModel}s.
+ *
+ * @constructor
+ */
+var ScheduledJobCollection = CollarCollection.extend({
+    model: ScheduledJobModel,
+
+    /**
+     * Triggers the area event for this instance, if the givem models object area information.
+     *
+     * @param {Object} models The models object being used to reset this instance.
+     */
+    triggerArea: function(models) {
+        if (models.Name || models.PageCount || models.PageNumber || models.TotalCount) {
+            this.trigger('area', this, {ScheduleName: models.Name, PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+        }
+    }
 });
 /**
  * Models a set of simple counts.
@@ -8447,15 +8493,16 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
     /**
      * Performs navigation on behalf of this controller.
+     *
+     * @param {Object} options A set of options to pass to Backbone.Router.navigate.
      */
-    navigate: function() {
-        var fragment = this.navigateFragment(),
-            search = this.model.get('Search'),
-            pageNumber = this.model.get('PageNumber'),
-            id = this.model.get('Id'),
-            action = this.model.get('Action');
+    navigate: function(options) {
+        var args = _.extend(this.model.toJSON(), {
+            Fragment: this.navigateFragment(),
+            Options: options
+        });
 
-        this.trigger('navigate', this, {Fragment: fragment, Search: search, PageNumber: pageNumber, Id: id, Action: action});
+        this.trigger('navigate', this, args);
     },
 
     /**
@@ -8612,6 +8659,105 @@ var QueueController = CollarController.extend({
             className: 'alert-success',
             model: {Title: 'Success!', Message: 'The job ' + name + ' was ' + args.Action + ' successfully.'}
         });
+    }
+});
+/**
+ * Scheduled jobs area controller implementation.
+ *
+ * @constructor
+ * @extends {CollarController}
+ */
+var ScheduledJobsController = CollarController.extend({
+    collection: ScheduledJobCollection,
+    fragment: 'schedules',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        this.model.set({ScheduleName: ''}, {silent: true});
+        this.model.bind('change:ScheduleId', this.navigate, this);
+
+        this.view = new ScheduledJobsView({model: this.model});
+        this.view.bind('fetch', this.fetch, this);
+        this.view.bind('editDelete', this.editDelete, this);
+        this.view.bind('editSubmit', this.editSubmit, this);
+    },
+
+    /**
+     * Renders the index view.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {String} search The search string to filter the view on.
+     * @param {Number} page The page number to filter the view on.
+     * @param {Number} jid The requested record ID to display.
+     * @param {String} action The requested record action to take.
+     */
+    index: function(id, search, page, jid, action) {
+        if (id && !_.isNumber(id)) {
+            id = parseInt(id, 10);
+
+            if (id < 0 || isNaN(id)) {
+                id = 0;
+            }
+        } else {
+            id = 0;
+        }
+
+        if (page && !_.isNumber(page)) {
+            page = parseInt(page, 10);
+        } else {
+            page = 1;
+        }
+
+        if (jid && !_.isNumber(jid)) {
+            jid = parseInt(jid, 10);
+
+            if (jid < 0 || isNaN(jid)) {
+                jid = 0;
+            }
+        } else {
+            jid = 0;
+        }
+
+        this.model.urlRoot = this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs';
+        this.model.get('Collection').urlRoot = this.model.urlRoot;
+        
+        this.model.set({ScheduleId: id, Search: search || '', PageNumber: page, Id: jid, Action: action || '', Loading: true}, {silent: true});
+        this.view.delegateEvents();
+        this.page.html(this.view.render().el);
+        this.fetch();
+    },
+
+    /**
+     * Performs navigation on behalf of this controller.
+     *
+     * @param {Object} options A set of options to pass to Backbone.Router.navigate.
+     */
+    navigate: function(options) {
+        options = _.extend({}, options, {
+            trigger: !this.model.get('ScheduleId')
+        });
+
+        CollarController.prototype.navigate.call(this, options);
+    },
+
+    /**
+     * Gets the URL fragment to use when navigating.
+     *
+     * @return {String} A URL fragment.
+     */
+    navigateFragment: function() {
+        var fragment = this.fragment,
+            scheduleId = this.model.get('ScheduleId');
+
+        if (scheduleId) {
+            fragment += '/id/' + encodeURIComponent(scheduleId.toString()) + '/jobs';
+        }
+
+        return fragment;
     }
 });
 /**
@@ -8818,6 +8964,7 @@ var CollarRouter = Backbone.Router.extend({
             Action: '',
             Fragment: '',
             Id: 0,
+            Options: {},
             PageNumber: 1,
             Search: ''
         }, args);
@@ -8840,7 +8987,7 @@ var CollarRouter = Backbone.Router.extend({
             }
         }
 
-        this.navigate(url);
+        this.navigate(url, args.Options);
     },
 
     /**
@@ -8879,7 +9026,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} id The requested record ID.
      */
     id: function(id) {
-        this.index('', 1, id);
+        this.index('', 1, id, '');
     },
 
     /**
@@ -8916,7 +9063,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} page The requested page number.
      */
     page: function(page) {
-        this.index('', page, '');
+        this.index('', page, '', '');
     },
 
     /**
@@ -8926,7 +9073,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} id The requested record ID.
      */
     pageId: function(page, id) {
-        this.index('', page, id);
+        this.index('', page, id, '');
     },
 
     /**
@@ -8946,7 +9093,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {String} search The requested search string.
      */
     search: function(search) {
-        this.index(search, 1, '');
+        this.index(search, 1, '', '');
     },
 
     /**
@@ -8956,7 +9103,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} id The requested record ID.
      */
     searchId: function(search, id) {
-        this.index(search, 1, id);
+        this.index(search, 1, id, '');
     },
 
     /**
@@ -8977,7 +9124,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} page The requested page number.
      */
     searchPage: function(search, page) {
-        this.index(search, page, '');
+        this.index(search, page, '', '');
     }
 });
 /**
@@ -9041,6 +9188,154 @@ var QueueRouter = CollarRouter.extend({
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
         this.controller = this.createController(QueueController, 'queue', this.options);
+    }
+});
+/**
+ * Scheduled job area router implementation.
+ *
+ * @constructor
+ * @extends {CollarRouter}
+ */
+var ScheduledJobsRouter = CollarRouter.extend({
+    name: 'Schedules',
+    routes: {
+        'schedules/id/:id/jobs': 'index',
+        'schedules/id/:id/jobs/id/:jid': 'id',
+        'schedules/id/:id/jobs/q/:search': 'search',
+        'schedules/id/:id/jobs/q/:search/id/:jid': 'searchId',
+        'schedules/id/:id/jobs/p/:page': 'page',
+        'schedules/id/:id/jobs/p/:page/id/:jid': 'pageId',
+        'schedules/id/:id/jobs/q/:search/p/:page': 'searchPage',
+        'schedules/id/:id/jobs/q/:search/p/:page/id/:jid': 'index'
+    },
+
+    /**
+     * Initialization.
+     *
+     * @param {App} app The root application object.
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(app, options) {
+        CollarRouter.prototype.initialize.call(this, app, options);
+        this.controller = this.createController(ScheduledJobsController, 'schedules', this.options);
+    },
+
+    /**
+     * Handles the ID route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {Number} jid The requested record ID.
+     */
+    id: function(id, jid) {
+        this.index(id, '', 1, jid, '');
+    },
+
+    /**
+     * Handles the ID + action route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {Number} jid The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    idAction: function(id, jid, action) {
+        this.index(id, '', 1, jid, action);
+    },
+
+    /**
+     * Handles the index route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
+     * @param {Number} jid The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    index: function(id, search, page, jid, action) {
+        this.controller.index(
+            decodeURIComponent((id || '').toString()),
+            decodeURIComponent((search || '').toString()), 
+            decodeURIComponent((page || '1').toString()), 
+            decodeURIComponent((jid || '').toString()),
+            decodeURIComponent((action || '').toString()));
+
+        this.trigger('nav', this, {name: this.name});
+    },
+
+    /**
+     * Handles the paging route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {Number} page The requested page number.
+     */
+    page: function(id, page) {
+        this.index(id, '', page, '', '');
+    },
+
+    /**
+     * Handles paging + ID route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {Number} search The requested page number.
+     * @param {Number} jid The requested record ID.
+     */
+    pageId: function(id, page, jid) {
+        this.index(id, '', page, jid, '');
+    },
+
+    /**
+     * Handles paging + ID + action route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {Number} search The requested page number.
+     * @param {Number} jid The requested record ID.
+     * @param {String} action The requested record action.
+     */
+    pageIdAction: function(id, page, jid, action) {
+        this.index(id, '', page, jid, action);
+    },
+
+    /**
+     * Handles the search route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {String} search The requested search string.
+     */
+    search: function(id, search) {
+        this.index(id, search, 1, '', '');
+    },
+
+    /**
+     * Handles the search + ID route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {String} search The requested search string.
+     * @param {Number} jid The requested record ID.
+     */
+    searchId: function(id, search, jid) {
+        this.index(id, search, 1, jid, '');
+    },
+
+    /**
+     * Handles the search + ID + action route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {String} search The requested search string.
+     * @param {Number} jid The requested record ID.
+     * @param {Action} action The requested record action.
+     */
+    searchIdAction: function(id, search, jid, action) {
+        this.index(id, search, 1, jid, action);
+    },
+
+    /**
+     * Handles the search + paging route.
+     *
+     * @param {Number} id The requested schedule ID.
+     * @param {String} search The requested search string.
+     * @param {Number} page The requested page number.
+     */
+    searchPage: function(id, search, page) {
+        this.index(id, search, page, '', '');
     }
 });
 /**
@@ -10856,9 +11151,6 @@ var QueueView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
-        this.model.get('Collection').bind('reset', this.renderId, this);
-
         this.listView = new QueueListView({model: this.model});
         this.listView.bind('display', this.display, this);
         this.listView.bind('signal', this.signal, this);
@@ -10898,6 +11190,108 @@ var QueueView = AreaView.extend({
         if (!model.get('DetailsLoaded')) {
             this.trigger('details', this, {Model: model});
         }
+    }
+});
+/**
+ * Manages the scheduled jobs list view.
+ *
+ * @constructor
+ * @extends {ListView}
+ */
+var ScheduledJobsListView = ListView.extend({
+    cols: 2,
+    template: _.template($('#scheduled-jobs-list-template').html()),
+
+    /**
+     * Renders the view's row collection.
+     *
+     * @param {jQuery} tbody The list's tbody element.
+     * @param {CollarCollection} collection The collection to render rows for.
+     * @return {ListView} This instance.
+     */
+    renderRows: function(tbody, collection) {
+        var model,
+            i,
+            n;
+        
+        for (i = 0, n = collection.length; i < n; i++) {
+            model = collection.at(i);
+            view = new ScheduledJobsRowView({model: model}).render();
+            view.bind('edit', this.edit, this);
+            tbody.append(view.el);
+        }
+
+        return this;
+    }
+});
+/**
+ * Manages the row view for the scheduled jobs list.
+ *
+ * @constructor
+ * @extends {RowView}
+ */
+var ScheduledJobsRowView = RowView.extend({
+    template: _.template($('#scheduled-jobs-row-template').html())
+});
+/**
+ * Manages the root scheduled jobs view.
+ *
+ * @constructor
+ * @extends {AreaView}
+ */
+var ScheduledJobsView = AreaView.extend({
+    template: _.template($('#scheduled-jobs-template').html()),
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        AreaView.prototype.initialize.call(this, options);
+        this.model.bind('change:ScheduleName', this.renderScheduleName, this);
+        this.listView = new ScheduledJobsListView({model: this.model});
+        this.listView.bind('edit', this.edit, this);
+        
+        this.events = _.extend({}, this.events, {
+            'click .page-header h4 a': 'up'
+        });
+
+        this.delegateEvents();
+    },
+
+    /**
+     * Handle's the add button's click event.
+     *
+    add: function() {
+        var model = new ScheduleModel({StartOn: Date.today()});
+        model.urlRoot = this.model.get('UrlRoot');
+        this.model.clearId();
+        this.renderIdView($('.details'), model);
+    },
+
+    /**
+     * Renders the ID view for the given model in the given details element.
+     *
+     * @param {jQuery} el The jQuery object containing the details element to render into.
+     * @param {CollarModel} model The model to render the ID view for.
+     *
+    renderIdView: function(el, model) {
+        var view = new SchedulesEditView({model: model});
+        view.bind('cancel', this.editCancel, this);
+        view.bind('delete', this.editDelete, this);
+        view.bind('submit', this.editSubmit, this);
+        el.html(view.render().el);
+        view.focus();
+    }*/
+
+    renderScheduleName: function() {
+        this.$('.page-header h4 a').text(this.model.get('ScheduleName'));
+        return this;
+    },
+
+    up: function() {
+        this.model.set({ScheduleId: 0});
     }
 });
 /**
@@ -11016,9 +11410,6 @@ var SchedulesView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
-        this.model.get('Collection').bind('reset', this.renderId, this);
-
         this.listView = new SchedulesListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
     },
@@ -11361,10 +11752,7 @@ var WorkersView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
         this.machines = options.machines || [];
-        this.model.get('Collection').bind('reset', this.renderId, this);
-
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
         this.listView.bind('signal', this.signal, this);
@@ -11618,6 +12006,7 @@ var WorkingView = AreaView.extend({
     this.dashboardRouter = this.createRouter(DashboardRouter);
     this.historyRouter = this.createRouter(HistoryRouter);
     this.queueRouter = this.createRouter(QueueRouter);
+    this.scheduledJobsRouter = this.createRouter(ScheduledJobsRouter);
     this.schedulesRouter = this.createRouter(SchedulesRouter);
     this.workersRouter = this.createRouter(WorkersRouter);
     this.workingRouter = this.createRouter(WorkingRouter);

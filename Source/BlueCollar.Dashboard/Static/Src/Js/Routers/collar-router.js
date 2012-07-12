@@ -28,6 +28,7 @@ var CollarRouter = Backbone.Router.extend({
             Action: '',
             Fragment: '',
             Id: 0,
+            Options: {},
             PageNumber: 1,
             Search: ''
         }, args);
@@ -50,7 +51,7 @@ var CollarRouter = Backbone.Router.extend({
             }
         }
 
-        this.navigate(url);
+        this.navigate(url, args.Options);
     },
 
     /**
@@ -89,7 +90,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} id The requested record ID.
      */
     id: function(id) {
-        this.index('', 1, id);
+        this.index('', 1, id, '');
     },
 
     /**
@@ -126,7 +127,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} page The requested page number.
      */
     page: function(page) {
-        this.index('', page, '');
+        this.index('', page, '', '');
     },
 
     /**
@@ -136,7 +137,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} id The requested record ID.
      */
     pageId: function(page, id) {
-        this.index('', page, id);
+        this.index('', page, id, '');
     },
 
     /**
@@ -156,7 +157,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {String} search The requested search string.
      */
     search: function(search) {
-        this.index(search, 1, '');
+        this.index(search, 1, '', '');
     },
 
     /**
@@ -166,7 +167,7 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} id The requested record ID.
      */
     searchId: function(search, id) {
-        this.index(search, 1, id);
+        this.index(search, 1, id, '');
     },
 
     /**
@@ -187,6 +188,6 @@ var CollarRouter = Backbone.Router.extend({
      * @param {Number} page The requested page number.
      */
     searchPage: function(search, page) {
-        this.index(search, page, '');
+        this.index(search, page, '', '');
     }
 });

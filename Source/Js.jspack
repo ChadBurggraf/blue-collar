@@ -18,6 +18,7 @@
     <input path="Controllers\dashboard-controller.js"/>
     <input path="Controllers\history-controller.js"/>
     <input path="Controllers\queue-controller.js"/>
+    <input path="Controllers\scheduled-jobs-controller.js"/>
     <input path="Controllers\schedules-controller.js"/>
     <input path="Controllers\workers-controller.js"/>
     <input path="Controllers\working-controller.js"/>
@@ -39,6 +40,7 @@
     <input path="Models\nav-model.js"/>
     <input path="Models\queue-model.js"/>
     <input path="Models\schedule-model.js"/>
+    <input path="Models\scheduled-job-model.js"/>
     <input path="Models\stats-model.js"/>
     <input path="Models\worker-model.js"/>
     <input path="Models\working-model.js"/>
@@ -48,6 +50,7 @@
     <input path="Routers\collar-router.js"/>
     <input path="Routers\history-router.js"/>
     <input path="Routers\queue-router.js"/>
+    <input path="Routers\scheduled-jobs-router.js"/>
     <input path="Routers\schedules-router.js"/>
     <input path="Routers\workers-router.js"/>
     <input path="Routers\working-router.js"/>
@@ -73,6 +76,9 @@
     <input path="Views\queue-list-view.js"/>
     <input path="Views\queue-row-view.js"/>
     <input path="Views\queue-view.js"/>
+    <input path="Views\scheduled-jobs-list-view.js"/>
+    <input path="Views\scheduled-jobs-row-view.js"/>
+    <input path="Views\scheduled-jobs-view.js"/>
     <input path="Views\schedules-edit-view.js"/>
     <input path="Views\schedules-list-view.js"/>
     <input path="Views\schedules-row-view.js"/>

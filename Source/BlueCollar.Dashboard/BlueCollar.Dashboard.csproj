@@ -132,6 +132,7 @@
     <Content Include="Static\Src\Js\Controllers\dashboard-controller.js" />
     <Content Include="Static\Src\Js\Controllers\history-controller.js" />
     <Content Include="Static\Src\Js\Controllers\queue-controller.js" />
+    <Content Include="Static\Src\Js\Controllers\scheduled-jobs-controller.js" />
     <Content Include="Static\Src\Js\Controllers\schedules-controller.js" />
     <Content Include="Static\Src\Js\Controllers\workers-controller.js" />
     <Content Include="Static\Src\Js\Controllers\working-controller.js" />
@@ -147,6 +148,7 @@
     <Content Include="Static\Src\Js\Models\nav-model.js" />
     <Content Include="Static\Src\Js\Models\queue-model.js" />
     <Content Include="Static\Src\Js\Models\schedule-model.js" />
+    <Content Include="Static\Src\Js\Models\scheduled-job-model.js" />
     <Content Include="Static\Src\Js\Models\stats-model.js" />
     <Content Include="Static\Src\Js\Models\worker-model.js" />
     <Content Include="Static\Src\Js\Models\working-model.js" />
@@ -155,6 +157,7 @@
     <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
     <Content Include="Static\Src\Js\Routers\history-router.js" />
     <Content Include="Static\Src\Js\Routers\queue-router.js" />
+    <Content Include="Static\Src\Js\Routers\scheduled-jobs-router.js" />
     <Content Include="Static\Src\Js\Routers\schedules-router.js" />
     <Content Include="Static\Src\Js\Routers\workers-router.js" />
     <Content Include="Static\Src\Js\Routers\working-router.js" />
@@ -208,6 +211,9 @@
     <Content Include="Static\Src\Js\Views\queue-row-view.js" />
     <Content Include="Static\Src\Js\Views\queue-view.js" />
     <Content Include="Static\Src\Js\Views\row-view.js" />
+    <Content Include="Static\Src\Js\Views\scheduled-jobs-list-view.js" />
+    <Content Include="Static\Src\Js\Views\scheduled-jobs-row-view.js" />
+    <Content Include="Static\Src\Js\Views\scheduled-jobs-view.js" />
     <Content Include="Static\Src\Js\Views\schedules-edit-view.js" />
     <Content Include="Static\Src\Js\Views\schedules-list-view.js" />
     <Content Include="Static\Src\Js\Views\schedules-row-view.js" />
@@ -264,6 +270,7 @@
       <Compile>True</Compile>
       <Minify>True</Minify>
     </None>
+    <Content Include="Views\Shared\Templates\_ScheduledJobs.cshtml" />
     <None Include="Web.config.template">
       <SubType>Designer</SubType>
     </None>

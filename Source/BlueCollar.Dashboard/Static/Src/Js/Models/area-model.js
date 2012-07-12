@@ -33,12 +33,9 @@ var AreaModel = Backbone.Model.extend({
      * @param {Object} args The event arguments.
      */
     area: function(sender, args) {
-        this.set({
-            Loading: false,
-            PageCount: args.PageCount,
-            PageNumber: args.PageNumber,
-            TotalCount: args.TotalCount
-        });
+        this.set(_.extend({}, args, {
+            Loading: false
+        }));
     },
 
     /**

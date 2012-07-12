@@ -38,7 +38,7 @@ namespace BlueCollar.Dashboard.Models
         /// </summary>
         public virtual string Version
         {
-            get { return GetType().Assembly.GetName().Version.ToString(3); }
+            get { return GetType().Assembly.GetName().Version.ToString(2); }
         }
 
         /// <summary>

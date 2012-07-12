@@ -14,10 +14,7 @@ var WorkersView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
         this.machines = options.machines || [];
-        this.model.get('Collection').bind('reset', this.renderId, this);
-
         this.listView = new WorkersListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
         this.listView.bind('signal', this.signal, this);

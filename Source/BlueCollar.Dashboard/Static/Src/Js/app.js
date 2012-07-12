@@ -39,6 +39,7 @@
     this.dashboardRouter = this.createRouter(DashboardRouter);
     this.historyRouter = this.createRouter(HistoryRouter);
     this.queueRouter = this.createRouter(QueueRouter);
+    this.scheduledJobsRouter = this.createRouter(ScheduledJobsRouter);
     this.schedulesRouter = this.createRouter(SchedulesRouter);
     this.workersRouter = this.createRouter(WorkersRouter);
     this.workingRouter = this.createRouter(WorkingRouter);

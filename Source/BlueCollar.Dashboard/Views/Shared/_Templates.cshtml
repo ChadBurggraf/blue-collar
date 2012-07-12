@@ -335,6 +335,61 @@ Queue
 <div class="span4 details"></div>
 </div>
 </script>
+<script type="text/template" id="scheduled-jobs-row-template">
+<td>
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-edit"><%- JobType %></a>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Properties</th>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td>
+</td>
+</script>
+<script type="text/template" id="scheduled-jobs-list-template">
+<thead>
+<tr>
+<th>Type</th>
+<th>Properties</th>
+</tr>
+</thead>
+<tbody></tbody>
+</script>
+<script type="text/template" id="scheduled-jobs-template">
+<div class="page-header">
+<button class="btn btn-success btn-add pull-right">
+<i class="icon-plus icon-white"></i>
+Add job
+</button>
+<h1>
+Scheduled Jobs
+<small><%- ApplicationName %></small>
+</h1>
+<h4>
+Belonging to schedule
+<a href="javascript:void(0);"><%- ScheduleName %></a>
+</h4>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="paging-header"></div>
+<div class="list"></div>
+<div class="paging-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
+</script>
 <script type="text/template" id="schedules-edit-template">
 <fieldset>
 <p class="legend"><% if (!Id) { print('Add Schedule'); } else { print('Edit Schedule'); } %></p>
@@ -438,7 +493,7 @@ No
 </tr>
 <tr>
 <th>Jobs</th>
-<td><a href="javascript:void(0);" class="btn-manage">Manage (<%- JobCount %>)</a></td>
+<td><a href="<% print('#schedules/id/' + encodeURIComponent(Id.toString()) + '/jobs'); %>"">Manage (<%- JobCount %>)</a></td>
 </tr>
 </tbody>
 </table>
@@ -454,7 +509,7 @@ No
 <td><% print($.htmlEncode(QueueName || '*')); %></td>
 <td><% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %></td>
 <td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
-<td><a href="javascript:void(0);" class="btn-manage">Manage (<%- JobCount %>)</a></td>
+<td><a href="<% print('#schedules/id/' + encodeURIComponent(Id.toString()) + '/jobs'); %>">Manage (<%- JobCount %>)</a></td>
 </script>
 <script type="text/template" id="schedules-list-template">
 <thead>

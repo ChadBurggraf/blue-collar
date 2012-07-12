@@ -71,13 +71,8 @@
         options = options || {};
         
         if (!options.silent) {
-            if (models.PageCount || models.PageNumber || models.TotalCount) {
-                this.trigger('area', this, {PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
-            }
-        
-            if (models.Counts) {
-                this.trigger('counts', this, {Counts: models.Counts});
-            }
+            this.triggerArea(models);
+            this.triggerCounts(models);
         }
 
         return Backbone.Collection.prototype.reset.call(this, models.Records, options);
@@ -108,6 +103,28 @@
         }
 
         return this;
+    },
+
+    /**
+     * Triggers the area event for this instance, if the givem models object area information.
+     *
+     * @param {Object} models The models object being used to reset this instance.
+     */
+    triggerArea: function(models) {
+        if (models.PageCount || models.PageNumber || models.TotalCount) {
+            this.trigger('area', this, {PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+        }
+    },
+
+    /**
+     * Triggers the counts event for this instance, if the givem models object contains a counts object.
+     *
+     * @param {Object} models The models object being used to reset this instance.
+     */
+    triggerCounts: function(models) {
+        if (models.Counts) {
+            this.trigger('counts', this, {Counts: models.Counts});
+        }
     },
 
     /**
