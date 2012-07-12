@@ -211,6 +211,7 @@
     <Content Include="Static\Src\Js\Views\queue-row-view.js" />
     <Content Include="Static\Src\Js\Views\queue-view.js" />
     <Content Include="Static\Src\Js\Views\row-view.js" />
+    <Content Include="Static\Src\Js\Views\scheduled-jobs-edit-view.js" />
     <Content Include="Static\Src\Js\Views\scheduled-jobs-list-view.js" />
     <Content Include="Static\Src\Js\Views\scheduled-jobs-row-view.js" />
     <Content Include="Static\Src\Js\Views\scheduled-jobs-view.js" />
