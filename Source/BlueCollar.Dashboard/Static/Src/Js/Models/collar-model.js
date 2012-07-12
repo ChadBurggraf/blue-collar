@@ -11,6 +11,9 @@ var CollarModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(attributes, options) {
+        options = options || {};
+        this.fragment = options.fragment || '';
+        
         if (attributes) {
             // Backbone is not initializing attributes in initialize,
             // it is happening in the real object constructor. This is

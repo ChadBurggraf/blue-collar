@@ -377,7 +377,7 @@ Scheduled Jobs
 </h1>
 <h4>
 Belonging to schedule
-<a href="javascript:void(0);"><%- ScheduleName %></a>
+<a href="#<%- Fragment %>"><%- ScheduleName %></a>
 </h4>
 </div>
 <div class="row">
@@ -493,7 +493,7 @@ No
 </tr>
 <tr>
 <th>Jobs</th>
-<td><a href="<% print('#schedules/id/' + encodeURIComponent(Id.toString()) + '/jobs'); %>"">Manage (<%- JobCount %>)</a></td>
+<td><a href="#<%- ManageUrl %>">Manage (<%- JobCount %>)</a></td>
 </tr>
 </tbody>
 </table>
@@ -509,7 +509,7 @@ No
 <td><% print($.htmlEncode(QueueName || '*')); %></td>
 <td><% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %></td>
 <td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
-<td><a href="<% print('#schedules/id/' + encodeURIComponent(Id.toString()) + '/jobs'); %>">Manage (<%- JobCount %>)</a></td>
+<td><a href="#<%- ManageUrl %>">Manage (<%- JobCount %>)</a></td>
 </script>
 <script type="text/template" id="schedules-list-template">
 <thead>

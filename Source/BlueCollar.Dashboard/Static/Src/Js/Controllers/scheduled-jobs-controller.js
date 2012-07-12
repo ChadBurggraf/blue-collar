@@ -15,8 +15,6 @@ var ScheduledJobsController = CollarController.extend({
      */
     initialize: function(options) {
         this.model.set({ScheduleName: ''}, {silent: true});
-        this.model.bind('change:ScheduleId', this.navigate, this);
-
         this.view = new ScheduledJobsView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
@@ -60,25 +58,12 @@ var ScheduledJobsController = CollarController.extend({
         }
 
         this.model.urlRoot = this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs';
-        this.model.get('Collection').urlRoot = this.model.urlRoot;
+        this.getCollection().urlRoot = this.model.urlRoot;
         
         this.model.set({ScheduleId: id, Search: search || '', PageNumber: page, Id: jid, Action: action || '', Loading: true}, {silent: true});
         this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();
-    },
-
-    /**
-     * Performs navigation on behalf of this controller.
-     *
-     * @param {Object} options A set of options to pass to Backbone.Router.navigate.
-     */
-    navigate: function(options) {
-        options = _.extend({}, options, {
-            trigger: !this.model.get('ScheduleId')
-        });
-
-        CollarController.prototype.navigate.call(this, options);
     },
 
     /**

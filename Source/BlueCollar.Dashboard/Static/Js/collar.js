@@ -7367,6 +7367,9 @@ var CollarModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(attributes, options) {
+        options = options || {};
+        this.fragment = options.fragment || '';
+        
         if (attributes) {
             // Backbone is not initializing attributes in initialize,
             // it is happening in the real object constructor. This is
@@ -7526,6 +7529,7 @@ _.extend(CollarModel, {
      */
     initialize: function(models, options) {
         options = options || {};
+        this.fragment = options.fragment || '';
         this.urlRoot = options.urlRoot || '/';
 
         // Reset is called by the true Backbone.Collection constructor
@@ -7582,14 +7586,15 @@ _.extend(CollarModel, {
      */
     reset: function(models, options) {
         models = models || {};
-        options = options || {};
+        options = _.extend({fragment: this.fragment}, options);
         
         if (!options.silent) {
             this.triggerArea(models);
             this.triggerCounts(models);
         }
 
-        return Backbone.Collection.prototype.reset.call(this, models.Records, options);
+        Backbone.Collection.prototype.reset.call(this, models.Records, options);
+        return this;
     },
 
     /**
@@ -7942,6 +7947,17 @@ var ScheduleModel = CollarModel.extend({
         'RepeatType': 'None',
         'RepeatValue': null,
         'Enabled': true
+    },
+
+    /**
+     * Gets a copy of the model's attributes.
+     *
+     * @return {Object} A copy of the model's underlying attributes.
+     */
+    toJSON: function() {
+        return _.extend({}, CollarModel.prototype.toJSON.call(this), {
+            ManageUrl: (this.fragment || '') + '/id/' + encodeURIComponent(this.get('Id').toString()) + '/jobs'
+        });
     }
 });
 
@@ -7981,7 +7997,12 @@ var ScheduledJobCollection = CollarCollection.extend({
      */
     triggerArea: function(models) {
         if (models.Name || models.PageCount || models.PageNumber || models.TotalCount) {
-            this.trigger('area', this, {ScheduleName: models.Name, PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+            this.trigger('area', this, {
+                ScheduleName: models.Name, 
+                PageCount: models.PageCount, 
+                PageNumber: models.PageNumber, 
+                TotalCount: models.TotalCount
+            });
         }
     }
 });
@@ -8301,10 +8322,10 @@ var CollarController = function(applicationName, urlRoot, page, options) {
     this.page = page;
     this.options = _.extend({}, options);
 
-    collection = new this.collection(null, {urlRoot: this.urlRoot});
+    collection = new this.collection(null, {fragment: this.fragment, urlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: this.urlRoot});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, Fragment: this.fragment, UrlRoot: this.urlRoot});
     this.model.bind('change:Id', this.navigate, this);
     this.model.bind('change:Action', this.navigate, this);
 
@@ -8687,8 +8708,6 @@ var ScheduledJobsController = CollarController.extend({
      */
     initialize: function(options) {
         this.model.set({ScheduleName: ''}, {silent: true});
-        this.model.bind('change:ScheduleId', this.navigate, this);
-
         this.view = new ScheduledJobsView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
@@ -8732,25 +8751,12 @@ var ScheduledJobsController = CollarController.extend({
         }
 
         this.model.urlRoot = this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs';
-        this.model.get('Collection').urlRoot = this.model.urlRoot;
+        this.getCollection().urlRoot = this.model.urlRoot;
         
         this.model.set({ScheduleId: id, Search: search || '', PageNumber: page, Id: jid, Action: action || '', Loading: true}, {silent: true});
         this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();
-    },
-
-    /**
-     * Performs navigation on behalf of this controller.
-     *
-     * @param {Object} options A set of options to pass to Backbone.Router.navigate.
-     */
-    navigate: function(options) {
-        options = _.extend({}, options, {
-            trigger: !this.model.get('ScheduleId')
-        });
-
-        CollarController.prototype.navigate.call(this, options);
     },
 
     /**
@@ -8825,7 +8831,7 @@ var WorkersController = CollarController.extend({
     initialize: function(options) {
         this.machines = [];
 
-        this.model.get('Collection').bind('reset', this.reset, this);
+        this.getCollection().bind('reset', this.reset, this);
         
         this.view = new WorkersView({model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
@@ -8838,7 +8844,7 @@ var WorkersController = CollarController.extend({
      * Refreshes this instance's machine list.
      */
     refreshMachines: function() {
-        var collection = this.model.get('Collection'),
+        var collection = this.getCollection(),
             lookup = {},
             worker,
             name,
@@ -8889,7 +8895,7 @@ var WorkersController = CollarController.extend({
         CollarController.prototype.success.call(this, args, model, response);
         
         if (args.Action === 'signalled') {
-            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+            model = this.getCollection().find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         } else if (args.Action === 'updated') {
             this.refreshMachines();
         }
@@ -8933,7 +8939,7 @@ var WorkingController = CollarController.extend({
         CollarController.prototype.success.call(this, args, model, response);
         
         if (args.Action === 'signalled') {
-            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+            model = this.getCollection().find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         }
 
         NoticeView.create({
@@ -11261,12 +11267,6 @@ var ScheduledJobsView = AreaView.extend({
         this.model.bind('change:ScheduleName', this.renderScheduleName, this);
         this.listView = new ScheduledJobsListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
-        
-        this.events = _.extend({}, this.events, {
-            'click .page-header h4 a': 'up'
-        });
-
-        this.delegateEvents();
     },
 
     /**
@@ -11294,13 +11294,12 @@ var ScheduledJobsView = AreaView.extend({
         view.focus();
     }*/
 
+    /**
+     * Renders the current schedule's name in its container.
+     */
     renderScheduleName: function() {
         this.$('.page-header h4 a').text(this.model.get('ScheduleName'));
         return this;
-    },
-
-    up: function() {
-        this.model.set({ScheduleId: 0});
     }
 });
 /**

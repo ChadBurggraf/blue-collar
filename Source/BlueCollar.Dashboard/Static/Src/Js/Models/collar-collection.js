@@ -12,6 +12,7 @@
      */
     initialize: function(models, options) {
         options = options || {};
+        this.fragment = options.fragment || '';
         this.urlRoot = options.urlRoot || '/';
 
         // Reset is called by the true Backbone.Collection constructor
@@ -68,14 +69,15 @@
      */
     reset: function(models, options) {
         models = models || {};
-        options = options || {};
+        options = _.extend({fragment: this.fragment}, options);
         
         if (!options.silent) {
             this.triggerArea(models);
             this.triggerCounts(models);
         }
 
-        return Backbone.Collection.prototype.reset.call(this, models.Records, options);
+        Backbone.Collection.prototype.reset.call(this, models.Records, options);
+        return this;
     },
 
     /**

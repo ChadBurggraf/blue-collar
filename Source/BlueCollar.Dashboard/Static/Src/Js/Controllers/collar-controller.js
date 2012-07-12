@@ -15,10 +15,10 @@ var CollarController = function(applicationName, urlRoot, page, options) {
     this.page = page;
     this.options = _.extend({}, options);
 
-    collection = new this.collection(null, {urlRoot: this.urlRoot});
+    collection = new this.collection(null, {fragment: this.fragment, urlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: this.urlRoot});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, Fragment: this.fragment, UrlRoot: this.urlRoot});
     this.model.bind('change:Id', this.navigate, this);
     this.model.bind('change:Action', this.navigate, this);
 

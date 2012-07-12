@@ -17,12 +17,6 @@ var ScheduledJobsView = AreaView.extend({
         this.model.bind('change:ScheduleName', this.renderScheduleName, this);
         this.listView = new ScheduledJobsListView({model: this.model});
         this.listView.bind('edit', this.edit, this);
-        
-        this.events = _.extend({}, this.events, {
-            'click .page-header h4 a': 'up'
-        });
-
-        this.delegateEvents();
     },
 
     /**
@@ -50,12 +44,11 @@ var ScheduledJobsView = AreaView.extend({
         view.focus();
     }*/
 
+    /**
+     * Renders the current schedule's name in its container.
+     */
     renderScheduleName: function() {
         this.$('.page-header h4 a').text(this.model.get('ScheduleName'));
         return this;
-    },
-
-    up: function() {
-        this.model.set({ScheduleId: 0});
     }
 });

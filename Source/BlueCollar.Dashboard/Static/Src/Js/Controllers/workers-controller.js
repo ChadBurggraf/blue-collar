@@ -16,7 +16,7 @@ var WorkersController = CollarController.extend({
     initialize: function(options) {
         this.machines = [];
 
-        this.model.get('Collection').bind('reset', this.reset, this);
+        this.getCollection().bind('reset', this.reset, this);
         
         this.view = new WorkersView({model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
@@ -29,7 +29,7 @@ var WorkersController = CollarController.extend({
      * Refreshes this instance's machine list.
      */
     refreshMachines: function() {
-        var collection = this.model.get('Collection'),
+        var collection = this.getCollection(),
             lookup = {},
             worker,
             name,
@@ -80,7 +80,7 @@ var WorkersController = CollarController.extend({
         CollarController.prototype.success.call(this, args, model, response);
         
         if (args.Action === 'signalled') {
-            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+            model = this.getCollection().find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         } else if (args.Action === 'updated') {
             this.refreshMachines();
         }

@@ -31,7 +31,7 @@ var WorkingController = CollarController.extend({
         CollarController.prototype.success.call(this, args, model, response);
         
         if (args.Action === 'signalled') {
-            model = this.model.get('Collection').find(function(m) { return m.get('Id') === args.Model.get('Id'); });
+            model = this.getCollection().find(function(m) { return m.get('Id') === args.Model.get('Id'); });
         }
 
         NoticeView.create({

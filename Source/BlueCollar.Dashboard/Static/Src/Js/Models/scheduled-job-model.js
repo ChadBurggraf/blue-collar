@@ -26,7 +26,12 @@ var ScheduledJobCollection = CollarCollection.extend({
      */
     triggerArea: function(models) {
         if (models.Name || models.PageCount || models.PageNumber || models.TotalCount) {
-            this.trigger('area', this, {ScheduleName: models.Name, PageCount: models.PageCount, PageNumber: models.PageNumber, TotalCount: models.TotalCount});
+            this.trigger('area', this, {
+                ScheduleName: models.Name, 
+                PageCount: models.PageCount, 
+                PageNumber: models.PageNumber, 
+                TotalCount: models.TotalCount
+            });
         }
     }
 });
