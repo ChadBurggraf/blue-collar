@@ -9,6 +9,15 @@ var SchedulesListView = ListView.extend({
     template: _.template($('#schedules-list-template').html()),
 
     /**
+     * Gets the message to display in the empty element.
+     *
+     * @return {String} An empty message.
+     */
+    emptyMessage: function() {
+        return 'There are no schedules to display.';
+    },
+
+    /**
      * Renders the view's row collection.
      *
      * @param {jQuery} tbody The list's tbody element.

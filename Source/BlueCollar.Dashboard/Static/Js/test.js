@@ -6538,6 +6538,10 @@ _.extend(String, {
      * @return {String} An HTML display string for the signal.
      */
     signalDisplay: function(signal) {
+        if (signal === 'RefreshSchedules') {
+            signal = 'Refresh Schedules';
+        }
+
         return signal === 'None'
             ? $('<a class="btn-signal" href="javascript:void(0);"/>').text(signal).outerHtml()
             : $.htmlEncode(signal);
@@ -9610,13 +9614,21 @@ var ListView = Backbone.View.extend({
     /**
      * Gets an element suitable for displaying an empty list message.
      *
-     * @param {String} message The message to display.
      * @return {jQuery} An empty list message element.
      */
-    empty: function(message) {
+    empty: function() {
         return $('<tr class="empty"/>').append(
             $('<td/>').attr('colspan', this.cols).append(
-                $('<p/>').text(message)));
+                $('<p/>').text(this.emptyMessage())));
+    },
+
+    /**
+     * Gets the message to display in the empty element.
+     *
+     * @return {String} An empty message.
+     */
+    emptyMessage: function() {
+        return 'There are no jobs to display.';
     },
 
     /**
@@ -9649,7 +9661,7 @@ var ListView = Backbone.View.extend({
         } else if (loading) { 
             tbody.html(this.loading());
         } else {
-            tbody.html(this.empty('There are no jobs to display.'));
+            tbody.html(this.empty());
         }
 
         return this;
@@ -10949,6 +10961,15 @@ var SchedulesListView = ListView.extend({
     template: _.template($('#schedules-list-template').html()),
 
     /**
+     * Gets the message to display in the empty element.
+     *
+     * @return {String} An empty message.
+     */
+    emptyMessage: function() {
+        return 'There are no schedules to display.';
+    },
+
+    /**
      * Renders the view's row collection.
      *
      * @param {jQuery} tbody The list's tbody element.
@@ -11251,6 +11272,15 @@ var WorkersEditView = FormView.extend({
 var WorkersListView = ListView.extend({
     cols: 6,
     template: _.template($('#workers-list-template').html()),
+
+    /**
+     * Gets the message to display in the empty element.
+     *
+     * @return {String} An empty message.
+     */
+    emptyMessage: function() {
+        return 'There are no workers to display.';
+    },
 
     /**
      * Renders the view's row collection.

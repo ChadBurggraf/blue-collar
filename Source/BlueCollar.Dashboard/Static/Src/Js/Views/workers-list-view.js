@@ -9,6 +9,15 @@ var WorkersListView = ListView.extend({
     template: _.template($('#workers-list-template').html()),
 
     /**
+     * Gets the message to display in the empty element.
+     *
+     * @return {String} An empty message.
+     */
+    emptyMessage: function() {
+        return 'There are no workers to display.';
+    },
+
+    /**
      * Renders the view's row collection.
      *
      * @param {jQuery} tbody The list's tbody element.

@@ -163,6 +163,10 @@ _.extend(String, {
      * @return {String} An HTML display string for the signal.
      */
     signalDisplay: function(signal) {
+        if (signal === 'RefreshSchedules') {
+            signal = 'Refresh Schedules';
+        }
+
         return signal === 'None'
             ? $('<a class="btn-signal" href="javascript:void(0);"/>').text(signal).outerHtml()
             : $.htmlEncode(signal);
