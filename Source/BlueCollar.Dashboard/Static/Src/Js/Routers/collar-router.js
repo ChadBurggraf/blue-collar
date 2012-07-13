@@ -51,7 +51,7 @@ var CollarRouter = Backbone.Router.extend({
             }
         }
 
-        this.navigate(url, args.Options);
+        this.navigate(url, args);
     },
 
     /**

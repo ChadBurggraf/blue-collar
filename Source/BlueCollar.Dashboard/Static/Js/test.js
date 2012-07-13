@@ -8514,16 +8514,9 @@ _.extend(CollarController.prototype, Backbone.Events, {
 
     /**
      * Performs navigation on behalf of this controller.
-     *
-     * @param {Object} options A set of options to pass to Backbone.Router.navigate.
      */
-    navigate: function(options) {
-        var args = _.extend(this.model.toJSON(), {
-            Fragment: this.navigateFragment(),
-            Options: options
-        });
-
-        this.trigger('navigate', this, args);
+    navigate: function() {
+        this.trigger('navigate', this, _.extend(this.model.toJSON(), {Fragment: this.navigateFragment()}));
     },
 
     /**
@@ -8993,7 +8986,7 @@ var CollarRouter = Backbone.Router.extend({
             }
         }
 
-        this.navigate(url, args.Options);
+        this.navigate(url, args);
     },
 
     /**
