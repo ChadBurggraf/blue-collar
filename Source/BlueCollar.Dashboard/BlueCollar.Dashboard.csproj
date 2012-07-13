@@ -153,6 +153,7 @@
     <Content Include="Static\Src\Js\Models\worker-model.js" />
     <Content Include="Static\Src\Js\Models\working-model.js" />
     <Content Include="Static\Src\Js\number.js" />
+    <Content Include="Static\Src\Js\timeout-queue.js" />
     <Content Include="Static\Src\Js\Routers\collar-router.js" />
     <Content Include="Static\Src\Js\Routers\dashboard-router.js" />
     <Content Include="Static\Src\Js\Routers\history-router.js" />
