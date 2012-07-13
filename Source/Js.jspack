@@ -112,6 +112,7 @@
     <input path="jquery.js"/>
     <input path="form-serializer.js"/>
     <input path="field-validator.js"/>
+    <input path="timeout-queue.js"/>
     <import name="Models"/>
     <import name="Controllers"/>
     <import name="Routers"/>

@@ -97,9 +97,9 @@ namespace BlueCollar.Test
 
             ScheduledJobRecord scheduledJob = new ScheduledJobRecord()
             {
+                Data = @"{""SleepDuration"":1000}",
                 Id = 1,
-                JobType = JobSerializer.GetTypeName(typeof(TestScheduledJob)),
-                Properties = @"{""A"":""Hello, world!""}",
+                JobType = JobSerializer.GetTypeName(typeof(TestJob)),
                 Schedule = schedule,
                 ScheduleId = 1
             };

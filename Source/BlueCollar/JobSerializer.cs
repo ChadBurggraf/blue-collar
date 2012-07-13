@@ -37,30 +37,7 @@ namespace BlueCollar
 
             Type jobType = Type.GetType(typeName, true, true);
 
-            if (typeof(IScheduledJob).IsAssignableFrom(jobType))
-            {
-                IScheduledJob job = CreateInstance(jobType) as IScheduledJob;
-
-                if (job != null)
-                {
-                    if (!string.IsNullOrEmpty(data) && job.Properties != null)
-                    {
-                        IDictionary<string, string> properties = JsonConvert.DeserializeObject<IDictionary<string, string>>(data, Converters);
-
-                        foreach (string key in properties.Keys)
-                        {
-                            job.Properties[key] = properties[key];
-                        }
-                    }
-                }
-                else
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, "Failed to de-serialize '{0}' into an IScheduledJob instance.", typeName), "typeName");
-                }
-
-                return job;
-            }
-            else if (typeof(IJob).IsAssignableFrom(jobType))
+            if (typeof(IJob).IsAssignableFrom(jobType))
             {
                 IJob job = !string.IsNullOrEmpty(data)
                     ? JsonConvert.DeserializeObject(data, jobType, Converters) as IJob
@@ -116,20 +93,7 @@ namespace BlueCollar
         /// <returns>The serialized job data.</returns>
         public static string Serialize(IJob job)
         {
-            IScheduledJob scheduledJob = job as IScheduledJob;
-
-            if (scheduledJob != null && scheduledJob.Properties != null)
-            {
-                IDictionary<string, string> dict = new Dictionary<string, string>();
-
-                foreach (string key in scheduledJob.Properties.Keys)
-                {
-                    dict.Add(key, scheduledJob.Properties[key]);
-                }
-
-                return JsonConvert.SerializeObject(dict, Converters);
-            }
-            else if (job != null)
+            if (job != null)
             {
                 return JsonConvert.SerializeObject(job, Converters);
             }

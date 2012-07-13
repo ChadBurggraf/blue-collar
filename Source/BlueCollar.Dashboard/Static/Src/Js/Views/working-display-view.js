@@ -21,7 +21,7 @@ var WorkingDisplayView = FormView.extend({
      */
     render: function() {
         FormView.prototype.render.call(this);
-        setTimeout(prettyPrint, 100);
+        TimeoutQueue.enqueue('prettyPrint', prettyPrint);
         return this;
     }
 });

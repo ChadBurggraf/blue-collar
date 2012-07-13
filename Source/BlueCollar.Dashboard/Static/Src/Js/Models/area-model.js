@@ -21,9 +21,15 @@ var AreaModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        var collection = this.get('Collection');
+
         this.bind('change:Id', this.id, this);
-        this.get('Collection').bind('area', this.area, this);
-        this.get('Collection').bind('reset', this.reset, this);
+        this.bind('change:UrlRoot', this.changeUrlRoot, this);
+
+        if (collection) {
+            collection.bind('area', this.area, this);
+            collection.bind('reset', this.reset, this);
+        }
     },
 
     /**
@@ -39,6 +45,21 @@ var AreaModel = Backbone.Model.extend({
     },
 
     /**
+     * Handles this isntance's UrlRoot-change event.
+     */
+    changeUrlRoot: function() {
+        var collection = this.get('Collection');
+
+        if (collection) {
+            if (_.isFunction(collection.setUrlRoot)) {
+                collection.setUrlRoot(this.get('UrlRoot'));
+            } else {
+                collection.urlRoot = this.get('UrlRoot');
+            }
+        }
+    },
+
+    /**
      * Clears this instance's selected ID.
      */
     clearId: function(options) {
@@ -49,13 +70,21 @@ var AreaModel = Backbone.Model.extend({
      * Handles this instance's ID-change event.
      */
     id: function() {
-        this.get('Collection').setSelected(this.get('Id'));
+        var collection = this.get('Collection');
+
+        if (collection) {
+            collection.setSelected(this.get('Id'));
+        }
     },
 
     /**
      * Handles this instance's collection's reset event.
      */
     reset: function() {
-        this.get('Collection').setSelected(this.get('Id'));
+        var collection = this.get('Collection');
+
+        if (collection) {
+            collection.setSelected(this.get('Id'));
+        }
     }
 });

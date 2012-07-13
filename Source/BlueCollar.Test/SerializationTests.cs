@@ -35,23 +35,6 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// De-serialize scheduled job tests.
-        /// </summary>
-        [TestMethod]
-        public void SerializationDeserializeScheduledJob()
-        {
-            string typeName = JobSerializer.GetTypeName(typeof(TestSerializationScheduledJob));
-            string data = @"{""A"":""1854ef1b-3937-476a-8b32-56436a7b6feb"",""B"":""Hello, world!"",""C"":""5/28/1982 7:00:00 AM""}";
-            TestSerializationScheduledJob job = JobSerializer.Deserialize(typeName, data) as TestSerializationScheduledJob;
-            Assert.IsNotNull(job);
-            Assert.AreEqual("1854ef1b-3937-476a-8b32-56436a7b6feb", job.Properties["A"]);
-            Assert.AreEqual("Hello, world!", job.Properties["B"]);
-            Assert.AreEqual("5/28/1982 7:00:00 AM", job.Properties["C"]);
-
-            Assert.IsNotNull(JobSerializer.Deserialize(typeName, null));
-        }
-
-        /// <summary>
         /// Serialize tests.
         /// </summary>
         [TestMethod]
@@ -66,21 +49,6 @@ namespace BlueCollar.Test
 
             string data = JobSerializer.Serialize(job);
             Assert.AreEqual(@"{""A"":""1854ef1b-3937-476a-8b32-56436a7b6feb"",""B"":""Hello, world!"",""C"":""1982-05-28T07:00:00Z""}", data);
-        }
-
-        /// <summary>
-        /// Serialize scheduled job tests.
-        /// </summary>
-        [TestMethod]
-        public void SerializationSerializeScheduledJob()
-        {
-            TestSerializationScheduledJob job = new TestSerializationScheduledJob();
-            job.Properties["A"] = new Guid("1854ef1b-3937-476a-8b32-56436a7b6feb").ToString();
-            job.Properties["B"] = "Hello, world!";
-            job.Properties["C"] = new DateTime(1982, 5, 28).ToUniversalTime().ToString();
-
-            string data = JobSerializer.Serialize(job);
-            Assert.AreEqual(@"{""A"":""1854ef1b-3937-476a-8b32-56436a7b6feb"",""B"":""Hello, world!"",""C"":""5/28/1982 7:00:00 AM""}", data);
         }
 
         #region TestSerializationJob Class
@@ -141,31 +109,6 @@ namespace BlueCollar.Test
             public void Execute()
             {
             }
-        }
-
-        #endregion
-
-        #region TestSerializationScheduledJob Class
-
-        /// <summary>
-        /// Test serialization scheduled job.
-        /// </summary>
-        [DataContract]
-        private class TestSerializationScheduledJob : TestSerializationJob, IScheduledJob
-        {
-            /// <summary>
-            /// Initializes a new instance of the TestSerializationScheduledJob class.
-            /// </summary>
-            public TestSerializationScheduledJob()
-            {
-                this.Properties = new NameValueCollection();
-            }
-
-            /// <summary>
-            /// Gets a dictionary to which properties defined in the schedule
-            /// are added for reference during execution.
-            /// </summary>
-            public NameValueCollection Properties { get; private set; }
         }
 
         #endregion

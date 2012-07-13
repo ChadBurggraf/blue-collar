@@ -43,7 +43,7 @@ CREATE TABLE [BlueCollarScheduledJob]
 	[Id] bigint NOT NULL PRIMARY KEY IDENTITY(1, 1),
 	[ScheduleId] bigint NOT NULL,
 	[JobType] varchar(256) NOT NULL,
-	[Properties] text NULL
+	[Data] text NULL
 )
 GO
 

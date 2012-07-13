@@ -26,7 +26,7 @@ var HistoryDisplayView = FormView.extend({
             this.$('.exception').remove();
         }
 
-        setTimeout(prettyPrint, 100);
+        TimeoutQueue.enqueue('prettyPrint', prettyPrint);
         return this;
     }
 });

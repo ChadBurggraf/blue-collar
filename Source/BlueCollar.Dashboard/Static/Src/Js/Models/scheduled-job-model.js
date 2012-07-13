@@ -7,7 +7,7 @@ var ScheduledJobModel = CollarModel.extend({
     defaults: {
         'Id': 0,
         'JobType': null,
-        'Properties': '{}'
+        'Data': '{}'
     }
 });
 
@@ -18,6 +18,19 @@ var ScheduledJobModel = CollarModel.extend({
  */
 var ScheduledJobCollection = CollarCollection.extend({
     model: ScheduledJobModel,
+
+    /**
+     * Sets this instance's urlRoot property.
+     *
+     * @param {String} urlRoot The value to set.
+     */
+    setUrlRoot: function(urlRoot) {
+        CollarCollection.prototype.setUrlRoot.call(this, urlRoot);
+
+        this.each(function(model) {
+            model.urlRoot = urlRoot;
+        });
+    },
 
     /**
      * Triggers the area event for this instance, if the givem models object area information.

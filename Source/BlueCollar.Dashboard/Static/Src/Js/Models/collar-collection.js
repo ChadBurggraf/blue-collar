@@ -108,6 +108,15 @@
     },
 
     /**
+     * Sets this instance's urlRoot property.
+     *
+     * @param {String} urlRoot The value to set.
+     */
+    setUrlRoot: function(urlRoot) {
+        this.urlRoot = urlRoot;
+    },
+
+    /**
      * Triggers the area event for this instance, if the givem models object area information.
      *
      * @param {Object} models The models object being used to reset this instance.

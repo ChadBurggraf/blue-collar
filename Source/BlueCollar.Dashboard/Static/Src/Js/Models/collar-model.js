@@ -62,7 +62,7 @@ var CollarModel = Backbone.Model.extend({
             try {
                 response.Data = JSON.parse(response.Data);
             } catch (e) {
-                response.Data = '{}';
+                response.Data = {};
             }
         }
 

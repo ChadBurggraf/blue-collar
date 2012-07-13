@@ -57,10 +57,21 @@ var ScheduledJobsController = CollarController.extend({
             jid = 0;
         }
 
-        this.model.urlRoot = this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs';
-        this.getCollection().urlRoot = this.model.urlRoot;
+        this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
         
-        this.model.set({ScheduleId: id, Search: search || '', PageNumber: page, Id: jid, Action: action || '', Loading: true}, {silent: true});
+        this.model.set(
+            {
+                ScheduleId: id, 
+                Search: search || '', 
+                PageNumber: page, 
+                Id: jid, 
+                Action: action || '', 
+                Loading: true
+            }, 
+            {
+                silent: true
+            });
+
         this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();

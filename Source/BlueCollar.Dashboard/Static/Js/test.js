@@ -7346,6 +7346,71 @@ var RequiredFieldValidator = FieldValidator.extend({
     }
 });
 /**
+ * Provides a static collection of simple execution queues for reducing
+ * a series of rapidly-fired function calls into a single call.
+ *
+ * This queue is suitable only when every function call in the succession
+ * is inter-changeable with every other call. Namespace groups of equivalent
+ * functions into their own execution queues.
+ *
+ * Example: TimeoutQueue.enqueue('prettyPrint', prettyPrint);
+ *
+ * The above call will enqueue an execution of the global prettyPrint()
+ * function on the 'prettyPrint' queue. If no more executions are added
+ * to the queue after 300ms, the last instance of the function passed to
+ * the queue will be executed.
+ */
+var TimeoutQueue = {
+    _queues: {},
+
+    /**
+     * Enqueues a function execution on the queue with the specified name.
+     *
+     * @param {String} name The name of the queue to enqueue the exeuction onto.
+     * @param {Function} func The function call to enqueue.
+     * @param {Object} options A set of options to override defaults with.
+     */
+    enqueue: function(name, func, options) {
+        var q = TimeoutQueue._queues[name],
+            number;
+
+        options = _.extend({
+            timeout: 300
+        }, options);
+
+        if (!q) {
+            q = {items: [], func: func};
+            TimeoutQueue._queues[name] = q;
+        } else {
+            q.func = func;
+        }
+
+        number = q.items.length + 1;
+        q.items.push(number);
+        setTimeout(_.bind(TimeoutQueue._dequeue, TimeoutQueue, name, number), options.timeout);
+    },
+
+    _dequeue: function(name, number) {
+        var q = TimeoutQueue._queues[name],
+            length = 0,
+            func;
+            
+        if (q) {
+            length = q.items.length;
+
+            if (q.items.length === number) {
+                func = q.func;
+                q.items = [];
+                delete q.func;
+            }
+        }
+
+        if (_.isFunction(func)) {
+            func();
+        }
+    },
+};
+/**
  * Base model implementation.
  *
  * @constructor
@@ -7409,7 +7474,7 @@ var CollarModel = Backbone.Model.extend({
             try {
                 response.Data = JSON.parse(response.Data);
             } catch (e) {
-                response.Data = '{}';
+                response.Data = {};
             }
         }
 
@@ -7616,6 +7681,15 @@ _.extend(CollarModel, {
     },
 
     /**
+     * Sets this instance's urlRoot property.
+     *
+     * @param {String} urlRoot The value to set.
+     */
+    setUrlRoot: function(urlRoot) {
+        this.urlRoot = urlRoot;
+    },
+
+    /**
      * Triggers the area event for this instance, if the givem models object area information.
      *
      * @param {Object} models The models object being used to reset this instance.
@@ -7687,9 +7761,15 @@ var AreaModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        var collection = this.get('Collection');
+
         this.bind('change:Id', this.id, this);
-        this.get('Collection').bind('area', this.area, this);
-        this.get('Collection').bind('reset', this.reset, this);
+        this.bind('change:UrlRoot', this.changeUrlRoot, this);
+
+        if (collection) {
+            collection.bind('area', this.area, this);
+            collection.bind('reset', this.reset, this);
+        }
     },
 
     /**
@@ -7705,6 +7785,21 @@ var AreaModel = Backbone.Model.extend({
     },
 
     /**
+     * Handles this isntance's UrlRoot-change event.
+     */
+    changeUrlRoot: function() {
+        var collection = this.get('Collection');
+
+        if (collection) {
+            if (_.isFunction(collection.setUrlRoot)) {
+                collection.setUrlRoot(this.get('UrlRoot'));
+            } else {
+                collection.urlRoot = this.get('UrlRoot');
+            }
+        }
+    },
+
+    /**
      * Clears this instance's selected ID.
      */
     clearId: function(options) {
@@ -7715,14 +7810,22 @@ var AreaModel = Backbone.Model.extend({
      * Handles this instance's ID-change event.
      */
     id: function() {
-        this.get('Collection').setSelected(this.get('Id'));
+        var collection = this.get('Collection');
+
+        if (collection) {
+            collection.setSelected(this.get('Id'));
+        }
     },
 
     /**
      * Handles this instance's collection's reset event.
      */
     reset: function() {
-        this.get('Collection').setSelected(this.get('Id'));
+        var collection = this.get('Collection');
+
+        if (collection) {
+            collection.setSelected(this.get('Id'));
+        }
     }
 });
 /**
@@ -7969,7 +8072,7 @@ var ScheduledJobModel = CollarModel.extend({
     defaults: {
         'Id': 0,
         'JobType': null,
-        'Properties': '{}'
+        'Data': '{}'
     }
 });
 
@@ -7980,6 +8083,19 @@ var ScheduledJobModel = CollarModel.extend({
  */
 var ScheduledJobCollection = CollarCollection.extend({
     model: ScheduledJobModel,
+
+    /**
+     * Sets this instance's urlRoot property.
+     *
+     * @param {String} urlRoot The value to set.
+     */
+    setUrlRoot: function(urlRoot) {
+        CollarCollection.prototype.setUrlRoot.call(this, urlRoot);
+
+        this.each(function(model) {
+            model.urlRoot = urlRoot;
+        });
+    },
 
     /**
      * Triggers the area event for this instance, if the givem models object area information.
@@ -8734,10 +8850,21 @@ var ScheduledJobsController = CollarController.extend({
             jid = 0;
         }
 
-        this.model.urlRoot = this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs';
-        this.getCollection().urlRoot = this.model.urlRoot;
+        this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
         
-        this.model.set({ScheduleId: id, Search: search || '', PageNumber: page, Id: jid, Action: action || '', Loading: true}, {silent: true});
+        this.model.set(
+            {
+                ScheduleId: id, 
+                Search: search || '', 
+                PageNumber: page, 
+                Id: jid, 
+                Action: action || '', 
+                Loading: true
+            }, 
+            {
+                silent: true
+            });
+
         this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();
@@ -10706,7 +10833,7 @@ var HistoryDisplayView = FormView.extend({
             this.$('.exception').remove();
         }
 
-        setTimeout(prettyPrint, 100);
+        TimeoutQueue.enqueue('prettyPrint', prettyPrint);
         return this;
     }
 });
@@ -11057,7 +11184,7 @@ var QueueDisplayView = FormView.extend({
      */
     render: function() {
         FormView.prototype.render.call(this);
-        setTimeout(prettyPrint, 100);
+        TimeoutQueue.enqueue('prettyPrint', prettyPrint);
         return this;
     }
 });
@@ -11203,7 +11330,13 @@ var ScheduledJobsEditView = FormView.extend({
     },
     template: _.template($('#scheduled-jobs-edit-template').html()),
     validators: {
-
+        "Data": [
+            new JSONFieldValidator({message: 'Data must be valid JSON, de-serializable into an instance of the specified job type.'})
+        ],
+        "JobType": [
+            new RequiredFieldValidator({message: 'Job type is required.'}),
+            new LengthFieldValidator({maxLength: 256, message: 'Job type cannot be longer than 256 characters.'})
+        ]
     },
 
     /**
@@ -11253,7 +11386,18 @@ var ScheduledJobsListView = ListView.extend({
  * @extends {RowView}
  */
 var ScheduledJobsRowView = RowView.extend({
-    template: _.template($('#scheduled-jobs-row-template').html())
+    template: _.template($('#scheduled-jobs-row-template').html()),
+
+    /**
+     * Renders the view.
+     *
+     * @return {RowView} This instance.
+     */
+    render: function() {
+        RowView.prototype.render.call(this);
+        TimeoutQueue.enqueue('prettyPrint', prettyPrint);
+        return this;
+    }
 });
 /**
  * Manages the root scheduled jobs view.
@@ -11842,7 +11986,7 @@ var WorkingDisplayView = FormView.extend({
      */
     render: function() {
         FormView.prototype.render.call(this);
-        setTimeout(prettyPrint, 100);
+        TimeoutQueue.enqueue('prettyPrint', prettyPrint);
         return this;
     }
 });

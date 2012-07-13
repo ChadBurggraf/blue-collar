@@ -370,7 +370,7 @@ namespace BlueCollar.Test
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
                     JobType = "BlueCollar.TestScheduledJob, BlueCollar",
-                    Properties = "{}",
+                    Data = "{}",
                     ScheduleId = scheduleRecord.Id.Value
                 };
 
@@ -725,7 +725,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.Test.TestJob, BlueCollar.Test",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -1312,7 +1312,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.TestScheduledJob, BlueCollar",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -1326,7 +1326,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.TestScheduledJob2, BlueCollar",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -1335,7 +1335,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.TestScheduledJob3, BlueCollar",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -1374,7 +1374,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.TestScheduledJob, BlueCollar",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -1388,7 +1388,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.TestScheduledJob2, BlueCollar",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -1397,7 +1397,7 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.TestScheduledJob3, BlueCollar",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(scheduledJobRecord, null);
@@ -2121,24 +2121,27 @@ namespace BlueCollar.Test
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         protected void ReleaseScheduleEnqueueingLock()
         {
-            ScheduleRecord scheduleRecord = new ScheduleRecord()
+            if (this.Repository != null)
             {
-                ApplicationName = BlueCollarSection.Section.ApplicationName,
-                Enabled = false,
-                Name = "Nightly",
-                QueueName = "schedules",
-                RepeatType = ScheduleRepeatType.Days,
-                RepeatValue = 1,
-                StartOn = DateTime.UtcNow.FloorWithSeconds()
-            };
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Enabled = false,
+                    Name = "Nightly",
+                    QueueName = "schedules",
+                    RepeatType = ScheduleRepeatType.Days,
+                    RepeatValue = 1,
+                    StartOn = DateTime.UtcNow.FloorWithSeconds()
+                };
 
-            this.Repository.CreateSchedule(scheduleRecord, null);
-            Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                this.Repository.CreateSchedule(scheduleRecord, null);
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
 
-            Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
 
-            this.Repository.ReleaseScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
-            Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                this.Repository.ReleaseScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+            }
         }
 
         /// <summary>
@@ -2203,18 +2206,18 @@ namespace BlueCollar.Test
                 {
                     ScheduleId = scheduleRecord.Id.Value,
                     JobType = "BlueCollar.Test.TestJob, BlueCollar.Test",
-                    Properties = "{}"
+                    Data = "{}"
                 };
 
                 this.Repository.CreateScheduledJob(jobRecord, null);
 
                 jobRecord.JobType = "BlueCollar.Test.UpdatedJob, BlueCollar.Test";
-                jobRecord.Properties = "{\"One\":null, \"Two\":\"Three\"}";
+                jobRecord.Data = "{\"One\":null, \"Two\":\"Three\"}";
                 this.Repository.UpdateScheduledJob(jobRecord, null);
 
                 ScheduledJobRecord updatedJob = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null).Records[0];
                 Assert.AreEqual(jobRecord.JobType, updatedJob.JobType);
-                Assert.AreEqual(jobRecord.Properties, updatedJob.Properties);
+                Assert.AreEqual(jobRecord.Data, updatedJob.Data);
             }
         }
 

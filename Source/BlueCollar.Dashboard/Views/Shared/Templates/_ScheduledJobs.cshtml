@@ -11,6 +11,13 @@
             <span class="error"></span>
         </label>
 
+        <label class="field">
+            <span>Data</span>
+            <textarea class="code" rows="5" name="Data"></textarea>
+            <span class="help-block">Well-formed JSON that can be de-serialized into an instance of the specified job type. Leave empty if your job doesn't need any serialized data.</span>
+            <span class="error"></span>
+        </label>
+
         <div class="form-actions">
             <input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Job'); } else { print('Create Job'); } %>">
             <button type="button" class="btn btn-reset">Cancel</button>
@@ -37,23 +44,21 @@
             <table>
                 <tbody>
                     <tr>
-                        <th>Properties</th>
-                        <td>
-                        </td>
+                        <th>Data</th>
+                        <td><pre class="prettyprint"><code class="language-js"><% if (Data !== '{}') { print(Data); } %></code></pre></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </td>
-    <td>
-    </td>
+    <td><pre class="prettyprint"><code class="language-js"><% if (Data !== '{}') { print(Data); } %></code></pre></td>
 </script>
 
 <script type="text/template" id="scheduled-jobs-list-template">
     <thead>
         <tr>
             <th>Type</th>
-            <th>Properties</th>
+            <th>Data</th>
         </tr>
     </thead>
     <tbody></tbody>

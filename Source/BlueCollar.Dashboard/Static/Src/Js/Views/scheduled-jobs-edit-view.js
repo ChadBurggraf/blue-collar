@@ -10,7 +10,13 @@ var ScheduledJobsEditView = FormView.extend({
     },
     template: _.template($('#scheduled-jobs-edit-template').html()),
     validators: {
-
+        "Data": [
+            new JSONFieldValidator({message: 'Data must be valid JSON, de-serializable into an instance of the specified job type.'})
+        ],
+        "JobType": [
+            new RequiredFieldValidator({message: 'Job type is required.'}),
+            new LengthFieldValidator({maxLength: 256, message: 'Job type cannot be longer than 256 characters.'})
+        ]
     },
 
     /**

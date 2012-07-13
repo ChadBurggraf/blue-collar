@@ -138,7 +138,6 @@
     <Compile Include="QueueDetailsRecord.cs" />
     <Compile Include="QueueListRecord.cs" />
     <Compile Include="QueueNameFilters.cs" />
-    <Compile Include="ScheduledJob.cs" />
     <Compile Include="SqlServerRepository.cs" />
     <Compile Include="StatisticsRecord.cs" />
     <Compile Include="WorkerSignalRecord.cs" />
@@ -149,7 +148,6 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IRepositoryFactory.cs" />
-    <Compile Include="IScheduledJob.cs" />
     <Compile Include="JobRecordBase.cs" />
     <Compile Include="JobSerializer.cs" />
     <Compile Include="RecordList{T}.cs" />

@@ -13,7 +13,7 @@ namespace BlueCollar.Examples
     /// <summary>
     /// Sleep job.
     /// </summary>
-    public sealed class SleepJob : ScheduledJob
+    public sealed class SleepJob : Job
     {
         private int? duration;
 
@@ -24,25 +24,12 @@ namespace BlueCollar.Examples
         {
             get
             {
-                if (this.duration == null)
-                {
-                    if (!string.IsNullOrEmpty(Properties["Duration"]))
-                    {
-                        this.duration = Convert.ToInt32(Properties["Duration"], CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        this.duration = 0;
-                    }
-                }
-
-                return this.duration.Value;
+                return (this.duration ?? (this.duration = 0)).Value;
             }
 
             set
             {
                 this.duration = value;
-                Properties["Duration"] = value.ToString(CultureInfo.InvariantCulture);
             }
         }
 
