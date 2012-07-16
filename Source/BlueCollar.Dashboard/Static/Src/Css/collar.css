@@ -484,6 +484,13 @@
   display: none;
 }
 
+.table td pre {
+  padding: 0;
+  margin-bottom: 0;
+  background: transparent;
+  border: none;
+}
+
 .table-paged {
   margin-bottom: 0;
   border-top: none;
