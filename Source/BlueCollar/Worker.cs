@@ -717,7 +717,14 @@ namespace BlueCollar
                         using (IDbTransaction transaction = repository.BeginTransaction())
                         {
                             signals = repository.GetWorkingSignals(this.id, recordId, transaction);
-                            repository.ClearWorkingSignalPair(this.id, recordId, transaction);
+
+                            if (signals != null
+                                && (signals.WorkerSignal != WorkerSignal.None 
+                                || signals.WorkingSignal != WorkingSignal.None))
+                            {
+                                repository.ClearWorkingSignalPair(this.id, recordId, transaction);
+                            }
+
                             transaction.Commit();
                         }
                     }
