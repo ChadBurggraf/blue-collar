@@ -14,10 +14,14 @@ var HistoryView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
         this.listView = new HistoryListView({model: this.model});
         this.listView.bind('display', this.display, this);
         this.listView.bind('signal', this.signal, this);
+    },
+
+    enqueue: function(sender, args) {
+        var model = new QueueModel(args.Model.toEditJSON()),
+            view = new HistoryReEnqueueView({model: model});
     },
 
     /**
@@ -28,6 +32,7 @@ var HistoryView = AreaView.extend({
      */
     renderIdView: function(el, model) {
         var view = new HistoryDisplayView({model: model});
+        view.bind('enqueue', this.enqueue, this);
         view.bind('cancel', this.displayCancel, this);
 
         el.html(view.render().el);

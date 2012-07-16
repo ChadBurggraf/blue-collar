@@ -7585,8 +7585,16 @@ _.extend(CollarModel, {
      */
     initialize: function(models, options) {
         options = options || {};
-        this.fragment = options.fragment || '';
-        this.urlRoot = options.urlRoot || '/';
+
+        if (!this.fragment) {
+            this.fragment = options.fragment || '';
+        }
+
+        if (!this.urlRoot) {
+            this.urlRoot = options.urlRoot || '/';
+        }
+
+        console.log('Fragment: ' + this.fragment + ', URL Root: ' + this.urlRoot);
 
         // Reset is called by the true Backbone.Collection constructor
         // if models is defined. Therefore, only call if models is
@@ -10826,10 +10834,29 @@ var HistoryDisplayView = FormView.extend({
     template: _.template($('#history-display-template').html()),
 
     /**
+     * Initialization.
+     *
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(options) {
+        FormView.prototype.initialize.call(this, options);
+
+        this.events = _.extend({}, this.events, {
+            'click button.btn-primary': 'enqueue'    
+        });
+
+        this.delegateEvents();
+    },
+
+    /**
      * Handles model change events.
      */
     change: function() {
         this.render();
+    },
+
+    enqueue: function() {
+        this.trigger('enqueue', this, {Model: this.model});
     },
 
     /**
@@ -10879,6 +10906,15 @@ var HistoryListView = ListView.extend({
 
         return this;
     }
+});
+/**
+ * Implements the history re-enqueue form.
+ *
+ * @constructor
+ * @extends {FormView}
+ */
+var HistoryReEnqueueView = FormView.extend({
+    template: _.template($('#history-re-enqueue-template').html())
 });
 /**
  * Manages the row view for the history list.
@@ -10935,10 +10971,14 @@ var HistoryView = AreaView.extend({
      */
     initialize: function(options) {
         AreaView.prototype.initialize.call(this, options);
-
         this.listView = new HistoryListView({model: this.model});
         this.listView.bind('display', this.display, this);
         this.listView.bind('signal', this.signal, this);
+    },
+
+    enqueue: function(sender, args) {
+        var model = new QueueModel(args.Model.toEditJSON()),
+            view = new HistoryReEnqueueView({model: model});
     },
 
     /**
@@ -10949,6 +10989,7 @@ var HistoryView = AreaView.extend({
      */
     renderIdView: function(el, model) {
         var view = new HistoryDisplayView({model: model});
+        view.bind('enqueue', this.enqueue, this);
         view.bind('cancel', this.displayCancel, this);
 
         el.html(view.render().el);

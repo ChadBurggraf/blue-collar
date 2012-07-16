@@ -12,8 +12,16 @@
      */
     initialize: function(models, options) {
         options = options || {};
-        this.fragment = options.fragment || '';
-        this.urlRoot = options.urlRoot || '/';
+
+        if (!this.fragment) {
+            this.fragment = options.fragment || '';
+        }
+
+        if (!this.urlRoot) {
+            this.urlRoot = options.urlRoot || '/';
+        }
+
+        console.log('Fragment: ' + this.fragment + ', URL Root: ' + this.urlRoot);
 
         // Reset is called by the true Backbone.Collection constructor
         // if models is defined. Therefore, only call if models is

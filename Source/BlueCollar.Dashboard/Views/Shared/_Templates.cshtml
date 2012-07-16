@@ -92,9 +92,21 @@ Dashboard
 <% print(String.exceptionDisplay(Exception)); %>
 </div>
 <div class="form-actions">
+<button type="button" class="btn btn-primary">Re-Enqueue Job</button>
 <button type="button" class="btn btn-reset">Done</button>
 </div>
 <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
+</script>
+<script type="text/template" id="history-re-enqueue-template">
+<fieldset>
+<p class="legend">
+Re-Enqueue Job
+<small><%- JobName %></small>
+</p>
+<div class="form-actions">
+<button type="button" class="btn btn-reset">Cancel</button>
+</div>
 </fieldset>
 </script>
 <script type="text/template" id="history-row-template">

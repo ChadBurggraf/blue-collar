@@ -67,6 +67,7 @@
     <input path="Views\dashboard-view.js"/>
     <input path="Views\history-display-view.js"/>
     <input path="Views\history-list-view.js"/>
+    <input path="Views\history-re-enqueue-view.js"/>
     <input path="Views\history-row-view.js"/>
     <input path="Views\history-view.js"/>
     <input path="Views\nav-view.js"/>
