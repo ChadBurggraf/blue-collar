@@ -18,7 +18,8 @@ var WorkingModel = CollarModel.extend({
         'WorkerMachineAddress': null,
         'WorkerMachineName': null,
         'WorkerName': null
-    }
+    },
+    fragment: 'working'
 });
 
 /**
@@ -33,6 +34,7 @@ var WorkingSignalModel = CollarModel.extend({
         'Signal': 'None',
         'WorkerName': null
     },
+    fragment: 'working',
 
     /**
      * Gets the URL to use when interacting with the model on the server.
@@ -50,5 +52,6 @@ var WorkingSignalModel = CollarModel.extend({
  * @constructor
  */
 var WorkingCollection = CollarCollection.extend({
+    fragment: 'working',
     model: WorkingModel
 });

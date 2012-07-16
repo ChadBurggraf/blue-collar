@@ -17,11 +17,9 @@
             this.fragment = options.fragment || '';
         }
 
-        if (!this.urlRoot) {
-            this.urlRoot = options.urlRoot || '/';
+        if (!this.jsonUrlRoot) {
+            this.jsonUrlRoot = options.jsonUrlRoot || '';
         }
-
-        console.log('Fragment: ' + this.fragment + ', URL Root: ' + this.urlRoot);
 
         // Reset is called by the true Backbone.Collection constructor
         // if models is defined. Therefore, only call if models is
@@ -153,9 +151,9 @@
      * @return {String} The collection's server URL.
      */
     url: function(options) {
-        var url = this.urlRoot || '/',
+        var url = _.isFunction(this.urlRoot) ? this.urlRoot() : (this.urlRoot || '/'),
             queryIndex = url.indexOf('?');
-
+        
         options = _.extend({
             pageNumber: 1,
             search: ''
@@ -171,5 +169,14 @@
         url += '&p=' + encodeURIComponent((options.pageNumber || 1).toString());
 
         return url;
+    },
+
+    /**
+     * Gets the URL root to use when interacting with the collection on the server.
+     *
+     * @return {String} The collection's server URL root.
+     */
+    urlRoot: function() {
+        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
     }
  });

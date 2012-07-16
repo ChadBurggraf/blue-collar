@@ -7433,7 +7433,14 @@ var CollarModel = Backbone.Model.extend({
      */
     initialize: function(attributes, options) {
         options = options || {};
-        this.fragment = options.fragment || '';
+
+        if (!this.fragment) {
+            this.fragment = options.fragment || '';
+        }
+
+        if (!this.jsonUrlRoot) {
+            this.jsonUrlRoot = options.jsonUrlRoot || '/';
+        }
         
         if (attributes) {
             // Backbone is not initializing attributes in initialize,
@@ -7543,8 +7550,17 @@ var CollarModel = Backbone.Model.extend({
      */
     url: function() {
         var baseUrl = this.collection && this.collection.url ? (_.isFunction(this.collection.url) ? this.collection.url() : this.collection.url) : '';
-        baseUrl = baseUrl || this.urlRoot || urlError();
+        baseUrl = baseUrl || (_.isFunction(this.urlRoot) ? this.urlRoot() : this.urlRoot) || urlError();
         return this.isNew() ? baseUrl : baseUrl.appendUrlPath(this.id);
+    },
+
+    /**
+     * Gets the URL root to use when interacting with the model on the server.
+     *
+     * @return {String} The model's server URL root.
+     */
+    urlRoot: function() {
+        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
     }
 });
 
@@ -7599,11 +7615,9 @@ _.extend(CollarModel, {
             this.fragment = options.fragment || '';
         }
 
-        if (!this.urlRoot) {
-            this.urlRoot = options.urlRoot || '/';
+        if (!this.jsonUrlRoot) {
+            this.jsonUrlRoot = options.jsonUrlRoot || '';
         }
-
-        console.log('Fragment: ' + this.fragment + ', URL Root: ' + this.urlRoot);
 
         // Reset is called by the true Backbone.Collection constructor
         // if models is defined. Therefore, only call if models is
@@ -7735,9 +7749,9 @@ _.extend(CollarModel, {
      * @return {String} The collection's server URL.
      */
     url: function(options) {
-        var url = this.urlRoot || '/',
+        var url = _.isFunction(this.urlRoot) ? this.urlRoot() : (this.urlRoot || '/'),
             queryIndex = url.indexOf('?');
-
+        
         options = _.extend({
             pageNumber: 1,
             search: ''
@@ -7753,6 +7767,15 @@ _.extend(CollarModel, {
         url += '&p=' + encodeURIComponent((options.pageNumber || 1).toString());
 
         return url;
+    },
+
+    /**
+     * Gets the URL root to use when interacting with the collection on the server.
+     *
+     * @return {String} The collection's server URL root.
+     */
+    urlRoot: function() {
+        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
     }
  });
 /**
@@ -7868,6 +7891,7 @@ var HistoryModel = CollarModel.extend({
         'WorkerMachineName': null,
         'WorkerName': null
     },
+    fragment: 'history',
 
     /**
      * Parses the model's data as returned by the server.
@@ -7887,6 +7911,7 @@ var HistoryModel = CollarModel.extend({
  * @constructor
  */
 var HistoryCollection = CollarCollection.extend({
+    fragment: 'history',
     model: HistoryModel
 });
 /**
@@ -7894,14 +7919,17 @@ var HistoryCollection = CollarCollection.extend({
  *
  * @constructor
  */
-var NavModel = Backbone.Model.extend({});
+var NavModel = CollarModel.extend({
+    fragment: 'counts'
+});
 
 /**
  * Represents a collection of {NavModel}s.
  *
  * @constructor
  */
-var NavCollection = Backbone.Collection.extend({
+var NavCollection = CollarCollection.extend({
+    fragment: 'counts',
     model: NavModel,
 
     /**
@@ -7911,7 +7939,7 @@ var NavCollection = Backbone.Collection.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(models, options) {
-        Backbone.Collection.prototype.initialize.call(models, options);
+        CollarCollection.prototype.initialize.call(this, models, options);
         this.currentName = null;
     },
 
@@ -7984,6 +8012,17 @@ var NavCollection = Backbone.Collection.extend({
     },
 
     /**
+     * Replaces this instance's model collection with the given collection.
+     *
+     * @param {Object} models An object specifying the new model collection.
+     * @param {Object} options The options to use when performing the reset.
+     * @return {CollarCollection} This instance.
+     */
+    reset: function(models, options) {
+        return Backbone.Collection.prototype.reset.call(this, models, options);
+    },
+
+    /**
      * Sets the nav item with the given name to be the current nav item.
      *
      * @param {String} name The name of the nav item to set current.
@@ -8023,6 +8062,8 @@ var QueueModel = CollarModel.extend({
         'TryNumber': 0
     },
 
+    fragment: 'queue',
+
     /**
      * Parses the model's data as returned by the server.
      *
@@ -8041,6 +8082,7 @@ var QueueModel = CollarModel.extend({
  * @constructor
  */
 var QueueCollection = CollarCollection.extend({
+    fragment: 'queue',
     model: QueueModel
 });
 /**
@@ -8059,6 +8101,7 @@ var ScheduleModel = CollarModel.extend({
         'RepeatValue': null,
         'Enabled': true
     },
+    fragment: 'schedules',
 
     /**
      * Gets a copy of the model's attributes.
@@ -8067,7 +8110,7 @@ var ScheduleModel = CollarModel.extend({
      */
     toJSON: function() {
         return _.extend({}, CollarModel.prototype.toJSON.call(this), {
-            ManageUrl: (this.fragment || '') + '/id/' + encodeURIComponent(this.get('Id').toString()) + '/jobs'
+            ManageUrl: this.urlRoot().appendUrlPath('id').appendUrlPath(this.get('Id')).appendUrlPath('jobs')
         });
     }
 });
@@ -8078,6 +8121,7 @@ var ScheduleModel = CollarModel.extend({
  * @constructor
  */
 var ScheduleCollection = CollarCollection.extend({
+    fragment: 'schedules',
     model: ScheduleModel
 });
 /**
@@ -8339,6 +8383,7 @@ var WorkerModel = CollarModel.extend({
         'QueueNames': null,
         'Startup': 'Automatic'
     },
+    fragment: 'workers',
 
     /**
      * Gets a machine descriptor object for this instance.
@@ -8359,6 +8404,7 @@ var WorkerModel = CollarModel.extend({
  * @constructor
  */
 var WorkerSignalModel = CollarModel.extend({
+    fragment: 'workers',
     defaults: {
         'Id': 0,
         'MachineAddress': '',
@@ -8383,6 +8429,7 @@ var WorkerSignalModel = CollarModel.extend({
  * @constructor
  */
 var WorkerCollection = CollarCollection.extend({
+    fragment: 'workers',
     model: WorkerModel
 });
 /**
@@ -8405,7 +8452,8 @@ var WorkingModel = CollarModel.extend({
         'WorkerMachineAddress': null,
         'WorkerMachineName': null,
         'WorkerName': null
-    }
+    },
+    fragment: 'working'
 });
 
 /**
@@ -8420,6 +8468,7 @@ var WorkingSignalModel = CollarModel.extend({
         'Signal': 'None',
         'WorkerName': null
     },
+    fragment: 'working',
 
     /**
      * Gets the URL to use when interacting with the model on the server.
@@ -8437,6 +8486,7 @@ var WorkingSignalModel = CollarModel.extend({
  * @constructor
  */
 var WorkingCollection = CollarCollection.extend({
+    fragment: 'working',
     model: WorkingModel
 });
 

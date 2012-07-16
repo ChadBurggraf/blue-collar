@@ -12,6 +12,7 @@ var WorkerModel = CollarModel.extend({
         'QueueNames': null,
         'Startup': 'Automatic'
     },
+    fragment: 'workers',
 
     /**
      * Gets a machine descriptor object for this instance.
@@ -32,6 +33,7 @@ var WorkerModel = CollarModel.extend({
  * @constructor
  */
 var WorkerSignalModel = CollarModel.extend({
+    fragment: 'workers',
     defaults: {
         'Id': 0,
         'MachineAddress': '',
@@ -56,5 +58,6 @@ var WorkerSignalModel = CollarModel.extend({
  * @constructor
  */
 var WorkerCollection = CollarCollection.extend({
+    fragment: 'workers',
     model: WorkerModel
 });

@@ -139,7 +139,6 @@
     <import name="Lib"/>
     <import name="App"/>
     <input path="Vendor\qunit-1.9.0pre.js"/>
-    <input path="Tests\test-util.js"/>
     <input path="Tests\ajax-tests.js"/>
     <input path="Tests\model-tests.js"/>
     <input path="Tests\serializer-tests.js"/>

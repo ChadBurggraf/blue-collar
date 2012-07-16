@@ -15,6 +15,8 @@ var QueueModel = CollarModel.extend({
         'TryNumber': 0
     },
 
+    fragment: 'queue',
+
     /**
      * Parses the model's data as returned by the server.
      *
@@ -33,5 +35,6 @@ var QueueModel = CollarModel.extend({
  * @constructor
  */
 var QueueCollection = CollarCollection.extend({
+    fragment: 'queue',
     model: QueueModel
 });

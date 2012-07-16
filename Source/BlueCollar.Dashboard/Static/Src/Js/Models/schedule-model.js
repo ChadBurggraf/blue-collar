@@ -14,6 +14,7 @@ var ScheduleModel = CollarModel.extend({
         'RepeatValue': null,
         'Enabled': true
     },
+    fragment: 'schedules',
 
     /**
      * Gets a copy of the model's attributes.
@@ -22,7 +23,7 @@ var ScheduleModel = CollarModel.extend({
      */
     toJSON: function() {
         return _.extend({}, CollarModel.prototype.toJSON.call(this), {
-            ManageUrl: (this.fragment || '') + '/id/' + encodeURIComponent(this.get('Id').toString()) + '/jobs'
+            ManageUrl: this.urlRoot().appendUrlPath('id').appendUrlPath(this.get('Id')).appendUrlPath('jobs')
         });
     }
 });
@@ -33,5 +34,6 @@ var ScheduleModel = CollarModel.extend({
  * @constructor
  */
 var ScheduleCollection = CollarCollection.extend({
+    fragment: 'schedules',
     model: ScheduleModel
 });

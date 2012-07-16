@@ -12,7 +12,14 @@ var CollarModel = Backbone.Model.extend({
      */
     initialize: function(attributes, options) {
         options = options || {};
-        this.fragment = options.fragment || '';
+
+        if (!this.fragment) {
+            this.fragment = options.fragment || '';
+        }
+
+        if (!this.jsonUrlRoot) {
+            this.jsonUrlRoot = options.jsonUrlRoot || '/';
+        }
         
         if (attributes) {
             // Backbone is not initializing attributes in initialize,
@@ -122,8 +129,17 @@ var CollarModel = Backbone.Model.extend({
      */
     url: function() {
         var baseUrl = this.collection && this.collection.url ? (_.isFunction(this.collection.url) ? this.collection.url() : this.collection.url) : '';
-        baseUrl = baseUrl || this.urlRoot || urlError();
+        baseUrl = baseUrl || (_.isFunction(this.urlRoot) ? this.urlRoot() : this.urlRoot) || urlError();
         return this.isNew() ? baseUrl : baseUrl.appendUrlPath(this.id);
+    },
+
+    /**
+     * Gets the URL root to use when interacting with the model on the server.
+     *
+     * @return {String} The model's server URL root.
+     */
+    urlRoot: function() {
+        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
     }
 });
 

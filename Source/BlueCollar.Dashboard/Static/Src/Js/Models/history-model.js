@@ -21,6 +21,7 @@ var HistoryModel = CollarModel.extend({
         'WorkerMachineName': null,
         'WorkerName': null
     },
+    fragment: 'history',
 
     /**
      * Parses the model's data as returned by the server.
@@ -40,5 +41,6 @@ var HistoryModel = CollarModel.extend({
  * @constructor
  */
 var HistoryCollection = CollarCollection.extend({
+    fragment: 'history',
     model: HistoryModel
 });

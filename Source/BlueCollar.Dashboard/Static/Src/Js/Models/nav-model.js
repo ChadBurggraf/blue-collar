@@ -3,14 +3,17 @@
  *
  * @constructor
  */
-var NavModel = Backbone.Model.extend({});
+var NavModel = CollarModel.extend({
+    fragment: 'counts'
+});
 
 /**
  * Represents a collection of {NavModel}s.
  *
  * @constructor
  */
-var NavCollection = Backbone.Collection.extend({
+var NavCollection = CollarCollection.extend({
+    fragment: 'counts',
     model: NavModel,
 
     /**
@@ -20,7 +23,7 @@ var NavCollection = Backbone.Collection.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(models, options) {
-        Backbone.Collection.prototype.initialize.call(models, options);
+        CollarCollection.prototype.initialize.call(this, models, options);
         this.currentName = null;
     },
 
@@ -90,6 +93,17 @@ var NavCollection = Backbone.Collection.extend({
         }
 
         return m;
+    },
+
+    /**
+     * Replaces this instance's model collection with the given collection.
+     *
+     * @param {Object} models An object specifying the new model collection.
+     * @param {Object} options The options to use when performing the reset.
+     * @return {CollarCollection} This instance.
+     */
+    reset: function(models, options) {
+        return Backbone.Collection.prototype.reset.call(this, models, options);
     },
 
     /**
