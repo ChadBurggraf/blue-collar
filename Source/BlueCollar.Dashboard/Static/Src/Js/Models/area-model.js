@@ -3,7 +3,7 @@
  *
  * @constructor
  */
-var AreaModel = Backbone.Model.extend({
+var AreaModel = CollarModel.extend({
     defaults: {
         ApplicationName: 'Default',
         Collection: new CollarCollection(),
@@ -18,18 +18,23 @@ var AreaModel = Backbone.Model.extend({
     /**
      * Initialization.
      *
+     * @param {Object} app A set of initial model attribute values.
      * @param {Object} options Initialization options.
      */
-    initialize: function(options) {
-        var collection = this.get('Collection');
+    initialize: function(attributes, options) {
+        var collection;
+        
+        
 
         this.bind('change:Id', this.id, this);
-        this.bind('change:UrlRoot', this.changeUrlRoot, this);
+        collection = this.get('Collection');
 
         if (collection) {
             collection.bind('area', this.area, this);
             collection.bind('reset', this.reset, this);
         }
+
+        CollarModel.prototype.initialize.call(this, attributes, options);
     },
 
     /**
@@ -45,21 +50,6 @@ var AreaModel = Backbone.Model.extend({
     },
 
     /**
-     * Handles this isntance's UrlRoot-change event.
-     */
-    changeUrlRoot: function() {
-        var collection = this.get('Collection');
-
-        if (collection) {
-            if (_.isFunction(collection.setUrlRoot)) {
-                collection.setUrlRoot(this.get('UrlRoot'));
-            } else {
-                collection.urlRoot = this.get('UrlRoot');
-            }
-        }
-    },
-
-    /**
      * Clears this instance's selected ID.
      */
     clearId: function(options) {
@@ -70,6 +60,7 @@ var AreaModel = Backbone.Model.extend({
      * Handles this instance's ID-change event.
      */
     id: function() {
+        debugger;
         var collection = this.get('Collection');
 
         if (collection) {

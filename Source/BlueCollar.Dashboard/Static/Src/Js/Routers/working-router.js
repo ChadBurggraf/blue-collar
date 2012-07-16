@@ -28,6 +28,6 @@ var WorkingRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(WorkingController, 'working', this.options);
+        this.controller = this.createController(WorkingController, this.options);
     }
 });

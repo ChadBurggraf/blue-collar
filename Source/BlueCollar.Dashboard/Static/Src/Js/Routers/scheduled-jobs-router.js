@@ -25,7 +25,7 @@ var ScheduledJobsRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(ScheduledJobsController, 'schedules', this.options);
+        this.controller = this.createController(ScheduledJobsController, this.options);
     },
 
     /**

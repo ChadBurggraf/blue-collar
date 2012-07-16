@@ -11,14 +11,14 @@
      * @param {Object} options Initialization options.
      */
     initialize: function(models, options) {
-        options = options || {};
+        this.options = options || {};
 
         if (!this.fragment) {
-            this.fragment = options.fragment || '';
+            this.fragment = this.options.fragment || '';
         }
 
         if (!this.jsonUrlRoot) {
-            this.jsonUrlRoot = options.jsonUrlRoot || '';
+            this.jsonUrlRoot = this.options.jsonUrlRoot || '';
         }
 
         // Reset is called by the true Backbone.Collection constructor
@@ -114,15 +114,6 @@
     },
 
     /**
-     * Sets this instance's urlRoot property.
-     *
-     * @param {String} urlRoot The value to set.
-     */
-    setUrlRoot: function(urlRoot) {
-        this.urlRoot = urlRoot;
-    },
-
-    /**
      * Triggers the area event for this instance, if the givem models object area information.
      *
      * @param {Object} models The models object being used to reset this instance.
@@ -177,6 +168,7 @@
      * @return {String} The collection's server URL root.
      */
     urlRoot: function() {
-        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
+        var jsonUrlRoot = ((_.isFunction(this.jsonUrlRoot) ? this.jsonUrlRoot() : this.jsonUrlRoot) || '/').toString();
+        return jsonUrlRoot.appendUrlPath(this.fragment);
     }
  });

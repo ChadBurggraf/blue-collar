@@ -68,14 +68,13 @@ var CollarRouter = Backbone.Router.extend({
      * Creates a new instance of this router's default controller.
      *
      * @param {Function} func The constructor function of the controller to create.
-     * @param {String} fragment The URL-root the controller uses to interact with the server.
      * @param {Object} options Initialization options to use when creating the controller.
      * @return The created controller.
      */
-    createController: function(func, fragment, options) {
+    createController: function(func, options) {
         var controller = new func(
             this.app.name,
-            this.app.jsonUrlRoot + fragment,
+            this.app.jsonUrlRoot,
             this.app.page,
             options);
 

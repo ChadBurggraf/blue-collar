@@ -33,8 +33,7 @@ var WorkingView = AreaView.extend({
 
         if (this.model.get('Action') === 'signal') {
             if (model.get('Signal') === 'None') {
-                signalModel = new WorkingSignalModel(model.attributes);
-                signalModel.urlRoot = this.model.get('UrlRoot');
+                signalModel = new WorkingSignalModel(model.attributes, {jsonUrlRoot: this.model.jsonUrlRoot});
                 view = new WorkingSignalView({model: signalModel});
                 view.bind('cancel', this.editCancel, this);
                 view.bind('submit', this.signalSubmit, this);

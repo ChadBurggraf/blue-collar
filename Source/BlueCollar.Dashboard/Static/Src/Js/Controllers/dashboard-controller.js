@@ -12,11 +12,8 @@ var DashboardController = CollarController.extend({
      */
     initialize: function(options) {
         options = options || {};
-
-        this.model = new StatsModel({ApplicationName: this.applicationName});
-        this.model.urlRoot = this.urlRoot;
+        this.model = new StatsModel({ApplicationName: this.applicationName}, {jsonUrlRoot: this.jsonUrlRoot});
         this.model.bind('counts', this.counts, this);
-        
         this.view = new DashboardView({model: this.model, chartsLoaded: options.chartsLoaded});
     },
 

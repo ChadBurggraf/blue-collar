@@ -10,7 +10,8 @@ var CountsModel = CollarModel.extend({
         'ScheduleCount': 0,
         'WorkingCount': 0,
         'WorkerCount': 0
-    }
+    },
+    fragment: 'counts'
 });
 
 /**
@@ -102,12 +103,8 @@ var JobsPerWorkerCollection = CollarCollection.extend({
  * @constructor
  */
 var StatsModel = CollarModel.extend({
-    counts: new CountsModel(),
-    historyStatusDistant: new HistoryStatusCountsModel(),
-    historyStatusRecent: new HistoryStatusCountsModel(),
-    jobsPerHour: new JobsPerHourCollection(),
-    jobsPerWorker: new JobsPerWorkerCollection(),
-
+    fragment: 'stats',
+    
     /**
      * Initialization.
      *
@@ -116,10 +113,20 @@ var StatsModel = CollarModel.extend({
      */
     initialize: function(attributes, options) {
         CollarModel.prototype.initialize.call(this, attributes, options);
+
+        this.counts = new CountsModel();
         this.counts.bind('change', this.change, this);
+
+        this.historyStatusDistant = new HistoryStatusCountsModel();
         this.historyStatusDistant.bind('change', this.change, this);
+
+        this.historyStatusRecent = new HistoryStatusCountsModel();
         this.historyStatusRecent.bind('change', this.change, this);
+
+        this.jobsPerHour = new JobsPerHourCollection();
         this.jobsPerHour.bind('reset', this.change, this);
+
+        this.jobsPerWorker = new JobsPerWorkerCollection();
         this.jobsPerWorker.bind('reset', this.change, this);
     },
 
@@ -146,11 +153,25 @@ var StatsModel = CollarModel.extend({
             this.trigger('counts', this, {counts: attributes.Counts});
         }
 
-        this.counts.set(this.counts.parse(attributes.Counts), {silent: true});
-        this.historyStatusDistant.set(this.historyStatusDistant.parse(attributes.HistoryStatusDistant), {silent: true});
-        this.historyStatusRecent.set(this.historyStatusRecent.parse(attributes.HistoryStatusRecent), {silent: true});
-        this.jobsPerHour.reset(this.jobsPerHour.parse(attributes.JobsPerHourByDay), {silent: true});
-        this.jobsPerWorker.reset(this.jobsPerWorker.parse(attributes.JobsPerWorker), {silent: true});
+        if (this.counts) {
+            this.counts.set(this.counts.parse(attributes.Counts), {silent: true});
+        }
+
+        if (this.historyStatusDistant) {
+            this.historyStatusDistant.set(this.historyStatusDistant.parse(attributes.HistoryStatusDistant), {silent: true});
+        }
+
+        if (this.historyStatusRecent) {
+            this.historyStatusRecent.set(this.historyStatusRecent.parse(attributes.HistoryStatusRecent), {silent: true});
+        }
+
+        if (this.jobsPerHour) {
+            this.jobsPerHour.reset(this.jobsPerHour.parse(attributes.JobsPerHourByDay), {silent: true});
+        }
+
+        if (this.jobsPerWorker) {
+            this.jobsPerWorker.reset(this.jobsPerWorker.parse(attributes.JobsPerWorker), {silent: true});
+        }
 
         if (!options.silent) {
             this.change();
@@ -171,14 +192,14 @@ var StatsModel = CollarModel.extend({
             JobsPerHourByDay: this.jobsPerHour.toJSON(),
             JobsPerWorker: this.jobsPerWorker.toJSON()
         };
-    },
+    }//,
 
     /**
      * Gets the URL to use when interacting with the model on the server.
      *
      * @return {String} The model's server URL.
-     */
+     *
     url: function() {
         return this.urlRoot;
-    }
+    }*/
 });

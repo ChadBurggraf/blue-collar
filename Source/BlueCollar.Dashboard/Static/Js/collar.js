@@ -2872,7 +2872,7 @@ if (!JSON) {
 
     // Default JSON-request options.
     var params = {type: type, dataType: 'json'};
-
+    
     // Ensure that we have a URL.
     if (!options.url) {
       params.url = getValue(model, 'url') || urlError();
@@ -7432,14 +7432,15 @@ var CollarModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(attributes, options) {
-        options = options || {};
+        Backbone.Model.prototype.initialize.call(this, attributes, options);
+        this.options = options || {};
 
         if (!this.fragment) {
-            this.fragment = options.fragment || '';
+            this.fragment = this.options.fragment || '';
         }
 
         if (!this.jsonUrlRoot) {
-            this.jsonUrlRoot = options.jsonUrlRoot || '/';
+            this.jsonUrlRoot = this.options.jsonUrlRoot || '/';
         }
         
         if (attributes) {
@@ -7550,7 +7551,15 @@ var CollarModel = Backbone.Model.extend({
      */
     url: function() {
         var baseUrl = this.collection && this.collection.url ? (_.isFunction(this.collection.url) ? this.collection.url() : this.collection.url) : '';
-        baseUrl = baseUrl || (_.isFunction(this.urlRoot) ? this.urlRoot() : this.urlRoot) || urlError();
+
+        if (!baseUrl) {
+            baseUrl = _.isFunction(this.urlRoot) ? this.urlRoot() : this.urlRoot;
+        }
+
+        if (!baseUrl) {
+            throw new Error('A "url" property or function must be specified');
+        }
+
         return this.isNew() ? baseUrl : baseUrl.appendUrlPath(this.id);
     },
 
@@ -7560,7 +7569,8 @@ var CollarModel = Backbone.Model.extend({
      * @return {String} The model's server URL root.
      */
     urlRoot: function() {
-        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
+        var jsonUrlRoot = ((_.isFunction(this.jsonUrlRoot) ? this.jsonUrlRoot() : this.jsonUrlRoot) || '/').toString();
+        return jsonUrlRoot.appendUrlPath(this.fragment);
     }
 });
 
@@ -7609,14 +7619,14 @@ _.extend(CollarModel, {
      * @param {Object} options Initialization options.
      */
     initialize: function(models, options) {
-        options = options || {};
+        this.options = options || {};
 
         if (!this.fragment) {
-            this.fragment = options.fragment || '';
+            this.fragment = this.options.fragment || '';
         }
 
         if (!this.jsonUrlRoot) {
-            this.jsonUrlRoot = options.jsonUrlRoot || '';
+            this.jsonUrlRoot = this.options.jsonUrlRoot || '';
         }
 
         // Reset is called by the true Backbone.Collection constructor
@@ -7712,15 +7722,6 @@ _.extend(CollarModel, {
     },
 
     /**
-     * Sets this instance's urlRoot property.
-     *
-     * @param {String} urlRoot The value to set.
-     */
-    setUrlRoot: function(urlRoot) {
-        this.urlRoot = urlRoot;
-    },
-
-    /**
      * Triggers the area event for this instance, if the givem models object area information.
      *
      * @param {Object} models The models object being used to reset this instance.
@@ -7775,7 +7776,8 @@ _.extend(CollarModel, {
      * @return {String} The collection's server URL root.
      */
     urlRoot: function() {
-        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
+        var jsonUrlRoot = ((_.isFunction(this.jsonUrlRoot) ? this.jsonUrlRoot() : this.jsonUrlRoot) || '/').toString();
+        return jsonUrlRoot.appendUrlPath(this.fragment);
     }
  });
 /**
@@ -7783,7 +7785,7 @@ _.extend(CollarModel, {
  *
  * @constructor
  */
-var AreaModel = Backbone.Model.extend({
+var AreaModel = CollarModel.extend({
     defaults: {
         ApplicationName: 'Default',
         Collection: new CollarCollection(),
@@ -7798,18 +7800,23 @@ var AreaModel = Backbone.Model.extend({
     /**
      * Initialization.
      *
+     * @param {Object} app A set of initial model attribute values.
      * @param {Object} options Initialization options.
      */
-    initialize: function(options) {
-        var collection = this.get('Collection');
+    initialize: function(attributes, options) {
+        var collection;
+        
+        
 
         this.bind('change:Id', this.id, this);
-        this.bind('change:UrlRoot', this.changeUrlRoot, this);
+        collection = this.get('Collection');
 
         if (collection) {
             collection.bind('area', this.area, this);
             collection.bind('reset', this.reset, this);
         }
+
+        CollarModel.prototype.initialize.call(this, attributes, options);
     },
 
     /**
@@ -7825,21 +7832,6 @@ var AreaModel = Backbone.Model.extend({
     },
 
     /**
-     * Handles this isntance's UrlRoot-change event.
-     */
-    changeUrlRoot: function() {
-        var collection = this.get('Collection');
-
-        if (collection) {
-            if (_.isFunction(collection.setUrlRoot)) {
-                collection.setUrlRoot(this.get('UrlRoot'));
-            } else {
-                collection.urlRoot = this.get('UrlRoot');
-            }
-        }
-    },
-
-    /**
      * Clears this instance's selected ID.
      */
     clearId: function(options) {
@@ -7850,6 +7842,7 @@ var AreaModel = Backbone.Model.extend({
      * Handles this instance's ID-change event.
      */
     id: function() {
+        debugger;
         var collection = this.get('Collection');
 
         if (collection) {
@@ -7974,7 +7967,7 @@ var NavCollection = CollarCollection.extend({
     parse: function(response) {
         var m = [],
             current = this.getCurrent(),
-            urlRoot = this.urlRoot || '',
+            urlRoot = this.options.urlRoot || '',
             showCounts = !!this.showCounts,
             i = 1,
             prop;
@@ -8135,6 +8128,7 @@ var ScheduledJobModel = CollarModel.extend({
         'JobType': null,
         'Data': '{}'
     },
+    fragment: 'schedules',
 
     /**
      * Parses the model's data as returned by the server.
@@ -8154,20 +8148,8 @@ var ScheduledJobModel = CollarModel.extend({
  * @constructor
  */
 var ScheduledJobCollection = CollarCollection.extend({
+    fragment: 'schedules',
     model: ScheduledJobModel,
-
-    /**
-     * Sets this instance's urlRoot property.
-     *
-     * @param {String} urlRoot The value to set.
-     */
-    setUrlRoot: function(urlRoot) {
-        CollarCollection.prototype.setUrlRoot.call(this, urlRoot);
-
-        this.each(function(model) {
-            model.urlRoot = urlRoot;
-        });
-    },
 
     /**
      * Triggers the area event for this instance, if the givem models object area information.
@@ -8197,7 +8179,8 @@ var CountsModel = CollarModel.extend({
         'ScheduleCount': 0,
         'WorkingCount': 0,
         'WorkerCount': 0
-    }
+    },
+    fragment: 'counts'
 });
 
 /**
@@ -8289,12 +8272,8 @@ var JobsPerWorkerCollection = CollarCollection.extend({
  * @constructor
  */
 var StatsModel = CollarModel.extend({
-    counts: new CountsModel(),
-    historyStatusDistant: new HistoryStatusCountsModel(),
-    historyStatusRecent: new HistoryStatusCountsModel(),
-    jobsPerHour: new JobsPerHourCollection(),
-    jobsPerWorker: new JobsPerWorkerCollection(),
-
+    fragment: 'stats',
+    
     /**
      * Initialization.
      *
@@ -8303,10 +8282,20 @@ var StatsModel = CollarModel.extend({
      */
     initialize: function(attributes, options) {
         CollarModel.prototype.initialize.call(this, attributes, options);
+
+        this.counts = new CountsModel();
         this.counts.bind('change', this.change, this);
+
+        this.historyStatusDistant = new HistoryStatusCountsModel();
         this.historyStatusDistant.bind('change', this.change, this);
+
+        this.historyStatusRecent = new HistoryStatusCountsModel();
         this.historyStatusRecent.bind('change', this.change, this);
+
+        this.jobsPerHour = new JobsPerHourCollection();
         this.jobsPerHour.bind('reset', this.change, this);
+
+        this.jobsPerWorker = new JobsPerWorkerCollection();
         this.jobsPerWorker.bind('reset', this.change, this);
     },
 
@@ -8333,11 +8322,25 @@ var StatsModel = CollarModel.extend({
             this.trigger('counts', this, {counts: attributes.Counts});
         }
 
-        this.counts.set(this.counts.parse(attributes.Counts), {silent: true});
-        this.historyStatusDistant.set(this.historyStatusDistant.parse(attributes.HistoryStatusDistant), {silent: true});
-        this.historyStatusRecent.set(this.historyStatusRecent.parse(attributes.HistoryStatusRecent), {silent: true});
-        this.jobsPerHour.reset(this.jobsPerHour.parse(attributes.JobsPerHourByDay), {silent: true});
-        this.jobsPerWorker.reset(this.jobsPerWorker.parse(attributes.JobsPerWorker), {silent: true});
+        if (this.counts) {
+            this.counts.set(this.counts.parse(attributes.Counts), {silent: true});
+        }
+
+        if (this.historyStatusDistant) {
+            this.historyStatusDistant.set(this.historyStatusDistant.parse(attributes.HistoryStatusDistant), {silent: true});
+        }
+
+        if (this.historyStatusRecent) {
+            this.historyStatusRecent.set(this.historyStatusRecent.parse(attributes.HistoryStatusRecent), {silent: true});
+        }
+
+        if (this.jobsPerHour) {
+            this.jobsPerHour.reset(this.jobsPerHour.parse(attributes.JobsPerHourByDay), {silent: true});
+        }
+
+        if (this.jobsPerWorker) {
+            this.jobsPerWorker.reset(this.jobsPerWorker.parse(attributes.JobsPerWorker), {silent: true});
+        }
 
         if (!options.silent) {
             this.change();
@@ -8358,16 +8361,16 @@ var StatsModel = CollarModel.extend({
             JobsPerHourByDay: this.jobsPerHour.toJSON(),
             JobsPerWorker: this.jobsPerWorker.toJSON()
         };
-    },
+    }//,
 
     /**
      * Gets the URL to use when interacting with the model on the server.
      *
      * @return {String} The model's server URL.
-     */
+     *
     url: function() {
         return this.urlRoot;
-    }
+    }*/
 });
 /**
  * Models a worker.
@@ -8495,22 +8498,22 @@ var WorkingCollection = CollarCollection.extend({
  *
  * @constructor
  * @param {String} applicationName The name of the application.
- * @param {String} urlRoot The JSON URL root the application is using.
+ * @param {String} jsonUrlRoot The JSON URL root the application is using.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(applicationName, urlRoot, page, options) {
+var CollarController = function(applicationName, jsonUrlRoot, page, options) {
     var collection;
 
     this.applicationName = applicationName;
-    this.urlRoot = urlRoot;
+    this.jsonUrlRoot = jsonUrlRoot;
     this.page = page;
     this.options = _.extend({}, options);
 
-    collection = new this.collection(null, {fragment: this.fragment, urlRoot: this.urlRoot});
+    collection = new this.collection([], {jsonUrlRoot: this.jsonUrlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, Fragment: this.fragment, UrlRoot: this.urlRoot});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection}, {jsonUrlRoot: this.jsonUrlRoot});
     this.model.bind('change:Id', this.navigate, this);
     this.model.bind('change:Action', this.navigate, this);
 
@@ -8782,11 +8785,8 @@ var DashboardController = CollarController.extend({
      */
     initialize: function(options) {
         options = options || {};
-
-        this.model = new StatsModel({ApplicationName: this.applicationName});
-        this.model.urlRoot = this.urlRoot;
+        this.model = new StatsModel({ApplicationName: this.applicationName}, {jsonUrlRoot: this.jsonUrlRoot});
         this.model.bind('counts', this.counts, this);
-        
         this.view = new DashboardView({model: this.model, chartsLoaded: options.chartsLoaded});
     },
 
@@ -8928,7 +8928,7 @@ var ScheduledJobsController = CollarController.extend({
             jid = 0;
         }
 
-        this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
+        // this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
         
         this.model.set(
             {
@@ -8958,7 +8958,7 @@ var ScheduledJobsController = CollarController.extend({
             scheduleId = this.model.get('ScheduleId');
 
         if (scheduleId) {
-            fragment += '/id/' + encodeURIComponent(scheduleId.toString()) + '/jobs';
+            fragment = fragment.appendUrlPath('id').appendUrlPath(scheduleId).appendUrlPath('jobs');
         }
 
         return fragment;
@@ -9019,9 +9019,7 @@ var WorkersController = CollarController.extend({
      */
     initialize: function(options) {
         this.machines = [];
-
         this.getCollection().bind('reset', this.reset, this);
-        
         this.view = new WorkersView({model: this.model, machines: this.machines});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
@@ -9208,14 +9206,13 @@ var CollarRouter = Backbone.Router.extend({
      * Creates a new instance of this router's default controller.
      *
      * @param {Function} func The constructor function of the controller to create.
-     * @param {String} fragment The URL-root the controller uses to interact with the server.
      * @param {Object} options Initialization options to use when creating the controller.
      * @return The created controller.
      */
-    createController: function(func, fragment, options) {
+    createController: function(func, options) {
         var controller = new func(
             this.app.name,
-            this.app.jsonUrlRoot + fragment,
+            this.app.jsonUrlRoot,
             this.app.page,
             options);
 
@@ -9358,7 +9355,7 @@ var HistoryRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(HistoryController, 'history', this.options);
+        this.controller = this.createController(HistoryController, this.options);
     },
 });
 /**
@@ -9391,7 +9388,7 @@ var QueueRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(QueueController, 'queue', this.options);
+        this.controller = this.createController(QueueController, this.options);
     }
 });
 /**
@@ -9421,7 +9418,7 @@ var ScheduledJobsRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(ScheduledJobsController, 'schedules', this.options);
+        this.controller = this.createController(ScheduledJobsController, this.options);
     },
 
     /**
@@ -9569,7 +9566,7 @@ var SchedulesRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(SchedulesController, 'schedules', this.options);
+        this.controller = this.createController(SchedulesController, this.options);
     }
 });
 /**
@@ -9602,7 +9599,7 @@ var WorkersRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(WorkersController, 'workers', this.options);
+        this.controller = this.createController(WorkersController, this.options);
     }
 });
 /**
@@ -9635,7 +9632,7 @@ var WorkingRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(WorkingController, 'working', this.options);
+        this.controller = this.createController(WorkingController, this.options);
     }
 });
 /**
@@ -9659,7 +9656,7 @@ var DashboardRouter = CollarRouter.extend({
      */
     initialize: function(app, options) {
         CollarRouter.prototype.initialize.call(this, app, options);
-        this.controller = this.createController(DashboardController, 'stats', this.options);
+        this.controller = this.createController(DashboardController, this.options);
     },
 
     /**
@@ -11397,10 +11394,9 @@ var QueueView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        var model = new QueueModel(),
+        var model = new QueueModel({}, {jsonUrlRoot: this.model.jsonUrlRoot}),
             view = new QueueEditView({model: model});
-
-        model.urlRoot = this.model.get('UrlRoot');
+        debugger;
         view.bind('cancel', this.editCancel, this);
         view.bind('submit', this.editSubmit, this);
 
@@ -11535,8 +11531,7 @@ var ScheduledJobsView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        var model = new ScheduledJobModel();
-        model.urlRoot = this.model.get('UrlRoot');
+        var model = new ScheduledJobModel({}, {jsonUrlRoot: this.model.jsonUrlRoot});
         this.model.clearId();
         this.renderIdView($('.details'), model);
     },
@@ -11688,8 +11683,7 @@ var SchedulesView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        var model = new ScheduleModel({StartOn: Date.today()});
-        model.urlRoot = this.model.get('UrlRoot');
+        var model = new ScheduleModel({StartOn: Date.today()}, {jsonUrlRoot: this.model.jsonUrlRoot});
         this.model.clearId();
         this.renderIdView($('.details'), model);
     },
@@ -12032,8 +12026,7 @@ var WorkersView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        var model = new WorkerModel();
-        model.urlRoot = this.model.get('UrlRoot');
+        var model = new WorkerModel({}, {jsonUrlRoot: this.model.jsonUrlRoot});
         this.model.clearId();
         this.renderIdView($('.details'), model);
     },
@@ -12209,8 +12202,7 @@ var WorkingView = AreaView.extend({
 
         if (this.model.get('Action') === 'signal') {
             if (model.get('Signal') === 'None') {
-                signalModel = new WorkingSignalModel(model.attributes);
-                signalModel.urlRoot = this.model.get('UrlRoot');
+                signalModel = new WorkingSignalModel(model.attributes, {jsonUrlRoot: this.model.jsonUrlRoot});
                 view = new WorkingSignalView({model: signalModel});
                 view.bind('cancel', this.editCancel, this);
                 view.bind('submit', this.signalSubmit, this);
@@ -12248,7 +12240,7 @@ var WorkingView = AreaView.extend({
 
     this.options = options = _.extend({
         chartsLoaded: false,
-        stats: null,
+        counts: null,
         showCounts: true,
         testLink: false
     }, options);
@@ -12260,11 +12252,9 @@ var WorkingView = AreaView.extend({
     this.nav = $('#nav');
     this.page = $('#page');
 
-    navCollection = new NavCollection();
-    navCollection.urlRoot = this.urlRoot;
+    navCollection = new NavCollection([], {urlRoot: this.urlRoot, jsonUrlRoot: this.jsonUrlRoot});
     navCollection.showCounts = this.options.showCounts;
     navCollection.testLink = this.options.testLink;
-    navCollection.url = this.jsonUrlRoot + 'counts';
     this.navView = new NavView({collection: navCollection, el: this.nav});
 
     if (options.counts) {

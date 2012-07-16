@@ -11,14 +11,15 @@ var CollarModel = Backbone.Model.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(attributes, options) {
-        options = options || {};
+        Backbone.Model.prototype.initialize.call(this, attributes, options);
+        this.options = options || {};
 
         if (!this.fragment) {
-            this.fragment = options.fragment || '';
+            this.fragment = this.options.fragment || '';
         }
 
         if (!this.jsonUrlRoot) {
-            this.jsonUrlRoot = options.jsonUrlRoot || '/';
+            this.jsonUrlRoot = this.options.jsonUrlRoot || '/';
         }
         
         if (attributes) {
@@ -129,7 +130,15 @@ var CollarModel = Backbone.Model.extend({
      */
     url: function() {
         var baseUrl = this.collection && this.collection.url ? (_.isFunction(this.collection.url) ? this.collection.url() : this.collection.url) : '';
-        baseUrl = baseUrl || (_.isFunction(this.urlRoot) ? this.urlRoot() : this.urlRoot) || urlError();
+
+        if (!baseUrl) {
+            baseUrl = _.isFunction(this.urlRoot) ? this.urlRoot() : this.urlRoot;
+        }
+
+        if (!baseUrl) {
+            throw new Error('A "url" property or function must be specified');
+        }
+
         return this.isNew() ? baseUrl : baseUrl.appendUrlPath(this.id);
     },
 
@@ -139,7 +148,8 @@ var CollarModel = Backbone.Model.extend({
      * @return {String} The model's server URL root.
      */
     urlRoot: function() {
-        return (this.jsonUrlRoot || '/').appendUrlPath(this.fragment);
+        var jsonUrlRoot = ((_.isFunction(this.jsonUrlRoot) ? this.jsonUrlRoot() : this.jsonUrlRoot) || '/').toString();
+        return jsonUrlRoot.appendUrlPath(this.fragment);
     }
 });
 

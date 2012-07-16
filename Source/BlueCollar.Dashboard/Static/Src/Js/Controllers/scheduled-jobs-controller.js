@@ -57,7 +57,7 @@ var ScheduledJobsController = CollarController.extend({
             jid = 0;
         }
 
-        this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
+        // this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
         
         this.model.set(
             {
@@ -87,7 +87,7 @@ var ScheduledJobsController = CollarController.extend({
             scheduleId = this.model.get('ScheduleId');
 
         if (scheduleId) {
-            fragment += '/id/' + encodeURIComponent(scheduleId.toString()) + '/jobs';
+            fragment = fragment.appendUrlPath('id').appendUrlPath(scheduleId).appendUrlPath('jobs');
         }
 
         return fragment;

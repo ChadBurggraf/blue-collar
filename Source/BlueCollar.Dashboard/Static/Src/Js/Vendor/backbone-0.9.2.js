@@ -1320,7 +1320,7 @@
 
     // Default JSON-request options.
     var params = {type: type, dataType: 'json'};
-
+    
     // Ensure that we have a URL.
     if (!options.url) {
       params.url = getValue(model, 'url') || urlError();

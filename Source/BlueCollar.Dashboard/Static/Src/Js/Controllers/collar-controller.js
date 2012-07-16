@@ -3,22 +3,22 @@
  *
  * @constructor
  * @param {String} applicationName The name of the application.
- * @param {String} urlRoot The JSON URL root the application is using.
+ * @param {String} jsonUrlRoot The JSON URL root the application is using.
  * @param {jQuery} page A reference to the page jQuery element.
  * @param {Object} options Initialization options. 
  */
-var CollarController = function(applicationName, urlRoot, page, options) {
+var CollarController = function(applicationName, jsonUrlRoot, page, options) {
     var collection;
 
     this.applicationName = applicationName;
-    this.urlRoot = urlRoot;
+    this.jsonUrlRoot = jsonUrlRoot;
     this.page = page;
     this.options = _.extend({}, options);
 
-    collection = new this.collection(null, {fragment: this.fragment, urlRoot: this.urlRoot});
+    collection = new this.collection([], {jsonUrlRoot: this.jsonUrlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, Fragment: this.fragment, UrlRoot: this.urlRoot});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection}, {jsonUrlRoot: this.jsonUrlRoot});
     this.model.bind('change:Id', this.navigate, this);
     this.model.bind('change:Action', this.navigate, this);
 

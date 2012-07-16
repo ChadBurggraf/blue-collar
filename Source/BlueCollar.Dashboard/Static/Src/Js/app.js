@@ -11,7 +11,7 @@
 
     this.options = options = _.extend({
         chartsLoaded: false,
-        stats: null,
+        counts: null,
         showCounts: true,
         testLink: false
     }, options);
@@ -23,11 +23,9 @@
     this.nav = $('#nav');
     this.page = $('#page');
 
-    navCollection = new NavCollection();
-    navCollection.urlRoot = this.urlRoot;
+    navCollection = new NavCollection([], {urlRoot: this.urlRoot, jsonUrlRoot: this.jsonUrlRoot});
     navCollection.showCounts = this.options.showCounts;
     navCollection.testLink = this.options.testLink;
-    navCollection.url = this.jsonUrlRoot + 'counts';
     this.navView = new NavView({collection: navCollection, el: this.nav});
 
     if (options.counts) {

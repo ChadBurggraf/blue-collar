@@ -58,7 +58,7 @@ var NavCollection = CollarCollection.extend({
     parse: function(response) {
         var m = [],
             current = this.getCurrent(),
-            urlRoot = this.urlRoot || '',
+            urlRoot = this.options.urlRoot || '',
             showCounts = !!this.showCounts,
             i = 1,
             prop;

@@ -24,8 +24,7 @@ var WorkersView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        var model = new WorkerModel();
-        model.urlRoot = this.model.get('UrlRoot');
+        var model = new WorkerModel({}, {jsonUrlRoot: this.model.jsonUrlRoot});
         this.model.clearId();
         this.renderIdView($('.details'), model);
     },
