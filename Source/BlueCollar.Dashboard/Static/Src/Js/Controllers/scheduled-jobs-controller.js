@@ -14,6 +14,7 @@ var ScheduledJobsController = CollarController.extend({
      * @param {Object} options Initialization options.
      */
     initialize: function(options) {
+        this.model.bind('change:ScheduleId', this.scheduleIdChange, this);
         this.model.set({ScheduleName: ''}, {silent: true});
         this.view = new ScheduledJobsView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
@@ -57,21 +58,8 @@ var ScheduledJobsController = CollarController.extend({
             jid = 0;
         }
 
-        // this.model.set({UrlRoot: this.urlRoot + '/' + encodeURIComponent(id.toString()) + '/jobs'});
-        
-        this.model.set(
-            {
-                ScheduleId: id, 
-                Search: search || '', 
-                PageNumber: page, 
-                Id: jid, 
-                Action: action || '', 
-                Loading: true
-            }, 
-            {
-                silent: true
-            });
-
+        this.model.set({ScheduleId: id});
+        this.model.set({Search: search || '', PageNumber: page, Id: jid, Action: action || '', Loading: true}, {silent: true});
         this.view.delegateEvents();
         this.page.html(this.view.render().el);
         this.fetch();
@@ -91,5 +79,10 @@ var ScheduledJobsController = CollarController.extend({
         }
 
         return fragment;
+    },
+
+    scheduleIdChange: function() {
+        debugger;
+        this.getCollection().setScheduleId(this.model.get('ScheduleId'));
     }
 });

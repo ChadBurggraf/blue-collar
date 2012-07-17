@@ -192,14 +192,5 @@ var StatsModel = CollarModel.extend({
             JobsPerHourByDay: this.jobsPerHour.toJSON(),
             JobsPerWorker: this.jobsPerWorker.toJSON()
         };
-    }//,
-
-    /**
-     * Gets the URL to use when interacting with the model on the server.
-     *
-     * @return {String} The model's server URL.
-     *
-    url: function() {
-        return this.urlRoot;
-    }*/
+    }
 });

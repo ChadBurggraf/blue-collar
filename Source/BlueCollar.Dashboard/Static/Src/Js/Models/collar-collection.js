@@ -52,7 +52,8 @@
      * @return {jqXHR} The XHR object used to perform the fetch.
      */
     fetch: function(options) {
-        return Backbone.Collection.prototype.fetch.call(this, _.extend({url: this.url(options)}, options));
+        options = _.extend({}, this.options, options);
+        return Backbone.Collection.prototype.fetch.call(this, options);
     },
 
     /**
@@ -75,7 +76,7 @@
      */
     reset: function(models, options) {
         models = models || {};
-        options = _.extend({fragment: this.fragment}, options);
+        options = _.extend({}, this.options, {fragment: this.fragment}, options);
         
         if (!options.silent) {
             this.triggerArea(models);

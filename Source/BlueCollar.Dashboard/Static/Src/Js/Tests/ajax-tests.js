@@ -39,6 +39,29 @@ asyncTest('ScheduleCollectionFetch', function() {
     });
 });
 
+asyncTest('ScheduledJobCollectionFetch', function() {
+    var schedules = new ScheduleCollection([], {jsonUrlRoot: jsonUrlRoot});
+
+    schedules.fetch({
+        success: function() {
+            var coll;
+            
+            if (schedules.length > 0) {
+                coll = new ScheduledJobCollection([], {jsonUrlRoot: jsonUrlRoot, scheduleId: schedules.at(0).get('Id')});
+                
+                coll.fetch({
+                    success: fetchSuccess,
+                    error: fetchError
+                });    
+            } else {
+                expect(0);
+                start();
+            }
+        },
+        error: fetchError
+    });
+});
+
 asyncTest('WorkerCollectionFetch', function() {
     var coll = new WorkerCollection([], {jsonUrlRoot: jsonUrlRoot});
 
