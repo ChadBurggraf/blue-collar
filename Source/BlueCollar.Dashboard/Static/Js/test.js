@@ -10623,7 +10623,7 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     searchCancel: function(sender, args) {
-        this.model.set({PageNumber: 1, Search: ''});
+        this.model.set({PageNumber: 1, Search: '', Id: 0});
         this.trigger('fetch', this, args);
     },
 
