@@ -7805,18 +7805,16 @@ var AreaModel = CollarModel.extend({
      */
     initialize: function(attributes, options) {
         var collection;
-        
-        
 
-        this.bind('change:Id', this.id, this);
+        CollarModel.prototype.initialize.call(this, attributes, options);
+
+        this.bind('change:Id', this.changeId, this);
         collection = this.get('Collection');
 
         if (collection) {
             collection.bind('area', this.area, this);
             collection.bind('reset', this.reset, this);
         }
-
-        CollarModel.prototype.initialize.call(this, attributes, options);
     },
 
     /**
@@ -7832,22 +7830,21 @@ var AreaModel = CollarModel.extend({
     },
 
     /**
-     * Clears this instance's selected ID.
-     */
-    clearId: function(options) {
-        this.set({Id: 0, Action: ''}, options);
-    },
-
-    /**
      * Handles this instance's ID-change event.
      */
-    id: function() {
-        debugger;
+    changeId: function() {
         var collection = this.get('Collection');
 
         if (collection) {
             collection.setSelected(this.get('Id'));
         }
+    },
+
+    /**
+     * Clears this instance's selected ID.
+     */
+    clearId: function(options) {
+        this.set({Id: 0, Action: ''}, options);
     },
 
     /**
