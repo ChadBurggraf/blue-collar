@@ -28,5 +28,14 @@ var QueueEditView = FormView.extend({
     focus: function() {
         this.$('input[name="JobType"]').focus();
         return this;
+    },
+
+    /**
+     * Gets the name of the action performed by this instance upon submission.
+     *
+     * @return {String} The name of the action performed by this instance.
+     */
+    getAction: function() {
+        return 'enqueued';
     }
 });

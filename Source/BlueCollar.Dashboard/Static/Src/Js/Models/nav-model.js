@@ -58,8 +58,8 @@ var NavCollection = CollarCollection.extend({
     parse: function(response) {
         var m = [],
             current = this.getCurrent(),
-            urlRoot = this.options.urlRoot || '',
-            showCounts = !!this.showCounts,
+            urlRoot = this.options.urlRoot || '/',
+            showCounts = !!this.options.showCounts,
             i = 1,
             prop;
 
@@ -84,7 +84,7 @@ var NavCollection = CollarCollection.extend({
         push(i++, 'Workers', response['WorkerCount'], '#workers');
         push(i++, 'Schedules', response['ScheduleCount'], '#schedules');
 
-        if (this.testLink) {
+        if (!!this.options.testLink) {
             push(i++, 'Tests', null, 'test?noglobals=true');
         }
 

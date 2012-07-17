@@ -37,14 +37,11 @@ var WorkersView = AreaView.extend({
      */
     renderIdView: function(el, model) {
         var render = false,
-            view,
-            signalModel;
+            view;
 
         if (this.model.get('Action') === 'signal') {
             if (model.get('Signal') === 'None') {
-                signalModel = new WorkerSignalModel(model.attributes);
-                signalModel.urlRoot = this.model.get('UrlRoot');
-                view = new WorkersSignalView({model: signalModel});
+                view = new WorkersSignalView({model: new WorkerSignalModel(model.attributes, {jsonUrlRoot: this.model.jsonUrlRoot})});
                 view.bind('cancel', this.editCancel, this);
                 view.bind('submit', this.signalSubmit, this);
                 render = true;

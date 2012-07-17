@@ -19,9 +19,52 @@ var HistoryView = AreaView.extend({
         this.listView.bind('signal', this.signal, this);
     },
 
+    /**
+     * Handle's the display view's enqueue event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
     enqueue: function(sender, args) {
-        var model = new QueueModel(args.Model.toEditJSON()),
-            view = new HistoryReEnqueueView({model: model});
+        var model = new QueueModel(args.Model.attributes, {jsonUrlRoot: this.model.jsonUrlRoot}),
+            view = new HistoryReEnqueueView({model: model}),
+            callback;
+
+        view.bind('submit', this.enqueueSubmit, this);
+        view.bind('cancel', this.enqueueCancel, this);
+
+        this.$('.details').html(view.render().el);
+        view.focus();
+
+        if (!args.Model.get('DetailsLoaded')) {
+            callback = function() {
+                args.Model.unbind('change:Data', callback);
+                model.set({Data: args.Model.get('Data')});
+            };
+
+            args.Model.bind('change:Data', callback);
+            this.trigger('details', this, {Model: args.Model});
+        }
+    },
+
+    /**
+     * Handles the enqueue view's cancel event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    enqueueCancel: function(sender, args) {
+        this.renderId();
+    },
+
+    /**
+     * Handles the enqueue view's submit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    enqueueSubmit: function(sender, args) {
+        this.trigger('enqueueSubmit', this, args);
     },
 
     /**

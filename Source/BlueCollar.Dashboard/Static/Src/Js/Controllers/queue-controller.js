@@ -32,6 +32,10 @@ var QueueController = CollarController.extend({
         var name = model.get('JobName') || model.get('JobType');
         CollarController.prototype.success.call(this, args, model, response);
 
+        if (args.Action === 'enqueued') {
+            this.fetch();
+        }
+
         NoticeView.create({
             className: 'alert-success',
             model: {Title: 'Success!', Message: 'The job ' + name + ' was ' + args.Action + ' successfully.'}

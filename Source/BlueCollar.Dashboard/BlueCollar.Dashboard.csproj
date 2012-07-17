@@ -143,6 +143,7 @@
     <Content Include="Static\Src\Js\jquery.js" />
     <Content Include="Static\Src\Js\Models\collar-collection.js" />
     <Content Include="Static\Src\Js\Models\collar-model.js" />
+    <Content Include="Static\Src\Js\Models\counts-model.js" />
     <Content Include="Static\Src\Js\Models\history-model.js" />
     <Content Include="Static\Src\Js\Models\area-model.js" />
     <Content Include="Static\Src\Js\Models\nav-model.js" />

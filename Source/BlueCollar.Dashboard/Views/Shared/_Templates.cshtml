@@ -104,9 +104,28 @@ Dashboard
 Re-Enqueue Job
 <small><%- JobName %></small>
 </p>
+<div class="alert alert-block alert-error"></div>
+<div class="field">
+<span>Type:</span>
+<p class="code"><%- JobType %>
+</div>
+<label class="field">
+<span>Queue</span>
+<input type="text" name="QueueName" value="<%- QueueName %>">
+<span class="help-block">Optional. The name of the queue to process the job on.</span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Data</span>
+<textarea class="code" rows="5" name="Data"><%- Data %></textarea>
+<span class="help-block">Well-formed JSON that can be de-serialized into an instance of the specified job type. Leave empty if your job doesn't need any serialized data.</span>
+<span class="error"></span>
+</label>
 <div class="form-actions">
+<input type="submit" class="btn btn-primary" value="Enqueue Job">
 <button type="button" class="btn btn-reset">Cancel</button>
 </div>
+<div><input type="hidden" name="JobType" value="<%- JobType %>"></div>
 </fieldset>
 </script>
 <script type="text/template" id="history-row-template">
@@ -228,7 +247,10 @@ History
 </script>
 <script type="text/template" id="queue-display-template">
 <fieldset>
-<p class="legend"><%- JobName %></p>
+<p class="legend">
+<%- JobName %>
+<small class="code"><%- JobType %></small>
+</p>
 <div class="field">
 <span>Data</span>
 <pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>

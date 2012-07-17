@@ -23,9 +23,7 @@
     this.nav = $('#nav');
     this.page = $('#page');
 
-    navCollection = new NavCollection([], {urlRoot: this.urlRoot, jsonUrlRoot: this.jsonUrlRoot});
-    navCollection.showCounts = this.options.showCounts;
-    navCollection.testLink = this.options.testLink;
+    navCollection = new NavCollection([], {jsonUrlRoot: this.jsonUrlRoot, showCounts: this.options.showCounts, testLink: this.options.testLink, urlRoot: this.urlRoot});
     this.navView = new NavView({collection: navCollection, el: this.nav});
 
     if (options.counts) {

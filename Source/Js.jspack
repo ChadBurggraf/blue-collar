@@ -36,6 +36,7 @@
     <input path="Models\collar-model.js"/>
     <input path="Models\collar-collection.js"/>
     <input path="Models\area-model.js"/>
+    <input path="Models\counts-model.js"/>
     <input path="Models\history-model.js"/>
     <input path="Models\nav-model.js"/>
     <input path="Models\queue-model.js"/>

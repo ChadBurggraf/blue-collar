@@ -25,7 +25,7 @@ var QueueView = AreaView.extend({
     add: function() {
         var model = new QueueModel({}, {jsonUrlRoot: this.model.jsonUrlRoot}),
             view = new QueueEditView({model: model});
-        debugger;
+        
         view.bind('cancel', this.editCancel, this);
         view.bind('submit', this.editSubmit, this);
 

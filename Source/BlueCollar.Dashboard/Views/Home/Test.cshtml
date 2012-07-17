@@ -32,13 +32,9 @@
 <script type="text/javascript" src="@Url.Content("~/Static/Js/test.js")"></script>
 <script type="text/javascript">
     $(function() {
-        var navCollection = new NavCollection();
-        navCollection.urlRoot = urlRoot;
-        navCollection.showCounts = false;
-        navCollection.testLink = true;
+        var navCollection = new NavCollection([], {showCounts: false, testLink: true, urlRoot: urlRoot});
         navCollection.reset(navCollection.parse());
         navCollection.setCurrent('Tests');
-
         new NavView({collection: navCollection, el: $('#nav')}).render();
     });
 </script>
