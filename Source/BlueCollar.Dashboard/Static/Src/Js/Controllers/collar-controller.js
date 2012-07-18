@@ -123,6 +123,10 @@ _.extend(CollarController.prototype, Backbone.Events, {
                 args.View.remove();
             }
         }
+
+        if (this.model.get('Loading')) {
+            this.model.set({Loading: false});
+        }
         
         if (!handled) {
             if (_.isFunction(this.model.clearId)) {

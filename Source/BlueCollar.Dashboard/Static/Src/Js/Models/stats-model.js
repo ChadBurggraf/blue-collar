@@ -115,27 +115,27 @@ var StatsModel = CollarModel.extend({
         CollarModel.prototype.initialize.call(this, attributes, options);
 
         this.counts = new CountsModel();
-        this.counts.bind('change', this.change, this);
+        //this.counts.bind('change', this.change, this);
 
         this.historyStatusDistant = new HistoryStatusCountsModel();
-        this.historyStatusDistant.bind('change', this.change, this);
+        //this.historyStatusDistant.bind('change', this.change, this);
 
         this.historyStatusRecent = new HistoryStatusCountsModel();
-        this.historyStatusRecent.bind('change', this.change, this);
+        //this.historyStatusRecent.bind('change', this.change, this);
 
         this.jobsPerHour = new JobsPerHourCollection();
-        this.jobsPerHour.bind('reset', this.change, this);
+        //this.jobsPerHour.bind('reset', this.change, this);
 
         this.jobsPerWorker = new JobsPerWorkerCollection();
-        this.jobsPerWorker.bind('reset', this.change, this);
+        //this.jobsPerWorker.bind('reset', this.change, this);
     },
 
     /**
      * Fires a 'change' event.
-     */
+     *
     change: function() {
         this.trigger('change', this);
-    },
+    },*/
 
     /**
      * Sets the given attributes on this instance.
@@ -144,8 +144,6 @@ var StatsModel = CollarModel.extend({
      * @param {Object} options The options to use when setting attributes.
      */
     set: function(attributes, options) {
-        CollarModel.prototype.set.call(this, attributes, options);
-
         attributes = attributes || {};
         options = _.extend({silent: false}, options);
 
@@ -173,9 +171,7 @@ var StatsModel = CollarModel.extend({
             this.jobsPerWorker.reset(this.jobsPerWorker.parse(attributes.JobsPerWorker), {silent: true});
         }
 
-        if (!options.silent) {
-            this.change();
-        }
+        return CollarModel.prototype.set.call(this, attributes, options);
     },
 
     /**
@@ -185,7 +181,6 @@ var StatsModel = CollarModel.extend({
      */
     toJSON: function() {
         return {
-            ApplicationName: this.get('ApplicationName'),
             Counts: this.counts.toJSON(),
             HistoryStatusDistant: this.historyStatusDistant.toJSON(),
             HistoryStatusRecent: this.historyStatusRecent.toJSON(),
