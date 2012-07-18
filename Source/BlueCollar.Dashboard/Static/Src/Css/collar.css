@@ -92,6 +92,11 @@
   margin-bottom: 0;
 }
 
+.form .exception {
+  width: 260px;
+  overflow-x: auto;
+}
+
 .form .exception code {
   display: block;
   padding: 0;
@@ -591,6 +596,9 @@
   .form select {
     width: 328px;
   }
+  .form .exception {
+    width: 330px;
+  }
   .form .field-schedule-repeat select {
     width: 256px;
   }
@@ -606,6 +614,9 @@
   }
   .form select {
     width: 186px;
+  }
+  .form .exception {
+    width: 188px;
   }
   .form .field-schedule-repeat select {
     width: 114px;
@@ -639,6 +650,7 @@
     width: auto;
   }
   .container-page {
+    min-width: 300px;
     padding-right: 20px;
     padding-left: 20px;
   }
