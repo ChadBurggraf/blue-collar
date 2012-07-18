@@ -29,6 +29,13 @@
         </div>
 
         <div id="page" class="container container-page">@RenderBody()</div>
+
+        <div class="container">
+            <footer class="footer">
+                <p>Designed and built with care by <a href="http://github.com/ChadBurggraf">Chad Burggraf</a>.</p>
+                <p>Licensed under the <a href="http://opensource.org/licenses/mit-license.php">MIT License</a>.</p> 
+            </footer>
+        </div>
         
         @Html.Partial("_Templates")
         @RenderSection("script", false)

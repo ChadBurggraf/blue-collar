@@ -110,7 +110,6 @@
     <Content Include="Static\Img\glyphicons-halflings.png" />
     <Content Include="Static\Img\loading-list.gif" />
     <Content Include="Static\Img\logo-header.png" />
-    <Content Include="Static\Img\tc-badge.png" />
     <Content Include="Static\Js\collar.js" />
     <Content Include="Static\Js\html5.js" />
     <Content Include="Static\Js\test.js" />
@@ -125,7 +124,6 @@
     <Content Include="Static\Src\Img\glyphicons-halflings.png" />
     <Content Include="Static\Src\Img\loading-list.gif" />
     <Content Include="Static\Src\Img\logo-header.png" />
-    <Content Include="Static\Src\Img\tc-badge.png" />
     <Content Include="Static\Src\Js\app.js" />
     <Content Include="Static\Src\Js\close.js" />
     <Content Include="Static\Src\Js\Controllers\collar-controller.js" />
