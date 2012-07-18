@@ -5,7 +5,8 @@
  */
 var AreaView = Backbone.View.extend({
     events: {
-        'click button.btn-add': 'add'
+        'click button.btn-add': 'add',
+        'click .refresh-content button': 'refresh'
     },
 
     /**
@@ -128,6 +129,13 @@ var AreaView = Backbone.View.extend({
     },
 
     /**
+     * Handles the refresh event.
+     */
+    refresh: function() {
+        this.trigger('fetch', this);
+    },
+
+    /**
      * Renders the view.
      *
      * @return {HistoryView} This instance.
@@ -135,6 +143,7 @@ var AreaView = Backbone.View.extend({
     render: function() {
         var searchEl,
             pagingHeaderEl,
+            pagingHeaderContentEl,
             listEl,
             pagingFooterEl;
 
@@ -147,11 +156,16 @@ var AreaView = Backbone.View.extend({
 
         searchEl = this.$('.search');
         pagingHeaderEl = this.$('.paging-header');
+        pagingHeaderContentEl = pagingHeaderEl.find('.paging-content');
         listEl = this.$('.list');
         pagingFooterEl = this.$('.paging-footer');
+
+        if (pagingHeaderContentEl.length === 0) {
+            pagingHeaderContentEl = pagingHeaderEl;
+        }
         
         searchEl.html(this.searchView.render().el);
-        pagingHeaderEl.html(this.topPagerView.render().el);
+        pagingHeaderContentEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
         pagingFooterEl.html(this.bottomPagerView.render().el);
 

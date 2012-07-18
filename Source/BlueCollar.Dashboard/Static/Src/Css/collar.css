@@ -386,6 +386,19 @@
           border-bottom-left-radius: 0;
 }
 
+.paging-header table {
+  width: 100%;
+}
+
+.paging-header table td {
+  padding: 0;
+  vertical-align: top;
+}
+
+.paging-header .refresh-content {
+  text-align: right;
+}
+
 .paging-footer {
   margin-top: -1px;
   margin-bottom: 18px;
