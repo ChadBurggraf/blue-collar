@@ -61,6 +61,7 @@
      */
     fetch: function(options) {
         options = _.extend({}, this.options, options);
+        options = _.extend(options, {url: this.url(options)});
         return Backbone.Collection.prototype.fetch.call(this, options);
     },
 

@@ -64,7 +64,8 @@ var HistoryView = AreaView.extend({
      * @param {Object} args The event arguments.
      */
     enqueueSubmit: function(sender, args) {
-        this.trigger('enqueueSubmit', this, args);
+        sender.showLoading();
+        this.trigger('enqueueSubmit', this, _.extend({}, args, {View: sender}));
     },
 
     /**

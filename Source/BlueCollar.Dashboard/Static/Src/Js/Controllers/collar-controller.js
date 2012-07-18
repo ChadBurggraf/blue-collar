@@ -23,7 +23,7 @@ var CollarController = function(applicationName, urlRoot, jsonUrlRoot, page, opt
     this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection}, {jsonUrlRoot: this.jsonUrlRoot, navigateFragment: this.navigateFragment(), navigateUrlRoot: this.urlRoot});
     this.model.bind('change:Id', this.navigate, this);
     this.model.bind('change:Action', this.navigate, this);
-
+    
     this.initialize(this.options);
 };
 
