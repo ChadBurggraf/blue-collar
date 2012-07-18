@@ -43,6 +43,21 @@ var ScheduledJobModel = CollarModel.extend({
     },
 
     /**
+     * Gets a copy of th emodel's attributes, suitable for editing in a UI.
+     *
+     * @return {Object} An editable copy of the model's underlying attributes.
+     */
+    toEditJSON: function() {
+        var obj = CollarModel.prototype.toEditJSON.call(this);
+
+        if (obj.Data === '{}') {
+            obj.Data = null;
+        }
+
+        return obj;
+    },
+
+    /**
      * Gets the URL root to use when interacting with the model on the server.
      *
      * @return {String} The model's server URL root.

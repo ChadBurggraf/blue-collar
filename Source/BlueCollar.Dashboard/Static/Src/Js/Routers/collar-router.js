@@ -74,6 +74,7 @@ var CollarRouter = Backbone.Router.extend({
     createController: function(func, options) {
         var controller = new func(
             this.app.name,
+            this.app.urlRoot,
             this.app.jsonUrlRoot,
             this.app.page,
             options);

@@ -18,7 +18,15 @@
         }
 
         if (!this.jsonUrlRoot) {
-            this.jsonUrlRoot = this.options.jsonUrlRoot || '';
+            this.jsonUrlRoot = this.options.jsonUrlRoot || '/';
+        }
+
+        if (!this.navigateFragment) {
+            this.navigateFragment = this.options.navigateFragment || '';
+        }
+
+        if (!this.navigateUrlRoot) {
+            this.navigateUrlRoot = this.options.navigateUrlRoot || '/';
         }
 
         // Reset is called by the true Backbone.Collection constructor

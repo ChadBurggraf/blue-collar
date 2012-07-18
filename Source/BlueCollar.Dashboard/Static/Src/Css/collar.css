@@ -141,6 +141,12 @@
   color: #f00;
 }
 
+.form .field .field-content {
+  padding: 0;
+  background-color: transparent;
+  border: none;
+}
+
 .form .field-schedule-repeat input[type="text"] {
   width: 60px;
 }

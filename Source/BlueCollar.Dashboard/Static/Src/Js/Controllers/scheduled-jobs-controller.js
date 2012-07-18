@@ -15,7 +15,7 @@ var ScheduledJobsController = CollarController.extend({
      */
     initialize: function(options) {
         this.model.bind('change:ScheduleId', this.scheduleIdChange, this);
-        this.model.set({ScheduleName: ''}, {silent: true});
+        this.model.set({ScheduleName: '', Fragment: this.fragment}, {silent: true});
         this.view = new ScheduledJobsView({model: this.model});
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
@@ -72,7 +72,7 @@ var ScheduledJobsController = CollarController.extend({
      */
     navigateFragment: function() {
         var fragment = this.fragment,
-            scheduleId = this.model.get('ScheduleId');
+            scheduleId = this.model ? this.model.get('ScheduleId') : 0;
 
         if (scheduleId) {
             fragment = fragment.appendUrlPath('id').appendUrlPath(scheduleId).appendUrlPath('jobs');
@@ -81,8 +81,10 @@ var ScheduledJobsController = CollarController.extend({
         return fragment;
     },
 
+    /**
+     * Handles this instance's model's schedule ID change event.
+     */
     scheduleIdChange: function() {
-        debugger;
         this.getCollection().setScheduleId(this.model.get('ScheduleId'));
     }
 });

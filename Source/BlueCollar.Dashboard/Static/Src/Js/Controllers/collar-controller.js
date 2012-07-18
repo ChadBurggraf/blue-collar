@@ -17,10 +17,10 @@ var CollarController = function(applicationName, urlRoot, jsonUrlRoot, page, opt
     this.page = page;
     this.options = _.extend({}, options);
 
-    collection = new this.collection([], {jsonUrlRoot: this.jsonUrlRoot});
+    collection = new this.collection([], {jsonUrlRoot: this.jsonUrlRoot, navigateFragment: this.navigateFragment(), navigateUrlRoot: this.urlRoot});
     collection.bind('counts', this.counts, this);
 
-    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection, UrlRoot: urlRoot}, {jsonUrlRoot: this.jsonUrlRoot});
+    this.model = new AreaModel({ApplicationName: this.applicationName, Collection: collection}, {jsonUrlRoot: this.jsonUrlRoot, navigateFragment: this.navigateFragment(), navigateUrlRoot: this.urlRoot});
     this.model.bind('change:Id', this.navigate, this);
     this.model.bind('change:Action', this.navigate, this);
 

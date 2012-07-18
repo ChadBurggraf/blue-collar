@@ -14,7 +14,6 @@ var QueueModel = CollarModel.extend({
         'QueuedOn': null,
         'TryNumber': 0
     },
-
     fragment: 'queue',
 
     /**
@@ -26,6 +25,21 @@ var QueueModel = CollarModel.extend({
     parse: function(response) {
         response = CollarModel.prototype.parse.call(this, response);
         return this.parseData(response);
+    },
+
+    /**
+     * Gets a copy of th emodel's attributes, suitable for editing in a UI.
+     *
+     * @return {Object} An editable copy of the model's underlying attributes.
+     */
+    toEditJSON: function() {
+        var obj = CollarModel.prototype.toEditJSON.call(this);
+
+        if (obj.Data === '{}') {
+            obj.Data = null;
+        }
+
+        return obj;
     }
 });
 

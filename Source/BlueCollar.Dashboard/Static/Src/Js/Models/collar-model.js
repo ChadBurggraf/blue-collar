@@ -21,6 +21,14 @@ var CollarModel = Backbone.Model.extend({
         if (!this.jsonUrlRoot) {
             this.jsonUrlRoot = this.options.jsonUrlRoot || '/';
         }
+
+        if (!this.navigateFragment) {
+            this.navigateFragment = this.options.navigateFragment || '';
+        }
+
+        if (!this.navigateUrlRoot) {
+            this.navigateUrlRoot = this.options.navigateUrlRoot || '/';
+        }
         
         if (attributes) {
             // Backbone is not initializing attributes in initialize,

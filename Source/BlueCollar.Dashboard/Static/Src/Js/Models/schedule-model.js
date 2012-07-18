@@ -22,9 +22,10 @@ var ScheduleModel = CollarModel.extend({
      * @return {Object} A copy of the model's underlying attributes.
      */
     toJSON: function() {
-        var manageUrl = 
+        var manageUrl = this.navigateFragment.appendUrlPath('id').appendUrlPath(this.get('Id')).appendUrlPath('jobs');
+
         return _.extend({}, CollarModel.prototype.toJSON.call(this), {
-            ManageUrl: this.urlRoot().appendUrlPath('id').appendUrlPath(this.get('Id')).appendUrlPath('jobs')
+            ManageUrl: manageUrl
         });
     }
 });
