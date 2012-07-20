@@ -186,7 +186,8 @@ _.extend(String.prototype, {
     appendUrlPath: function(path) {
         var parts,
             url,
-            query;
+            query,
+            pathParts;
 
         if (!_.isUndefined(path) && !_.isNull(path)) {
             path = path.toString();
@@ -200,7 +201,9 @@ _.extend(String.prototype, {
                 url = parts[0] + (parts[0].charAt(parts[0].length - 1) !== '/' ? '/' : ''),
                 query = parts.length > 1 ? _.map(parts.slice(1), function(p) { return '?' + p; }).join('') : '';
 
-                return url + encodeURIComponent(path) + query;
+                path = _.map(path.split('/'), function (p) { return encodeURIComponent(p); }).join('/');
+
+                return url + path + query;
             }
         }
 

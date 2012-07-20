@@ -5,8 +5,8 @@
  */
 var AreaView = Backbone.View.extend({
     events: {
-        'click button.btn-add': 'add',
-        'click .refresh-content button': 'refresh'
+        'click .btn-add': 'add',
+        'click .table-actions .btn-refresh': 'refresh'
     },
 
     /**
@@ -142,10 +142,9 @@ var AreaView = Backbone.View.extend({
      */
     render: function() {
         var searchEl,
-            pagingHeaderEl,
-            pagingHeaderContentEl,
+            pagingTopEl,
             listEl,
-            pagingFooterEl;
+            pagingBottomEl;
 
         this.searchView.$el.detach();
         this.topPagerView.$el.detach();
@@ -155,19 +154,14 @@ var AreaView = Backbone.View.extend({
         this.$el.html(this.template(this.model.toJSON()));
 
         searchEl = this.$('.search');
-        pagingHeaderEl = this.$('.paging-header');
-        pagingHeaderContentEl = pagingHeaderEl.find('.paging-content');
+        pagingTopEl = this.$('.table-paging-top');
         listEl = this.$('.list');
-        pagingFooterEl = this.$('.paging-footer');
+        pagingBottomEl = this.$('.table-paging-bottom');
 
-        if (pagingHeaderContentEl.length === 0) {
-            pagingHeaderContentEl = pagingHeaderEl;
-        }
-        
         searchEl.html(this.searchView.render().el);
-        pagingHeaderContentEl.html(this.topPagerView.render().el);
+        pagingTopEl.html(this.topPagerView.render().el);
         listEl.html(this.listView.render().el);
-        pagingFooterEl.html(this.bottomPagerView.render().el);
+        pagingBottomEl.html(this.bottomPagerView.render().el);
 
         this.renderId();
 

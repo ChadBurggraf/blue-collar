@@ -20,6 +20,7 @@ var ScheduledJobsController = CollarController.extend({
         this.view.bind('fetch', this.fetch, this);
         this.view.bind('editDelete', this.editDelete, this);
         this.view.bind('editSubmit', this.editSubmit, this);
+        this.view.bind('orderSubmit', this.orderSubmit, this);
     },
 
     /**
@@ -79,6 +80,24 @@ var ScheduledJobsController = CollarController.extend({
         }
 
         return fragment;
+    },
+
+    /**
+     * Handles the view's orderSubmit event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    orderSubmit: function(sender, args) {
+        var model = new ScheduledJobsOrderModel({}, {scheduleId: this.model.get('ScheduleId')});
+
+        model.save(args.Attributes, {
+            success: _.bind(function(args, model, response) {
+                this.success(args, model, response);
+                this.fetch();
+            }, this, args),
+            error: _.bind(this.error, this, args)
+        });
     },
 
     /**

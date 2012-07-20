@@ -68,6 +68,56 @@ var ScheduledJobModel = CollarModel.extend({
 });
 
 /**
+ * Models a set of scheduled job orderings.
+ *
+ * @constructor
+ */
+var ScheduledJobsOrderModel = CollarModel.extend({
+    defaults: {
+        'Numbers': []
+    },
+    fragment: 'schedules',
+
+    /**
+     * Initialization.
+     *
+     * @param {Object} app A set of initial model attribute values.
+     * @param {Object} options Initialization options.
+     */
+    initialize: function(attributes, options) {
+        CollarModel.prototype.initialize.call(this, attributes, options);
+        this.setScheduleId(options.scheduleId);
+    },
+
+    /**
+     * Gets a value indicating whether this instance represents a new model.
+     *
+     * @return {boolean} True if the model is new, false otherwise.
+     */
+    isNew: function() {
+        return false;
+    },
+
+    /**
+     * Sets this instance's schedule ID.
+     *
+     * @param {Number} scheduleId The schedule ID value to set.
+     */
+    setScheduleId: function(scheduleId) {
+        this.scheduleId = this.options.scheduleId = scheduleId;
+    },
+
+    /**
+     * Gets the URL root to use when interacting with the model on the server.
+     *
+     * @return {String} The model's server URL root.
+     */
+    urlRoot: function() {
+        return CollarModel.prototype.urlRoot.call(this).appendUrlPath(this.scheduleId).appendUrlPath('jobs/order');
+    }
+});
+
+/**
  * Represents a collection of {ScheduledJobModel}s.
  *
  * @constructor

@@ -5,8 +5,18 @@
  * @extends {ListView}
  */
 var ScheduledJobsListView = ListView.extend({
-    cols: 2,
+    cols: 3,
     template: _.template($('#scheduled-jobs-list-template').html()),
+
+    /**
+     * Handles a row's number event.
+     *
+     * @param {Object} sender The event sender.
+     * @param {Object} args The event arguments.
+     */
+    number: function(sender, args) {
+        this.trigger('number', this, _.extend(args, {View: sender}));
+    },
 
     /**
      * Renders the view's row collection.
@@ -24,6 +34,7 @@ var ScheduledJobsListView = ListView.extend({
             model = collection.at(i);
             view = new ScheduledJobsRowView({model: model}).render();
             view.bind('edit', this.edit, this);
+            view.bind('number', this.number, this);
             tbody.append(view.el);
         }
 

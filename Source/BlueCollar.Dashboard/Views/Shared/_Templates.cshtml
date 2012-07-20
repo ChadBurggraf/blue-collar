@@ -212,18 +212,18 @@ History
 <div class="row">
 <div class="span8">
 <div class="search"></div>
-<div class="paging-header">
+<div class="list-header">
 <table>
 <tr>
-<td class="paging-content"></td>
-<td class="refresh-content">
-<div><button type="button" class="btn"><i class="icon-refresh"></i></button></div>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
 </td>
 </tr>
 </table>
 </div>
 <div class="list"></div>
-<div class="paging-footer"></div>
+<div class="list-footer"></div>
 </div>
 <div class="span4 details"></div>
 </div>
@@ -374,18 +374,18 @@ Queue
 <div class="row">
 <div class="span8">
 <div class="search"></div>
-<div class="paging-header">
+<div class="list-header">
 <table>
 <tr>
-<td class="paging-content"></td>
-<td class="refresh-content">
-<div><button type="button" class="btn"><i class="icon-refresh"></i></button></div>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
 </td>
 </tr>
 </table>
 </div>
 <div class="list"></div>
-<div class="paging-footer"></div>
+<div class="list-footer"></div>
 </div>
 <div class="span4 details"></div>
 </div>
@@ -421,6 +421,9 @@ Queue
 </script>
 <script type="text/template" id="scheduled-jobs-row-template">
 <td>
+<input type="text" size="2" name="Number"" value="10" data-job-id="<%- Id %>" data-original-value="10">
+</td>
+<td>
 <div class="row-title">
 <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
 <a href="javascript:void(0);" class="btn-edit"><%- JobType %></a>
@@ -428,6 +431,10 @@ Queue
 <div id="row-data-<%- Id %>" class="row-data collapse">
 <table>
 <tbody>
+<tr>
+<th>Number</th>
+<td><input type="text" size="2" name="Number"" value="10" data-job-id="<%- Id %>" data-original-value="10"></td>
+</tr>
 <tr>
 <th>Data</th>
 <td><pre class="prettyprint"><code class="language-js"><% if (Data !== '{}') { print(Data); } %></code></pre></td>
@@ -441,6 +448,7 @@ Queue
 <script type="text/template" id="scheduled-jobs-list-template">
 <thead>
 <tr>
+<th>#</th>
 <th>Type</th>
 <th>Data</th>
 </tr>
@@ -465,18 +473,21 @@ Belonging to schedule
 <div class="row">
 <div class="span8">
 <div class="search"></div>
-<div class="paging-header">
+<form class="table-form" action="javascript:void(0);">
+<div class="list-header">
 <table>
 <tr>
-<td class="paging-content"></td>
-<td class="refresh-content">
-<div><button type="button" class="btn"><i class="icon-refresh"></i></button></div>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-order">Order</button>
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
 </td>
 </tr>
 </table>
 </div>
 <div class="list"></div>
-<div class="paging-footer"></div>
+<div class="list-footer"></div>
+</form>
 </div>
 <div class="span4 details"></div>
 </div>
@@ -630,18 +641,18 @@ Schedules
 <div class="row">
 <div class="span8">
 <div class="search"></div>
-<div class="paging-header">
+<div class="list-header">
 <table>
 <tr>
-<td class="paging-content"></td>
-<td class="refresh-content">
-<div><button type="button" class="btn"><i class="icon-refresh"></i></button></div>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
 </td>
 </tr>
 </table>
 </div>
 <div class="list"></div>
-<div class="paging-footer"></div>
+<div class="list-footer"></div>
 </div>
 <div class="span4 details"></div>
 </div>
@@ -813,18 +824,18 @@ Workers
 <div class="row">
 <div class="span8">
 <div class="search"></div>
-<div class="paging-header">
+<div class="list-header">
 <table>
 <tr>
-<td class="paging-content"></td>
-<td class="refresh-content">
-<div><button type="button" class="btn"><i class="icon-refresh"></i></button></div>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
 </td>
 </tr>
 </table>
 </div>
 <div class="list"></div>
-<div class="paging-footer"></div>
+<div class="list-footer"></div>
 </div>
 <div class="span4 details"></div>
 </div>
@@ -961,18 +972,18 @@ Working
 <div class="row">
 <div class="span8">
 <div class="search"></div>
-<div class="paging-header">
+<div class="list-header">
 <table>
 <tr>
-<td class="paging-content"></td>
-<td class="refresh-content">
-<div><button type="button" class="btn"><i class="icon-refresh"></i></button></div>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
 </td>
 </tr>
 </table>
 </div>
 <div class="list"></div>
-<div class="paging-footer"></div>
+<div class="list-footer"></div>
 </div>
 <div class="span4 details"></div>
 </div>
