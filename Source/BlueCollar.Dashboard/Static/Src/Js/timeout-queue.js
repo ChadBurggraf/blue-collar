@@ -61,5 +61,5 @@ var TimeoutQueue = {
         if (_.isFunction(func)) {
             func();
         }
-    },
+    }
 };

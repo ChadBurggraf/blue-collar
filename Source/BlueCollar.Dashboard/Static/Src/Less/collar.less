@@ -275,6 +275,7 @@
 
 .navbar {
     .brand {
+		position: relative;
         font-family: "Arial Black", Arial, sans-serif;
         font-size: 18px;
         line-height: 20px;
@@ -283,6 +284,15 @@
         -webkit-transition: all .2s linear;
         -moz-transition: all .2s linear;
         transition: all .2s linear;
+
+		img {
+			position: absolute;
+			top: 4px;
+		}
+
+		span {
+			padding-left: 32px;
+		}
     }
 
     .brand:hover {
