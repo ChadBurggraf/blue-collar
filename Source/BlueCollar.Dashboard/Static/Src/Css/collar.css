@@ -93,7 +93,7 @@
 }
 
 .footer {
-  padding: 36px 20px;
+  padding-bottom: 36px;
 }
 
 .footer p {
@@ -441,7 +441,7 @@
 
 .list-footer {
   margin-top: -1px;
-  margin-bottom: 0;
+  margin-bottom: 36px;
   -webkit-border-top-right-radius: 0;
      -moz-border-top-right-radius: 0;
           border-top-right-radius: 0;
@@ -706,7 +706,11 @@
   }
   .details .well {
     margin-top: 36px;
-    margin-bottom: 0;
+    margin-bottom: 36px;
+  }
+  .footer {
+    padding-right: 20px;
+    padding-left: 20px;
   }
   .form-search input[type="text"],
   .form-search input[type="search"] {
@@ -723,6 +727,11 @@
   .table-paged > tbody > tr > td:not(.title-cell) {
     display: none;
     visibility: hidden;
+  }
+  .table-paged > tbody > tr.empty td,
+  .table-paged > tbody > tr.loading td {
+    display: table-cell;
+    visibility: visible;
   }
   .table-paged thead th.title-cell {
     border-left-width: 1px;
