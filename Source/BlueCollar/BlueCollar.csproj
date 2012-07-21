@@ -97,6 +97,7 @@
     <Compile Include="Dashboard\QueuedDetailsHandler.cs" />
     <Compile Include="Dashboard\QueuedListHandler.cs" />
     <Compile Include="Dashboard\SaveQueuedHandler.cs" />
+    <Compile Include="Dashboard\SaveScheduledJobOrderHandler.cs" />
     <Compile Include="Dashboard\SaveWorkerHandler.cs" />
     <Compile Include="Dashboard\ScheduledJobListHandler.cs" />
     <Compile Include="Dashboard\HandlerHelper.cs" />
@@ -138,6 +139,8 @@
     <Compile Include="QueueDetailsRecord.cs" />
     <Compile Include="QueueListRecord.cs" />
     <Compile Include="QueueNameFilters.cs" />
+    <Compile Include="ScheduledJobOrderRecord.cs" />
+    <Compile Include="ScheduledJobOrderList.cs" />
     <Compile Include="SqlServerRepository.cs" />
     <Compile Include="StatisticsRecord.cs" />
     <Compile Include="WorkerSignalRecord.cs" />

@@ -89,7 +89,7 @@ var ScheduledJobsController = CollarController.extend({
      * @param {Object} args The event arguments.
      */
     orderSubmit: function(sender, args) {
-        var model = new ScheduledJobsOrderModel({}, {scheduleId: this.model.get('ScheduleId')});
+        var model = new ScheduledJobsOrderModel({}, {jsonUrlRoot: this.jsonUrlRoot, scheduleId: this.model.get('ScheduleId')});
 
         model.save(args.Attributes, {
             success: _.bind(function(args, model, response) {

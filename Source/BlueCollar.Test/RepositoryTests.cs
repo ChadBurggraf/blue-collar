@@ -2222,6 +2222,74 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Update scheduled job order tests.
+        /// </summary>
+        protected void UpdateScheduledJobOrder()
+        {
+            if (this.Repository != null)
+            {
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Name = "Nightly",
+                    QueueName = "schedules",
+                    RepeatType = ScheduleRepeatType.Days,
+                    RepeatValue = 1,
+                    StartOn = DateTime.UtcNow.FloorWithSeconds()
+                };
+
+                this.Repository.CreateSchedule(scheduleRecord, null);
+
+                ScheduledJobRecord jobRecord1 = new ScheduledJobRecord()
+                {
+                    ScheduleId = scheduleRecord.Id.Value,
+                    Number = 1,
+                    JobType = "BlueCollar.Test.TestJob, BlueCollar.Test",
+                    Data = "{}"
+                };
+
+                this.Repository.CreateScheduledJob(jobRecord1, null);
+
+                ScheduledJobRecord jobRecord2 = new ScheduledJobRecord()
+                {
+                    ScheduleId = scheduleRecord.Id.Value,
+                    Number = 2,
+                    JobType = "BlueCollar.Test.TestJob, BlueCollar.Test",
+                    Data = "{}"
+                };
+
+                this.Repository.CreateScheduledJob(jobRecord2, null);
+
+                ScheduledJobRecord jobRecord3 = new ScheduledJobRecord()
+                {
+                    ScheduleId = scheduleRecord.Id.Value,
+                    Number = 3,
+                    JobType = "BlueCollar.Test.TestJob, BlueCollar.Test",
+                    Data = "{}"
+                };
+
+                this.Repository.CreateScheduledJob(jobRecord3, null);
+                this.Repository.UpdateScheduledJobOrder(new ScheduledJobOrderRecord() { Id = jobRecord1.Id.Value, Number = 2, ScheduleId = scheduleRecord.Id.Value }, null);
+
+                ScheduledJobRecordList jobList = this.Repository.GetScheduledJobList(scheduleRecord.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null);
+                Assert.IsNotNull(jobList);
+                Assert.AreEqual(3, jobList.Records.Count);
+                Assert.AreEqual(2, jobList.Records.First(j => j.Id == jobRecord1.Id).Number);
+                Assert.AreEqual(1, jobList.Records.First(j => j.Id == jobRecord2.Id).Number);
+                Assert.AreEqual(3, jobList.Records.First(j => j.Id == jobRecord3.Id).Number);
+
+                this.Repository.UpdateScheduledJobOrder(new ScheduledJobOrderRecord() { Id = jobRecord3.Id.Value, Number = 1, ScheduleId = scheduleRecord.Id.Value }, null);
+
+                jobList = this.Repository.GetScheduledJobList(scheduleRecord.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null);
+                Assert.IsNotNull(jobList);
+                Assert.AreEqual(3, jobList.Records.Count);
+                Assert.AreEqual(3, jobList.Records.First(j => j.Id == jobRecord1.Id).Number);
+                Assert.AreEqual(2, jobList.Records.First(j => j.Id == jobRecord2.Id).Number);
+                Assert.AreEqual(1, jobList.Records.First(j => j.Id == jobRecord3.Id).Number);
+            }
+        }
+
+        /// <summary>
         /// Update worker tests.
         /// </summary>
         protected void UpdateWorker()

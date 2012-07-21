@@ -385,6 +385,13 @@ namespace BlueCollar
         ScheduledJobRecord UpdateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction);
 
         /// <summary>
+        /// Updates the scheduled job's order number.
+        /// </summary>
+        /// <param name="record">The scheduled job order record identifying the scheduled job to update.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        void UpdateScheduledJobOrder(ScheduledJobOrderRecord record, IDbTransaction transaction);
+
+        /// <summary>
         /// Updates the given worker.
         /// </summary>
         /// <param name="record">The worker record to update.</param>

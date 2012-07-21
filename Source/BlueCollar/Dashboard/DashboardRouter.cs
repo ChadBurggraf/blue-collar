@@ -34,6 +34,7 @@ namespace BlueCollar.Dashboard
             new DashboardRoute<SaveScheduledJobHandler>(@"^schedules/(\d+)/jobs$", new string[] { "POST" }),
             new DashboardRoute<SaveScheduledJobHandler>(@"^schedules/(\d+)/jobs/(\d+)$", new string[] { "PUT" }),
             new DashboardRoute<DeleteScheduledJobHandler>(@"^schedules/(\d+)/jobs/(\d+)$", new string[] { "DELETE" }),
+            new DashboardRoute<SaveScheduledJobOrderHandler>(@"^schedules/(\d+)/jobs/order$", new string[] { "PUT" }),
             new DashboardRoute<DashboardStatsHandler>(@"^stats$", new string[] { "GET" }),
             new DashboardRoute<WorkerListHandler>(@"^workers$", new string[] { "GET" }),
             new DashboardRoute<SaveWorkerHandler>(@"^workers$", new string[] { "POST" }),
