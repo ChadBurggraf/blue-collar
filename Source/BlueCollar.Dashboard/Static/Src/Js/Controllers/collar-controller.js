@@ -133,8 +133,6 @@ _.extend(CollarController.prototype, Backbone.Events, {
                 this.model.clearId();
             }
 
-            this.fetch();
-
             switch (response.status) {
                 case 400:
                     message = 'Bad Request (400): The server indicated that you submitted was invalid or impropertly formatted.';

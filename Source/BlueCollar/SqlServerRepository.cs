@@ -401,8 +401,12 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[JobType],[Data])
-VALUES(@ScheduleId,@JobType,@Data);
+@"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[Number],[JobType],[Data])
+SELECT
+    @ScheduleId,
+    COALESCE((SELECT MAX([Number]) FROM [BlueCollarScheduledJob] WHERE [ScheduleId] = @ScheduleId), 0) + 1,
+    @JobType,
+    @Data;
 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
 
             record.Id = this.connection.Query<long>(
@@ -1105,7 +1109,7 @@ FROM
 (
 	SELECT
 		*,
-		ROW_NUMBER() OVER(ORDER BY j.[JobType] ASC) AS [RowNumber]
+		ROW_NUMBER() OVER(ORDER BY j.[Number] ASC) AS [RowNumber]
 	FROM [BlueCollarScheduledJob] j
 	WHERE
 		j.[ScheduleId] = @Id");

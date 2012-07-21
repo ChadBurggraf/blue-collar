@@ -421,9 +421,9 @@ Queue
 </script>
 <script type="text/template" id="scheduled-jobs-row-template">
 <td>
-<input type="text" size="2" name="Number"" value="10" data-job-id="<%- Id %>" data-original-value="10">
+<input type="text" size="2" name="Number"" value="<%- Number %>" data-job-id="<%- Id %>" data-original-value="<%- Number %>">
 </td>
-<td>
+<td class="title-cell">
 <div class="row-title">
 <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
 <a href="javascript:void(0);" class="btn-edit"><%- JobType %></a>
@@ -433,7 +433,7 @@ Queue
 <tbody>
 <tr>
 <th>Number</th>
-<td><input type="text" size="2" name="Number"" value="10" data-job-id="<%- Id %>" data-original-value="10"></td>
+<td><input type="text" size="2" name="Number"" value="<%- Number %>" data-job-id="<%- Id %>" data-original-value="<%- Number %>"></td>
 </tr>
 <tr>
 <th>Data</th>
@@ -449,7 +449,7 @@ Queue
 <thead>
 <tr>
 <th>#</th>
-<th>Type</th>
+<th class="title-cell">Type</th>
 <th>Data</th>
 </tr>
 </thead>

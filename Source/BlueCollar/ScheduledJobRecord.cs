@@ -32,7 +32,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the job's number.
         /// </summary>
-        public int Number { get; set; }
+        public long Number { get; set; }
 
         /// <summary>
         /// Gets or sets the schedule the scheduled job belongs to.

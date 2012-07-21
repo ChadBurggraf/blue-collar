@@ -62,40 +62,6 @@ CREATE TABLE [BlueCollarQueue]
 )
 GO
 
-CREATE INDEX [IX_BlueCollarHistory_QueuedOn_JobName_TryNumber_ApplicationName] 
-ON [BlueCollarHistory] 
-(
-	[QueuedOn] DESC,
-	[JobName] ASC,
-	[TryNumber] DESC,
-	[ApplicationName] ASC
-)
-INCLUDE 
-( 
-	[Id],
-	[ScheduleId],
-	[QueueName],
-	[JobType],
-	[StartedOn],
-	[Status],
-	[FinishedOn]
-)
-GO 
-
-CREATE INDEX [IX_BlueCollarHistory_FinishedOn_ApplicationName_Status] 
-ON [BlueCollarHistory] 
-(
-	[FinishedOn] ASC,
-	[ApplicationName] ASC,
-	[Status] ASC
-)
-INCLUDE
-(
-	[WorkerId],
-	[QueueName]
-)
-GO
-
 CREATE TABLE [BlueCollarWorker]
 (
 	[Id] bigint NOT NULL PRIMARY KEY IDENTITY(1, 1),
@@ -149,4 +115,38 @@ GO
 
 CREATE INDEX [IX_BlueCollarHistory_QueuedOn]
 ON [BlueCollarHistory]([QueuedOn] DESC)
+GO
+
+CREATE INDEX [IX_BlueCollarHistory_QueuedOn_JobName_TryNumber_ApplicationName] 
+ON [BlueCollarHistory] 
+(
+	[QueuedOn] DESC,
+	[JobName] ASC,
+	[TryNumber] DESC,
+	[ApplicationName] ASC
+)
+INCLUDE 
+( 
+	[Id],
+	[ScheduleId],
+	[QueueName],
+	[JobType],
+	[StartedOn],
+	[Status],
+	[FinishedOn]
+)
+GO 
+
+CREATE INDEX [IX_BlueCollarHistory_FinishedOn_ApplicationName_Status] 
+ON [BlueCollarHistory] 
+(
+	[FinishedOn] ASC,
+	[ApplicationName] ASC,
+	[Status] ASC
+)
+INCLUDE
+(
+	[WorkerId],
+	[QueueName]
+)
 GO

@@ -329,8 +329,12 @@ SELECT last_insert_rowid();";
         public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[JobType],[Data])
-VALUES(@ScheduleId,@JobType,@Data);
+@"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[Number],[JobType],[Data])
+SELECT 
+    @ScheduleId, 
+    coalesce((SELECT MAX([Number]) FROM [BlueCollarScheduledJob] WHERE [ScheduleId] = @ScheduleId), 0) + 1,
+    @JobType,
+    @Data;
 SELECT last_insert_rowid();";
 
             record.Id = this.connection.Query<long>(
@@ -962,7 +966,7 @@ FROM [BlueCollarSchedule] s
             sb.Append(@"
 WHERE
     s.[Id] = @Id
-ORDER BY s.[Name], j.[JobType] ASC
+ORDER BY s.[Name], j.[Number] ASC
 LIMIT @Limit OFFSET @Offset;");
 
             sb.Append("\n");
