@@ -181,14 +181,16 @@
   <ItemGroup>
     <EmbeddedResource Include="SqlServer.Schema.sql" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\index.xslt" />
+    <EmbeddedResource Include="Dashboard\Static\templates.html" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Dashboard\Static\css\collar.css" />
     <EmbeddedResource Include="Dashboard\Static\img\glyphicons-halflings-white.png" />
     <EmbeddedResource Include="Dashboard\Static\img\glyphicons-halflings.png" />
     <EmbeddedResource Include="Dashboard\Static\img\loading-list.gif" />
     <EmbeddedResource Include="Dashboard\Static\img\logo-header.png" />
-    <EmbeddedResource Include="Dashboard\Static\img\tc-badge.png" />
     <EmbeddedResource Include="Dashboard\Static\js\collar.js" />
     <EmbeddedResource Include="Dashboard\Static\js\html5.js" />
   </ItemGroup>
@@ -196,14 +198,15 @@
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>
     <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
+    <TemplatesOutputPath Condition="'$(TemplatesOutputPath)' == ''">Dashboard\Static\templates.html</TemplatesOutputPath>
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
-    <CallTarget Targets="Img;Js;Less" Condition="'$(CompressAssets)' == 'true'" />
+    <CallTarget Targets="Img;Js;Less;Templates" Condition="'$(CompressAssets)' == 'true'" />
     <ItemGroup>
-      <DashboardCssFiles Include="$(StaticDir)\Css\*" />
+      <DashboardCssFiles Include="$(StaticDir)\Css\*" Exclude="$(StaticDir)\Css\test.css" />
       <DashboardImgFiles Include="$(StaticDir)\Img\*" />
-      <DashboardJsFiles Include="$(StaticDir)\Js\*" />
+      <DashboardJsFiles Include="$(StaticDir)\Js\*" Exclude="$(StaticDir)\Js\test.js" />
     </ItemGroup>
     <Copy SourceFiles="@(DashboardCssFiles)" DestinationFolder="Dashboard\Static\css" Condition="'$(CompressAssets)' == 'true'" />
     <Copy SourceFiles="@(DashboardImgFiles)" DestinationFolder="Dashboard\Static\img" Condition="'$(CompressAssets)' == 'true'" />

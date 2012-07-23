@@ -55,11 +55,7 @@ namespace BlueCollar.Dashboard
         /// <returns>The response to write.</returns>
         protected override byte[] PerformRequest(HttpContextBase context, StaticFile file)
         {
-            DateTime now = DateTime.UtcNow.FloorWithSeconds();
-            DateTime distant = now.AddDays(-14);
-            DateTime recent = now.AddDays(-1);
-
-            return EncodeString(new Index(file, Repository.GetStatistics(ApplicationName, recent, distant, now, null)).Transform());
+            return EncodeString(new Index(ApplicationName, file, Repository.GetCounts(ApplicationName, null)).Transform());
         }
 
         /// <summary>

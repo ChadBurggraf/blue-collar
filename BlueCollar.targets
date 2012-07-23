@@ -15,6 +15,7 @@
     <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Release'">true</CompressAssets>
     <KeyFileArgs Condition="'$(SignAssembly)' == 'true' And Exists('$(AssemblyOriginatorKeyFile)')">/keyfile:"$(AssemblyOriginatorKeyFile)"</KeyFileArgs>
     <StaticDir Condition="'$(StaticDir)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Static</StaticDir>
+    <TemplatesOutputPath Condition="'$(TemplatesOutputPath)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml</TemplatesOutputPath>
   </PropertyGroup>
 
   <Target Name="GenerateConsoleConfig">
@@ -185,6 +186,6 @@
     <ReadLinesFromFile File="%(TemplateFiles.Identity)">
       <Output TaskParameter="Lines" ItemName="TemplateLines"/>
     </ReadLinesFromFile>
-    <WriteLinesToFile File="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml" Lines="@(TemplateLines)" Overwrite="true"/>
+    <WriteLinesToFile File="$(TemplatesOutputPath)" Lines="@(TemplateLines)" Overwrite="true"/>
   </Target>
 </Project>

@@ -33,54 +33,67 @@ namespace BlueCollar.Dashboard
         /// Initializes a new instance of the Index class.
         /// </summary>
         public Index()
-            : this(StaticFile.Create(BlueCollarSection.Section.Dashboard.HandlerUrl, "index.xslt"), new StatisticsRecord())
+            : this(BlueCollarSection.Section.ApplicationName, StaticFile.Create(BlueCollarSection.Section.Dashboard.HandlerUrl, "index.xslt"), new CountsRecord())
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the Index class.
         /// </summary>
+        /// <param name="applicationName">The name of the current application.</param>
         /// <param name="file">The <see cref="StaticFile"/> instance representing the index XSLT stylesheet.</param>
-        /// <param name="stats">The stats record to initialize this instance with.</param>
-        public Index(StaticFile file, StatisticsRecord stats)
+        /// <param name="counts">The counts record to initialize this instance with.</param>
+        public Index(string applicationName, StaticFile file, CountsRecord counts)
         {
+            if (string.IsNullOrEmpty(applicationName))
+            {
+                throw new ArgumentNullException("applicationName", "applicationName must contain a value.");
+            }
+
             if (file == null)
             {
                 throw new ArgumentNullException("file", "file cannot be null.");
             }
 
-            if (!"index.xslt".Equals(file.FileName, StringComparison.OrdinalIgnoreCase))
+            if (!"index.xslt".Equals(file.OriginalPath, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException("file must represent index.xslt.", "file");
             }
 
-            if (stats == null)
+            if (counts == null)
             {
-                throw new ArgumentNullException("stats", "stats cannot be null.");
+                throw new ArgumentNullException("counts", "counts cannot be null.");
             }
 
+            this.ApplicationName = applicationName;
             this.file = file;
 
-            this.BlueCollarCssUrl = StaticFile.Create(this.file.UrlRoot, "bc.css").Url;
-            this.BlueCollarJSUrl = StaticFile.Create(this.file.UrlRoot, "bc.js").Url;
-            this.Html5JSUrl = StaticFile.Create(this.file.UrlRoot, "html5.js").Url;
-            this.StatsJson = JsonConvert.SerializeObject(stats);
+            this.CountsJson = JsonConvert.SerializeObject(counts);
+            this.CssUrl = StaticFile.Create(this.file.UrlRoot, "css/collar.css").Url;
+            this.Html5JSUrl = StaticFile.Create(this.file.UrlRoot, "js/html5.js").Url;
+            this.JSApiUrl = "//www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}";
+            this.JSUrl = StaticFile.Create(this.file.UrlRoot, "js/collar.js").Url;
+            this.LogoHeaderUrl = StaticFile.Create(this.file.UrlRoot, "img/logo-header.png").Url;
             this.TemplatesHtml = GetTemplatesHtml();
             this.UrlRoot = file.UrlRoot;
-            this.Version = typeof(Index).Assembly.GetName().Version.ToString(3);
+            this.Version = typeof(Index).Assembly.GetName().Version.ToString(2);
         }
+
+        /// <summary>
+        /// Gets or sets the name of the current application.
+        /// </summary>
+        public string ApplicationName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the JSON string representing the current system counts.
+        /// </summary>
+        public string CountsJson { get; set; }
 
         /// <summary>
         /// Gets or sets the URL to the primary CSS file.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
-        public string BlueCollarCssUrl { get; set; }
-
-        /// <summary>
-        /// Gets or sets the URL to the primary JS file.
-        /// </summary>
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
-        public string BlueCollarJSUrl { get; set; }
+        public string CssUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the URL to the HTML5 JS file.
@@ -89,9 +102,22 @@ namespace BlueCollar.Dashboard
         public string Html5JSUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the JSON string representing the current system stats.
+        /// Gets or sets the URL to the Google JSAPI script.
         /// </summary>
-        public string StatsJson { get; set; }
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
+        public string JSApiUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL to the primary JS file.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
+        public string JSUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL to the logo header image.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
+        public string LogoHeaderUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the Undersocre.js templates as a string.
@@ -181,16 +207,7 @@ namespace BlueCollar.Dashboard
                 }
             }
 
-            const string Boilerplate =
-@"<!DOCTYPE html>
-<!--[if lte IE 7]><html class=""no-js ie7"" lang=""en""><![endif]-->
-<!--[if IE 8]><html class=""no-js ie8"" lang=""en""><![endif]-->
-<!--[if gt IE 8]><!--><html class=""no-js"" lang=""en""><!--<![endif]-->";
-
-            // Replace the opening HTML with the HTML5 Boilerplate stuff.
-            html = html.Replace("<html>", Boilerplate);
-
-            return html;
+            return "<!DOCTYPE html>\r\n" + html;
         }
 
         /// <summary>
@@ -204,7 +221,7 @@ namespace BlueCollar.Dashboard
 
             if (string.IsNullOrEmpty(templates))
             {
-                templates = StaticFile.GetContentsAsString("templates.html");
+                templates = StaticFile.GetContentsAsString("BlueCollar.Dashboard.Static.templates.html");
 
                 HttpRuntime.Cache.Add(
                     Key,

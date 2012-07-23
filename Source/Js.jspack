@@ -137,7 +137,6 @@
   </output>
 
   <output path="test.js">
-    <action name="CompileJs"/>
     <import name="Lib"/>
     <import name="App"/>
     <input path="Vendor\qunit-1.9.0pre.js"/>
