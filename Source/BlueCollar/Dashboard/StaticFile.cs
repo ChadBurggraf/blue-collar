@@ -149,7 +149,7 @@ namespace BlueCollar.Dashboard
                 Extension = ext,
                 OriginalPath = path,
                 Name = System.IO.Path.GetFileNameWithoutExtension(path),
-                Path = pathParts.Length > 1 ? string.Join("/", pathParts.Take(pathParts.Length - 1)) : string.Empty,
+                Path = pathParts.Length > 1 ? string.Join("/", pathParts.Take(pathParts.Length - 1).ToArray()) : string.Empty,
                 ResourceName = string.Concat("BlueCollar.Dashboard.Static.", string.Join(".", pathParts)),
                 UrlRoot = urlRoot.ToLowerInvariant()
             };

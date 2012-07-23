@@ -3,7 +3,7 @@
   <UsingTask TaskName="GetVersion" AssemblyFile="Tools\Tasty\Tasty.dll"/>
 
   <PropertyGroup>
-    <CompressAssets Condition="'$(CompressAssets)' == '' And ('$(Configuration)' == '' Or '$(Configuration)' == 'Debug')">false</CompressAssets>
+    <CompressAssets Condition="'$(CompressAssets)' == ''">false</CompressAssets>
     <ConsoleConfigSubstitutionsFile Condition="'$(ConsoleConfigSubstitutionsFile)' == ''">App.config.Net40</ConsoleConfigSubstitutionsFile>
     <HtmlHelpWorkshopDir Condition="'$(HtmlHelpWorkshopDir)' == ''">$(MSBuildExtensionsPath32)\..\HTML Help Workshop</HtmlHelpWorkshopDir>
     <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)</RootDir>
@@ -12,7 +12,6 @@
 
   <PropertyGroup>
     <BootstrapDir Condition="'$(BootstrapDir)' == ''">$(RootDir)\Bootstrap</BootstrapDir>
-    <CompressAssets Condition="'$(CompressAssets)' == '' And '$(Configuration)' == 'Release'">true</CompressAssets>
     <KeyFileArgs Condition="'$(SignAssembly)' == 'true' And Exists('$(AssemblyOriginatorKeyFile)')">/keyfile:"$(AssemblyOriginatorKeyFile)"</KeyFileArgs>
     <StaticDir Condition="'$(StaticDir)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Static</StaticDir>
     <TemplatesOutputPath Condition="'$(TemplatesOutputPath)' == ''">$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml</TemplatesOutputPath>

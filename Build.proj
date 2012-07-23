@@ -42,12 +42,12 @@
 
     <!-- .NET 4.0 reference assemblies. -->
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net40"/>
-    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);PackageAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);CompressAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedSQLiteRepositoryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
 
     <!-- .NET 3.5 reference assemblies. -->
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net35"/>
-    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);PackageAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);CompressAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedSQLiteRepositoryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
 
     <!-- Root service. -->

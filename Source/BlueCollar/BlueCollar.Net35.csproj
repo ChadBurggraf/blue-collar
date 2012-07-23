@@ -107,6 +107,7 @@
     <Compile Include="Dashboard\ResponseCacheModes.cs" />
     <Compile Include="Dashboard\SaveQueuedHandler.cs" />
     <Compile Include="Dashboard\SaveScheduledJobHandler.cs" />
+    <Compile Include="Dashboard\SaveScheduledJobOrderHandler.cs" />
     <Compile Include="Dashboard\SaveScheduleHandler.cs" />
     <Compile Include="Dashboard\SaveWorkerHandler.cs" />
     <Compile Include="Dashboard\ScheduledJobListHandler.cs" />
@@ -135,7 +136,6 @@
     <Compile Include="ILogger.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="IRepositoryFactory.cs" />
-    <Compile Include="IScheduledJob.cs" />
     <Compile Include="IScheduler.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="JobRecordBase.cs" />
@@ -154,7 +154,8 @@
     <Compile Include="QueueRecord.cs" />
     <Compile Include="RecordList{T}.cs" />
     <Compile Include="RepositoryElement.cs" />
-    <Compile Include="ScheduledJob.cs" />
+    <Compile Include="ScheduledJobOrderList.cs" />
+    <Compile Include="ScheduledJobOrderRecord.cs" />
     <Compile Include="ScheduledJobRecord.cs" />
     <Compile Include="ScheduledJobRecordList.cs" />
     <Compile Include="ScheduleListRecord.cs" />
@@ -177,37 +178,38 @@
     <Compile Include="WorkingSignalRecord.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\bc.css" />
-    <EmbeddedResource Include="Dashboard\Static\bc.js" />
-    <EmbeddedResource Include="Dashboard\Static\html5.js" />
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.svg" />
     <EmbeddedResource Include="Dashboard\Static\index.xslt" />
-    <EmbeddedResource Include="Dashboard\Static\loading-list.gif" />
-    <EmbeddedResource Include="Dashboard\Static\logo-header.png" />
-    <EmbeddedResource Include="Dashboard\Static\tc-badge.png" />
     <EmbeddedResource Include="Dashboard\Static\templates.html" />
-    <EmbeddedResource Include="Dashboard\Static\test.css" />
-    <EmbeddedResource Include="Dashboard\Static\test.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.eot" />
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.ttf" />
-    <EmbeddedResource Include="Dashboard\Static\iconic_stroke.woff" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SqlServer.Schema.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dashboard\Static\css\collar.css" />
+    <EmbeddedResource Include="Dashboard\Static\img\glyphicons-halflings-white.png" />
+    <EmbeddedResource Include="Dashboard\Static\img\glyphicons-halflings.png" />
+    <EmbeddedResource Include="Dashboard\Static\img\loading-list.gif" />
+    <EmbeddedResource Include="Dashboard\Static\img\logo-header.png" />
+    <EmbeddedResource Include="Dashboard\Static\js\collar.js" />
+    <EmbeddedResource Include="Dashboard\Static\js\html5.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>
     <RootDir Condition="'$(RootDir)' == ''">$(MSBuildProjectDirectory)\..\..</RootDir>
-    <AssetsOutputDir>$(MSBuildProjectDirectory)\Dashboard\Static</AssetsOutputDir>
-    <PackageAssets Condition="'$(PackageAssets)' == ''">false</PackageAssets>
+    <TemplatesOutputPath Condition="'$(TemplatesOutputPath)' == ''">Dashboard\Static\templates.html</TemplatesOutputPath>
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
-    <CallTarget Targets="PackageAssets" />
-    <Copy SourceFiles="$(RootDir)\Source\BlueCollar.Dashboard\Views\Shared\_Templates.cshtml" DestinationFiles="$(AssetsOutputDir)\templates.html" />
+    <CallTarget Targets="Img;Js;Less;Templates" Condition="'$(CompressAssets)' == 'true'" />
+    <ItemGroup>
+      <DashboardCssFiles Include="$(StaticDir)\Css\*" Exclude="$(StaticDir)\Css\test.css" />
+      <DashboardImgFiles Include="$(StaticDir)\Img\*" />
+      <DashboardJsFiles Include="$(StaticDir)\Js\*" Exclude="$(StaticDir)\Js\test.js" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DashboardCssFiles)" DestinationFolder="Dashboard\Static\css" Condition="'$(CompressAssets)' == 'true'" />
+    <Copy SourceFiles="@(DashboardImgFiles)" DestinationFolder="Dashboard\Static\img" Condition="'$(CompressAssets)' == 'true'" />
+    <Copy SourceFiles="@(DashboardJsFiles)" DestinationFolder="Dashboard\Static\js" Condition="'$(CompressAssets)' == 'true'" />
   </Target>
   <Target Name="AfterBuild">
     <CallTarget Targets="MergeLibrary" Condition="'$(Configuration)' == 'Release'" />
