@@ -54,6 +54,11 @@ namespace BlueCollar.Console
         public OptionSet OptionSet { get; private set; }
 
         /// <summary>
+        /// Gets the ID of this process' parent process, if it was passed upon launch.
+        /// </summary>
+        public int ParentProcessId { get; private set; }
+
+        /// <summary>
         /// Gets the error message that was set during creation, if applicable.
         /// </summary>
         public string ParseErrorMessage { get; private set; }
@@ -80,7 +85,7 @@ namespace BlueCollar.Console
         /// <returns>The created <see cref="InputOptions"/>.</returns>
         public static InputOptions Create(IEnumerable<string> args)
         {
-            string app = null, config = null, thresh = null;
+            string app = null, config = null, thresh = null, pid = null;
             bool verbose = false, help = false;
 
             OptionSet options = new OptionSet()
@@ -89,6 +94,7 @@ namespace BlueCollar.Console
                 { "config=", "the path to the configuration file to use, if not the default for the application.", v => config = v },
                 { "v|verbose", "write logging information to standard out.", v => verbose = v != null },
                 { "thresh=", "the threshold, in milliseconds, to compress file system events into.", v => thresh = v },
+                { "pid=", "the ID of the parent process, if applicable.", v => pid = v },
                 { "h|?|help", "display usage help.", v => help = v != null }
             };
 
@@ -119,6 +125,32 @@ namespace BlueCollar.Console
                     {
                         result.ParseErrorMessage = "Application path is required.";
                         result.IsValid = false;
+                    }
+
+                    if (!string.IsNullOrEmpty(pid))
+                    {
+                        const string PidErrorMessage = "Parent process ID must be an integer value greater than 0.";
+
+                        try
+                        {
+                            result.ParentProcessId = Convert.ToInt32(pid, CultureInfo.InvariantCulture);
+
+                            if (result.ParentProcessId <= 0)
+                            {
+                                result.IsValid = false;
+                                result.ParseErrorMessage = PidErrorMessage;
+                            }
+                        }
+                        catch (FormatException)
+                        {
+                            result.IsValid = false;
+                            result.ParseErrorMessage = PidErrorMessage;
+                        }
+                        catch (OverflowException)
+                        {
+                            result.IsValid = false;
+                            result.ParseErrorMessage = PidErrorMessage;
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(thresh))

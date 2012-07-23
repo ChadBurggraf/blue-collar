@@ -55,8 +55,8 @@
     <MSBuild Projects="$(SourceDir)\BlueCollar.Service\BlueCollar.Service.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedServiceOutputPath=$(BuildDir)\Service"/>
 
     <ItemGroup>
-      <ExampleReferenceNet40 Include="$(BuildDir)\ReferenceAssemblies\Net40\BlueCollar.*"/>
-      <ExampleReferenceNet35 Include="$(BuildDir)\ReferenceAssemblies\Net35\BlueCollar.*"/>
+      <ExampleReferenceNet40 Include="$(BuildDir)\Reference Assemblies\Net40\BlueCollar.*"/>
+      <ExampleReferenceNet35 Include="$(BuildDir)\Reference Assemblies\Net35\BlueCollar.*"/>
       <ReferenceNet40 Include="$(BuildDir)\Reference Assemblies\Net40\BlueCollar.dll"/>
       <ReferenceNet35 Include="$(BuildDir)\Reference Assemblies\Net35\BlueCollar.dll"/>
     </ItemGroup>

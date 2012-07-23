@@ -7,6 +7,7 @@
 namespace BlueCollar.Console
 {
     using System;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
@@ -24,6 +25,7 @@ namespace BlueCollar.Console
     {
         private static readonly object Locker = new object();
         private static bool isRunning;
+        private static Thread inputThread;
         private static ConsoleLogger logger;
         private static InputOptions options;
         private static Bootstraps bootstraps;
@@ -47,13 +49,30 @@ namespace BlueCollar.Console
             {
                 if (!options.Help)
                 {
+                    if (options.ParentProcessId > 0)
+                    {
+                        Process parentProcess = Process.GetProcessById(options.ParentProcessId);
+
+                        if (parentProcess != null)
+                        {
+                            logger.Debug("Parent process was found with ID {0}. Subscribing to 'Exited' event.", options.ParentProcessId);
+                            parentProcess.Exited += new EventHandler(ParentProcessExited);
+                            parentProcess.EnableRaisingEvents = true;
+                        }
+                        else
+                        {
+                            logger.Debug("No parent process was found with ID {0}.", options.ParentProcessId);
+                        }
+                    }
+
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("Type 'exit' to shutdown gracefully, or Ctl+C to exit immediately.");
                     Console.ResetColor();
                     Console.WriteLine();
 
-                    new Thread(WaitForInput).Start();
+                    inputThread = new Thread(WaitForInput);
+                    inputThread.Start();
 
                     PullupBootstraps();
                 }
@@ -119,6 +138,34 @@ namespace BlueCollar.Console
                     bootstraps = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Raises the parent process' Exited event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private static void ParentProcessExited(object sender, EventArgs e)
+        {
+            logger.Info("The process for the application at '{0}' has been orphaned. Shutting down.", options.ApplicationPath);
+            isRunning = false;
+
+            lock (Locker)
+            {
+                if (bootstraps != null)
+                {
+                    bootstraps.Dispose();
+                    bootstraps = null;
+                }
+
+                if (inputThread != null)
+                {
+                    inputThread.Abort();
+                    inputThread = null;
+                }
+            }
+
+            ((Process)sender).Dispose();
         }
 
         /// <summary>

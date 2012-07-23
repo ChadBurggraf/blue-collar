@@ -296,6 +296,29 @@ namespace BlueCollar.Service
             {
                 if (this.startInfo == null)
                 {
+                    string args = string.Format(
+                        CultureInfo.InvariantCulture,
+                        @"/app:""{0}"" /config:""{1}"" /thresh:{2}",
+                        this.Path,
+                        this.ConfigPath,
+                        this.Threshold);
+
+                    try
+                    {
+                        int pid = Process.GetCurrentProcess().Id;
+
+                        if (pid > 0)
+                        {
+                            args += string.Format(CultureInfo.InvariantCulture, " /pid:{0}", pid);
+                        }
+                    }
+                    catch (PlatformNotSupportedException)
+                    {
+                    }
+                    catch (InvalidOperationException)
+                    {
+                    }
+
                     this.startInfo = new ProcessStartInfo()
                     {
                         CreateNoWindow = true,
@@ -304,12 +327,7 @@ namespace BlueCollar.Service
                         RedirectStandardInput = true,
                         RedirectStandardOutput = true,
                         FileName = this.ExePath,
-                        Arguments = string.Format(
-                            CultureInfo.InvariantCulture,
-                            @"/app:""{0}"" /config:""{1}"" /thresh:{2}",
-                            this.Path,
-                            this.ConfigPath,
-                            this.Threshold)
+                        Arguments = args
                     };
                 }
 

@@ -1967,6 +1967,11 @@ WHERE
     AND [Number] > @Current
     AND [Number] <= @Number;";
 
+            if (record == null)
+            {
+                throw new ArgumentNullException("record", "record cannot be null.");
+            }
+
             long number = record.Number, current, max;
 
             using (var multi = this.connection.QueryMultiple(QuerySql, new { ScheduleId = record.ScheduleId, Id = record.Id }, transaction, null, null))
