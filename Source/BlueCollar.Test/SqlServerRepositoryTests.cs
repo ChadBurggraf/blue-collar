@@ -422,6 +422,15 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Update scheduled job order tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryUpdateScheduledJobOrder()
+        {
+            UpdateScheduledJobOrder();
+        }
+
+        /// <summary>
         /// Update worker tests.
         /// </summary>
         [TestMethod]

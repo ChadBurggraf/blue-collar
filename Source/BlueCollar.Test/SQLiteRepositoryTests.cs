@@ -474,6 +474,15 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Update scheduled job order tests.
+        /// </summary>
+        [TestMethod]
+        public void SQLiteRepositoryUpdateScheduledJobOrder()
+        {
+            UpdateScheduledJobOrder();
+        }
+
+        /// <summary>
         /// Update worker tests.
         /// </summary>
         [TestMethod]

@@ -1,0 +1,178 @@
+﻿<script type="text/template" id="history-display-template">
+     <fieldset>
+        <p class="legend"><%- JobName %></p>
+
+        <div class="field">
+            <span>Executed on machine</span>
+            <p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
+        </div>
+
+        <div class="field">
+            <span>Executed by worker</span>
+            <p><%- WorkerName || '' %></p>
+        </div>
+
+        <div class="field">
+            <span>Queued on</span>
+            <p>
+                <%= String.dateDisplayLight(QueuedOn) %>
+            </p>
+        </div>
+
+        <div class="field">
+            <span>Data</span>
+            <pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+        </div>
+
+        <div class="field exception">
+            <span>Exception</span>
+            <% print(String.exceptionDisplay(Exception)); %>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-primary">Re-Enqueue Job</button>
+            <button type="button" class="btn btn-reset">Done</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="history-re-enqueue-template">
+    <fieldset>
+        <p class="legend">
+            Re-Enqueue Job
+            <small><%- JobName %></small>    
+        </p>
+
+        <div class="alert alert-block alert-error"></div>
+
+        <div class="field">
+            <span>Type:</span>
+            <code class="field-content"><%- JobType %></code>
+        </div>
+
+        <label class="field">
+            <span>Queue</span>
+            <input type="text" name="QueueName" value="<%- QueueName %>">
+            <span class="help-block">Optional. The name of the queue to process the job on.</span>
+            <span class="error"></span>
+        </label>
+
+        <label class="field">
+            <span>Data</span>
+            <textarea class="code" rows="5" name="Data"><%- Data %></textarea>
+            <span class="help-block">Well-formed JSON that can be de-serialized into an instance of the specified job type. Leave empty if your job doesn't need any serialized data.</span>
+            <span class="error"></span>
+        </label>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="Enqueue Job">
+            <button type="button" class="btn btn-reset">Cancel</button>
+        </div>
+
+        <div><input type="hidden" name="JobType" value="<%- JobType %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="history-row-template">
+    <td class="title-cell">
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
+            <small class="code light"><%- JobType %></small>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Schedule</th>
+                        <td><%- ScheduleName || '' %></td>
+                    </tr>
+                    <tr>
+                        <th>Queue</th>
+                        <td><%- QueueName || '' %></td>
+                    </tr>
+                    <tr>
+                        <th>Started On</th>
+                        <td>
+                            <% print(StartedOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(StartedOn.toString('h:mm:ss tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Finished On</th>
+                        <td>
+                            <% print(FinishedOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(FinishedOn.toString('h:mm:ss tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td><span class="status"><% print(String.historyStatusDisplay(Status)); %></span></td>
+                    </tr>
+                    <tr>
+                        <th>Try</th>
+                        <td><%- TryNumber %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
+    <td><%- ScheduleName || '' %></td>
+    <td><%- QueueName || '' %></td>
+    <td>
+        <span class="list-date"><% print(StartedOn.toString('MMM d, yyyy')); %></span>
+        <small class="list-time light"><% print(StartedOn.toString('h:mm:ss tt')); %></small>
+    </td>
+    <td>
+        <span class="list-date"><% print(FinishedOn.toString('MMM d, yyyy')); %></span>
+        <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
+    </td>
+    <td><span class="status"><% print(String.historyStatusDisplay(Status)); %></span></td>
+    <td><%- TryNumber %></td>
+</script>
+
+<script type="text/template" id="history-list-template">
+    <thead>
+        <tr>
+            <th class="title-cell">Job</th>
+            <th>Schedule</th>
+            <th>Queue</th>
+            <th>Started On</th>
+            <th>Finished On</th>
+            <th>Status</th>
+            <th>Try</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="history-template">
+    <div class="page-header">
+        <h1>
+            History
+            <small><%- ApplicationName %></small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+            <div class="search"></div>
+            <div class="list-header">
+                <table>
+                    <tr>
+                        <td class="table-paging table-paging-top"></td>
+                        <td class="table-actions table-actions-top">
+                            <button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="list"></div>
+            <div class="list-footer"></div>
+        </div>
+
+        <div class="span4 details"></div>
+    </div>
+</script>

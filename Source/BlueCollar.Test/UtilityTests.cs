@@ -78,7 +78,7 @@ namespace BlueCollar.Test
 
             var xmls = xml.InnerXml;
             Assert.IsTrue(xmls.StartsWith(@"<?xml version=""1.0"" encoding=""utf-16""?><Index", StringComparison.Ordinal));
-            Assert.IsTrue(xmls.Contains("<Version>" + GetType().Assembly.GetName().Version.ToString(3) + "</Version>"));
+            Assert.IsTrue(xmls.Contains("<Version>" + GetType().Assembly.GetName().Version.ToString(2) + "</Version>"));
         }
 
         /// <summary>
@@ -183,15 +183,19 @@ namespace BlueCollar.Test
         [TestMethod]
         public void UtilityStaticFile()
         {
-            StaticFile file = StaticFile.Create("~/collar.ashx", "bc.js");
+            StaticFile file = StaticFile.Create("~/collar.ashx", "js/collar.js");
             Assert.IsNotNull(file);
             Assert.IsFalse(string.IsNullOrEmpty(file.Hash));
             Assert.IsTrue(file.Url.StartsWith("/collar.ashx", StringComparison.OrdinalIgnoreCase));
             Assert.AreEqual("text/javascript", file.ContentType);
 
-            file = StaticFile.Create("~/collar.ashx", "tc-badge.png");
+            file = StaticFile.Create("~/collar.ashx", "img/logo-header.png");
             Assert.IsNotNull(file);
             Assert.AreEqual("image/png", file.ContentType);
+
+            file = StaticFile.Create("~/collar.ashx", "index.xslt");
+            Assert.IsNotNull(file);
+            Assert.AreEqual("text/html", file.ContentType);
         }
     }
 }

@@ -24,9 +24,9 @@ namespace BlueCollar.Dashboard.Models
         }
 
         /// <summary>
-        /// Gets a json string of system statistics.
+        /// Gets a json string of system counts;
         /// </summary>
-        public string StatsJson { get; private set; }
+        public string CountsJson { get; private set; }
 
         /// <summary>
         /// Gets the page's title.
@@ -53,16 +53,7 @@ namespace BlueCollar.Dashboard.Models
 
             if (success)
             {
-                DateTime value = DateTime.UtcNow;
-                DateTime now = new DateTime(value.Ticks - (value.Ticks % TimeSpan.TicksPerSecond), value.Kind);
-
-                this.StatsJson = JsonConvert.SerializeObject(
-                    repository.GetStatistics(
-                        BlueCollarSection.Section.ApplicationName,
-                        now.AddDays(-1),
-                        now.AddDays(-14),
-                        now,
-                        null));
+                this.CountsJson = JsonConvert.SerializeObject(repository.GetCounts(BlueCollarSection.Section.ApplicationName, null));
             }
 
             return success;

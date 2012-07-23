@@ -63,15 +63,29 @@ namespace BlueCollar.Dashboard
             }
 
             List<ValidationResult> r = new List<ValidationResult>();
+            bool validateJobType = true;
 
             if (string.IsNullOrEmpty(model.JobType))
             {
                 r.Add(new ValidationResult() { ErrorMessage = "Job type is required.", MemberName = "JobType" });
+                validateJobType = false;
             }
 
             if (!string.IsNullOrEmpty(model.JobType) && model.JobType.Length > 256)
             {
                 r.Add(new ValidationResult() { ErrorMessage = "Job type cannot be longer than 256 characters.", MemberName = "JobType" });
+                validateJobType = false;
+            }
+
+            if (validateJobType)
+            {
+                IJob job = null;
+                string error = null;
+
+                if (!ValidateJobType(model.JobType, null, out job, out error))
+                {
+                    r.Add(new ValidationResult() { ErrorMessage = error, MemberName = "JobType" });
+                }
             }
 
             results = r;

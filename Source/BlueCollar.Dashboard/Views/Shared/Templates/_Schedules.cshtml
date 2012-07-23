@@ -1,0 +1,180 @@
+﻿<script type="text/template" id="schedules-edit-template">
+    <fieldset>
+        <p class="legend"><% if (!Id) { print('Add Schedule'); } else { print('Edit Schedule'); } %></p>
+
+        <div class="alert alert-block alert-error"></div>
+
+        <label class="field">
+            <span>Name <em>*</em></span>
+            <input type="text" name="Name">
+            <span class="error"></span>
+        </label>
+
+        <label class="field">
+            <span>Queue name</span>
+            <input type="text" name="QueueName">
+            <span class="help-block">Optional. Jobs created by this schedule will be processed on this queue.</span>
+            <span class="error"></span>
+        </label>
+
+        <label class="field">
+            <span>Start on <em>*</em></span>
+            <input type="text" name="StartOn">
+            <span class="error"></span>
+        </label>
+
+        <label class="field">
+            <span>End on</span>
+            <input type="text" name="EndOn">
+            <span class="error"></span>
+        </label>
+
+        <div class="field field-schedule-repeat">
+            <span>Repeat every</span>
+            <input type="text" name="RepeatValue">
+            <select name="RepeatType">
+                <option value="None">Don't repeat</option>
+                <option value="Seconds">Seconds</option>
+                <option value="Minutes">Minutes</option>
+                <option value="Hours">Hours</option>
+                <option value="Days">Days</option>
+                <option value="Weeks">Weeks</option>
+            </select>
+            <span class="error"></span>
+        </div>
+
+        <div class="field">
+            <span>Enabled <em>*</em></span>
+            <label class="radio">
+                <input type="radio" name="Enabled" value="true">
+                Yes
+            </label>
+            <label class="radio">
+                <input type="radio" name="Enabled" value="false">
+                No
+            </label>
+            <span class="error"></span>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Schedule'); } else { print('Create Schedule'); } %>">
+            <button type="button" class="btn btn-reset">Cancel</button>
+            <a class="btn-delete" href="javascript:void(0);">delete</a>
+        </div>
+
+        <div class="form-actions form-actions-delete">
+            <label>Are you sure?</label>
+            <button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+            <button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="schedules-row-template">
+    <td class="title-cell">
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-edit"><%- Name %></a>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Start On</th>
+                        <td>
+                            <% print(StartOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(StartOn.toString('h:mm:ss tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>End On</th>
+                        <td>
+                            <% if (EndOn) { print(EndOn.toString('MMM d, yyyy') + ' <span class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</span>'); } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Queue</th>
+                        <td><% print($.htmlEncode(QueueName || '*')); %></td>
+                    </tr>
+                    <tr>
+                        <th>Repeat</th>
+                        <td>
+                            <% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Enabled</th>
+                        <td>
+                            <% if (Enabled) { print('Yes'); } else { print('No'); } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Jobs</th>
+                        <td><a href="#<%- ManageUrl %>">Manage (<%- JobCount %>)</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
+    <td>
+        <span class="list-date"><% print(StartOn.toString('MMM d, yyyy')); %></span>
+        <small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
+    </td>
+    <td>
+        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('MMM d, yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
+    </td>
+    <td><% print($.htmlEncode(QueueName || '*')); %></td>
+    <td><% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %></td>
+    <td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
+    <td><a href="#<%- ManageUrl %>">Manage (<%- JobCount %>)</a></td>
+</script>
+
+<script type="text/template" id="schedules-list-template">
+    <thead>
+        <tr>
+            <th class="title-cell">Name</th>
+            <th>Start On</th>
+            <th>End On</th>
+            <th>Queue</th>
+            <th>Repeat</th>
+            <th>Enabled</th>
+            <th>Jobs</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="schedules-template">
+    <div class="page-header">
+        <button class="btn btn-success btn-add pull-right">
+            <i class="icon-plus icon-white"></i>
+            Add schedule
+        </button>
+        <h1>
+            Schedules
+            <small><%- ApplicationName %></small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+            <div class="search"></div>
+            <div class="list-header">
+                <table>
+                    <tr>
+                        <td class="table-paging table-paging-top"></td>
+                        <td class="table-actions table-actions-top">
+                            <button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="list"></div>
+            <div class="list-footer"></div>
+        </div>
+
+        <div class="span4 details"></div>
+    </div>
+</script>

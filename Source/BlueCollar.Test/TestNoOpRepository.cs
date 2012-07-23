@@ -525,6 +525,16 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Updates the scheduled job's order number.
+        /// </summary>
+        /// <param name="record">The scheduled job order record identifying the scheduled job to update.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void UpdateScheduledJobOrder(ScheduledJobOrderRecord record, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Updates the given worker.
         /// </summary>
         /// <param name="record">The worker record to update.</param>

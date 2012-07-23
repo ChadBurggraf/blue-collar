@@ -1,64 +1,46 @@
 ﻿@model IPageViewModel
 <!DOCTYPE html>
-<!--[if lte IE 7]><html class="no-js ie7" lang="en"><![endif]-->
-<!--[if IE 8]><html class="no-js ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<html lang="en">
     <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta charset="utf-8">
         <title>Blue Collar @{ Write("v" + Model.Version ); }</title>
-
-        <!--[if lt IE 9]>
-        <script src="@Url.Content("~/Static/html5.js")"></script>
-        <![endif]-->
-
-        <link href="@Url.Content("~/Static/bc.css")" rel="stylesheet"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="@Url.Content("~/Static/Css/collar.css")">
         @RenderSection("style", false)
-
-        <script type="text/javascript" src="//www.google.com/jsapi"></script>
-        <script type="text/javascript">
-            google.load('visualization', '1.0', {'packages':['corechart']});
-        </script>
+        <!--[if lt IE 9]>
+        <script src="@Url.Content("~/Static/Js/html5.js")"></script>
+        <![endif]-->
     </head>
-
     <body class="@Model.ClassName">
-        <header>
-            <div class="container-fluid">
-                <div id="logo">
-                    <h3>Dashboard</h3>
-                    <p>Blue Collar @{ Write("v" + Model.Version ); }</p>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="@Url.Content("~/")">
+                        <img src="@Url.Content("~/Static/Img/logo-header.png")" width="32" height="32" alt="">
+                        <span>Blue Collar</span>
+                    </a>
+                    <div class="nav-collapse">
+                        <ul id="nav" class="nav"></ul>
+                    </div>
                 </div>
-            </div>
-        </header>
-    
-        <div class="container-fluid">
-            <div class="sidebar">
-                <nav role="navigation">
-                    <ul id="nav"></ul>
-                </nav>
-            </div>
-
-            <div class="content">
-                <table id="layout">
-                    <tbody>
-                        <tr>
-                            <td id="main">@RenderBody()</td>
-                            <td id="forms"></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
 
-        <footer>
-            <div class="container-fluid">
-                <a class="badge" href="http://tastycodes.com/" target="_blank">
-                    <span>A product of Tasty Codes. Delicious software.</span>
-                </a>
-            </div>
-        </footer>
+        <div id="page" class="container container-page">@RenderBody()</div>
 
+        <div class="container">
+            <footer class="footer">
+                <p>Built with care by <a href="http://github.com/ChadBurggraf">Chad Burggraf</a>.</p>
+                <p>Licensed under the <a href="http://opensource.org/licenses/mit-license.php">MIT License</a>.</p> 
+                <p>Icons from <a href="http://glyphicons.com/">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+            </footer>
+        </div>
+        
         @Html.Partial("_Templates")
         @RenderSection("script", false)
     </body>

@@ -95,7 +95,6 @@
     <Compile Include="SqlServerRepositoryTests.cs" />
     <Compile Include="TestJob.cs" />
     <Compile Include="TestNoOpRepository.cs" />
-    <Compile Include="TestScheduledJob.cs" />
     <Compile Include="UtilityTests.cs" />
     <Compile Include="WorkerTests.cs" />
   </ItemGroup>

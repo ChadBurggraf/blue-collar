@@ -276,7 +276,7 @@ namespace BlueCollar
                                 // and also just to save the queue bandwidth in case in can't be de-serialized.
                                 try
                                 {
-                                    job = JobSerializer.Deserialize(scheduledJob.JobType, scheduledJob.Properties);
+                                    job = JobSerializer.Deserialize(scheduledJob.JobType, scheduledJob.Data);
                                     this.logger.Debug("Scheduler de-serialized scheduled job instance for '{0}' for schedule '{1}'.", scheduledJob.JobType, schedule.Name);
                                 }
                                 catch (Exception sx)
@@ -291,7 +291,7 @@ namespace BlueCollar
                                         new QueueRecord()
                                         {
                                             ApplicationName = this.applicationName,
-                                            Data = scheduledJob.Properties,
+                                            Data = scheduledJob.Data,
                                             JobName = job.Name,
                                             JobType = scheduledJob.JobType,
                                             QueuedOn = scheduleDate.Value,
@@ -306,7 +306,7 @@ namespace BlueCollar
                                         new HistoryRecord()
                                         {
                                             ApplicationName = this.applicationName,
-                                            Data = scheduledJob.Properties,
+                                            Data = scheduledJob.Data,
                                             Exception = ex != null ? new ExceptionXElement(ex).ToString() : null,
                                             FinishedOn = scheduleDate.Value,
                                             JobName = null,

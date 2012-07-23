@@ -10,6 +10,7 @@ namespace BlueCollar.Dashboard
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Reflection;
     using System.Web;
     using Newtonsoft.Json;
 
@@ -167,5 +168,64 @@ namespace BlueCollar.Dashboard
         /// <param name="model">The model passed in the request's content body.</param>
         /// <returns>The result of the request.</returns>
         protected abstract object PerformRequest(HttpContextBase context, T model);
+
+        /// <summary>
+        /// Validates that the given job type is a valid type that can be instantiated as an instance of IJob.
+        /// </summary>
+        /// <param name="typeName">The name of the job type to validate.</param>
+        /// <param name="data">The JSON data to instantiate the job with.</param>
+        /// <param name="job">An instance of <see cref="IJob"/> created from the given type, if the type is valid.</param>
+        /// <param name="error">An error message describing the error if the type is not valid.</param>
+        /// <returns>True if the type can be instantiated successfully, false otherwise.</returns>
+        protected virtual bool ValidateJobType(string typeName, string data, out IJob job, out string error)
+        {
+            bool success = false;
+            job = null;
+            error = string.Empty;
+
+            if (string.IsNullOrEmpty(typeName))
+            {
+                throw new ArgumentNullException("typeName", "typeName cannot be empty.");
+            }
+
+            data = (data ?? string.Empty).Trim();
+
+            if (string.IsNullOrEmpty(data))
+            {
+                data = "{}";
+            }
+
+            try
+            {
+                job = JobSerializer.Deserialize(typeName, data);
+                success = true;
+            }
+            catch (ArgumentException)
+            {
+                error = "Job type contains invalid type syntax or does not implement IJob.";
+            }
+            catch (TargetInvocationException)
+            {
+                error = "Job type's class initializer threw an exception.";
+            }
+            catch (TypeLoadException)
+            {
+                error = "Failed to load job type.";
+            }
+            catch (FileNotFoundException)
+            {
+                error = "Job type or one of its dependencies was not found.";
+            }
+            catch (FileLoadException)
+            {
+                error = "Job type or one of its dependencies could not be loaded.";
+            }
+            catch (BadImageFormatException)
+            {
+                error = "Job type's assembly that could not be loaded into the current runtime.";
+            }
+
+            return success;
+        }
     }
 }

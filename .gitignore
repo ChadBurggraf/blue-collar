@@ -11,6 +11,9 @@ Artifacts/
 bin/
 Build/
 obj/
+Source/BlueCollar.Dashboard/Static/Css/*
+Source/BlueCollar.Dashboard/Static/Img/*
+Source/BlueCollar.Dashboard/Static/Js/*
 Temp/
 TestResults/
 

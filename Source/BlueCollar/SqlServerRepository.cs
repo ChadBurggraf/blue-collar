@@ -401,8 +401,12 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[JobType],[Properties])
-VALUES(@ScheduleId,@JobType,@Properties);
+@"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[Number],[JobType],[Data])
+SELECT
+    @ScheduleId,
+    COALESCE((SELECT MAX([Number]) FROM [BlueCollarScheduledJob] WHERE [ScheduleId] = @ScheduleId), 0) + 1,
+    @JobType,
+    @Data;
 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
 
             record.Id = this.connection.Query<long>(
@@ -799,7 +803,11 @@ WHERE
 
                 if (queueFilters.Exclude.Count() > 0)
                 {
-                    sb.Append("\n    AND [QueueName] NOT IN @ExcludeQueueNames");
+                    sb.Append("\n    AND");
+                    sb.Append("\n    (");
+                    sb.Append("\n        [QueueName] IS NULL");
+                    sb.Append("\n        OR [QueueName] NOT IN @ExcludeQueueNames");
+                    sb.Append("\n    )");
                 }
             }
 
@@ -1101,7 +1109,7 @@ FROM
 (
 	SELECT
 		*,
-		ROW_NUMBER() OVER(ORDER BY j.[JobType] ASC) AS [RowNumber]
+		ROW_NUMBER() OVER(ORDER BY j.[Number] ASC) AS [RowNumber]
 	FROM [BlueCollarScheduledJob] j
 	WHERE
 		j.[ScheduleId] = @Id");
@@ -1258,7 +1266,8 @@ WHERE t.[RowNumber] BETWEEN @Offset + 1 AND @Offset + @Limit;");
 FROM [BlueCollarSchedule] s
     LEFT OUTER JOIN [BlueCollarScheduledJob] sj ON s.[Id] = sj.[ScheduleId]
 WHERE
-    s.[ApplicationName] = @ApplicationName;";
+    s.[ApplicationName] = @ApplicationName
+ORDER BY sj.[Number];";
 
             Dictionary<long, ScheduleRecord> lookup = new Dictionary<long, ScheduleRecord>();
             List<ScheduleRecord> schedules = new List<ScheduleRecord>();
@@ -1896,8 +1905,8 @@ WHERE
             const string Sql =
 @"UPDATE [BlueCollarScheduledJob]
 SET
-    [JobType] = @JobType,
-    [Properties] = @Properties
+    [Data] = @Data,
+    [JobType] = @JobType
 WHERE
     [Id] = @Id;";
 
@@ -1909,6 +1918,98 @@ WHERE
                 null);
 
             return record;
+        }
+
+        /// <summary>
+        /// Updates the scheduled job's order number.
+        /// </summary>
+        /// <param name="record">The scheduled job order record identifying the scheduled job to update.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void UpdateScheduledJobOrder(ScheduledJobOrderRecord record, IDbTransaction transaction)
+        {
+            const string QuerySql =
+@"SELECT [Number]
+FROM [BlueCollarScheduledJob]
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND [Id] = @Id;
+
+SELECT MAX([Number]) AS [Max]
+FROM [BlueCollarScheduledJob]
+WHERE
+    [ScheduleId] = @ScheduleId;";
+
+            const string UpdateSql =
+@"UPDATE [BlueCollarScheduledJob]
+SET
+    [Number] = @Number
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND [Id] = @Id;";
+
+            const string IncrementSql =
+@"UPDATE [BlueCollarScheduledJob]
+SET
+    [Number] = [Number] + 1
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND [Id] <> @Id
+    AND [Number] < @Current
+    AND [Number] >= @Number;";
+
+            const string DecrementSql =
+@"UPDATE [BlueCollarScheduledJob]
+SET
+    [Number] = [Number] - 1
+WHERE
+    [ScheduleId] = @ScheduleId
+    AND [Id] <> @Id
+    AND [Number] > @Current
+    AND [Number] <= @Number;";
+
+            long number = record.Number, current, max;
+
+            using (var multi = this.connection.QueryMultiple(QuerySql, new { ScheduleId = record.ScheduleId, Id = record.Id }, transaction, null, null))
+            {
+                current = multi.Read<long>().FirstOrDefault();
+                max = multi.Read<long>().FirstOrDefault();
+            }
+
+            if (current > 0)
+            {
+                if (number > max)
+                {
+                    number = max;
+                }
+
+                if (number != current)
+                {
+                    StringBuilder update = new StringBuilder(UpdateSql);
+                    update.Append("\n\n");
+
+                    if (number > current)
+                    {
+                        update.Append(DecrementSql);
+                    }
+                    else
+                    {
+                        update.Append(IncrementSql);
+                    }
+
+                    this.connection.Execute(
+                        update.ToString(),
+                        new
+                        {
+                            ScheduleId = record.ScheduleId,
+                            Id = record.Id,
+                            Current = current,
+                            Number = number
+                        },
+                        transaction,
+                        null,
+                        null);
+                }
+            }
         }
 
         /// <summary>

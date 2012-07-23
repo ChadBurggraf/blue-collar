@@ -41,15 +41,18 @@ namespace BlueCollar.Dashboard
             }
 
             List<ValidationResult> r = new List<ValidationResult>();
+            bool validateJobType = true;
 
             if (string.IsNullOrEmpty(model.JobType))
             {
                 r.Add(new ValidationResult() { ErrorMessage = "Job type is required.", MemberName = "JobType" });
+                validateJobType = false;
             }
 
             if (!string.IsNullOrEmpty(model.JobType) && model.JobType.Length > 256)
             {
                 r.Add(new ValidationResult() { ErrorMessage = "Job type cannot be longer than 256 characters.", MemberName = "JobType" });
+                validateJobType = false;
             }
 
             if (!string.IsNullOrEmpty(model.QueueName) && model.QueueName.Length > 24)
@@ -64,45 +67,19 @@ namespace BlueCollar.Dashboard
                 model.Data = "{}";
             }
 
-            IJob job = null;
-            string error = null;
+            if (validateJobType)
+            {
+                IJob job = null;
+                string error = null;
 
-            try
-            {
-                job = JobSerializer.Deserialize(model.JobType, model.Data);
-            }
-            catch (ArgumentException)
-            {
-                error = "Job type contains invalid type syntax or does not implement IJob.";
-            }
-            catch (TargetInvocationException)
-            {
-                error = "Job type's class initializer threw an exception.";
-            }
-            catch (TypeLoadException)
-            {
-                error = "Failed to load job type.";
-            }
-            catch (FileNotFoundException)
-            {
-                error = "Job type or one of its dependencies was not found.";
-            }
-            catch (FileLoadException)
-            {
-                error = "Job type or one of its dependencies could not be loaded.";
-            }
-            catch (BadImageFormatException)
-            {
-                error = "Job type's assembly that could not be loaded into the current runtime.";
-            }
-
-            if (job != null)
-            {
-                model.JobName = job.Name;
-            }
-            else
-            {
-                r.Add(new ValidationResult() { ErrorMessage = error, MemberName = "JobType" });
+                if (ValidateJobType(model.JobType, model.Data, out job, out error))
+                {
+                    model.JobName = job.Name;
+                }
+                else
+                {
+                    r.Add(new ValidationResult() { ErrorMessage = error, MemberName = "JobType" });
+                }
             }
 
             results = r;

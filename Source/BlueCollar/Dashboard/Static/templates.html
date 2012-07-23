@@ -1,761 +1,990 @@
-﻿<script type="text/template" id="dashboard-template">
-    <div class="stats clearfix"></div>
-
-    <div class="charts">
-        <div class="chart pie status">
-            <h3>Job Status - 2 Weeks</h3>
-            <div class="chart-contents"></div>
-        </div>
-
-        <div class="chart pie worker">
-            <h3>Worker Load - 2 Weeks</h3>
-            <div class="chart-contents"></div>
-        </div>
-
-        <div class="chart line jobs-per-hour">
-            <h3>Jobs Per Hour By Queue - 2 Weeks</h3>
-            <div class="chart-contents"</div>
-        </div>
-    </div>
+<script type="text/template" id="chart-message-template">
+<div class="alert"><%- Message %></div>
 </script>
-
 <script type="text/template" id="dashboard-stats-template">
-    <div class="stats-group">
-        <table>
-            <tr>
-                <td class="first last working-count"></td>
-            </tr>
-            <tr>
-                <th class="first last">
-                    Running now
-                </th>
-            </tr>
-        </table>
-    </div>
-
-    <div class="stats-group">
-        <h4>In the last 24 hours,</h4>
-
-        <table>
-            <tr>
-                <td class="first succeeded-count"></td>
-                <td class="not-succeeded-count"></td>
-                <td class="last total-count"></td>
-            </tr>
-            <tr>
-                <th class="first">
-                    Succeeded
-                </th>
-                <th>
-                    Did not succeed
-                </th>
-                <th class="last">
-                    Total jobs executed
-                </th>
-            </tr>
-        </table>
-    </div>
+<div class="stats-group">
+<table>
+<tr>
+<td class="working-count"></td>
+</tr>
+<tr>
+<th>
+Running now
+</th>
+</tr>
+</table>
+</div>
+<div class="stats-group">
+<h4>In the last 24 hours,</h4>
+<table>
+<tr>
+<td class="succeeded-count"></td>
+<td class="not-succeeded-count"></td>
+<td class="total-count"></td>
+</tr>
+<tr>
+<th>
+Succeeded
+</th>
+<th>
+Did not succeed
+</th>
+<th>
+Total jobs executed
+</th>
+</tr>
+</table>
+</div>
 </script>
-
-<script type="text/template" id="history-details-template">
-    <fieldset>
-        <legend><%- JobName %></legend>
-
-        <div class="clearfix">
-            <label>Executed on machine</label>
-            <div class="input">
-                <p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label>Executed by worker</label>
-            <div class="input">
-                <p><%- WorkerName || '' %></p>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label>Queued on</label>
-            <div class="input">
-                <p>
-                    <% if (QueuedOn) { 
-                        print(
-                            QueuedOn.toString('MMM d, yyyy')
-                            + ' <span class="light">'
-                            + QueuedOn.toString('h:mm:ss tt')
-                            + '</span>'); 
-                    } %>
-                </p>
-            </div>  
-        </div>
-
-        <div class="clearfix exception">
-            <label>Exception</label>
-            <div class="input">
-                <p></p>
-                <pre><code></code></pre>
-            </div>
-        </div>
-
-        <div class="clearfix data">
-            <label>Data</label>
-            <div class="input">
-                <pre class="prettyprint"><code><%- Data || '' %></code></pre>
-            </div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn" value="Done" />
-        </div>
-    </fieldset>
+<script type="text/template" id="dashboard-template">
+<div class="page-header">
+<h1>
+Dashboard
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row dashboard-row">
+<div class="span12 stats"></div>
+</div>
+<div class="row dashboard-row">
+<div class="span6">
+<div class="chart chart-job-status">
+<h3>Job Status - 2 Weeks</h3>
+<div class="chart-contents"></div>
+</div>
+</div>
+<div class="span6">
+<div class="chart chart-worker-load">
+<h3>Worker Load - 2 Weeks</h3>
+<div class="chart-contents"></div>
+</div>
+</div>
+</div>
+<div class="row dashboard-row">
+<div class="span12">
+<div class="chart chart-jobs-per-hour">
+<h3>Jobs Per Hour By Queue - 2 Weeks</h3>
+<div class="chart-contents"</div>
+</div>
+</div>
+</div>
 </script>
-
-<script type="text/template" id="history-list-template">
-    <h1>History</h1>
-
-    <div class="search"></div>
-
-    <div class="list-header">
-        <div class="pagination"></div>
-    </div>
-
-    <table class="list bordered-table zebra-striped">
-        <thead>
-            <tr>
-                <th>Job</th>
-                <th>Schedule</th>
-                <th>Queue</th>
-                <th>Started On</th>
-                <th>Finished On</th>
-                <th>Status</th>
-                <th>Try</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="list-footer">
-        <div class="pagination"></div>
-    </div>
+<script type="text/template" id="history-display-template">
+<fieldset>
+<p class="legend"><%- JobName %></p>
+<div class="field">
+<span>Executed on machine</span>
+<p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
+</div>
+<div class="field">
+<span>Executed by worker</span>
+<p><%- WorkerName || '' %></p>
+</div>
+<div class="field">
+<span>Queued on</span>
+<p>
+<%= String.dateDisplayLight(QueuedOn) %>
+</p>
+</div>
+<div class="field">
+<span>Data</span>
+<pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+</div>
+<div class="field exception">
+<span>Exception</span>
+<% print(String.exceptionDisplay(Exception)); %>
+</div>
+<div class="form-actions">
+<button type="button" class="btn btn-primary">Re-Enqueue Job</button>
+<button type="button" class="btn btn-reset">Done</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
 </script>
-
+<script type="text/template" id="history-re-enqueue-template">
+<fieldset>
+<p class="legend">
+Re-Enqueue Job
+<small><%- JobName %></small>
+</p>
+<div class="alert alert-block alert-error"></div>
+<div class="field">
+<span>Type:</span>
+<code class="field-content"><%- JobType %></code>
+</div>
+<label class="field">
+<span>Queue</span>
+<input type="text" name="QueueName" value="<%- QueueName %>">
+<span class="help-block">Optional. The name of the queue to process the job on.</span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Data</span>
+<textarea class="code" rows="5" name="Data"><%- Data %></textarea>
+<span class="help-block">Well-formed JSON that can be de-serialized into an instance of the specified job type. Leave empty if your job doesn't need any serialized data.</span>
+<span class="error"></span>
+</label>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="Enqueue Job">
+<button type="button" class="btn btn-reset">Cancel</button>
+</div>
+<div><input type="hidden" name="JobType" value="<%- JobType %>"></div>
+</fieldset>
+</script>
 <script type="text/template" id="history-row-template">
-    <td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
-    <td><%- ScheduleName || '' %></td>
-    <td><%- QueueName || '' %></td>
-    <td>
-        <span class="list-date"><% print(StartedOn.toString('MMM d, yyyy')); %></span>
-        <small class="list-time light"><% print(StartedOn.toString('h:mm:ss tt')); %></small>
-    </td>
-    <td>
-        <span class="list-date"><% print(FinishedOn.toString('MMM d, yyyy')); %></span>
-        <small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
-    </td>
-    <td><span class="status"><%- Status %></span></td>
-    <td><%- TryNumber %></td>
+<td class="title-cell">
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
+<small class="code light"><%- JobType %></small>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Schedule</th>
+<td><%- ScheduleName || '' %></td>
+</tr>
+<tr>
+<th>Queue</th>
+<td><%- QueueName || '' %></td>
+</tr>
+<tr>
+<th>Started On</th>
+<td>
+<% print(StartedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(StartedOn.toString('h:mm:ss tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Finished On</th>
+<td>
+<% print(FinishedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(FinishedOn.toString('h:mm:ss tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Status</th>
+<td><span class="status"><% print(String.historyStatusDisplay(Status)); %></span></td>
+</tr>
+<tr>
+<th>Try</th>
+<td><%- TryNumber %></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td><%- ScheduleName || '' %></td>
+<td><%- QueueName || '' %></td>
+<td>
+<span class="list-date"><% print(StartedOn.toString('MMM d, yyyy')); %></span>
+<small class="list-time light"><% print(StartedOn.toString('h:mm:ss tt')); %></small>
+</td>
+<td>
+<span class="list-date"><% print(FinishedOn.toString('MMM d, yyyy')); %></span>
+<small class="list-time light"><% print(FinishedOn.toString('h:mm:ss tt')); %></small>
+</td>
+<td><span class="status"><% print(String.historyStatusDisplay(Status)); %></span></td>
+<td><%- TryNumber %></td>
 </script>
-
-<script type="text/template" id="navigation-item-template">
-    <a href="<%= Url %>">
-        <% if (Count !== null) { print('<span class="count">' + new Number(Count).toAbbreviatedString() + '</span>'); } %>
-        <span class="title"><%- Name %></span>
-    </a>
+<script type="text/template" id="history-list-template">
+<thead>
+<tr>
+<th class="title-cell">Job</th>
+<th>Schedule</th>
+<th>Queue</th>
+<th>Started On</th>
+<th>Finished On</th>
+<th>Status</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody></tbody>
 </script>
-
+<script type="text/template" id="history-template">
+<div class="page-header">
+<h1>
+History
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="list-header">
+<table>
+<tr>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+</td>
+</tr>
+</table>
+</div>
+<div class="list"></div>
+<div class="list-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
+</script>
+<script type="text/template" id="nav-item-template">
+<a href="<%= Url %>">
+<% if (Count !== null) { print('<span class="badge badge-inverse">' + new Number(Count).toAbbreviatedString() + '</span>'); } %>
+<%- Name %>
+</a>
+</script>
 <script type="text/template" id="notice-template">
-    <a class="close" href="javascript:void(0);">×</a>
-    <% if (Title) { print($('<h5/>').text(Title).outerHtml()); } %>
-    <p><%- Message %></p>
+<p>
+<% if (Title) { print($('<strong/>').text(Title).outerHtml()); } %>
+<%- Message %>
+</p>
 </script>
-
-<script type="text/template" id="queued-details-template">
-    <fieldset>
-        <legend><%- JobName %></legend>
-
-        <div class="clearfix data">
-            <label>Data</label>
-            <pre class="prettyprint"><code><%- Data || '' %></code></pre>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn" value="Done" />
-            <button type="button" class="btn">Delete</button>
-        </div>
-
-        <div class="actions delete">
-            <label>Are you sure?</label>
-            <button type="button" class="btn danger">Yes, Delete</button>
-            <button type="reset" class="btn">No, Cancel</button>
-        </div>
-
-        <div><input name="Id" type="hidden" value="<%= Id %>" /></div>
-    </fieldset>
+<script type="text/template" id="pager-template">
+<form action="javascript:void(0);">
+<ul>
+<li class="pagination-previous"><a href="javascript:void(0);">&laquo; Prev</a></li>
+<li>
+<label>
+<span>Page</span>
+<input type="text" name="PageNumber" value="<%- PageNumber %>">
+<span>of</span>
+</label>
+<a class="pagination-count" href="javascript:void(0);"><% print(new Number(PageCount).format('0,000')); %></a>
+<span class="pagination-count"><% print(new Number(PageCount).format('0,000')); %></span>
+</li>
+<li class="pagination-next"><a href="javascript:void(0);">Next &raquo;</a></li>
+</ul>
+</form>
 </script>
-
-<script type="text/template" id="queued-form-template">
-    <fieldset>
-        <legend>Enqueue Job</legend>
-
-        <div class="alert-message block-message error"></div>
-
-        <div class="clearfix">
-            <label for="queued-form-job-type">Job type <em>*</em></label>
-            <div class="input">
-                <input id="queued-form-job-type" type="text" class="span5" name="JobType" value="<%= JobType %>" />
-                <span class="help-block">e.g., <code>MyNamespace.MyJob, MyAssembly</code></span>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="queued-form-queue-name">Queue</label>
-            <div class="input">
-                <input id="queued-form-queue-name" type="text" class="span5" name="QueueName" value="<%= QueueName %>" />
-                <span class="help-block">Optional. The name of the queue to process the job on.</span>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="queued-form-data">Data</label>
-            <div class="input">
-                <textarea id="queued-form-data" class="span5 code" name="Data" rows="5"></textarea>
-                <span class="help-block">
-                    Well-formed JSON that can be de-serialized into an instance of the specified job type. 
-                    Leave empty if your job doesn't need any serialized data.
-                </span>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn primary" value="Enqueue job" />
-            <button type="reset" class="btn">Cancel</button>
-        </div>
-    </fieldset>
+<script type="text/template" id="queue-display-template">
+<fieldset>
+<p class="legend">
+<%- JobName %>
+<small class="code"><%- JobType %></small>
+</p>
+<div class="field">
+<span>Data</span>
+<pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+</div>
+<div class="form-actions">
+<button type="button" class="btn btn-reset">Done</button>
+<a class="btn-delete" href="javascript:void(0);">delete</a>
+</div>
+<div class="form-actions form-actions-delete">
+<label>Are you sure?</label>
+<button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+<button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
 </script>
-
-<script type="text/template" id="queued-list-template">
-    <h1>
-        <button type="button" class="btn icon add success alternative">Enqueue job</button>
-        Queue
-    </h1>
-
-    <div class="search"></div>
-
-    <div class="list-header">
-        <div class="pagination"></div>
-    </div>
-
-    <table class="list bordered-table zebra-striped">
-        <thead>
-            <tr>
-                <th>Job</th>
-                <th>Schedule</th>
-                <th>Queue</th>
-                <th>Queued On</th>
-                <th>Try</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="list-footer">
-        <div class="pagination"></div>
-    </div>
+<script type="text/template" id="queue-edit-template">
+<fieldset>
+<p class="legend">Enqueue Job</p>
+<div class="alert alert-block alert-error"></div>
+<label class="field">
+<span>Job type <em>*</em></span>
+<input type="text" name="JobType">
+<span class="help-block">e.g., <code>MyNamespace.MyJob, MyAssembly</code></span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Queue</span>
+<input type="text" name="QueueName">
+<span class="help-block">Optional. The name of the queue to process the job on.</span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Data</span>
+<textarea class="code" rows="5" name="Data"></textarea>
+<span class="help-block">Well-formed JSON that can be de-serialized into an instance of the specified job type. Leave empty if your job doesn't need any serialized data.</span>
+<span class="error"></span>
+</label>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="Enqueue Job">
+<button type="button" class="btn btn-reset">Cancel</button>
+</div>
+</fieldset>
 </script>
-
-<script type="text/template" id="queued-row-template">
-    <td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
-    <td><%- ScheduleName || '' %></td>
-    <td><%- QueueName || '' %></td>
-    <td>
-        <span class="list-date"><% print(QueuedOn.toString('MMM d, yyyy')); %></span>
-        <small class="list-time light"><% print(QueuedOn.toString('h:mm:ss tt')); %></small>
-    </td>
-    <td><%- TryNumber %></td>
+<script type="text/template" id="queue-row-template">
+<td class="title-cell">
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
+<small class="code light"><%- JobType %></small>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Schedule</th>
+<td><%- ScheduleName || '' %></td>
+</tr>
+<tr>
+<th>Queue</th>
+<td><%- QueueName || '' %></td>
+</tr>
+<tr>
+<th>Queued On</th>
+<td>
+<% print(QueuedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(QueuedOn.toString('h:mm:ss tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Try</th>
+<td><%- TryNumber %></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td><%- ScheduleName || '' %></td>
+<td><%- QueueName || '' %></td>
+<td>
+<span class="list-date"><% print(QueuedOn.toString('MMM d, yyyy')); %></span>
+<small class="list-time light"><% print(QueuedOn.toString('h:mm:ss tt')); %></small>
+</td>
+<td><%- TryNumber %></td>
 </script>
-
-<script type="text/template" id="schedule-form-template">
-    <fieldset>
-        <legend><% if (!Id) { print('Add Schedule'); } else { print('Edit Schedule'); } %></legend>
-
-        <div class="alert-message block-message error"></div>
-
-        <div class="clearfix">
-            <label for="schedule-form-name">Name <em>*</em></label>
-            <div class="input">
-                <input id="schedule-form-name" type="text" class="span5" name="Name" value="<%= Name %>" />
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="schedule-form-queue-name">Queue</label>
-            <div class="input">
-                <input id="schedule-form-queue-name" type="text" class="span5" name="QueueName" value="<%= QueueName %>" />
-                <span class="help-block">Optional. Jobs created by this schedule will be processed on this queue.</span>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="schedule-form-start-on">Start on <em>*</em></label>
-            <div class="input">
-                <input id="schedule-form-start-on" type="text" class="span5 datetime" name="StartOn" value="<%= StartOn %>" />
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="schedule-form-end-on">End on</label>
-            <div class="input">
-                <input id="schedule-form-end-on" type="text" class="span5 datetime" name="EndOn" value="<%= EndOn %>" />
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="schedule-edit-repeat-value">Repeat every</label>
-            <div class="input">
-                <div class="inline-inputs schedule-repeat">
-                    <input type="text" class="span2" id="schedule-edit-repeat-value" name="RepeatValue" value="<%= RepeatValue %>" />
-                    <select name="RepeatType">
-                        <option value="None">Don't repeat</option>
-                        <option value="Seconds">Seconds</option>
-                        <option value="Minutes">Minutes</option>
-                        <option value="Hours">Hours</option>
-                        <option value="Days">Days</option>
-                        <option value="Weeks">Weeks</option>
-                    </select>
-                </div>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label>Enabled <em>*</em></label>
-            <div class="input">
-                <ul class="inputs-list">
-                    <li>
-                        <label>
-                            <input type="radio" name="Enabled" value="true" />
-                            <span>Yes</span> 
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="radio" name="Enabled" value="false" />
-                            <span>No</span>
-                        </label>
-                    </li>
-                </ul>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn primary" value="<% if (!Id) { print('Add Schedule'); } else { print('Update Schedule'); } %>" />
-            <button type="reset" class="btn">Cancel</button>
-            <a class="delete" href="javascript:void(0);">delete</a>
-        </div>
-
-        <div class="actions delete">
-            <label>Are you sure?</label>
-            <button type="button" class="btn danger">Yes, Delete</button>
-            <button type="button" class="btn">No, Cancel</button>
-        </div>
-
-        <div><input name="Id" type="hidden" value="<%= Id %>" /></div>
-    </fieldset>
+<script type="text/template" id="queue-list-template">
+<thead>
+<tr>
+<th class="title-cell">Job</th>
+<th>Schedule</th>
+<th>Queue</th>
+<th>Queued On</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody></tbody>
 </script>
-
-<script type="text/template" id="schedule-list-template">
-    <h1>
-        <button type="button" class="btn icon add success alternative">Add schedule</button>
-        Schedules
-    </h1>
-
-    <div class="search"></div>
-
-    <div class="list-header">
-        <div class="pagination"></div>
-    </div>
-
-    <table class="list bordered-table zebra-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Start On</th>
-                <th>End On</th>
-                <th>Queue</th>
-                <th>Repeat</th>
-                <th>Enabled</th>
-                <th>Jobs</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="list-footer">
-        <div class="pagination"></div>
-    </div>
+<script type="text/template" id="queue-template">
+<div class="page-header">
+<button class="btn btn-success btn-add pull-right">
+<i class="icon-plus icon-white"></i>
+Enqueue job
+</button>
+<h1>
+Queue
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="list-header">
+<table>
+<tr>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+</td>
+</tr>
+</table>
+</div>
+<div class="list"></div>
+<div class="list-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
 </script>
-
-<script type="text/template" id="schedule-row-template">
-    <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
-    <td>
-        <span class="list-date"><% print(StartOn.toString('MMM d, yyyy')); %></span>
-        <small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
-    </td>
-    <td>
-        <% if (EndOn) { print('<span class="list-date">' + EndOn.toString('MMM d, yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
-    </td>
-    <td><% print($.htmlEncode(QueueName || '*')); %></td>
-    <td><% if (RepeatType && RepeatType !== 'None') { print('Every ' + RepeatValue + ' ' + RepeatType.toLowerCase()); } else { print('No'); } %></td>
-    <td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
-    <td><a href="javascript:void(0);" class="manage">Manage (<%- JobCount %>)</a></td>
+<script type="text/template" id="scheduled-jobs-edit-template">
+<fieldset>
+<p class="legend"><% if (!Id) { print('Add Job'); } else { print('Edit Job'); } %></p>
+<div class="alert alert-block alert-error"></div>
+<label class="field">
+<span>Job type <em>*</em></span>
+<input type="text" name="JobType">
+<span class="help-block">e.g., <code>MyNamespace.MyJob, MyAssembly</code></span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Data</span>
+<textarea class="code" rows="5" name="Data"></textarea>
+<span class="help-block">Well-formed JSON that can be de-serialized into an instance of the specified job type. Leave empty if your job doesn't need any serialized data.</span>
+<span class="error"></span>
+</label>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Job'); } else { print('Create Job'); } %>">
+<button type="button" class="btn btn-reset">Cancel</button>
+<a class="btn-delete" href="javascript:void(0);">delete</a>
+</div>
+<div class="form-actions form-actions-delete">
+<label>Are you sure?</label>
+<button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+<button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
 </script>
-
-<script type="text/template" id="scheduled-job-form-template">
-    <fieldset>
-        <legend><% if (!Id) { print('Add Scheduled Job'); } else { print('Edit Scheduled Job'); } %></legend>
-
-        <div class="alert-message block-message error"></div>
-
-        <div class="clearfix">
-            <label for="scheduled-job-form-job-type">Job type <em>*</em></label>
-            <div class="input">
-                <input id="scheduled-job-form-job-type" type="text" class="span5" name="JobType" value="<%= JobType %>" />
-                <span class="help-block">e.g., <code>MyNamespace.MyJob, MyAssembly</code></span>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label>Properties</label>
-            <span class="help-block">Optional. Key/value pairs that will be passed to job instances that implement <code>BlueCollar.IScheduledJob</code>.</span>
-            <div class="input properties"></div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn primary" value="<% if (!Id) { print('Add Job'); } else { print('Update Job'); } %>" />
-            <button type="reset" class="btn">Cancel</button>
-            <a class="delete" href="javascript:void(0);">delete</a>
-        </div>
-
-        <div class="actions delete">
-            <label>Are you sure?</label>
-            <button type="button" class="btn danger">Yes, Delete</button>
-            <button type="button" class="btn">No, Cancel</button>
-        </div>
-
-        <div><input name="Id" type="hidden" value="<%= Id %>" /></div>
-    </fieldset>
+<script type="text/template" id="scheduled-jobs-row-template">
+<td>
+<input type="text" size="2" name="Number"" value="<%- Number %>" data-job-id="<%- Id %>" data-original-value="<%- Number %>">
+</td>
+<td class="title-cell">
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-edit"><%- JobType %></a>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Number</th>
+<td><input type="text" size="2" name="Number"" value="<%- Number %>" data-job-id="<%- Id %>" data-original-value="<%- Number %>"></td>
+</tr>
+<tr>
+<th>Data</th>
+<td><pre class="prettyprint"><code class="language-js"><% if (Data !== '{}') { print(Data); } %></code></pre></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td><pre class="prettyprint"><code class="language-js"><% if (Data !== '{}') { print(Data); } %></code></pre></td>
 </script>
-
-<script type="text/template" id="scheduled-job-list-template">
-    <h1>
-        <button type="button" class="btn icon add success alternative">Add job</button>
-        Scheduled jobs
-        <small>Belonging to schedule <a href="#schedules" class="schedule"></a></small>
-    </h1>
-
-    <div class="search"></div>
-
-    <div class="list-header">
-        <div class="pagination"></div>
-    </div>
-
-    <table class="list bordered-table zebra-striped">
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Properties</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="list-footer">
-        <div class="pagination"></div>
-    </div>
+<script type="text/template" id="scheduled-jobs-list-template">
+<thead>
+<tr>
+<th>#</th>
+<th class="title-cell">Type</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody></tbody>
 </script>
-
-<script type="text/template" id="scheduled-job-row-template">
-    <td><a href="javascript:void(0);" class="edit code"><%- JobType %></a></td>
-    <td><ul class="properties code"></ul></td>
+<script type="text/template" id="scheduled-jobs-template">
+<div class="page-header">
+<button class="btn btn-success btn-add pull-right">
+<i class="icon-plus icon-white"></i>
+Add job
+</button>
+<h1>
+Scheduled Jobs
+<small><%- ApplicationName %></small>
+</h1>
+<h4>
+Belonging to schedule
+<a href="#<%- Fragment %>"><%- ScheduleName %></a>
+</h4>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<form class="table-form" action="javascript:void(0);">
+<div class="list-header">
+<table>
+<tr>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-order">Order</button>
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+</td>
+</tr>
+</table>
+</div>
+<div class="list"></div>
+<div class="list-footer"></div>
+</form>
+</div>
+<div class="span4 details"></div>
+</div>
 </script>
-
-<script type="text/template" id="search-form-template">
-    <input type="text" name="q"  />
-    <input type="submit" class="btn primary" value="Search" />
-    <button type="reset" class="btn">Clear</button>
+<script type="text/template" id="schedules-edit-template">
+<fieldset>
+<p class="legend"><% if (!Id) { print('Add Schedule'); } else { print('Edit Schedule'); } %></p>
+<div class="alert alert-block alert-error"></div>
+<label class="field">
+<span>Name <em>*</em></span>
+<input type="text" name="Name">
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Queue name</span>
+<input type="text" name="QueueName">
+<span class="help-block">Optional. Jobs created by this schedule will be processed on this queue.</span>
+<span class="error"></span>
+</label>
+<label class="field">
+<span>Start on <em>*</em></span>
+<input type="text" name="StartOn">
+<span class="error"></span>
+</label>
+<label class="field">
+<span>End on</span>
+<input type="text" name="EndOn">
+<span class="error"></span>
+</label>
+<div class="field field-schedule-repeat">
+<span>Repeat every</span>
+<input type="text" name="RepeatValue">
+<select name="RepeatType">
+<option value="None">Don't repeat</option>
+<option value="Seconds">Seconds</option>
+<option value="Minutes">Minutes</option>
+<option value="Hours">Hours</option>
+<option value="Days">Days</option>
+<option value="Weeks">Weeks</option>
+</select>
+<span class="error"></span>
+</div>
+<div class="field">
+<span>Enabled <em>*</em></span>
+<label class="radio">
+<input type="radio" name="Enabled" value="true">
+Yes
+</label>
+<label class="radio">
+<input type="radio" name="Enabled" value="false">
+No
+</label>
+<span class="error"></span>
+</div>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Schedule'); } else { print('Create Schedule'); } %>">
+<button type="button" class="btn btn-reset">Cancel</button>
+<a class="btn-delete" href="javascript:void(0);">delete</a>
+</div>
+<div class="form-actions form-actions-delete">
+<label>Are you sure?</label>
+<button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+<button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
 </script>
-
-<script type="text/template" id="worker-form-template">
-    <fieldset>
-        <legend><% if (!Id) { print('Add Worker'); } else { print('Edit Worker'); } %></legend>
-
-        <div class="alert-message block-message error"></div>
-
-        <div class="clearfix">
-            <label for="worker-form-name">Name <em>*</em></label>
-            <div class="input">
-                <input id="worker-form-name" type="text" class="span5" name="Name" value="<%= Name %>" />
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label>Machine <em>*</em></label>
-            <div class="input">
-                <div class="choose">
-                    <span class="help-block">Machine not listed? <a href="javascript:void(0);">Enter one instead</a></span>
-                    <select class="span5"></select>
-                </div>
-                <div class="enter">
-                    <span class="help-block">Enter a name and/or IP address.<br/><a href="javascript:void(0);">Choose an existing machine</a></span>
-                    <div class="inputs-stacked">
-                        <label for="worker-form-machine-name">Machine name</label>
-                        <input id="worker-form-machine-name" type="text" class="span5" name="MachineName" />
-                        <label for="worker-form-machine-address">IP address</label>
-                        <input id="worker-form-machine-address" type="text" class="span5" name="MachineAddress" />
-                    </div>
-                </div>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label for="worker-form-queue-names">Queues</label>
-            <div class="input">
-                <textarea id="worker-form-queue-names" class="span5" name="QueueNames" rows="5"></textarea>
-                <span class="help-block">
-                    Optional. Limit which queues the worker will process by entering one queue name per line. 
-                    Backlist instead of whitelist a queue by prefixing its name with <code style="font-weight:bold;">not:</code>
-                </span>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="clearfix">
-            <label>Startup <em>*</em></label>
-            <div class="input">
-                <ul class="inputs-list">
-                    <li>
-                        <label>
-                            <input type="radio" name="Startup" value="Automatic" />
-                            <span>Automatic</span> 
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="radio" name="Startup" value="Manual" />
-                            <span>Manual</span>
-                        </label>
-                    </li>
-                </ul>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn primary" value="<% if (!Id) { print('Add Worker'); } else { print('Update Worker'); } %>" />
-            <button type="reset" class="btn">Cancel</button>
-            <a class="delete" href="javascript:void(0);">delete</a>
-        </div>
-
-        <div class="actions delete">
-            <label>Are you sure?</label>
-            <button type="button" class="btn danger">Yes, Delete</button>
-            <button type="button" class="btn">No, Cancel</button>
-        </div>
-
-        <div><input name="Id" type="hidden" value="<%= Id %>" /></div>
-    </fieldset>
+<script type="text/template" id="schedules-row-template">
+<td class="title-cell">
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-edit"><%- Name %></a>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Start On</th>
+<td>
+<% print(StartOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(StartOn.toString('h:mm:ss tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>End On</th>
+<td>
+<% if (EndOn) { print(EndOn.toString('MMM d, yyyy') + ' <span class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</span>'); } %>
+</td>
+</tr>
+<tr>
+<th>Queue</th>
+<td><% print($.htmlEncode(QueueName || '*')); %></td>
+</tr>
+<tr>
+<th>Repeat</th>
+<td>
+<% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %>
+</td>
+</tr>
+<tr>
+<th>Enabled</th>
+<td>
+<% if (Enabled) { print('Yes'); } else { print('No'); } %>
+</td>
+</tr>
+<tr>
+<th>Jobs</th>
+<td><a href="#<%- ManageUrl %>">Manage (<%- JobCount %>)</a></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td>
+<span class="list-date"><% print(StartOn.toString('MMM d, yyyy')); %></span>
+<small class="list-time light"><% print(StartOn.toString('h:mm:ss tt')); %></small>
+</td>
+<td>
+<% if (EndOn) { print('<span class="list-date">' + EndOn.toString('MMM d, yyyy') + '</span><small class="list-tim light">' + EndOn.toString('h:mm:ss tt') + '</small>'); } %>
+</td>
+<td><% print($.htmlEncode(QueueName || '*')); %></td>
+<td><% print(String.scheduleRepeatTypeDisplay(RepeatType, RepeatValue)); %></td>
+<td><% if (Enabled) { print('Yes'); } else { print('No'); } %></td>
+<td><a href="#<%- ManageUrl %>">Manage (<%- JobCount %>)</a></td>
 </script>
-
-<script type="text/template" id="worker-list-template">
-    <h1>
-        <button type="button" class="btn icon add success alternative">Add worker</button>
-        Workers
-    </h1>
-
-    <div class="search"></div>
-
-    <div class="list-header">
-        <div class="pagination"></div>
-    </div>
-
-    <table class="list bordered-table zebra-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Machine</th>
-                <th>Queues</th>
-                <th>Status</th>
-                <th>Signal</th>
-                <th>Startup</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="list-footer">
-        <div class="pagination"></div>
-    </div>
+<script type="text/template" id="schedules-list-template">
+<thead>
+<tr>
+<th class="title-cell">Name</th>
+<th>Start On</th>
+<th>End On</th>
+<th>Queue</th>
+<th>Repeat</th>
+<th>Enabled</th>
+<th>Jobs</th>
+</tr>
+</thead>
+<tbody></tbody>
 </script>
-
-<script type="text/template" id="worker-row-template">
-    <td><a href="javascript:void(0);" class="edit"><%- Name %></a></td>
-    <td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
-    <td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
-    <td><%- Status %></td>
-    <td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
-    <td><%- Startup %></td>
+<script type="text/template" id="schedules-template">
+<div class="page-header">
+<button class="btn btn-success btn-add pull-right">
+<i class="icon-plus icon-white"></i>
+Add schedule
+</button>
+<h1>
+Schedules
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="list-header">
+<table>
+<tr>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+</td>
+</tr>
+</table>
+</div>
+<div class="list"></div>
+<div class="list-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
 </script>
-
-<script type="text/template" id="worker-signal-form-template">
-    <fieldset>
-        <legend>
-            Signal <em><%- Name %></em>
-            <small>On machine <% print(String.machineDisplayParens(MachineName, MachineAddress)); %></small>
-        </legend>
-
-        <div class="alert-message block-message error"></div>
-
-        <div class="clearfix">
-            <label>Signal <em>*</em></label>
-            <div class="input">
-                <ul class="inputs-list">
-                    <li>
-                        <label>
-                            <input type="radio" name="Signal" value="Start" />
-                            <span>Start</span> 
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            <input type="radio" name="Signal" value="Stop" />
-                            <span>Stop</span>
-                        </label>
-                    </li>
-                </ul>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn primary" value="Signal Worker" />
-            <button type="reset" class="btn">Cancel</button>
-        </div>
-
-        <div><input name="Id" type="hidden" value="<%= Id %>" /></div>
-    </fieldset>
+<script type="text/template" id="search-template">
+<fieldset>
+<input type="search" name="q" class="span6 search-query">
+<input type="submit" class="btn btn-primary" value="Search">
+<button type="button" class="btn btn-reset">Clear</button>
+</fieldset>
 </script>
-
-<script type="text/template" id="working-details-template">
-    <fieldset>
-        <legend><%- JobName %></legend>
-
-        <div class="clearfix">
-            <label>Executing on machine</label>
-            <p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
-        </div>
-
-        <div class="clearfix">
-            <label>Executing by worker</label>
-            <p><%- WorkerName || '' %></p>
-        </div>
-
-        <div class="clearfix data">
-            <label>Data</label>
-            <pre class="prettyprint"><code><%- Data || '' %></code></pre>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn" value="Done" />
-        </div>
-    </fieldset>
+<script type="text/template" id="workers-edit-template">
+<fieldset>
+<p class="legend"><% if (!Id) { print('Add Worker'); } else { print('Edit Worker'); } %></p>
+<div class="alert alert-block alert-error"></div>
+<label class="field">
+<span>Name <em>*</em></span>
+<input type="text" name="Name">
+<span class="error"></span>
+</label>
+<div class="field field-choose" style="display:none;">
+<span>Machine <em>*</em></span>
+<span class="help-block help-block-above">
+Machine not listed?
+<a href="javascript:void(0);">Enter one instead</a>
+</span>
+<select></select>
+<span class="error"></span>
+</div>
+<div class="field field-stacked field-enter" style="display:none;">
+<span>Machine <em>*</em></span>
+<span class="help-block help-block-above">
+Enter a name and/or IP address.<br>
+<a href="javascript:void(0);">Choose an existing machine</a>
+</span>
+<label>
+<span>Machine name</span>
+<input type="text" name="MachineName">
+</label>
+<label>
+<span>IP address</span>
+<input type="text" name="MachineAddress">
+</label>
+<span class="error"></span>
+</div>
+<label class="field">
+<span>Queues</span>
+<textarea rows="5" name="QueueNames"></textarea>
+<span class="help-block">
+Optional. Limit which queues the worker will process by entering one queue name per line.
+Blacklist instead of whitelist a queue by prefixing its name with <code>not:</code>
+</span>
+<span class="error"></span>
+</label>
+<div class="field">
+<span>Startup <em>*</em></span>
+<label class="radio">
+<input type="radio" name="Startup" value="Automatic">
+Automatic
+</label>
+<label class="radio">
+<input type="radio" name="Startup" value="Manual">
+Manual
+</label>
+<span class="error"></span>
+</div>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Worker'); } else { print('Create Worker'); } %>">
+<button type="button" class="btn btn-reset">Cancel</button>
+<a class="btn-delete" href="javascript:void(0);">delete</a>
+</div>
+<div class="form-actions form-actions-delete">
+<label>Are you sure?</label>
+<button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+<button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
 </script>
-
-<script type="text/template" id="working-list-template">
-    <h1>Working</h1>
-
-    <div class="search"></div>
-
-    <div class="list-header">
-        <div class="pagination"></div>
-    </div>
-
-    <table class="list bordered-table zebra-striped">
-        <thead>
-            <tr>
-                <th>Job</th>
-                <th>Schedule</th>
-                <th>Queue</th>
-                <th>Worker</th>
-                <th>Queued On</th>
-                <th>Signal</th>
-                <th>Try</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="list-footer">
-        <div class="pagination"></div>
-    </div>
+<script type="text/template" id="workers-signal-template">
+<fieldset>
+<p class="legend">
+Signal <em><%- Name %></em>
+<small>On machine <% print(String.machineDisplayParens(MachineName, MachineAddress)); %></small>
+</p>
+<div class="alert alert-block alert-error"></div>
+<div class="field">
+<span>Signal <em>*</em></span>
+<label class="radio">
+<input type="radio" name="Signal" value="Start">
+Start
+</label>
+<label class="radio">
+<input type="radio" name="Signal" value="Stop">
+Stop
+</label>
+<span class="error"></span>
+</div>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="Signal Worker">
+<button type="button" class="btn btn-reset">Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
 </script>
-
+<script type="text/template" id="workers-row-template">
+<td class="title-cell">
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-edit"><%- Name %></a>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Machine</th>
+<td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
+</tr>
+<tr>
+<th>Queues</th>
+<td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
+</tr>
+<tr>
+<th>Status</th>
+<td><%- Status %></td>
+</tr>
+<tr>
+<th>Signal</th>
+<td><% print(String.signalDisplay(Signal)); %></td>
+</tr>
+<tr>
+<th>Startu</th>
+<td><%- Startup %></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
+<td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
+<td><%- Status %></td>
+<td><% print(String.signalDisplay(Signal)); %></td>
+<td><%- Startup %></td>
+</script>
+<script type="text/template" id="workers-list-template">
+<thead>
+<tr>
+<th class="title-cell">Name</th>
+<th>Machine</th>
+<th>Queues</th>
+<th>Status</th>
+<th>Signal</th>
+<th>Startup</th>
+</tr>
+</thead>
+<tbody></tbody>
+</script>
+<script type="text/template" id="workers-template">
+<div class="page-header">
+<button class="btn btn-success btn-add pull-right">
+<i class="icon-plus icon-white"></i>
+Add worker
+</button>
+<h1>
+Workers
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="list-header">
+<table>
+<tr>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+</td>
+</tr>
+</table>
+</div>
+<div class="list"></div>
+<div class="list-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
+</script>
+<script type="text/template" id="working-display-template">
+<fieldset>
+<p class="legend"><%- JobName %></p>
+<div class="field">
+<span>Executing on machine</span>
+<p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
+</div>
+<div class="field">
+<span>Executing by worker</span>
+<p><%- WorkerName || '' %></p>
+</div>
+<div class="field">
+<span>Data</span>
+<pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+</div>
+<div class="form-actions">
+<button type="button" class="btn btn-reset">Done</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
+</script>
+<script type="text/template" id="working-signal-template">
+<fieldset>
+<p class="legend">
+Signal <em><%- JobName %></em>
+<small>On worker <%- WorkerName %></small>
+</p>
+<div class="alert alert-block alert-error"></div>
+<div class="field">
+<span>Signal <em>*</em></span>
+<label class="radio">
+<input type="radio" name="Signal" value="Cancel">
+Cancel
+</label>
+<span class="error"></span>
+</div>
+<div class="form-actions">
+<input type="submit" class="btn btn-primary" value="Signal Job">
+<button type="button" class="btn btn-reset">Cancel</button>
+</div>
+<div><input type="hidden" name="Id" value="<%= Id %>"></div>
+</fieldset>
+</script>
 <script type="text/template" id="working-row-template">
-    <td><a href="javascript:void(0);" class="display"><%- JobName %></a><small class="code light"><%- JobType %></small></td>
-    <td><%- ScheduleName || '' %></td>
-    <td><%- QueueName || '' %></td>
-    <td>
-        <%- WorkerName %>
-        <small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
-    </td>
-    <td>
-        <% print(QueuedOn.toString('MMM d, yyyy h:mm tt')); %>
-        <small class="light"><strong>Started On</strong></span>
-        <small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
-    </td>
-    <td><% if (Signal === 'None') { print('<a class="signal" href="javascript:void(0);">' + $.htmlEncode(Signal) + '</a>'); } else { print($.htmlEncode(Signal)); } %></td>
-    <td><%- TryNumber %></td>
+<td class="title-cell">
+<div class="row-title">
+<a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+<a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
+<small class="code light"><%- JobType %></small>
+</div>
+<div id="row-data-<%- Id %>" class="row-data collapse">
+<table>
+<tbody>
+<tr>
+<th>Schedule</th>
+<td><%- ScheduleName || '' %></td>
+</tr>
+<tr>
+<th>Queue</th>
+<td><%- QueueName || '' %></td>
+</tr>
+<tr>
+<th>Worker</th>
+<td>
+<%- WorkerName %>
+<span class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
+</td>
+</tr>
+<tr>
+<th>Queued On</th>
+<td>
+<% print(QueuedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(QueuedOn.toString('h:mm tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Started On</th>
+<td>
+<% print(StartedOn.toString('MMM d, yyyy')); %>
+<span class="light"><% print(StartedOn.toString('h:mm tt')); %></span>
+</td>
+</tr>
+<tr>
+<th>Signal</th>
+<td><% print(String.signalDisplay(Signal)); %></td>
+</tr>
+<tr>
+<th>Try</th>
+<td><%- TryNumber %></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+<td><%- ScheduleName || '' %></td>
+<td><%- QueueName || '' %></td>
+<td>
+<%- WorkerName %>
+<small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></small>
+</td>
+<td>
+<% print(QueuedOn.toString('MMM d, yyyy h:mm tt')); %>
+<small class="light"><strong>Started On</strong></small>
+<small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
+</td>
+<td><% print(String.signalDisplay(Signal)); %></td>
+<td><%- TryNumber %></td>
 </script>
-
-<script type="text/template" id="working-signal-form-template">
-    <fieldset>
-        <legend>
-            Signal <em><%- JobName %></em>
-            <small>On worker <%- WorkerName %></small>
-        </legend>
-
-        <div class="alert-message block-message error"></div>
-
-        <div class="clearfix">
-            <label>Signal <em>*</em></label>
-            <div class="input">
-                <ul class="inputs-list">
-                    <li>
-                        <label>
-                            <input type="radio" name="Signal" value="Cancel" />
-                            <span>Cancel</span> 
-                        </label>
-                    </li>
-                </ul>
-                <span class="error"></span>
-            </div>
-        </div>
-
-        <div class="actions">
-            <input type="submit" class="btn primary" value="Signal Job" />
-            <button type="reset" class="btn">Cancel</button>
-        </div>
-
-        <div><input name="Id" type="hidden" value="<%= Id %>" /></div>
-    </fieldset>
+<script type="text/template" id="working-list-template">
+<thead>
+<tr>
+<th class="title-cell">Job</th>
+<th>Schedule</th>
+<th>Queue</th>
+<th>Worker</th>
+<th>Queued On</th>
+<th>Signal</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody></tbody>
+</script>
+<script type="text/template" id="working-template">
+<div class="page-header">
+<h1>
+Working
+<small><%- ApplicationName %></small>
+</h1>
+</div>
+<div class="row">
+<div class="span8">
+<div class="search"></div>
+<div class="list-header">
+<table>
+<tr>
+<td class="table-paging table-paging-top"></td>
+<td class="table-actions table-actions-top">
+<button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+</td>
+</tr>
+</table>
+</div>
+<div class="list"></div>
+<div class="list-footer"></div>
+</div>
+<div class="span4 details"></div>
+</div>
 </script>

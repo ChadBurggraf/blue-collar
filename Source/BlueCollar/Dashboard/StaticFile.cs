@@ -10,6 +10,7 @@ namespace BlueCollar.Dashboard
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -25,12 +26,19 @@ namespace BlueCollar.Dashboard
         private string hash, fileNameWithHash, url;
 
         /// <summary>
+        /// Prevents a default instance of the StaticFile class from being created.
+        /// </summary>
+        private StaticFile()
+        {
+        }
+
+        /// <summary>
         /// Gets the contents of the file.
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Array represents raw byte data.")]
         public byte[] Contents
         {
-            get { return this.contents ?? (this.contents = GetContents(this.FileName)); }
+            get { return this.contents ?? (this.contents = GetContents(this.ResourceName)); }
         }
 
         /// <summary>
@@ -42,11 +50,6 @@ namespace BlueCollar.Dashboard
         /// Gets the file's extension, including the leading ".".
         /// </summary>
         public string Extension { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the original file name.
-        /// </summary>
-        public string FileName { get; set; }
 
         /// <summary>
         /// Gets the file's name, including its current hash value.
@@ -61,7 +64,7 @@ namespace BlueCollar.Dashboard
         /// </summary>
         public string Hash
         {
-            get { return this.hash ?? (this.hash = GetHash(this.FileName)); }
+            get { return this.hash ?? (this.hash = GetHash(this.ResourceName)); }
         }
 
         /// <summary>
@@ -70,13 +73,28 @@ namespace BlueCollar.Dashboard
         public string Name { get; private set; }
 
         /// <summary>
+        /// Gets the file's original full path.
+        /// </summary>
+        public string OriginalPath { get; private set; }
+
+        /// <summary>
+        /// Gets the file's path, not including the file name.
+        /// </summary>
+        public string Path { get; private set; }
+
+        /// <summary>
+        /// Gets the name used to identify the file as an embedded resource.
+        /// </summary>
+        public string ResourceName { get; private set; }
+
+        /// <summary>
         /// Gets the file's URL, using <see cref="UrlRoot"/> as its base and
         /// using <see cref="FileNameWithHash"/> as the file name.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
         public string Url
         {
-            get { return this.url ?? (this.url = string.Concat(this.UrlRoot, "/", this.FileNameWithHash)); }
+            get { return this.url ?? (this.url = string.Concat(this.UrlRoot, "/", this.Path, "/", this.FileNameWithHash)); }
         }
 
         /// <summary>
@@ -90,20 +108,20 @@ namespace BlueCollar.Dashboard
         /// root URL and file name.
         /// </summary>
         /// <param name="urlRoot">The root URL to use when generating URLs.</param>
-        /// <param name="fileName">The file name of the embedded static file.</param>
+        /// <param name="path">The path of the embedded static file.</param>
         /// <returns>A new <see cref="StaticFile"/> instance.</returns>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Lowercase is appropriate for URLs.")]
         [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
-        public static StaticFile Create(string urlRoot, string fileName)
+        public static StaticFile Create(string urlRoot, string path)
         {
             if (string.IsNullOrEmpty(urlRoot))
             {
                 throw new ArgumentNullException("urlRoot", "urlRoot must contain a value.");
             }
 
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentNullException("fileName", "fileName must contain a value.");
+                throw new ArgumentNullException("path", "path must contain a value.");
             }
 
             if (Regex.IsMatch(urlRoot, "^~/"))
@@ -116,33 +134,35 @@ namespace BlueCollar.Dashboard
                 urlRoot = urlRoot.Substring(0, urlRoot.Length - 1);
             }
 
-            if (Regex.IsMatch(fileName, "^~/"))
+            if (Regex.IsMatch(path, "^~/"))
             {
-                fileName = fileName.Substring(2);
+                path = path.Substring(2);
             }
 
-            urlRoot = urlRoot.ToLowerInvariant();
-            fileName = fileName.ToLowerInvariant();
-            string ext = Path.GetExtension(fileName);
+            path = path.ToLowerInvariant();
+            string[] pathParts = path.Split('/');
+            string ext = System.IO.Path.GetExtension(path);
             
             return new StaticFile()
             {
                 ContentType = GetContentType(ext),
                 Extension = ext,
-                FileName = fileName,
-                Name = Path.GetFileNameWithoutExtension(fileName),
-                UrlRoot = urlRoot
+                OriginalPath = path,
+                Name = System.IO.Path.GetFileNameWithoutExtension(path),
+                Path = pathParts.Length > 1 ? string.Join("/", pathParts.Take(pathParts.Length - 1).ToArray()) : string.Empty,
+                ResourceName = string.Concat("BlueCollar.Dashboard.Static.", string.Join(".", pathParts)),
+                UrlRoot = urlRoot.ToLowerInvariant()
             };
         }
 
         /// <summary>
         /// Loads the contents of an embedded static file and converts it to a string.
         /// </summary>
-        /// <param name="fileName">The name of the file to load.</param>
+        /// <param name="name">The name of the file to load.</param>
         /// <returns>The loaded file contents as a string.</returns>
-        public static string GetContentsAsString(string fileName)
+        public static string GetContentsAsString(string name)
         {
-            return Encoding.UTF8.GetString(GetContents(fileName));
+            return Encoding.UTF8.GetString(GetContents(name));
         }
 
         /// <summary>
@@ -171,14 +191,6 @@ namespace BlueCollar.Dashboard
                 case ".HTML":
                 case ".XSLT":
                     return "text/html";
-                case ".EOT":
-                    return "application/vnd.bw-fontobject";
-                case ".SVG":
-                    return "image/svg+xml";
-                case ".TTF":
-                    return "application/x-font-ttf";
-                case ".WOFF":
-                    return "application/x-woff";
                 default:
                     return "application/octet-stream";
             }
@@ -187,17 +199,17 @@ namespace BlueCollar.Dashboard
         /// <summary>
         /// Gets the hash value of the current contents of the embedded static file with the given name.
         /// </summary>
-        /// <param name="fileName">The name of the file to get the hash of.</param>
+        /// <param name="name">The name of the file to get the hash of.</param>
         /// <returns>A file hash.</returns>
         [SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Lowercase is appropriate for MD5 hashes.")]
-        public static string GetHash(string fileName)
+        public static string GetHash(string name)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("fileName", "fileName must contain a value.");
+                throw new ArgumentNullException("name", "name must contain a value.");
             }
 
-            string key = string.Concat("BlueCollar.Dashboard.StaticFileHandler.Hash.", fileName).ToUpperInvariant();
+            string key = string.Concat("BlueCollar.Dashboard.StaticFileHandler.Hash.", name).ToUpperInvariant();
             string hash = HttpRuntime.Cache[key] as string;
 
             if (string.IsNullOrEmpty(hash))
@@ -207,7 +219,7 @@ namespace BlueCollar.Dashboard
 
                 using (MD5 hasher = MD5.Create())
                 {
-                    buffer = hasher.ComputeHash(GetContents(fileName));
+                    buffer = hasher.ComputeHash(GetContents(name));
                 }
 
                 foreach (byte b in buffer)
@@ -233,22 +245,22 @@ namespace BlueCollar.Dashboard
         /// <summary>
         /// Loads the contents of an embedded static file into a buffer and returns it.
         /// </summary>
-        /// <param name="fileName">The name of the file to load.</param>
+        /// <param name="name">The name of the file to load.</param>
         /// <returns>The loaded file contents.</returns>
-        private static byte[] GetContents(string fileName)
+        private static byte[] GetContents(string name)
         {
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException("fileName", "fileName must contain a value.");
+                throw new ArgumentNullException("name", "name must contain a value.");
             }
 
             byte[] buffer;
 
-            using (Stream stream = typeof(StaticFileHandler).Assembly.GetManifestResourceStream("BlueCollar.Dashboard.Static." + fileName))
+            using (Stream stream = typeof(StaticFileHandler).Assembly.GetManifestResourceStream(name))
             {
                 if (stream == null)
                 {
-                    throw new FileNotFoundException("The specified file is not a valid embedded static file resource.", fileName);
+                    throw new FileNotFoundException("The specified file is not a valid embedded static file resource.", name);
                 }
 
                 buffer = new byte[stream.Length];

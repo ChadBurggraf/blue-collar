@@ -1,0 +1,195 @@
+﻿<script type="text/template" id="workers-edit-template">
+    <fieldset>
+        <p class="legend"><% if (!Id) { print('Add Worker'); } else { print('Edit Worker'); } %></p>
+
+        <div class="alert alert-block alert-error"></div>
+
+        <label class="field">
+            <span>Name <em>*</em></span>
+            <input type="text" name="Name">
+            <span class="error"></span>
+        </label>
+
+        <div class="field field-choose" style="display:none;">
+            <span>Machine <em>*</em></span>
+            <span class="help-block help-block-above">
+                Machine not listed? 
+                <a href="javascript:void(0);">Enter one instead</a>
+            </span>
+            <select></select>
+            <span class="error"></span>
+        </div>
+
+        <div class="field field-stacked field-enter" style="display:none;">
+            <span>Machine <em>*</em></span>
+            <span class="help-block help-block-above">
+                Enter a name and/or IP address.<br>
+                <a href="javascript:void(0);">Choose an existing machine</a>
+            </span>
+            <label>
+                <span>Machine name</span>
+                <input type="text" name="MachineName">
+            </label>
+            <label>
+                <span>IP address</span>
+                <input type="text" name="MachineAddress">
+            </label>
+            <span class="error"></span>
+        </div>
+
+        <label class="field">
+            <span>Queues</span>
+            <textarea rows="5" name="QueueNames"></textarea>
+            <span class="help-block">
+                Optional. Limit which queues the worker will process by entering one queue name per line. 
+                Blacklist instead of whitelist a queue by prefixing its name with <code>not:</code>
+            </span>
+            <span class="error"></span>
+        </label>
+
+        <div class="field">
+            <span>Startup <em>*</em></span>
+            <label class="radio">
+                <input type="radio" name="Startup" value="Automatic">
+                Automatic
+            </label>
+            <label class="radio">
+                <input type="radio" name="Startup" value="Manual">
+                Manual
+            </label>
+            <span class="error"></span>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="<% if (Id) { print('Update Worker'); } else { print('Create Worker'); } %>">
+            <button type="button" class="btn btn-reset">Cancel</button>
+            <a class="btn-delete" href="javascript:void(0);">delete</a>
+        </div>
+
+        <div class="form-actions form-actions-delete">
+            <label>Are you sure?</label>
+            <button type="button" class="btn btn-danger btn-confirm-delete">Yes, Delete</button>
+            <button type="button" class="btn btn-cancel-delete">No, Cancel</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="workers-signal-template">
+    <fieldset>
+        <p class="legend">
+            Signal <em><%- Name %></em>
+            <small>On machine <% print(String.machineDisplayParens(MachineName, MachineAddress)); %></small>
+        </p>
+
+        <div class="alert alert-block alert-error"></div>
+
+        <div class="field">
+            <span>Signal <em>*</em></span>
+            <label class="radio">
+                <input type="radio" name="Signal" value="Start">
+                Start
+            </label>
+            <label class="radio">
+                <input type="radio" name="Signal" value="Stop">
+                Stop
+            </label>
+            <span class="error"></span>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="Signal Worker">
+            <button type="button" class="btn btn-reset">Cancel</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="workers-row-template">
+    <td class="title-cell">
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-edit"><%- Name %></a>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Machine</th>
+                        <td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
+                    </tr>
+                    <tr>
+                        <th>Queues</th>
+                        <td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td><%- Status %></td>
+                    </tr>
+                    <tr>
+                        <th>Signal</th>
+                        <td><% print(String.signalDisplay(Signal)); %></td>
+                    </tr>
+                    <tr>
+                        <th>Startu</th>
+                        <td><%- Startup %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
+    <td><% print(String.machineDisplayLight(MachineName, MachineAddress)); %></td>
+    <td><% print($.htmlEncode(String.queueNamesDisplay(QueueNames))); %></td>
+    <td><%- Status %></td>
+    <td><% print(String.signalDisplay(Signal)); %></td>
+    <td><%- Startup %></td>
+</script>
+
+<script type="text/template" id="workers-list-template">
+    <thead>
+        <tr>
+            <th class="title-cell">Name</th>
+            <th>Machine</th>
+            <th>Queues</th>
+            <th>Status</th>
+            <th>Signal</th>
+            <th>Startup</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="workers-template">
+    <div class="page-header">
+        <button class="btn btn-success btn-add pull-right">
+            <i class="icon-plus icon-white"></i>
+            Add worker
+        </button>
+        <h1>
+            Workers
+            <small><%- ApplicationName %></small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+            <div class="search"></div>
+            <div class="list-header">
+                <table>
+                    <tr>
+                        <td class="table-paging table-paging-top"></td>
+                        <td class="table-actions table-actions-top">
+                            <button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="list"></div>
+            <div class="list-footer"></div>
+        </div>
+
+        <div class="span4 details"></div>
+    </div>
+</script>

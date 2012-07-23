@@ -13,7 +13,7 @@ namespace BlueCollar.Examples
     /// <summary>
     /// Sleep job.
     /// </summary>
-    public sealed class SleepJob : ScheduledJob
+    public sealed class SleepJob : Job
     {
         private int? duration;
 
@@ -24,19 +24,7 @@ namespace BlueCollar.Examples
         {
             get
             {
-                if (this.duration == null)
-                {
-                    if (!string.IsNullOrEmpty(Properties["Duration"]))
-                    {
-                        this.duration = Convert.ToInt32(Properties["Duration"], CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        this.duration = 0;
-                    }
-                }
-
-                return this.duration.Value;
+                return (this.duration ?? (this.duration = 0)).Value;
             }
 
             set
@@ -51,6 +39,24 @@ namespace BlueCollar.Examples
         public override string Name
         {
             get { return "Sleep"; }
+        }
+
+        /// <summary>
+        /// Gets the maximum timeout, in miliseconds, this job is allowed to run in.
+        /// </summary>
+        public override int Timeout
+        {
+            get
+            {
+                if (this.Duration > 0)
+                {
+                    return this.Duration + 10;
+                }
+                else
+                {
+                    return base.Timeout;
+                }
+            }
         }
 
         /// <summary>

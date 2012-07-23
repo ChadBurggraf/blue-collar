@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<jspack src="BlueCollar.Dashboard\Static\Src\Css" target="BlueCollar.Dashboard\Static\Css" actions="false">
+  <outputAction name="MinifyCss" executable="java.exe" arguments="-jar ..\Tools\JSPack\yuicompressor-2.4.2.jar --type css" />
+
+  <output path="collar.css">
+    <action name="MinifyCss"/>
+    <input path="bootstrap.css"/>
+    <input path="bootstrap-responsive.css"/>
+    <input path="prettify.css"/>
+    <input path="copyright.css"/>
+    <input path="collar.css"/>
+  </output>
+
+  <output path="test.css">
+    <action name="MinifyCss"/>
+    <input path="qunit.css"/>
+    <input path="copyright.css"/>
+    <input path="test.css"/>
+  </output>
+</jspack>

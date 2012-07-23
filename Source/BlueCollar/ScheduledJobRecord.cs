@@ -15,6 +15,11 @@ namespace BlueCollar
     public sealed class ScheduledJobRecord
     {
         /// <summary>
+        /// Gets or sets the serialized job data.
+        /// </summary>
+        public string Data { get; set; }
+
+        /// <summary>
         /// Gets or sets the scheduled job's ID.
         /// </summary>
         public long? Id { get; set; }
@@ -25,9 +30,9 @@ namespace BlueCollar
         public string JobType { get; set; }
 
         /// <summary>
-        /// Gets or sets the scheduled job's properties string value.
+        /// Gets or sets the job's number.
         /// </summary>
-        public string Properties { get; set; }
+        public long Number { get; set; }
 
         /// <summary>
         /// Gets or sets the schedule the scheduled job belongs to.

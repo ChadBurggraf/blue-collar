@@ -105,7 +105,6 @@
     <Compile Include="SQLiteRepositoryTests.cs" />
     <Compile Include="TestJob.cs" />
     <Compile Include="TestNoOpRepository.cs" />
-    <Compile Include="TestScheduledJob.cs" />
     <Compile Include="WorkerTests.cs" />
   </ItemGroup>
   <ItemGroup>

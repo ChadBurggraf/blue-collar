@@ -66,6 +66,26 @@ namespace BlueCollar.Dashboard
             AreaRegistration.RegisterAllAreas();
             RegisterRoutes(RouteTable.Routes);
 
+            /*using (IRepository repository = new ConfigurationRepositoryFactory().Create())
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    var job = new BlueCollar.Examples.SleepJob() { Duration = 60000 };
+
+                    repository.CreateQueued(
+                        new QueueRecord()
+                        {
+                            ApplicationName = BlueCollarSection.Section.ApplicationName,
+                            Data = JobSerializer.Serialize(job),
+                            JobName = job.Name,
+                            JobType = JobSerializer.GetTypeName(job.GetType()),
+                            QueuedOn = DateTime.UtcNow,
+                            TryNumber = 1
+                        },
+                        null);
+                }
+            }*/
+
             if (!BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
             {
                 this.machine = new Machine(new NLogger());

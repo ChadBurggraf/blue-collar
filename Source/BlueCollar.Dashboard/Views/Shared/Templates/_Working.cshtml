@@ -1,0 +1,163 @@
+﻿<script type="text/template" id="working-display-template">
+    <fieldset>
+        <p class="legend"><%- JobName %></p>
+
+        <div class="field">
+            <span>Executing on machine</span>
+            <p><% print(String.machineDisplayLight(WorkerMachineName, WorkerMachineAddress)); %></p>
+        </div>
+
+        <div class="field">
+            <span>Executing by worker</span>
+            <p><%- WorkerName || '' %></p>
+        </div>
+
+        <div class="field">
+            <span>Data</span>
+            <pre class="prettyprint"><code class="language-js"><%- Data || '{}' %></code></pre>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-reset">Done</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="working-signal-template">
+    <fieldset>
+        <p class="legend">
+            Signal <em><%- JobName %></em>
+            <small>On worker <%- WorkerName %></small>
+        </p>
+
+        <div class="alert alert-block alert-error"></div>
+
+        <div class="field">
+            <span>Signal <em>*</em></span>
+            <label class="radio">
+                <input type="radio" name="Signal" value="Cancel">
+                Cancel
+            </label>
+            <span class="error"></span>
+        </div>
+
+        <div class="form-actions">
+            <input type="submit" class="btn btn-primary" value="Signal Job">
+            <button type="button" class="btn btn-reset">Cancel</button>
+        </div>
+
+        <div><input type="hidden" name="Id" value="<%= Id %>"></div>
+    </fieldset>
+</script>
+
+<script type="text/template" id="working-row-template">
+    <td class="title-cell">
+        <div class="row-title">
+            <a class="btn btn-row-data" data-toggle="collapse" data-target="#row-data-<%- Id %>"><i class="icon-chevron-right"></i></a>
+            <a href="javascript:void(0);" class="btn-display"><%- JobName %></a>
+            <small class="code light"><%- JobType %></small>
+        </div>
+        <div id="row-data-<%- Id %>" class="row-data collapse">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Schedule</th>
+                        <td><%- ScheduleName || '' %></td>
+                    </tr>
+                    <tr>
+                        <th>Queue</th>
+                        <td><%- QueueName || '' %></td>
+                    </tr>
+                    <tr>
+                        <th>Worker</th>
+                        <td>
+                            <%- WorkerName %>
+                            <span class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Queued On</th>
+                        <td>
+                            <% print(QueuedOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(QueuedOn.toString('h:mm tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Started On</th>
+                        <td>
+                            <% print(StartedOn.toString('MMM d, yyyy')); %>
+                            <span class="light"><% print(StartedOn.toString('h:mm tt')); %></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Signal</th>
+                        <td><% print(String.signalDisplay(Signal)); %></td>
+                    </tr>
+                    <tr>
+                        <th>Try</th>
+                        <td><%- TryNumber %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </td>
+    <td><%- ScheduleName || '' %></td>
+    <td><%- QueueName || '' %></td>
+    <td>
+        <%- WorkerName %>
+        <small class="light"><% print(String.machineDisplayParens(WorkerMachineName, WorkerMachineAddress)); %></small>
+    </td>
+    <td>
+        <% print(QueuedOn.toString('MMM d, yyyy h:mm tt')); %>
+        <small class="light"><strong>Started On</strong></small>
+        <small class="light"><% print(StartedOn.toString('MMM d, yyyy h:mm tt')); %></small>
+    </td>
+    <td><% print(String.signalDisplay(Signal)); %></td>
+    <td><%- TryNumber %></td>
+</script>
+
+<script type="text/template" id="working-list-template">
+    <thead>
+        <tr>
+            <th class="title-cell">Job</th>
+            <th>Schedule</th>
+            <th>Queue</th>
+            <th>Worker</th>
+            <th>Queued On</th>
+            <th>Signal</th>
+            <th>Try</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</script>
+
+<script type="text/template" id="working-template">
+    <div class="page-header">
+        <h1>
+            Working
+            <small><%- ApplicationName %></small>
+        </h1>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+            <div class="search"></div>
+            <div class="list-header">
+                <table>
+                    <tr>
+                        <td class="table-paging table-paging-top"></td>
+                        <td class="table-actions table-actions-top">
+                            <button type="button" class="btn btn-refresh"><i class="icon-refresh"></i></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="list"></div>
+            <div class="list-footer"></div>
+        </div>
+
+        <div class="span4 details"></div>
+    </div>
+</script>
