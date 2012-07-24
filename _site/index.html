@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title> Blue Collar  v2.0</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/assets/css/bootstrap-responsive.min.css">
+		<link rel="stylesheet" href="/assets/css/docs.css">
+		<!--[if lt IE 9]>
+      	<script src="/assets/js/html5.js"></script>
+    	<![endif]-->
+	</head>
+	<body>
+
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span3">
+					<div class="sidebar">
+						<ul class="nav nav-list">
+							<li class="active">
+								<a href="/">Introduction</a>
+							</li>
+							<li class="divider"></li>
+							<li class="nav-header">Getting Started</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div class="span9">
+					<div class="page-header">
+						<h1>
+							<img src="/assets/img/logo-header.png" width="36" height="36" alt="">
+							<span>Blue Collar</span>
+						</h1>
+					</div>
+
+					<div class="content">
+						<h2>Introduction</h2>
+<p>Blue Collar is a system for performing backround work in .<span class="caps">NET</span> applications. It is essentially a job queue + job processor that relies on a database as its queue transport and storage medium. Some interesting things Blue Collar brings to the table include:</p>
+<ul>
+	<li>Single assembly with zero external dependencies.</li>
+	<li>Full-featured, web-based management dashboard is embedded into the assembly and is easy to configure.</li>
+	<li>Easy to distribute across machines.</li>
+	<li>Easy to share machines across applications, even using the same database.</li>
+	<li>Jobs require nothing more than inheriting from a base <code>Job</code> class and implementing <code>Execute()</code>.</li>
+</ul>
+<p>Although a polling, database-backed queue is not ideal for every situation, this system is flexible, easy to use, and can handle reasonably large throughput.</p>
+<p>The project is <a href="https://github.com/ChadBurggraf/blue-collar">hosted on GitHub</a>, and is available for use under the <a href="http://opensource.org/comment/935"><span class="caps">MIT</span> software license</a>.</p>
+<p>You are encrouaged to report bugs and discuss features on the <a href="https://github.com/ChadBurggraf/blue-collar/issues">GitHub Issues page</a>, and, of course, patches are always welcome.</p>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

@@ -1,0 +1,6 @@
+auto: true
+basePath:
+blueCollarVersion: 2.0
+pygments: true
+server: true
+version: 1.0

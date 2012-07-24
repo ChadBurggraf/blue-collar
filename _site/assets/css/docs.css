@@ -1,0 +1,46 @@
+body {
+	font-family: Helvetica Nue, Helvetica, Arial, sans-serif;
+	background: #f4f4f4 url(../img/background.png);
+}
+
+h1 {
+	position: relative;
+    font-family: "Arial Black", Arial, sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    color: #e5e5e5;
+    text-shadow: 0 1px 0 rgba(255,255,255,1);
+}
+
+h1 img {
+	position: absolute;
+	top: 1px;
+}
+
+h1 span {
+	padding-left: 36px;
+}
+
+.container-fluid {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.content {
+	padding-right: 20px;
+}
+
+.sidebar {
+	padding: 19px 0;
+	margin-bottom: 36px;
+	background-color: #fff;
+	border: 1px solid #c5c5c5;
+	border-top-width: 0;
+	border-left-width: 0;
+	-webkit-border-bottom-right-radius: 4px;
+	-moz-border-radius-bottomright: 4px;
+	border-bottom-right-radius: 4px;
+	-moz-box-shadow: 0 0 20px #ccc;
+	-webkit-box-shadow: 0 0 20px #ccc;
+	box-shadow: 0 0 20px #ccc;
+}
