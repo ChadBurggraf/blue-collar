@@ -154,18 +154,16 @@ namespace BlueCollar.Console
             {
                 if (bootstraps != null)
                 {
+                    bootstraps.Pushdown(false);
                     bootstraps.Dispose();
                     bootstraps = null;
                 }
 
                 if (inputThread != null)
                 {
-                    inputThread.Abort();
-                    inputThread = null;
+                    inputThread.IsBackground = true;
                 }
             }
-
-            ((Process)sender).Dispose();
         }
 
         /// <summary>

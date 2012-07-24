@@ -94,7 +94,6 @@ namespace BlueCollar.Console
                 { "config=", "the path to the configuration file to use, if not the default for the application.", v => config = v },
                 { "v|verbose", "write logging information to standard out.", v => verbose = v != null },
                 { "thresh=", "the threshold, in milliseconds, to compress file system events into.", v => thresh = v },
-                { "pid=", "the ID of the parent process, if applicable.", v => pid = v },
                 { "h|?|help", "display usage help.", v => help = v != null }
             };
 
@@ -127,29 +126,19 @@ namespace BlueCollar.Console
                         result.IsValid = false;
                     }
 
+                    pid = Environment.GetEnvironmentVariable("COLLARSERVICEPID");
+
                     if (!string.IsNullOrEmpty(pid))
                     {
-                        const string PidErrorMessage = "Parent process ID must be an integer value greater than 0.";
-
                         try
                         {
                             result.ParentProcessId = Convert.ToInt32(pid, CultureInfo.InvariantCulture);
-
-                            if (result.ParentProcessId <= 0)
-                            {
-                                result.IsValid = false;
-                                result.ParseErrorMessage = PidErrorMessage;
-                            }
                         }
                         catch (FormatException)
                         {
-                            result.IsValid = false;
-                            result.ParseErrorMessage = PidErrorMessage;
                         }
                         catch (OverflowException)
                         {
-                            result.IsValid = false;
-                            result.ParseErrorMessage = PidErrorMessage;
                         }
                     }
 

@@ -6,7 +6,8 @@
     <ArtifactDir>$(MSBuildProjectDirectory)\Artifacts</ArtifactDir>
     <AssemblyOriginatorKeyFile>$(MSBuildProjectDirectory)\BlueCollar.snk</AssemblyOriginatorKeyFile>
     <BuildDir>$(MSBuildProjectDirectory)\Build</BuildDir>
-    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <CompressAssets>true</CompressAssets>
+    <Configuration>Release</Configuration>
     <ExamplesDir>$(MSBuildProjectDirectory)\Examples</ExamplesDir>
     <InstallerDir>$(MSBuildProjectDirectory)\Source\Installer</InstallerDir>
     <LibDir>$(MSBuildProjectDirectory)\Lib</LibDir>
@@ -15,6 +16,9 @@
     <TempDir>$(MSBuildProjectDirectory)\Temp</TempDir>
     <ToolsDir>$(MSBuildProjectDirectory)\Tools</ToolsDir>
     <WixDir>$(MSBuildExtensionsPath32)\..\Windows Installer XML v3.5\bin</WixDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' != 'Release'">
+    <CompressAssets>false</CompressAssets>
   </PropertyGroup>
   <PropertyGroup Condition="Exists('$(AssemblyOriginatorKeyFile)') And '$(Configuration)' == 'Release'">
     <SignAssembly>true</SignAssembly>
@@ -42,12 +46,12 @@
 
     <!-- .NET 4.0 reference assemblies. -->
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net40"/>
-    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);CompressAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);CompressAssets=$(CompressAssets);MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedSQLiteRepositoryOutputPath=$(BuildDir)\Reference Assemblies\Net40"/>
 
     <!-- .NET 3.5 reference assemblies. -->
     <MakeDir Directories="$(BuildDir)\Reference Assemblies\Net35"/>
-    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);CompressAssets=true;MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
+    <MSBuild Projects="$(SourceDir)\BlueCollar\BlueCollar.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);CompressAssets=$(CompressAssets);MergedLibraryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
     <MSBuild Projects="$(SourceDir)\BlueCollar.SQLiteRepository\BlueCollar.SQLiteRepository.Net35.csproj" Targets="Clean;Build" Properties="Configuration=$(Configuration);SignAssembly=$(SignAssembly);AssemblyOriginatorKeyFile=$(AssemblyOriginatorKeyFile);MergedSQLiteRepositoryOutputPath=$(BuildDir)\Reference Assemblies\Net35"/>
 
     <!-- Root service. -->

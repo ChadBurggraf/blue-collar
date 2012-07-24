@@ -45,8 +45,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B55F51
 		Shared\FileSystemWatcherMode.cs = Shared\FileSystemWatcherMode.cs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.ConsoleTest", "BlueCollar.ConsoleTest\BlueCollar.ConsoleTest.csproj", "{0FA188B5-272B-45F8-8C05-F432DD6D28E9}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = BlueCollar.vsmdi
@@ -141,16 +139,6 @@ Global
 		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}.Release|x86.ActiveCfg = Release|Any CPU
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Debug|x86.ActiveCfg = Debug|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Debug|x86.Build.0 = Debug|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Release|Any CPU.ActiveCfg = Release|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Release|Mixed Platforms.Build.0 = Release|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Release|x86.ActiveCfg = Release|x86
-		{0FA188B5-272B-45F8-8C05-F432DD6D28E9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
