@@ -645,6 +645,16 @@
   color: #205791;
 }
 
+.table-striped tbody tr:nth-child(even) td,
+.table-striped tbody tr:nth-child(even) th {
+  background-color: #f9f9f9;
+}
+
+.table-striped tbody tr:nth-child(odd) td,
+.table-striped tbody tr:nth-child(odd) th {
+  background-color: transparent;
+}
+
 @media (min-width: 1200px) {
   .alert-notice .container {
     width: 1170px;
