@@ -19,7 +19,7 @@ Next, add references to `BlueCollar.dll` and `BlueCollar.SQLiteRepository.dll` t
 
 #### Configuration
 
-Once youre references are added, you need to do a little (promise!) configuration. At a minimum, you need to tell Blue Collar the name of your application. We're also going to configure the web management dashboard by registering its handler.
+Once your references are added, you need to do a little (promise!) configuration. At a minimum, you need to tell Blue Collar the name of your application. We're also going to configure the web management dashboard by registering its handler.
 
 First, register the `blueCollar` configuration section under `<configSections/>`:
 
@@ -43,7 +43,7 @@ Finally, register the web management dashboard handler. By default, the handler 
 
 #### Creating a Machine In-Process
 
-Blue Collar can create a `Machine` (our name for the service used to coordinate workers on a computer for an application) inside of the ASP.NET worker process. This ability is useful for low-volume scenarios, development environments, and getting up and running quickly.
+Blue Collar can create a `Machine` (our name for the service used to coordinate workers on a computer for an application) inside of the ASP.NET process. This ability is useful for low-volume scenarios, development environments, and getting up and running quickly.
 
 To mange this in a flexible way, we'll boot up our `Machine` on application start, but only if we've configured execution by the service to be **disabled** (the default). That way, when we want to switch to service-based execution, we just have to make a quick configuration update.
 
@@ -120,3 +120,9 @@ Now, in order to send an actual email, we'd do something similar to the followin
         Subject = "Hello, World!",
         Body = "This email was sent in the background, freeing up my application to be more responsive!"
     }.Enqueue();
+
+## License
+
+Licensed under the [MIT](http://www.opensource.org/licenses/mit-license.html) license.
+
+Copyright (c) 2012 Chad Burggraf.
