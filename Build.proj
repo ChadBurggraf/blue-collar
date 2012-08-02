@@ -99,8 +99,8 @@
     <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
     <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
     
-    <!-- Package up the example projects. -->
-    <CallTarget Targets="PackageExamples"/>
+    <!-- Copy over the README. -->
+    <Copy SourceFiles="$(RootDir)\README.md" DestinationFolder="$(BuildDir)"/>
   </Target>
 
   <Target Name="Clean">
@@ -149,7 +149,7 @@
     <RemoveDir Directories="$(DocsStagingDir)"/>
   </Target>
 
-  <Target Name="Package" DependsOnTargets="Clean;Help;Build;SetPackageVersion">
+  <Target Name="Package" DependsOnTargets="Clean;Help;Build;PackageExamples;SetPackageVersion">
     <ItemGroup>
       <BuildFiles Include="$(BuildDir)\**\*"/>
       <InstallerFiles Include="$(SourceDir)\Installer\**\*"/>

@@ -91,6 +91,9 @@
           <Component Id="Examples" Guid="B32A1974-4B94-4E19-B240-8506E0FD42A0">
             <File Id="ExamplesZip" Name="Examples.zip" DiskId="1" Source="Examples.zip" KeyPath="yes" />
           </Component>
+          <Component Id="Readme" Guid="CF57F64E-C192-4265-A8F2-1CC920646D30">
+            <File Id="ReadmeMd" Name="README.md" DiskId="1" Source="README.md" KeyPath="yes" />
+          </Component>
         </Directory>
       </Directory>
     </Directory>
@@ -106,6 +109,7 @@
       <ComponentRef Id="Servicex86Net40" />
       <ComponentRef Id="Help" />
       <ComponentRef Id="Examples" />
+      <ComponentRef Id="Readme" />
     </Feature>
     <UI>
       <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />

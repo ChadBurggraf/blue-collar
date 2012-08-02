@@ -51,7 +51,7 @@ If your application doesn't have one already, create a `Global.asax` file and ad
 
 Next, create a class variable called `machine`:
 
-    private Machine machine;
+    private static Machine machine;
 
 And add or update `void Application_Start()`:
 
