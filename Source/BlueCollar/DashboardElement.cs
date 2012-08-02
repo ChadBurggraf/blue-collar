@@ -27,7 +27,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets the URL the dashboard handler is configured at.
         /// </summary>
-        [ConfigurationProperty("handlerUrl", IsRequired = false, DefaultValue = "~/collar.ashx")]
+        [ConfigurationProperty("handlerUrl", IsRequired = false, DefaultValue = "~/collar")]
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Configuration property.")]
         public string HandlerUrl
         {

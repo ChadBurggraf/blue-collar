@@ -64,7 +64,7 @@ WHERE
 
             if (string.IsNullOrEmpty(connectionString))
             {
-                connectionString = "data source=BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3";
+                connectionString = "data source=|DataDirectory|BlueCollar.sqlite;synchronous=Off;journal mode=Off;version=3";
             }
 
             SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder(connectionString);

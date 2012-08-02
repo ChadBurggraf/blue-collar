@@ -42,6 +42,14 @@ namespace BlueCollar
         /// <summary>
         /// Initializes a new instance of the Machine class.
         /// </summary>
+        public Machine()
+            : this(new NullLogger())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the Machine class.
+        /// </summary>
         /// <param name="logger">The logger to use when logging messages.</param>
         public Machine(ILogger logger) : this(
             logger,
@@ -366,8 +374,6 @@ namespace BlueCollar
                     Worker worker = this.CreateDefaultWorker();
                     newWorkers.Add(worker);
                     worker.Start();
-
-                    this.EnsureDefaultSchedule();
                 }
 
                 this.workers = newWorkers;
@@ -416,7 +422,6 @@ namespace BlueCollar
                 MachineAddress = Machine.Address,
                 MachineName = Machine.Name,
                 Name = "Default",
-                QueueNames = "not:scheduled",
                 Signal = WorkerSignal.None,
                 Status = WorkerStatus.Working,
                 Startup = WorkerStartupType.Automatic,
@@ -498,47 +503,6 @@ namespace BlueCollar
                 }
 
                 this.disposed = true;
-            }
-        }
-
-        /// <summary>
-        /// Creates a default "Nightly" schedule if there are no schedules in the system for the
-        /// current application.
-        /// </summary>
-        private void EnsureDefaultSchedule()
-        {
-            using (IRepository repository = this.repositoryFactory.Create())
-            {
-                using (IDbTransaction transaction = repository.BeginTransaction())
-                {
-                    try
-                    {
-                        var schedules = repository.GetSchedules(this.applicationName, transaction);
-
-                        if (schedules.Count() == 0)
-                        {
-                            ScheduleRecord scheduleRecord = new ScheduleRecord()
-                            {
-                                ApplicationName = this.applicationName,
-                                Enabled = true,
-                                Name = "Daily",
-                                QueueName = "scheduled",
-                                RepeatType = ScheduleRepeatType.Days,
-                                RepeatValue = 1,
-                                StartOn = DateTime.UtcNow.Date
-                            };
-
-                            scheduleRecord = repository.CreateSchedule(scheduleRecord, transaction);
-                        }
-
-                        transaction.Commit();
-                    }
-                    catch
-                    {
-                        transaction.Rollback();
-                        throw;
-                    }
-                }
             }
         }
 

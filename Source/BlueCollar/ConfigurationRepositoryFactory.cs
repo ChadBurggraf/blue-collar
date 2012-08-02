@@ -131,6 +131,7 @@ namespace BlueCollar
                 if (!this.initialized)
                 {
                     this.repositoryTypeName = !string.IsNullOrEmpty(this.repositoryTypeName) ? this.repositoryTypeName : "BlueCollar.SQLiteRepository, BlueCollar";
+                    bool sqlite = this.repositoryTypeName.StartsWith("BlueCollar.SQLiteRepository", StringComparison.Ordinal);
 
                     if (!string.IsNullOrEmpty(this.connectionStringName))
                     {
@@ -145,7 +146,7 @@ namespace BlueCollar
                             this.connectionString = ConfigurationManager.AppSettings[this.connectionStringName];
                         }
 
-                        if (string.IsNullOrEmpty(this.connectionString))
+                        if (string.IsNullOrEmpty(this.connectionString) && !sqlite)
                         {
                             throw new ConfigurationErrorsException(
                                 string.Format(CultureInfo.InvariantCulture, "Failed to find a connection string named '{0}' in either <connectionStrings/> or <appSettings/>.", this.connectionStringName),
@@ -153,7 +154,8 @@ namespace BlueCollar
                                 BlueCollarSection.Section.ElementInformation.LineNumber);
                         }
                     }
-                    else if (this.repositoryTypeName.StartsWith("BlueCollar.SQLiteRepository", StringComparison.Ordinal))
+
+                    if (sqlite && string.IsNullOrEmpty(this.connectionString))
                     {
                         string path = this.ResolvePath(Path.Combine(this.DefaultDataDirectory, "BlueCollar.sqlite"));
                         this.connectionString = string.Concat("data source=", path, ";journal mode=Off;synchronous=Off;version=3");

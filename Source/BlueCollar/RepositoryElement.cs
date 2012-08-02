@@ -17,7 +17,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets the name of the connection string to use when initializing the repository, if applicable.
         /// </summary>
-        [ConfigurationProperty("connectionStringName", IsRequired = false)]
+        [ConfigurationProperty("connectionStringName", IsRequired = false, DefaultValue = "BlueCollar")]
         public string ConnectionStringName
         {
             get { return (string)this["connectionStringName"]; }

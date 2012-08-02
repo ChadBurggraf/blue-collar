@@ -37,7 +37,7 @@ namespace BlueCollar
         /// Gets a value indicating whether service execution is enabled
         /// for this application.
         /// </summary>
-        [ConfigurationProperty("serviceExecutionEnabled", IsRequired = false, DefaultValue = true)]
+        [ConfigurationProperty("serviceExecutionEnabled", IsRequired = false, DefaultValue = false)]
         public bool ServiceExecutionEnabled
         {
             get { return (bool)this["serviceExecutionEnabled"]; }
