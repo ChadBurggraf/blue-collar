@@ -20,18 +20,6 @@
                 <File Id="BlueCollarSQLiteRepositoryPdbNet35" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.pdb" />
                 <File Id="BlueCollarSQLiteRepositoryXmlNet35" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.SQLiteRepository.xml" />
               </Component>
-              <!--
-              <Directory Id="ReferenceAssembliesNet35GACFolder" Name="GAC">
-                <Component Id="ReferenceAssembliesNet35GAC" Guid="8C08B321-976A-4B76-877B-60B319FC0498">
-                  <File Id="BlueCollarDLLGACNet35" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net35\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
-                </Component>
-              </Directory>
-              <Component Id="ReferenceAssembliesNet35AssemblyFolder" Guid="F5491A55-1249-4540-9A75-4055993671E4">
-                <RegistryKey Root="HKLM" Key="Software\Microsoft\.NETFramework\AssemblyFolders\Blue Collar .NET 3.5" Action="createAndRemoveOnUninstall">
-                  <RegistryValue Type="string" Value="[$ReferenceAssembliesNet35AssemblyFolder]" />
-                </RegistryKey>
-              </Component>
-              -->
             </Directory>
             <Directory Id="ReferenceAssembliesNet40Folder" Name="Net40">
               <Component Id="ReferenceAssembliesNet40" Guid="46DA29EA-3187-4B13-B878-AF76988B70A9">
@@ -42,20 +30,6 @@
                 <File Id="BlueCollarSQLiteRepositoryPdbNet40" Name="BlueCollar.SQLiteRepository.pdb" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.pdb" />
                 <File Id="BlueCollarSQLiteRepositoryXmlNet40" Name="BlueCollar.SQLiteRepository.xml" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.SQLiteRepository.xml" />
               </Component>
-              <!--
-              <Directory Id="ReferenceAssembliesNet40GACFolder" Name="GAC">
-                <Component Id="ReferenceAssembliesNet40GAC" Guid="6B1E1C16-C7FA-400E-82BD-954FFAC056BC">
-                  <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
-                  <File Id="BlueCollarDLLGACNet40" Name="BlueCollar.dll" DiskId="1" Source="Reference Assemblies\Net40\BlueCollar.dll" Assembly=".net" KeyPath="yes" />
-                </Component>
-              </Directory>
-              <Component Id="ReferenceAssembliesNet40AssemblyFolder" Guid="1A1D91E7-2EEC-4B1F-ACF3-8D3644857C4B">
-                <Condition><![CDATA[Installed OR NETFRAMEWORK40FULL]]></Condition>
-                <RegistryKey Root="HKLM" Key="Software\Microsoft\.NETFramework\AssemblyFolders\Blue Collar .NET 4.0" Action="createAndRemoveOnUninstall">
-                  <RegistryValue Type="string" Value="[$ReferenceAssembliesNet40AssemblyFolder]" />
-                </RegistryKey>
-              </Component>
-              -->
             </Directory>
           </Directory>
           <Directory Id="SchemasFolder" Name="Schemas">
@@ -114,20 +88,15 @@
           <Component Id="Help" Guid="574D2021-0A6B-49DB-8F51-79BC7D9C0242">
             <File Id="BlueCollarChm" Name="BlueCollar.chm" DiskId="1" Source="BlueCollar.chm" KeyPath="yes" />
           </Component>
+          <Component Id="Examples" Guid="B32A1974-4B94-4E19-B240-8506E0FD42A0">
+            <File Id="ExamplesZip" Name="Examples.zip" DiskId="1" Source="Examples.zip" KeyPath="yes" />
+          </Component>
         </Directory>
       </Directory>
     </Directory>
     <Feature Id="Complete" Level="1" Title="Blue Collar" Display="expand" ConfigurableDirectory="INSTALLDIR">
       <ComponentRef Id="ReferenceAssembliesNet35" />
-      <!--
-      <ComponentRef Id="ReferenceAssembliesNet35GAC" />
-      <ComponentRef Id="ReferenceAssembliesNet35AssemblyFolder" />
-      -->
       <ComponentRef Id="ReferenceAssembliesNet40" />
-      <!--
-      <ComponentRef Id="ReferenceAssembliesNet40GAC" />
-      <ComponentRef Id="ReferenceAssembliesNet40AssemblyFolder" />
-      -->
       <ComponentRef Id="Schemas" />
       <ComponentRef Id="Service" />
       <ComponentRef Id="ServiceConfig" />
@@ -136,6 +105,7 @@
       <ComponentRef Id="Servicex86Net35" />
       <ComponentRef Id="Servicex86Net40" />
       <ComponentRef Id="Help" />
+      <ComponentRef Id="Examples" />
     </Feature>
     <UI>
       <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />

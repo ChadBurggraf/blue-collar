@@ -93,12 +93,14 @@
     
     <!-- Copy build products to example projects. -->
     <MSBuild Projects="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj" Properties="Configuration=Debug"/>
-
     <ItemGroup>
       <Examples Include="$(SourceDir)\BlueCollar.Examples\bin\Debug\BlueCollar.Examples.*"/>
     </ItemGroup>
-    <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\BlueCollar.Examples.Mvc\BlueCollar.Examples.Mvc\bin"/>
-    <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\BlueCollar.Examples.Mvc\BlueCollar.Examples.Mvc\bin"/>
+    <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
+    <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
+    
+    <!-- Package up the example projects. -->
+    <CallTarget Targets="PackageExamples"/>
   </Target>
 
   <Target Name="Clean">
@@ -163,6 +165,28 @@
     <Copy SourceFiles="$(TempDir)\BlueCollar-$(Major).$(Minor).$(Build).zip" DestinationFolder="$(BuildDir)"/>
     <Copy SourceFiles="$(TempDir)\BlueCollar.msi" DestinationFolder="$(BuildDir)"/>
     <RemoveDir Directories="$(TempDir)"/>
+  </Target>
+
+  <Target Name="PackageExamples">
+    <MakeDir Directories="$(BuildDir)\Examples"/>
+    <ItemGroup>
+      <ExamplesFiles Include="$(ExamplesDir)\**\*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(ExamplesFiles)" DestinationFiles="@(ExamplesFiles->'$(BuildDir)\Examples\%(RecursiveDir)%(Filename)%(Extension)')"/>
+
+    <ItemGroup>
+      <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\*.suo"/>
+      <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\*.csproj.user"/>
+      <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\App_Data\**\*"/>
+      <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\obj\**\*"/>
+    </ItemGroup>
+    <Delete Files="@(ExamplesCleanFiles)"/>
+
+    <ItemGroup>
+      <ExamplePackageFiles Include="$(BuildDir)\Examples\**\*"/>
+    </ItemGroup>
+    <Zip Files="@(ExamplePackageFiles)" ZipFileName="$(BuildDir)\Examples.zip" WorkingDirectory="$(BuildDir)\Examples"/>
+    <RemoveDir Directories="$(BuildDir)\Examples"/>
   </Target>
 
   <Target Name="Test" Condition="Exists('$(MsTestPath)')">

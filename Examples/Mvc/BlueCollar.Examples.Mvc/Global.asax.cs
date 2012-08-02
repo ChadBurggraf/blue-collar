@@ -1,6 +1,4 @@
-﻿
-
-namespace BlueCollar.Examples.Mvc
+﻿namespace BlueCollar.Examples.Mvc
 {
     using System;
     using System.Configuration;
