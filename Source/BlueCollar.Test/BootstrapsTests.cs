@@ -83,7 +83,7 @@ namespace BlueCollar.Test
 
             using (Bootstraps bootstraps = new Bootstraps(path, null, 500))
             {
-                Assert.AreEqual(BootstrapsPullupResultType.Success, bootstraps.PullUp().ResultType);
+                Assert.AreEqual(BootstrapsPullupResultType.Success, bootstraps.PullUp(true).ResultType);
 
                 CreateFileJob job = new CreateFileJob()
                 {

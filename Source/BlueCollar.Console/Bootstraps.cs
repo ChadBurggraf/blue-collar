@@ -105,12 +105,23 @@ namespace BlueCollar.Console
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
+                /// <summary>
         /// Pulls up this instance's app domain, if it is not already loaded.
         /// </summary>
         /// <returns>The result of the pull up operation.</returns>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Passing all exceptions to the caller.")]
         public BootstrapsPullupResult PullUp()
+        {
+            return this.PullUp(false);
+        }
+
+        /// <summary>
+        /// Pulls up this instance's app domain, if it is not already loaded.
+        /// </summary>
+        /// <param name="forceMachine">A value indicating whether to force the machine to start in the target application,
+        /// even if <see cref="MachineElement.ServiceExecutionEnabled"/> is false.</param>
+        /// <returns>The result of the pull up operation.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Passing all exceptions to the caller.")]
+        public BootstrapsPullupResult PullUp(bool forceMachine)
         {
             BootstrapsPullupResult result = null;
 
@@ -171,6 +182,10 @@ namespace BlueCollar.Console
                             this.logger = new EventLogger();
                             this.logger.Log += new EventHandler<EventLoggerEventArgs>(this.LoggerLog);
 
+                            object[] constructerArgs = forceMachine
+                                ? new object[] { this.logger, true }
+                                : new object[] { this.logger };
+
 #if NET35
                         this.machineProxy = (MachineProxy)this.domain.CreateInstanceAndUnwrap(
                             typeof(MachineProxy).Assembly.FullName,
@@ -178,7 +193,7 @@ namespace BlueCollar.Console
                             false,
                             BindingFlags.Default,
                             null,
-                            new object[] { this.logger },
+                            constructerArgs,
                             null,
                             null,
                             AppDomain.CurrentDomain.Evidence);
@@ -189,7 +204,7 @@ namespace BlueCollar.Console
                                 false,
                                 BindingFlags.Default,
                                 null,
-                                new object[] { this.logger },
+                                constructerArgs,
                                 null,
                                 null);
 #endif
