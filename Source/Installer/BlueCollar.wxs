@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name="Blue Collar 2.0" Id="F9268075-481D-4497-976D-BE9D1B6D2406" UpgradeCode="D2BB04C4-543A-4463-AC08-DECBF144FCE0" Language="1033" Codepage="1252" Version="2.0.0" Manufacturer="Tasty Codes">
+  <Product Name="Blue Collar 1.0" Id="F9268075-481D-4497-976D-BE9D1B6D2406" UpgradeCode="D2BB04C4-543A-4463-AC08-DECBF144FCE0" Language="1033" Codepage="1252" Version="1.0.0" Manufacturer="Tasty Codes">
     <Package Id="*" Description="Blue Collar Installer" InstallerVersion="100" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
     <Media Id="1" Cabinet="BlueCollar.cab" EmbedCab="yes" />
     <PropertyRef Id="NETFRAMEWORK35" />

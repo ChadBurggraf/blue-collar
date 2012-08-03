@@ -4,10 +4,10 @@
 
   <output path="collar.css">
     <action name="MinifyCss"/>
+    <input path="copyright.css"/>
     <input path="bootstrap.css"/>
     <input path="bootstrap-responsive.css"/>
     <input path="prettify.css"/>
-    <input path="copyright.css"/>
     <input path="collar.css"/>
   </output>
 

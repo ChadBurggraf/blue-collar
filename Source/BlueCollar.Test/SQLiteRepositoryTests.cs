@@ -477,6 +477,7 @@ namespace BlueCollar.Test
         /// Update scheduled job order tests.
         /// </summary>
         [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
         public void SQLiteRepositoryUpdateScheduledJobOrder()
         {
             UpdateScheduledJobOrder();

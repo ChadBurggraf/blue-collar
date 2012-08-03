@@ -175,13 +175,14 @@ namespace BlueCollar.Dashboard
         /// <param name="typeName">The name of the job type to validate.</param>
         /// <param name="data">The JSON data to instantiate the job with.</param>
         /// <param name="job">An instance of <see cref="IJob"/> created from the given type, if the type is valid.</param>
-        /// <param name="error">An error message describing the error if the type is not valid.</param>
+        /// <param name="errorMessage">An error message describing the error if the type is not valid.</param>
         /// <returns>True if the type can be instantiated successfully, false otherwise.</returns>
-        protected virtual bool ValidateJobType(string typeName, string data, out IJob job, out string error)
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", Justification = "Meant for internal use only; this is the easiest design for now.")]
+        protected virtual bool ValidateJobType(string typeName, string data, out IJob job, out string errorMessage)
         {
             bool success = false;
             job = null;
-            error = string.Empty;
+            errorMessage = string.Empty;
 
             if (string.IsNullOrEmpty(typeName))
             {
@@ -202,27 +203,27 @@ namespace BlueCollar.Dashboard
             }
             catch (ArgumentException)
             {
-                error = "Job type contains invalid type syntax or does not implement IJob.";
+                errorMessage = "Job type contains invalid type syntax or does not implement IJob.";
             }
             catch (TargetInvocationException)
             {
-                error = "Job type's class initializer threw an exception.";
+                errorMessage = "Job type's class initializer threw an exception.";
             }
             catch (TypeLoadException)
             {
-                error = "Failed to load job type.";
+                errorMessage = "Failed to load job type.";
             }
             catch (FileNotFoundException)
             {
-                error = "Job type or one of its dependencies was not found.";
+                errorMessage = "Job type or one of its dependencies was not found.";
             }
             catch (FileLoadException)
             {
-                error = "Job type or one of its dependencies could not be loaded.";
+                errorMessage = "Job type or one of its dependencies could not be loaded.";
             }
             catch (BadImageFormatException)
             {
-                error = "Job type's assembly that could not be loaded into the current runtime.";
+                errorMessage = "Job type's assembly that could not be loaded into the current runtime.";
             }
 
             return success;
