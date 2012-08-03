@@ -63,6 +63,10 @@ var ScheduledJobModel = CollarModel.extend({
      * @return {String} The model's server URL root.
      */
     urlRoot: function() {
+        if (!this.scheduleId) {
+            throw new Error('scheduleId must be set to a value.');
+        }
+
         return CollarModel.prototype.urlRoot.call(this).appendUrlPath(this.scheduleId).appendUrlPath('jobs');
     }
 });
@@ -113,6 +117,10 @@ var ScheduledJobsOrderModel = CollarModel.extend({
      * @return {String} The model's server URL root.
      */
     urlRoot: function() {
+        if (!this.scheduleId) {
+            throw new Error('scheduleId must be set to a value.');
+        }
+
         return CollarModel.prototype.urlRoot.call(this).appendUrlPath(this.scheduleId).appendUrlPath('jobs/order');
     }
 });
@@ -190,6 +198,10 @@ var ScheduledJobCollection = CollarCollection.extend({
      * @return {String} The collection's server URL root.
      */
     urlRoot: function() {
+        if (!this.scheduleId) {
+            throw new Error('scheduleId must be set to a value.');
+        }
+
         return CollarCollection.prototype.urlRoot.call(this).appendUrlPath(this.scheduleId).appendUrlPath('jobs');
     }
 });

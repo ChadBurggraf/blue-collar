@@ -30,7 +30,7 @@ var ScheduledJobsView = AreaView.extend({
      * Handle's the add button's click event.
      */
     add: function() {
-        var model = new ScheduledJobModel({}, {jsonUrlRoot: this.model.jsonUrlRoot});
+        var model = new ScheduledJobModel({}, {jsonUrlRoot: this.model.jsonUrlRoot, scheduleId: this.model.get('ScheduleId')});
         this.model.clearId();
         this.renderIdView($('.details'), model);
     },
