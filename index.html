@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Blue Collar by ChadBurggraf</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Blue Collar</h1>
+          <h2>Background jobs and scheduled work for .NET.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/ChadBurggraf/blue-collar-2/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/ChadBurggraf/blue-collar-2/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/ChadBurggraf/blue-collar-2" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>Blue Collar is a system for creating, managing, and executing background work in .NET applications. It is ideal for use in web applications, but can be set up for any environment where background work needs to be done.</p>
+
+<p>Some cool features include:</p>
+
+<ul>
+<li>Simple, single-assembly deployment, with no external dependencies.</li>
+<li>Embedded web-based management interface.</li>
+<li>Easily perform work for multiple applications on one machine, or perform work for one application on multiple machines, or any combination in between.</li>
+<li>Jobs are simple .NET objects, implementing <code>string Name { get; }</code> and <code>void Execute()</code>.</li>
+<li>Sensible defaults make getting up and running quickly a breeze.</li>
+</ul><h2>The "Just Let Me Play With It" Setup</h2>
+
+<p>For the quick setup, we'll use <a href="http://www.sqlite.org/">SQLite</a> as our data store. Before starting, install the appropriate <a href="http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki">System.Data.SQLite.dll</a>. If you choose <strong>not</strong> to install <code>System.Data.SQLite</code> in the GAC, add a reference to the DLL to your project.</p>
+
+<p>Next, add references to <code>BlueCollar.dll</code> and <code>BlueCollar.SQLiteRepository.dll</code> to your project. Builds are provided for both .NET 3.5 and .NET 4.0 applications. Note that data store implementations are distributed as separate assemblies, except for Microsoft SQL Server, which is included in <code>BlueCollar.dll</code>.</p>
+
+<h4>Configuration</h4>
+
+<p>Once your references are added, you need to do a little (promise!) configuration. At a minimum, you need to tell Blue Collar the name of your application. We're also going to configure the web management dashboard by registering its handler.</p>
+
+<p>First, register the <code>blueCollar</code> configuration section under <code>&lt;configSections/&gt;</code>:</p>
+
+<pre><code>&lt;configSections&gt;
+  &lt;section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/&gt;
+&lt;/configSections&gt;
+</code></pre>
+
+<p>Now add the <code>blueCollar</code> section as a child of the root <code>&lt;configuration/&gt;</code> element:</p>
+
+<pre><code>&lt;blueCollar applicationName="Your Application Name"/&gt;
+</code></pre>
+
+<p>Replace <strong>Your Application Name</strong> with a friendly application name. The system can accomodate multiple applications in the same database schema, so the application name you choose will also be used to partition this application's data.</p>
+
+<p>Finally, register the web management dashboard handler. By default, the handler is configured for registration at <code>~/collar</code>, so that's where we'll register it under <code>&lt;system.webServer/&gt;</code>:</p>
+
+<pre><code>&lt;system.webServer&gt;
+  &lt;handlers&gt;
+    &lt;add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" /&gt;
+  &lt;/handlers&gt;
+&lt;/system.webServer&gt;
+</code></pre>
+
+<h4>Creating a Machine In-Process</h4>
+
+<p>Blue Collar can create a <code>Machine</code> (our name for the service used to coordinate workers on a computer for an application) inside of the ASP.NET process. This ability is useful for low-volume scenarios, development environments, and getting up and running quickly.</p>
+
+<p>To mange this in a flexible way, we'll boot up our <code>Machine</code> on application start, but only if we've configured execution by the service to be <strong>disabled</strong> (the default). That way, when we want to switch to service-based execution, we just have to make a quick configuration update.</p>
+
+<p>If your application doesn't have one already, create a <code>Global.asax</code> file and add <code>using BlueCollar;</code> to your list of namespace registrations.</p>
+
+<p>Next, create a class variable called <code>machine</code>:</p>
+
+<pre><code>private static Machine machine;
+</code></pre>
+
+<p>And add or update <code>void Application_Start()</code>:</p>
+
+<pre><code>void Application_Start()
+{
+    if (!BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
+    {
+        machine = new Machine();
+    }
+}
+</code></pre>
+
+<p>Finally, to stop work when the application is shut down, add or update <code>void Application_End()</code>:</p>
+
+<pre><code>void Application_End()
+{
+    if (machine != null) 
+    {
+        machine.Dispose();
+        machine = null;
+    }
+}
+</code></pre>
+
+<h4>That's It!</h4>
+
+<p>Build your application and launch it in the browser. You should be able to visit <code>~/collar</code> and see that the default worker has been created and is running.</p>
+
+<h2>Creating Jobs</h2>
+
+<p>To do actual work, you need to create some jobs. Usually, this is a matter of converting an existing method invocation into a <code>Job</code> class. </p>
+
+<p>For example, let's say we wanted to create a job for sending email. Suppose we currently do it by calling a static method on an <code>EmailService</code> class with the following signature:</p>
+
+<pre><code>void Send(string address, string subject, string body);
+</code></pre>
+
+<p>In order to do this work from a job, we might create a class as follows:</p>
+
+<pre><code>using System;
+using BlueCollar;
+
+public sealed class SendEmailJob : Job
+{
+    public string Address { get; set; }
+
+    public string Body { get; set; }
+
+    public override string Name
+    {
+        get { return "Send Email"; }
+    }
+
+    public string Subject { get; set; }
+
+    public override void Execute()
+    {
+        EmailService.Send(this.Address, this.Subject, this.Body);
+    }
+}
+</code></pre>
+
+<p>All we did was create properties for the state we needed in order to perform the work. When we enqueue the job, our object will be serialized onto the job queue with all of our custom state included. When the job is later materialized for execution, the state will be de-serialized and available for use.</p>
+
+<p>Now, in order to send an actual email, we'd do something similar to the following:</p>
+
+<pre><code>new SendEmailJob()
+{
+    Address = "example@example.com",
+    Subject = "Hello, World!",
+    Body = "This email was sent in the background, freeing up my application to be more responsive!"
+}.Enqueue();
+</code></pre>
+
+<h2>License</h2>
+
+<p>Licensed under the <a href="http://www.opensource.org/licenses/mit-license.html">MIT</a> license.</p>
+
+<p>Copyright (c) 2012 Chad Burggraf.</p>
+        </section>
+
+        <footer>
+          Blue Collar is maintained by <a href="https://github.com/ChadBurggraf">ChadBurggraf</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
