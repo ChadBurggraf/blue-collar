@@ -1,0 +1,6 @@
+auto: true
+blueCollarVersion: 1.0.0
+destination: ./build
+exclude: [./bootstrap]
+server: true
+source: ./src
