@@ -1,6 +1,6 @@
 auto: true
 blueCollarVersion: 1.0.0
-destination: ./build
-exclude: [./bootstrap]
+exclude: [./bootstrap, ./Makefile]
+pygments: true
 server: true
 source: ./src

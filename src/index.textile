@@ -3,11 +3,12 @@ title: Blue Collar
 layout: default
 ---
 
-<div class="page-header">
+<div class="page-header page-header-index">
+<img src="img/logo-header.png" width="60" height="60" alt="">
 
 h1. Blue Collar 
 
-Background jobs and scheduled work for .NET.
+p. Background jobs and scheduled work for .NET.
 
 </div>
 
@@ -18,17 +19,17 @@ Some cool features include:
 * Embedded web-based management interface.
 * Simple, single-assembly deployment, with no external dependencies.
 * Easily perform work for multiple applications on one machine, or perform work for one application on multiple machines, or any combination in between.
-* Jobs are simple .NET objects, implementing string @Name { get; }@ and void @Execute()@.
+* Jobs are simple .NET objects, implementing @string Name { get; }@ and @void Execute()@.
 * Sensible defaults make getting up and running quickly a breeze.
 
 <notextile>
 <p class="download">
 	<a class="btn btn-primary btn-large" href="https://github.com/ChadBurggraf/blue-collar/BlueCollar.msi">
-		<i class="icon-download-alt"></i> 
+		<i class="icon-download-alt icon-white"></i> 
 		Download installer
 	</a>
 	<a class="btn btn-large" href="https://github.com/ChadBurggraf/blue-collar/BlueCollar-{{ site.blueCollarVersion }}.zip">
-		<i class="icon-download-alt"></i>
+		<i class="icon-download"></i>
 		Download binaries
 	</a>
 </p>
