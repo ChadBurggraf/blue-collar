@@ -105,6 +105,7 @@
   </Target>
 
   <Target Name="Img">
+    <MakeDir Directories="$(StaticDir)\Img"/>
     <ItemGroup>
       <Gifs Include="$(StaticDir)\Src\Img\*.gif"/>
       <OldImages Include="$(StaticDir)\Img\*.gif"/>
@@ -118,6 +119,7 @@
   </Target>
 
   <Target Name="Js" DependsOnTargets="GetVersion">
+    <MakeDir Directories="$(StaticDir)\Js"/>
     <ItemGroup>
       <JsTokens Include="Version">
         <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
@@ -128,6 +130,7 @@
   </Target>
 
   <Target Name="Less" DependsOnTargets="GetVersion">
+    <MakeDir Directories="$(StaticDir)\Css"/>
     <ItemGroup>
       <CssTokens Include="Version">
         <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
@@ -140,6 +143,7 @@
   </Target>
 
   <Target Name="LessBootstrap">
+    <MakeDir Directories="$(StaticDir)\Css"/>
     <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"'/>
     <Exec Command='recess --compile "$(BootstrapDir)\less\responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"'/>
     <ItemGroup>
