@@ -1,46 +1,94 @@
 (function($) {
-	var $win = $(window), 
-		$nav = $('.subnav'), 
-		navTop = $('.subnav').length && $('.subnav').offset().top, 
-		isFixed = false;
+    var Sidebar,
+        Subnav,
+        Window = $(window);
 
-    processScroll();
+    /* Sidebar pseudo fixed position. */
 
-    $nav.on('click', function () {
-    	if (!isFixed) {
-    		setTimeout(function () {  
-                $win.scrollTop($win.scrollTop() - 60); 
+    Sidebar = function(el) {
+        this.el = el;
+        this.height = el.outerHeight(true);
+        this.scrollTop = Window.scrollTop();
+        this.winHeight = Window.height();
+
+        this.position();
+
+        Window.on('resize', $.proxy(this.resize, this));
+        Window.on('scroll', $.proxy(this.scroll, this));
+    };
+
+    Sidebar.prototype.position = function() {
+        if (this.scrollTop > 0) {
+            if (this.winHeight > this.height) {
+                this.el.css('top', this.scrollTop + 'px');
+            } else if (this.scrollTop + this.winHeight > this.height) {
+                this.el.css('top', (this.scrollTop + this.winHeight - this.height) + 'px');
+            }
+        } else {
+            this.el.css('top', '');
+        }
+    };
+
+    Sidebar.prototype.resize = function() {
+        this.winHeight = Window.height();
+        this.position();
+    };
+
+    Sidebar.prototype.scroll = function() {
+        this.scrollTop = Window.scrollTop();
+        this.position();
+    };
+
+    /* Subnav pseudo fixed position. */
+
+    Subnav = function(el, options) {
+        this.el = el;
+        this.top = el.length > 0 ? el.offset().top : 0;
+        this.parent = el.parent();
+        this.parentLeft = this.parent.length > 0 ? this.parent.offset().left : 0
+        this.isFixed = false;
+        
+        this.options = $.extend({
+            fixedClass: 'subnav-fixed',
+            scrollTopOffset: 60
+        }, options);
+
+
+        this.scroll();
+
+        Window.on('resize', $.proxy(this.resize, this));
+        Window.on('scroll', $.proxy(this.scroll, this));
+    };
+
+    Subnav.prototype.click = function() {
+        if (!this.isFixed) {
+            setTimeout(function () {  
+                Window.scrollTop(Window.scrollTop() - this.options.scrollTopOffset); 
             }, 10);
-    	}
-    })
+        }
+    };
 
-    $win.on('scroll', processScroll);
-    $win.on('resize', processResize);
+    Subnav.prototype.resize = function() {
+        if (this.isFixed && this.parent.length > 0) {
+            this.el.css('left', this.parentLeft + 'px');
+        }
+    };
 
-    function processResize() {
-    	var $navParent;
+    Subnav.prototype.scroll = function() {
+        var scrollTop = Window.scrollTop();
 
-    	if (isFixed) {
-    		$navParent = $nav.parent();
+        if (scrollTop >= this.top && !this.isFixed) {
+            this.isFixed = true;
+            this.el.addClass(this.options.fixedClass);
+        } else if (scrollTop <= this.top && this.isFixed) {
+            this.isFixed = false;
+            this.el.removeClass(this.options.fixedClass);
+            this.el.css('left', '');
+        }
 
-    		if ($navParent.length > 0) {
-    			$nav.css('left', $navParent.offset().left + 'px');
-    		}
-    	}
-    }
+        this.resize();
+    };
 
-    function processScroll() {
-		var scrollTop = $win.scrollTop();
-
-		if (scrollTop >= navTop && !isFixed) {
-			isFixed = true;
-			$nav.addClass('subnav-fixed');
-		} else if (scrollTop <= navTop && isFixed) {
-			isFixed = false;
-			$nav.removeClass('subnav-fixed');
-			$nav.css('left', '');
-		}
-
-		processResize();
-    }
+    new Sidebar($('.sidebar'));
+    new Subnav($('.subnav'));
 })(jQuery);

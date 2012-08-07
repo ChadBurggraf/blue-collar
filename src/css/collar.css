@@ -118,6 +118,7 @@ section {
 }
 
 .sidebar {
+	position: relative;
 	margin: 22px 0;
 }
 

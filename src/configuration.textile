@@ -36,7 +36,7 @@ p. Blue Collar is configured using the standard .NET configuration system. Typic
 
 h2. Section Registration
 
-In order to modify the default configuration, you must first register the @blueCollar@ section in your application's configuration file. You can do this by adding a new @<section/>@ element under @configuration@ <i class="icon-chevron-right"></i> @configSections@:
+In order to modify the default configuration, you must first register the @blueCollar@ section in your application's configuration file. You can do this by adding a new @<section/>@ element under @configuration/configSections@:
 
 {% highlight xml linenos %}
 <?xml version="1.0"?>
@@ -108,7 +108,7 @@ p. There are a number of ways to register HTTP handlers for ASP.NET. We will go 
 
 h4. IIS7 Only
 
-If you only care about IIS7, you can leave the default Blue Collar @handlerUrl@ value alone, and add a new item to the @configuration@ <i class="icon-chevron-right"></i> @system.webServer@ <i class="icon-chevron-right"></i> @handlers@ collection:
+If you only care about IIS7, you can leave the default Blue Collar @handlerUrl@ value alone, and add a new item to the @configuration/system.webServer/handlers@ collection:
 
 {% highlight xml linenos %}
 <configuration>
@@ -152,6 +152,22 @@ Now, we're going to register the handler using a @<location/>@ element:
 	</location>
 </configuration>
 {% endhighlight %}
+
+h4. ASP.NET MVC
+
+In order to get the handler to work in an ASP.NET MVC environment, you'll need to ignore the path in your @RouteTable@:
+
+{% highlight csharp linenos %}
+routes.IgnoreRoute("collar/{*pathInfo}");
+{% endhighlight %}
+
+or:
+
+{% highlight csharp linenos %}
+routes.IgnoreRoute("collar.ashx/{*pathInfo}");
+{% endhighlight %}
+
+or similar.
 
 </section>
 
