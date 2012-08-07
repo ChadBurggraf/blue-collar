@@ -56,14 +56,17 @@
 
         this.scroll();
 
+        this.el.on('click', $.proxy(this.click, this));
         Window.on('resize', $.proxy(this.resize, this));
         Window.on('scroll', $.proxy(this.scroll, this));
     };
 
     Subnav.prototype.click = function() {
+        var offset = this.options.scrollTopOffset;
+
         if (!this.isFixed) {
             setTimeout(function () {  
-                Window.scrollTop(Window.scrollTop() - this.options.scrollTopOffset); 
+                Window.scrollTop(Window.scrollTop() - offset); 
             }, 10);
         }
     };
