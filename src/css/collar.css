@@ -200,6 +200,10 @@ section {
 	border-radius: 0 0 4px 4px;
 }
 
+.table ul {
+	margin-bottom: 0;
+}
+
 @media (min-width: 980px) {
 	.subnav-fixed {
 		position: fixed;

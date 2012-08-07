@@ -9,6 +9,7 @@ h1. Quick Start
 
 p. The "Let Me Just Play With It" Setup
 
+<notextile>
 <div class="subnav">
 	<ul class="nav nav-pills">
 		<li><a href="#configuration">Configuration</a></li>
@@ -16,6 +17,7 @@ p. The "Let Me Just Play With It" Setup
 		<li><a href="#creating-jobs">Creating Jobs</a></li>
 	</ul>
 </div>
+</notextile>
 </div>
 
 p. For the quick setup, we'll use "SQLite":http://www.sqlite.org/ as our data store. Before starting, install the appropriate "System.Data.SQLite.dll":http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki. If you choose *not* to install @System.Data.SQLite@ in the GAC, add a reference to the DLL to your project.

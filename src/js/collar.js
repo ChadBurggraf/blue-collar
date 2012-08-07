@@ -8,7 +8,9 @@
 
     $nav.on('click', function () {
     	if (!isFixed) {
-    		setTimeout(function () {  $win.scrollTop($win.scrollTop() - 60); }, 10);
+    		setTimeout(function () {  
+                $win.scrollTop($win.scrollTop() - 60); 
+            }, 10);
     	}
     })
 

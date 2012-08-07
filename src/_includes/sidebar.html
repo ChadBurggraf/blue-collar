@@ -5,8 +5,8 @@
 		<li class="nav-header">Getting Started</li>
 		<li><a href="https://github.com/ChadBurggraf/blue-collar/downloads">Downloads (v{{ site.blueCollarVersion }})</a></li>
 		<li {% if page.url == '/quick-start.html' %}class="active"{% endif %}><a href="quick-start.html">Quick Start</a></li>
-		<li><a href="">Configuration</a></li>
-		<li><a href="">Notes on SQLite</a></li>
+		<li {% if page.url == '/configuration.html' %}class="active"{% endif %}><a href="configuration.html">Configuration</a></li>
+		<li {% if page.url == '/notes-on-sqlite.html' %}class="active"{% endif %}><a href="notes-on-sqlite.html">Notes on SQLite</a></li>
 		<li class="divider"></li>
 		<li class="nav-header">Usage</li>
 		<li><a href="">Data Stores (Repositories)</a></li>
