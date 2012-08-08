@@ -1,0 +1,241 @@
+section {
+	padding-top: 40px;
+}
+
+.download {
+	margin: 36px;
+	text-align: center;
+}
+
+.download .btn-primary {
+	margin-right: 10px;
+}
+
+.fork {
+	position: absolute;
+	right: 0;
+	height: 149px;
+	width: 149px;
+	overflow:hidden;
+	padding: 0;
+	margin: 0;
+}
+
+.fork a {
+	display: block;
+	width: 190px;
+	font-size: 13px;
+	font-weight: bold;
+	background-color: #333;
+	color: #FFF;
+	word-spacing: 2px;
+	text-decoration: none;
+	padding: 5px 15px 5px 25px;
+	position:relative;
+	left: 20px;
+	top: -37px;
+	text-align: center;
+	-moz-transform-origin: 0 0 ;
+	-moz-transform:rotate(45deg);
+	-moz-box-shadow:    1px 1px 5px 1px #666;
+	-webkit-transform-origin: 0 0 ;	
+	-webkit-transform:rotate(45deg);
+	-webkit-box-shadow: 1px 1px 5px 1px #666;
+	-ms-transform-origin: 0 0 ;	
+	-ms-transform:rotate(45deg);
+	-ms-box-shadow: 1px 1px 5px 1px #666;
+	transform-origin: 0 0 ;	
+	transform:rotate(45deg);
+	box-shadow: 1px 1px 5px 1px #666;
+	background-image: linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
+	background-image: -o-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
+	background-image: -moz-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
+	background-image: -webkit-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
+	background-image: -ms-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.03, #4AA400), color-stop(0.05, #5CCD00), color-stop(0.07, #4AA400), color-stop(0.93, #4AA400), color-stop(0.95, #5CCD00), color-stop(0.97, #4AA400));
+}
+
+.highlight pre {
+	position: relative;
+	padding: 8px 8px 8px 48px;
+	background-color: #f7f7f9;
+	border: solid 1px #e1e1e8;
+	-webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	-moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+}
+
+.highlight .lineno {
+	position: absolute;
+	width: 40px;
+	left: 0;
+	text-align: center;
+	color: #bebec5;
+}
+
+.page-header {
+	position: relative;
+}
+
+.page-header h1 {
+	font-family: Chivo, 'Helvetica Neue', Helvetica, Arial, serif;
+	font-weight: 900;
+	letter-spacing: -1px;
+	font-size: 48px;
+	color: #303030;
+	line-height: 1.2;
+}
+
+.page-header img {
+	position: absolute;
+	left: 0;
+	top: 18px;
+}
+
+.page-header p {
+	margin-bottom: 0;
+	letter-spacing: -1px;
+	font-size: 24px;
+	color: #aaa;
+	line-height: 1.3;
+}
+
+.page-header-index h1 {
+	margin-left: 70px;
+}
+
+.page-header-index p {
+	margin-left: 70px;
+}
+
+.page-header-subnav {
+	padding-bottom: 0;
+	border-bottom: none;
+}
+
+.page-header-subnav .subnav {
+	margin: 22px 0 0;
+}
+
+.sidebar {
+	position: relative;
+	margin: 22px 0;
+}
+
+.sidebar li {
+	font-size: 13px;
+	line-height: 18px;
+}
+
+.subnav {
+	width: 100%;
+	height: 36px;
+	background-color: #eeeeee; /* Old browsers */
+	background-repeat: repeat-x; /* Repeat the gradient */
+	background-image: -moz-linear-gradient(top, #f5f5f5 0%, #eeeeee 100%); /* FF3.6+ */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#eeeeee)); /* Chrome,Safari4+ */
+	background-image: -webkit-linear-gradient(top, #f5f5f5 0%,#eeeeee 100%); /* Chrome 10+,Safari 5.1+ */
+	background-image: -ms-linear-gradient(top, #f5f5f5 0%,#eeeeee 100%); /* IE10+ */
+	background-image: -o-linear-gradient(top, #f5f5f5 0%,#eeeeee 100%); /* Opera 11.10+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#eeeeee',GradientType=0 ); /* IE6-9 */
+	background-image: linear-gradient(top, #f5f5f5 0%,#eeeeee 100%); /* W3C */
+	border: 1px solid #e5e5e5;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.subnav li {
+	font-size: 13px;
+	line-height: 18px;
+}
+
+.subnav .nav {
+	margin-bottom: 0;
+}
+
+.subnav .nav > li > a {
+	margin: 0;
+	padding-top:    11px;
+	padding-bottom: 11px;
+	border-left: 1px solid #f5f5f5;
+	border-right: 1px solid #e5e5e5;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+}
+
+.subnav .nav > .active > a,
+.subnav .nav > .active > a:hover {
+	padding-left: 13px;
+	color: #777;
+	background-color: #e9e9e9;
+	border-right-color: #ddd;
+	border-left: 0;
+	-webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.05);
+	-moz-box-shadow: inset 0 3px 5px rgba(0,0,0,.05);
+	box-shadow: inset 0 3px 5px rgba(0,0,0,.05);
+}
+
+.subnav .nav > .active > a .caret,
+.subnav .nav > .active > a:hover .caret {
+	border-top-color: #777;
+}
+
+.subnav .nav > li:first-child > a,
+.subnav .nav > li:first-child > a:hover {
+	border-left: 0;
+	padding-left: 12px;
+	-webkit-border-radius: 4px 0 0 4px;
+	-moz-border-radius: 4px 0 0 4px;
+	border-radius: 4px 0 0 4px;
+}
+
+.subnav .nav > li:last-child > a {
+	border-right: 0;
+}
+
+.subnav .dropdown-menu {
+	-webkit-border-radius: 0 0 4px 4px;
+	-moz-border-radius: 0 0 4px 4px;
+	border-radius: 0 0 4px 4px;
+}
+
+.table ul {
+	margin-bottom: 0;
+}
+
+@media (min-width: 980px) {
+	.subnav-fixed {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		margin: 0 !important;
+		z-index: 1020; /* 10 less than .navbar-fixed to prevent any overlap */
+		border-color: #d5d5d5;
+		border-width: 0 0 1px 1px; /* drop the border on the fixed edges */
+		-webkit-border-radius: 0;
+		-moz-border-radius: 0;
+		border-radius: 0;
+		-webkit-border-bottom-left-radius: 4px;
+		-moz-border-radius-bottomleft: 4px;
+		border-bottom-left-radius: 4px;
+		-webkit-box-shadow: inset 0 1px 0 #fff, 0 1px 5px rgba(0,0,0,.1);
+		-moz-box-shadow: inset 0 1px 0 #fff, 0 1px 5px rgba(0,0,0,.1);
+		box-shadow: inset 0 1px 0 #fff, 0 1px 5px rgba(0,0,0,.1);
+		filter: progid:DXImageTransform.Microsoft.gradient(enabled=false); /* IE6-9 */
+	}
+
+	.subnav-fixed .nav {
+		margin: 0 auto;
+		padding: 0 1px;
+	}
+
+	.subnav .nav > li:first-child > a,
+	.subnav .nav > li:first-child > a:hover {
+		-webkit-border-radius: 0;
+		-moz-border-radius: 0;
+		border-radius: 0;
+	}
+}

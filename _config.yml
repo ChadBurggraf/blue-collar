@@ -1,6 +1,6 @@
 auto: true
-basePath:
-blueCollarVersion: 2.0
+blueCollarVersion: 1.0.0
+exclude: [./bootstrap, ./Makefile]
 pygments: true
 server: true
-version: 1.0
+source: ./src

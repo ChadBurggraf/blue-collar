@@ -1,0 +1,94 @@
+---
+title: Data Stores (Repositories)
+layout: default
+---
+
+<div class="page-header page-header-subnav">
+
+h1. Data Stores
+
+p. Repositories Of Job Data
+
+<notextile>
+<div class="subnav">
+	<ul class="nav nav-pills">
+		<li><a href="#microsoft-sql-server">Microsoft SQL Server</a></li>
+		<li><a href="#sqlite">SQLite</a></li>
+	</ul>
+</div>
+</notextile>
+</div>
+
+The data storage layer is pluggable in Blue Collar, and is defined in the "configuration":configuration.html#repository-element. Repositories implement the @IRepository@ interface, and can optionally accept a connection string as a constructor argument.
+
+<section id="microsoft-sql-server">
+
+h2. Microsoft SQL Server
+
+The Microsoft SQL Server repository implementation ships as part of @BlueCollar.dll@. To get started, first create a database that you want to use to store job data. The database can be dedicated to Blue Collar, or you can use your application's existing database.
+
+Next, you must create the "Blue Collar schema":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar/SqlServer.Schema.sql (a copy is also in the Schemas folder of your installation directory). The schema consists of five tables:
+
+# BlueCollarHistory
+# BlueCollarQueue
+# BlueCollarSchedule
+# BlueCollarScheduledJob
+# BlueCollarWorker
+# BlueCollarWorking
+
+While this may seem like a bit of overkill, in fact it's a reasonable design for a database-backed job queue. In practice, it is wise to segregate your actual queue storage (@BlueCollarQueue@) from other metadata for fast push/pop operations.
+
+h4. Configuration
+
+Finally, configure your application to use Microsoft SQL Server. As an example, the following configuration connects to the local SQL server over a trusted connection:
+
+{% highlight xml linenos %}
+<?xml version="1.0"?>
+<configuration>
+	<configSections>
+		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+	</configSections>
+
+	<blueCollar applicationName="Your Application Name">
+		<repository connectionStringName="LocalSqlServer" type="BlueCollar.SqlServerRepository, BlueCollar"/>
+	</blueCollar>
+
+	<connectionStrings>
+		<remove name="LocalSqlServer"/>
+		<add name="LocalSqlServer" connectionString="data source=(local);initial catalog=BlueCollar;integrated security=SSPI"/>
+	</connectionStrings>
+</configuration>
+{% endhighlight %}
+
+</section>
+
+<section id="sqlite">
+
+h2. SQLite
+
+"Please read the Notes on SQLite for some working with SQLite on Windows.":notes-on-sqlite.html
+
+The SQLite repository implementation ships in @BlueCollar.SQLiteRepository.dll@. To get started, simply add a reference to the DLL to your application, or install it in the GAC.
+
+The SQLite database will be created on-demand by default, at @~/App_Data/BlueCollar.sqlite@. You can override that location by defining a custom connection string called @BlueCollar@. Alternatively, you can configure a different connection string name by overriding the @<repository/>@ element:
+
+{% highlight xml linenos %}
+<?xml version="1.0"?>
+<configuration>
+	<configSections>
+		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+	</configSections>
+
+	<blueCollar applicationName="Your Application Name">
+		<repository connectionStringName="SQLite" type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository"/>
+	</blueCollar>
+
+	<connectionStrings>
+		<add name="SQLite" connectionString="..."/>
+	</connectionStrings>
+</configuration>
+{% endhighlight %}
+
+If you would like to store Blue Collar data in an existing SQLite database, "download the schema":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar.SQLiteRepository/SQLite.Schema.sql (a copy is also in the Schemas folder of your installation directory) and execute it against your database. The update the configuration accordingly.
+
+</section>

@@ -1,0 +1,205 @@
+---
+title: Configuration
+layout: default
+---
+
+<div class="page-header page-header-subnav">
+
+h1. Configuration
+
+<notextile>
+<div class="subnav">
+	<ul class="nav nav-pills">
+		<li><a href="#section-registration">Section Registration</a></li>
+		<li class="dropdown">
+			<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+				Section Definition
+				<b class="caret"></b>
+			</a>
+			<ul class="dropdown-menu">
+				<li><a href="#root-section">Root Section</a></li>
+				<li><a href="#dashboard-element">Dashboard Element</a></li>
+				<li><a href="#machine-element">Machine Element</a></li>
+				<li><a href="#repository-element">Repository Element</a></li>
+			</ul>
+		</li>
+		<li><a href="#handler-registration">Handler Registration</a></li>
+		<li><a href="#complete-with-defaults">Complete Example</a></li>
+	</ul>
+</div>
+</notextile>
+</div>
+
+Blue Collar is configured using the standard .NET configuration system. Typically, the @blueCollar@ section will be registered and defined in the same @.config@ file (e.g., @Web.config@ or @App.config@).
+
+<section id="section-registration">
+
+h2. Section Registration
+
+In order to modify the default configuration, you must first register the @blueCollar@ section in your application's configuration file. You can do this by adding a new @<section/>@ element under @configuration/configSections@:
+
+{% highlight xml linenos %}
+<?xml version="1.0"?>
+<configuration>
+	<configSections>
+		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+	</configSections>
+
+	<!-- Now you can define blueCollar as a child of the root
+	     configuration element. -->
+	<blueCollar applicationName="Your Application Name"/>
+</configuration>
+{% endhighlight %}
+
+</section>
+
+<section id="root-section">
+
+h2. Root Section
+
+table(table table-bordered table-striped).
+|_. Attribute|_. Data Type|_. Default|_. Description|
+|applicationName|string|Default|The application's friendly name. Used for data partitioning.|
+|schedulerEnabled|bool|true|A value indicating whether the scheduler is enabled for the application.|
+|workerHeartbeat|int|5|The worker heartbeat for the application, in seconds.|
+
+</section>
+
+<section id="dashboard-element">
+
+h2. Dashboard Element
+
+table(table table-bordered table-striped).
+|_. Attribute|_. Data Type|_. Default|_. Description|
+|cachingEnabled|bool|true|A value indicating whether caching of HTTP responses is enabled.|
+|handlerUrl|string|~/collar|An application-relative URL to expect the dashboard handler to be registered at.|
+|mode|DashboardEnabledMode <ul><li>LocalOnly</li><li>Off</li><li>On</li></ul>|LocalOnly|A value indicating whether the dashboard handler is enabled.|
+
+</section>
+
+<section id="machine-element">
+
+h2. Machine Element
+
+table(table table-bordered table-striped).
+|_. Attribute|_. Data Type|_. Default|_. Description|
+|ensureDefaultWorker|bool|true|A value indicating whether to ensure the existence of a default worker for each machine that is booted up for this application.|
+|heartbeat|int|60|The machine heartbeat, in seconds.|
+|serviceExecutionEnabled|bool|false|A value indicating whether this application can be picked up by @CollarService.exe@ for execution.|
+
+</section>
+
+<section id="repository-element">
+
+h2. Repository Element
+
+table(table table-bordered table-striped).
+|_. Attribute|_. Data Type|_. Default|_. Description|
+|connectionStringName|string|BlueCollar|The name of the connection string to use when initializing the repository, if applicable. Both @<connectionStrings/>@ and @<appSettings/>@ will be searched if necessary.|
+|type|string|BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository|The type name to use when creating @IRepository@ instances for data store access.|
+
+</section>
+
+<section id="handler-registration">
+
+h2. Web Management Dashboard Handler Registration
+
+There are a number of ways to register HTTP handlers for ASP.NET. We will go over two here: IIS7-only (the simplest), and "universal" (IIS 5.5+, plus the Visual Studio built-in web server Cassini). Feel free to mix and match to suit your application's needs.
+
+h4. IIS7 Only
+
+If you only care about IIS7, you can leave the default Blue Collar @handlerUrl@ value alone, and add a new item to the @configuration/system.webServer/handlers@ collection:
+
+{% highlight xml linenos %}
+<configuration>
+	<system.webServer>
+		<handlers>
+			<add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" />
+		</handlers>
+	</system.webServer>
+</configuration>
+{% endhighlight %}
+
+h4. Universal
+
+For "set-it-and-forget-it" peace of mind, you'll have to do a little more work. First, inform Blue Collar that it will be using a different URL (we need to add an extension):
+
+{% highlight xml linenos %}
+<configuration>
+	<blueCollar>
+		<dashboard handlerUrl="~/collar.ashx"/>
+	</blueCollar>
+</configuration>
+{% endhighlight %}
+
+Now, we're going to register the handler using a @<location/>@ element:
+
+{% highlight xml linenos %}
+<configuration>
+	<location path="collar.ashx">
+		<system.web>
+			<httpHandlers>
+				<add path="*" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*"/>
+			</httpHandlers>
+		</system.web>
+
+		<system.webServer>
+			<handlers>
+				<add name="*" path="collar.ashx" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode"/>
+			</handlers>
+			<validation validateIntegratedModeConfiguration="false"/>
+		</system.webServer>
+	</location>
+</configuration>
+{% endhighlight %}
+
+h4. ASP.NET MVC
+
+In order to get the handler to work in an ASP.NET MVC environment, you'll need to ignore the path in your @RouteTable@:
+
+{% highlight csharp linenos %}
+routes.IgnoreRoute("collar/{*pathInfo}");
+{% endhighlight %}
+
+or:
+
+{% highlight csharp linenos %}
+routes.IgnoreRoute("collar.ashx/{*pathInfo}");
+{% endhighlight %}
+
+or similar.
+
+</section>
+
+<section id="complete-with-defaults">
+
+h2. Complete Example with Defaults
+
+Below is a complete Web.config file that includes default values for all possible Blue Collar configuration options.
+
+{% highlight xml linenos %}
+<?xml version="1.0"?>
+<configuration>
+	<configSections>
+		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+	</configSections>
+
+	<blueCollar applicationName="Default" schedulerEnabled="true" workerHeartbeat="5">
+		<dashboard cachingEnabled="true" handlerUrl="~/collar" mode="LocalOnly"/>
+		<machine ensureDefaultWorker="true" heartbeat="60" serviceExecutionEnabled="false"/>
+		<repository connectionStringName="BlueCollar" type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository"/>
+	</blueCollar>
+
+	<connectionStrings>
+		<add name="BlueCollar" connectionString="data source=|DataDirectory|BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3;"/>
+	</connectionStrings>
+
+	<system.webServer>
+		<handlers>
+			<add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" />
+		</handlers>
+	</system.webServer>
+</configuration>
+{% endhighlight %}
+
+</section>

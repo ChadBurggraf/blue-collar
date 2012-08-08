@@ -1,0 +1,16 @@
+<div class="well sidebar">
+	<ul class="nav nav-list">
+		<li {% if page.url == '/index.html' %}class="active"{% endif %}><a href="/">Home</a></li>
+		<li class="divider"></li>
+		<li class="nav-header">Getting Started</li>
+		<li><a href="https://github.com/ChadBurggraf/blue-collar/downloads">Downloads (v{{ site.blueCollarVersion }})</a></li>
+		<li {% if page.url == '/quick-start.html' %}class="active"{% endif %}><a href="quick-start.html">Quick Start</a></li>
+		<li {% if page.url == '/configuration.html' %}class="active"{% endif %}><a href="configuration.html">Configuration</a></li>
+		<li {% if page.url == '/notes-on-sqlite.html' %}class="active"{% endif %}><a href="notes-on-sqlite.html">Notes on SQLite</a></li>
+		<li class="divider"></li>
+		<li class="nav-header">Usage</li>
+		<li {% if page.url == '/data-stores-(repositories).html' %}class="active"{% endif %}><a href="data-stores-(repositories).html">Data Stores (Repositories)</a></li>
+		<li><a href="">Service Setup</a></li>
+		<li><a href="">Logging</a></li>
+	</ul>
+</div>

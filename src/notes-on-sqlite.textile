@@ -1,0 +1,32 @@
+---
+title: Notes on SQLite
+layout: default
+---
+
+<div class="page-header">
+
+h1. Notes on SQLite
+
+</div>
+
+"SQLite":http://www.sqlite.org/ is a widespread, easy-to-use disk-based database. Besides being fast, SQLite databases are easy to transport, easy to reason about, and easy to set up. .NET enjoys a mature set of open source bindings to the SQLite C API, in the form of "System.Data.SQLite.dll":http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki.
+
+However, there are caveats.
+
+Because the core SQLite engine is written in unmanaged code, you must deploy a specific copy of @System.Data.SQLite.dll@ for each platform. This problem can be exacerbated if your development environment is running Windows on a 64-bit machine, as both MSTest (Visual Studio's built-in unit testing framework), and Cassini (Visual Studio's built-in web server) run in 32-bit mode. That means that you can run into situations where you need both 64-bit and 32-bit versions of @System.Data.SQLite.dll@ _on the same machine_.
+
+Although painful up front, I've found that the easiest way to deal with this is by installing *all four versions* of @System.Data.SQLite.dll@ into the GAC:
+
+* 32-bit for .NET v3.5
+* 64-bit for .NET v3.5
+* 32-bit for .NET v4.0
+* 64-bit for .NET v4.0
+
+*Be careful about installtion paths* if you plan to do this as well. The installer remembers the last path used and will therefore try to overwrite the previous installations. I'd recommend installing into the following corresponding directories:
+
+* C:\Program Files (x86)\System.Data.SQLite\2008
+* C:\Program Files\System.Data.SQLite\2008
+* C:\Program Files (x86)\System.Data.SQLite\2010
+* C:\Program Files\System.Data.SQLite\2010
+
+After you've completed all of those installations, you should be careful to delete all bin-deployed copies of @System.Data.SQLite.dll@ from any projects you're working on. Then update your references to point at the copy built for your default environment, and .NET will correctly resolve to the appropriate DLL as needed.

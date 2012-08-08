@@ -1,12 +1,13 @@
-VERSION = 1.0
+build: bootstrap
+	jekyll --no-server --no-auto
 
-#
-# BUILD SITE
-# jekyll & lessc are required
-#
+bootstrap:
+	rm -rf bootstrap/bootstrap
+	cd bootstrap; make bootstrap
+	cp bootstrap/bootstrap/css/bootstrap.min.css src/css/bootstrap.css
+	cp bootstrap/bootstrap/css/bootstrap-responsive.min.css src/css/bootstrap-responsive.css
+	cp bootstrap/bootstrap/img/*.png src/img
+	cp bootstrap/bootstrap/js/bootstrap.min.js src/js/bootstrap.js
+	rm -rf bootstrap/bootstrap
 
-collar:
-	jekyll --no-auto --no-server
-
-jekyll:
-	jekyll
+.PHONY: build bootstrap
