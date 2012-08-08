@@ -24,11 +24,11 @@ Some cool features include:
 
 <notextile>
 <p class="download">
-	<a class="btn btn-primary btn-large" href="https://github.com/ChadBurggraf/blue-collar/BlueCollar.msi">
+	<a class="btn btn-primary btn-large" href="https://github.com/downloads/ChadBurggraf/blue-collar/BlueCollar.msi">
 		<i class="icon-download-alt icon-white"></i> 
 		Download installer
 	</a>
-	<a class="btn btn-large" href="https://github.com/ChadBurggraf/blue-collar/BlueCollar-{{ site.blueCollarVersion }}.zip">
+	<a class="btn btn-large" href="https://github.com/downloads/ChadBurggraf/blue-collar/BlueCollar-{{ site.blueCollarVersion }}.zip">
 		<i class="icon-download"></i>
 		Download binaries
 	</a>

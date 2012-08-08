@@ -41,13 +41,13 @@ In order to modify the default configuration, you must first register the @blueC
 {% highlight xml linenos %}
 <?xml version="1.0"?>
 <configuration>
-	<configSections>
-		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
-	</configSections>
+  <configSections>
+    <section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+  </configSections>
 
-	<!-- Now you can define blueCollar as a child of the root
-	     configuration element. -->
-	<blueCollar applicationName="Your Application Name"/>
+  <!-- Now you can define blueCollar as a child of the root
+	   configuration element. -->
+  <blueCollar applicationName="Your Application Name"/>
 </configuration>
 {% endhighlight %}
 
@@ -112,11 +112,11 @@ If you only care about IIS7, you can leave the default Blue Collar @handlerUrl@ 
 
 {% highlight xml linenos %}
 <configuration>
-	<system.webServer>
-		<handlers>
-			<add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" />
-		</handlers>
-	</system.webServer>
+  <system.webServer>
+    <handlers>
+      <add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" />
+    </handlers>
+  </system.webServer>
 </configuration>
 {% endhighlight %}
 
@@ -126,9 +126,9 @@ For "set-it-and-forget-it" peace of mind, you'll have to do a little more work. 
 
 {% highlight xml linenos %}
 <configuration>
-	<blueCollar>
-		<dashboard handlerUrl="~/collar.ashx"/>
-	</blueCollar>
+  <blueCollar>
+    <dashboard handlerUrl="~/collar.ashx"/>
+  </blueCollar>
 </configuration>
 {% endhighlight %}
 
@@ -136,20 +136,20 @@ Now, we're going to register the handler using a @<location/>@ element:
 
 {% highlight xml linenos %}
 <configuration>
-	<location path="collar.ashx">
-		<system.web>
-			<httpHandlers>
-				<add path="*" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*"/>
-			</httpHandlers>
-		</system.web>
+  <location path="collar.ashx">
+    <system.web>
+      <httpHandlers>
+        <add path="*" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*"/>
+      </httpHandlers>
+    </system.web>
 
-		<system.webServer>
-			<handlers>
-				<add name="*" path="collar.ashx" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode"/>
-			</handlers>
-			<validation validateIntegratedModeConfiguration="false"/>
-		</system.webServer>
-	</location>
+    <system.webServer>
+      <handlers>
+        <add name="*" path="collar.ashx" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode"/>
+      </handlers>
+      <validation validateIntegratedModeConfiguration="false"/>
+    </system.webServer>
+  </location>
 </configuration>
 {% endhighlight %}
 
@@ -180,25 +180,25 @@ Below is a complete Web.config file that includes default values for all possibl
 {% highlight xml linenos %}
 <?xml version="1.0"?>
 <configuration>
-	<configSections>
-		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
-	</configSections>
+  <configSections>
+    <section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+  </configSections>
 
-	<blueCollar applicationName="Default" schedulerEnabled="true" workerHeartbeat="5">
-		<dashboard cachingEnabled="true" handlerUrl="~/collar" mode="LocalOnly"/>
-		<machine ensureDefaultWorker="true" heartbeat="60" serviceExecutionEnabled="false"/>
-		<repository connectionStringName="BlueCollar" type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository"/>
-	</blueCollar>
+  <blueCollar applicationName="Default" schedulerEnabled="true" workerHeartbeat="5">
+    <dashboard cachingEnabled="true" handlerUrl="~/collar" mode="LocalOnly"/>
+    <machine ensureDefaultWorker="true" heartbeat="60" serviceExecutionEnabled="false"/>
+    <repository connectionStringName="BlueCollar" type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository"/>
+  </blueCollar>
 
-	<connectionStrings>
-		<add name="BlueCollar" connectionString="data source=|DataDirectory|BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3;"/>
-	</connectionStrings>
+  <connectionStrings>
+    <add name="BlueCollar" connectionString="data source=|DataDirectory|BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3;"/>
+  </connectionStrings>
 
-	<system.webServer>
-		<handlers>
-			<add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" />
-		</handlers>
-	</system.webServer>
+  <system.webServer>
+    <handlers>
+      <add name="collar" path="collar" type="BlueCollar.Dashboard.DashboardHandlerFactory, BlueCollar" verb="*" preCondition="integratedMode" />
+    </handlers>
+  </system.webServer>
 </configuration>
 {% endhighlight %}
 

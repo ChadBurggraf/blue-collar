@@ -60,6 +60,9 @@ section {
 	padding: 8px 8px 8px 48px;
 	background-color: #f7f7f9;
 	border: solid 1px #e1e1e8;
+	word-wrap: normal;
+	white-space: pre;
+	overflow: auto;
 	-webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
 	-moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
 	box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
