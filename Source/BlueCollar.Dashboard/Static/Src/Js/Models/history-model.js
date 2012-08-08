@@ -21,18 +21,7 @@ var HistoryModel = CollarModel.extend({
         'WorkerMachineName': null,
         'WorkerName': null
     },
-    fragment: 'history',
-
-    /**
-     * Parses the model's data as returned by the server.
-     *
-     * @param {Object} response The raw response object received from the server.
-     * @return {Object} The parsed response object.
-     */
-    parse: function(response) {
-        response = CollarModel.prototype.parse.call(this, response);
-        return this.parseData(response);
-    }
+    fragment: 'history'
 });
 
 /**

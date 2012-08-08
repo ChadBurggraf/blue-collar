@@ -17,17 +17,6 @@ var QueueModel = CollarModel.extend({
     fragment: 'queue',
 
     /**
-     * Parses the model's data as returned by the server.
-     *
-     * @param {Object} response The raw response object received from the server.
-     * @return {Object} The parsed response object.
-     */
-    parse: function(response) {
-        response = CollarModel.prototype.parse.call(this, response);
-        return this.parseData(response);
-    },
-
-    /**
      * Gets a copy of th emodel's attributes, suitable for editing in a UI.
      *
      * @return {Object} An editable copy of the model's underlying attributes.

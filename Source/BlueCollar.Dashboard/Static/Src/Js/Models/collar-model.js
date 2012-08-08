@@ -60,30 +60,7 @@ var CollarModel = Backbone.Model.extend({
      * @return {Object} The parsed response object.
      */
     parse: function(response) {
-        return CollarModel.parseAllDates(response);
-    },
-
-    /**
-     * Parses the model's response.Data attribute as returned by the server.
-     *
-     * @param {Object} response The response to parse/ensure a Data attribute for.
-     * @return {Object} The parsed response object.
-     */
-    parseData: function(response) {
-        if (!response.Data) {
-            response.Data = '{}';
-        }
-
-        if (_.isString(response.Data)) {
-            try {
-                response.Data = JSON.parse(response.Data);
-            } catch (e) {
-                response.Data = {};
-            }
-        }
-
-        response.Data = JSON.stringify(response.Data, null, 2);
-        return response;
+        return CollarModel.parseData(CollarModel.parseAllDates(response));
     },
 
     /**
@@ -188,6 +165,29 @@ _.extend(CollarModel, {
                     }
                 }
             }
+        }
+
+        return attributes;
+    },
+
+    /**
+     * Parses the given attributes hash's Data property, if applicable,
+     * by ensuring it is a pretty-printed string.
+     *
+     * @param {Object} attributes A hash of attributes.
+     * @return {Object} The updated attributes object with the Data property parsed, if applicable.
+     */
+    parseData: function(attributes) {
+        if (attributes && attributes.Data) {
+            if (_.isString(attributes.Data)) {
+                try {
+                    attributes.Data = JSON.parse(attributes.Data);
+                } catch (e) {
+                    attributes.Data = {};
+                }
+            }
+
+            attributes.Data = JSON.stringify(attributes.Data, null, 2);
         }
 
         return attributes;

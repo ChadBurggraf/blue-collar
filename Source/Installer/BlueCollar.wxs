@@ -111,6 +111,10 @@
       <ComponentRef Id="Examples" />
       <ComponentRef Id="Readme" />
     </Feature>
+    <CustomAction Id="NoDowngrade" Error="A newer version of [ProductName] is already installed." />
+    <InstallExecuteSequence>
+      <Custom Action="NoDowngrade" After="FindRelatedProducts">NEWERFOUND</Custom>
+    </InstallExecuteSequence>
     <UI>
       <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
       <UIRef Id="WixUI_InstallDir" />

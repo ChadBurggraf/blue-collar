@@ -20,17 +20,11 @@ var ScheduledJobModel = CollarModel.extend({
     initialize: function(attributes, options) {
         CollarModel.prototype.initialize.call(this, attributes, options);
         this.setScheduleId(options.scheduleId);
-    },
 
-    /**
-     * Parses the model's data as returned by the server.
-     *
-     * @param {Object} response The raw response object received from the server.
-     * @return {Object} The parsed response object.
-     */
-    parse: function(response) {
-        response = CollarModel.prototype.parse.call(this, response);
-        return this.parseData(response);
+        this.bind('change:Data', function() {
+            console.log(this.get('Data'));
+            console.trace();
+        }, this);
     },
 
     /**
