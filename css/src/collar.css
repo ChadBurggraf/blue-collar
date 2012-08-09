@@ -2,13 +2,8 @@ section {
 	padding-top: 40px;
 }
 
-.download {
-	margin: 36px;
-	text-align: center;
-}
-
-.download .btn-primary {
-	margin-right: 10px;
+.container-landing {
+	width: auto;
 }
 
 .fork {
@@ -28,32 +23,103 @@ section {
 	font-size: 13px;
 	font-weight: bold;
 	background-color: #333;
-	color: #FFF;
+	color: #fff;
 	word-spacing: 2px;
 	text-decoration: none;
 	padding: 5px 15px 5px 25px;
-	position:relative;
+	position: relative;
 	left: 20px;
 	top: -37px;
 	text-align: center;
-	-moz-transform-origin: 0 0 ;
-	-moz-transform:rotate(45deg);
-	-moz-box-shadow:    1px 1px 5px 1px #666;
-	-webkit-transform-origin: 0 0 ;	
-	-webkit-transform:rotate(45deg);
-	-webkit-box-shadow: 1px 1px 5px 1px #666;
-	-ms-transform-origin: 0 0 ;	
-	-ms-transform:rotate(45deg);
-	-ms-box-shadow: 1px 1px 5px 1px #666;
-	transform-origin: 0 0 ;	
+	-moz-transform-origin: 0 0;
+	-moz-transform: rotate(45deg);
+	-moz-box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
+	-webkit-transform-origin: 0 0;	
+	-webkit-transform: rotate(45deg);
+	-webkit-box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
+	-ms-transform-origin: 0 0;	
+	-ms-transform: rotate(45deg);
+	-ms-box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
+	transform-origin: 0 0;	
 	transform:rotate(45deg);
-	box-shadow: 1px 1px 5px 1px #666;
-	background-image: linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
-	background-image: -o-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
-	background-image: -moz-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
-	background-image: -webkit-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
-	background-image: -ms-linear-gradient(bottom, #4AA400 3%, #5CCD00 5%, #4AA400 7%, #4AA400 93%, #5CCD00 95%, #4AA400 97%);
-	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.03, #4AA400), color-stop(0.05, #5CCD00), color-stop(0.07, #4AA400), color-stop(0.93, #4AA400), color-stop(0.95, #5CCD00), color-stop(0.97, #4AA400));
+	box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.03, #4aa400),
+		color-stop(0.05, #deffc4),
+		color-stop(0.07, #4aa400),
+		color-stop(0.93, #5ccd00),
+		color-stop(0.95, #deffc4),
+		color-stop(0.97, #5ccd00));
+	background-image: linear-gradient(bottom, #4aa400 3%, #deffc4 5%, #4aa400 7%, #5ccd00 93%, #deffc4 95%, #5ccd00 97%);
+	background-image: -o-linear-gradient(bottom, #4aa400 3%, #deffc4 5%, #4aa400 7%, #5ccd00 93%, #deffc4 95%, #5ccd00 97%);
+	background-image: -moz-linear-gradient(bottom, #4aa400 3%, #deffc4 5%, #4aa400 7%, #5ccd00 93%, #deffc4 95%, #5ccd00 97%);
+	background-image: -webkit-linear-gradient(bottom, #4aa400 3%, #deffc4 5%, #4aa400 7%, #5ccd00 93%, #deffc4 95%, #5ccd00 97%);
+	background-image: -ms-linear-gradient(bottom, #4aa400 3%, #deffc4 5%, #4aa400 7%, #5ccd00 93%, #deffc4 95%, #4AA400 97%);
+}
+
+.landing .fork a {
+	color: #303030;
+	-moz-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.5);
+	-webkit-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.5);
+	-ms-box-shadow: 1px 1px 5px 1px rgba(255,255,255,.5);
+	box-shadow: 1px 1px 5px 1px rgba(255,255,255,.5);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.03, #e6e6e6),
+		color-stop(0.05, #303030),
+		color-stop(0.07, #e6e6e6),
+		color-stop(0.93, #fff),
+		color-stop(0.95, #303030),
+		color-stop(0.97, #fff));
+	background-image: linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #fff 93%, #303030 95%, #fff 97%);
+	background-image: -o-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #fff 93%, #303030 95%, #fff 97%);
+	background-image: -moz-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #fff 93%, #303030 95%, #fff 97%);
+	background-image: -webkit-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #fff 93%, #303030 95%, #fff 97%);
+	background-image: -ms-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #fff 93%, #303030 95%, #fff 97%);
+}
+
+.hero-unit {
+	padding: 0;
+	margin: 0;
+	background: #0088cc;
+	background: -moz-linear-gradient(top,  #0088cc 0%, #0055cc 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0088cc), color-stop(100%, #0055cc));
+	background: -webkit-linear-gradient(top,  #0088cc 0%, #0055cc 100%);
+	background: -o-linear-gradient(top,  #0088cc 0%, #0055cc 100%);
+	background: -ms-linear-gradient(top,  #0088cc 0%, #0055cc 100%);
+	background: linear-gradient(to bottom,  #0088cc 0%, #0055cc 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0088cc', endColorstr='#0055cc', GradientType=0);
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	-moz-box-shadow: 0 4px 4px rgba(0,0,0,.2);
+	-webkit-box-shadow: 0 4px 4px rgba(0,0,0,.2);
+	box-shadow: 0 4px 4px rgba(0,0,0,.2);
+}
+
+.hero-unit h1 {
+	margin-top: 100px;
+	font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif;
+	font-weight: 900;
+	letter-spacing: -1px;
+	font-size: 48px;
+	line-height: 1.2;
+	color: #c5ddff;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+}
+
+.hero-unit h1 small {
+	display: block;
+	font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+	font-weight: normal;
+	font-size: 24px;
+	color: #87b5f5;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.35);
 }
 
 .highlight pre {
@@ -69,6 +135,24 @@ section {
 	box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
 }
 
+.hero-unit .shine {
+	height: 419px;
+	background: -webkit-gradient(radial, center bottom, 0, center bottom, 419, from(rgba(255,255,255,.3)), to(rgba(255,255,255,0)), color-stop(50%, rgba(255,255,255,0)));
+	background: -webkit-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
+	background: -moz-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
+	background: -ms-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
+	background: -o-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
+	border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+.hero-unit .download {
+	margin: 48px 0 0;
+}
+
+.hero-unit .download .btn-success {
+	margin-right: 10px;
+}
+
 .highlight .lineno {
 	position: absolute;
 	width: 40px;
@@ -82,7 +166,7 @@ section {
 }
 
 .page-header h1 {
-	font-family: Chivo, 'Helvetica Neue', Helvetica, Arial, serif;
+	font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-weight: 900;
 	letter-spacing: -1px;
 	font-size: 48px;
@@ -241,5 +325,12 @@ section {
 		-webkit-border-radius: 0;
 		-moz-border-radius: 0;
 		border-radius: 0;
+	}
+}
+
+@media (max-width: 767px) {
+	body.landing {
+		padding-left: 0;
+		padding-right: 0;
 	}
 }

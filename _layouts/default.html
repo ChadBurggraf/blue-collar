@@ -1,15 +1,18 @@
 {% include header.html %}
 
-<div class="container">
-	<div class="row">
-		<div class="span3">
-			{% include sidebar.html %}
+	<body data-spy="scroll" data-target=".subnav" data-offset="80">
+		<div class="fork"><a href="https://github.com/ChadBurggraf/blue-collar">Fork me on GitHub</a></div>
+		<div class="container">
+			<div class="row">
+				<div class="span3">
+					{% include sidebar.html %}
+				</div>
+				
+				<div class="span9">
+					{{ content }}
+				</div>
+			</div>
 		</div>
-		
-		<div class="span9">
-			{{ content }}
-		</div>
-	</div>
-</div>
-
-{% include footer.html %}
+		<script src="js/app.js"></script>
+	</body>
+</html>
