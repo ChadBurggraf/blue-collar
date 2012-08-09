@@ -5,11 +5,16 @@
 
     /* Sidebar pseudo fixed position. */
 
-    Sidebar = function(el) {
+    Sidebar = function(el, options) {
         this.el = el;
         this.height = el.outerHeight(true);
         this.scrollTop = Window.scrollTop();
         this.winHeight = Window.height();
+        this.winWidth = Window.width();
+
+        this.options = $.extend({
+            minWindowWidth: 768
+        }, options);
 
         this.position();
 
@@ -18,11 +23,15 @@
     };
 
     Sidebar.prototype.position = function() {
-        if (this.scrollTop > 0) {
-            if (this.winHeight > this.height) {
-                this.el.css('top', this.scrollTop + 'px');
-            } else if (this.scrollTop + this.winHeight > this.height) {
-                this.el.css('top', (this.scrollTop + this.winHeight - this.height) + 'px');
+        if (this.winWidth >= this.options.minWindowWidth) {
+            if (this.scrollTop > 0) {
+                if (this.winHeight > this.height) {
+                    this.el.css('top', this.scrollTop + 'px');
+                } else if (this.scrollTop + this.winHeight > this.height) {
+                    this.el.css('top', (this.scrollTop + this.winHeight - this.height) + 'px');
+                }
+            } else {
+                this.el.css('top', '');
             }
         } else {
             this.el.css('top', '');
@@ -31,6 +40,7 @@
 
     Sidebar.prototype.resize = function() {
         this.winHeight = Window.height();
+        this.winWidth = Window.width();
         this.position();
     };
 
@@ -45,7 +55,6 @@
         this.el = el;
         this.top = el.length > 0 ? el.offset().top : 0;
         this.parent = el.parent();
-        this.parentLeft = this.parent.length > 0 ? this.parent.offset().left : 0
         this.isFixed = false;
         
         this.options = $.extend({
@@ -73,7 +82,7 @@
 
     Subnav.prototype.resize = function() {
         if (this.isFixed && this.parent.length > 0) {
-            this.el.css('left', this.parentLeft + 'px');
+            this.el.css('left', this.parent.offset().left + 'px');
         }
     };
 

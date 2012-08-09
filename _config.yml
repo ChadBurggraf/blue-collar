@@ -1,7 +1,7 @@
 auto: true
 blueCollarVersion: 1.0.0
 exclude: 
-  - bootstrap 
+  - bootstrap
   - .gitignore 
   - .gitmodules 
   - BlueCollar.sublime-project 

@@ -16,12 +16,13 @@ section {
 	right: 0;
 	height: 149px;
 	width: 149px;
-	overflow:hidden;
+	overflow: hidden;
 	padding: 0;
 	margin: 0;
 }
 
 .fork a {
+	z-index: 1040;
 	display: block;
 	width: 190px;
 	font-size: 13px;
