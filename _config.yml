@@ -1,6 +1,5 @@
 auto: true
 blueCollarVersion: 1.0.0
-exclude: [./bootstrap, ./Makefile]
+exclude: [bootstrap, .gitignore, .gitmodules, BlueCollar.sublime-project, BlueCollar.sublime-workspace, CNAME, Makefile]
 pygments: true
 server: true
-source: ./src
