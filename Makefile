@@ -1,4 +1,6 @@
 build: bootstrap
+	cat css/bootstrap.css css/bootstrap-responsive.css css/syntax.css css/collar.css | java -jar yuicompressor-2.4.7.jar --type css > css/app.css
+	cat js/jquery.js js/bootstrap.js js/collar.js | python compile-js.py > js/app.js
 	jekyll --no-server --no-auto
 
 bootstrap:
