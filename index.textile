@@ -1,6 +1,6 @@
 ---
 title: Blue Collar
-layout: default
+layout: landing
 ---
 
 <div class="page-header page-header-index">
