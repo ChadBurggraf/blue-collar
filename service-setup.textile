@@ -1,0 +1,112 @@
+---
+title: Service Setup
+layout: default
+---
+
+<div class="page-header page-header-subnav">
+
+h1. Service Setup
+
+p. Run Jobs in a Windows Service
+
+<notextile>
+<div class="subnav">
+	<ul class="nav nav-pills">
+		<li><a href="#installation">Installation</a></li>
+		<li><a href="#configuration">Configuration</a></li>
+		<li><a href="#enabling-your-application">Enabling Your Application</a></li>
+	</ul>
+</div>
+</notextile>
+</div>
+
+Using the included Windows Service (@CollarService.exe@) to execute your jobs in a production environment is highly recommended. The service enables you to:
+
+* Continuously execute jobs, even when your web application is shut down by IIS.
+* Save ASP.NET threadpool threads for handling incoming requests.
+* Execute work for .NET v3.5 and v4.0 applications.
+* Force applications to run as 32-bit, even on a 64-bit machine.
+* Execute work for multiple applications on the same machine.
+
+Additionally, the service will automatically detect changes to your application and reload a new copy as necessary. Once you've included your application for execution by the service, you shouldn't have to worry about it again.
+
+<section id="installation">
+
+h2. Installation
+
+The service is installed and started by default during the initial installation of Blue Collar. By default, it is installed at @C:\Program Files (x86)\Blue Collar\Service@. The installation directory layout looks as follows:
+
+bc. Service
++-- AnyCPU
+|   +-- Net35
+|   |   +-- Collar.exe
+|   |   +-- Collar.log
+|   +-- Net40
+|       +-- Collar.exe
+|   |   +-- Collar.log
++-- x86
+|   +-- Net35
+|   |   +-- Collar.exe
+|   |   +-- Collar.log
+|   +-- Net40
+|       +-- Collar.exe
+|   |   +-- Collar.log
++-- CollarService.exe
++-- CollarService.exe.config
++-- CollarService.log
+
+Things to note for future reference:
+
+* **CollarService.exe.config** is where applications are registered for execution.
+* **CollarService.log** contains service-level logs.
+* **Collar.log** files contain their respective application-level logs.
+
+</section>
+
+<section id="configuration">
+
+h2. Configuration
+
+Registering applications for execution by the service involves adding one line of configuration to @CollarService.exe@:
+
+{% highlight xml linenos %}
+<configuration>
+  <blueCollarService>
+    <add applicationPath="C:\Path\To\Application" applicationConfigPath="" framework="4.0" force32Bit="false"/>
+  </blueCollarService>
+</configuration>
+{% endhighlight %}
+
+Each @<add/>@ element has the following schema:
+
+table(table table-bordered table-striped).
+|_. Attribute|_. Data Type|_. Default|_. Description|
+|applicationPath|string||The path to the application root.|
+|applicationConfigPath|string||The path to the application's configuration file, if it is not in one of the default locations.|
+|framework|<ul><li>3.5</li><li>4.0</li></ul>|4.0|The framework version to host the application in.|
+|force32Bit|bool|false|A value indicating whether to force the application to run as 32-bit, even on a 64-bit machine.|
+
+Note that changes to the service configuration are detected by @CollarService.exe@, therefore *restarting the service is not necessary*.
+
+</section>
+
+<section id="enabling-your-application">
+
+h2. Enabling Your Application
+
+See "Creating a Machine In-Process":quick-start.html#creating-a-machine-in-process in the Quick Start guide for best practices on setting up your application for both in-process and service-based job execution.
+
+While your application will be picked up and loaded into memory once it is registered in @CollarSrevice.exe.config@, a @Machine@ won't actually be created for executing jobs until you explicitly enable it in your application's configuration.
+
+To do that, set @blueCollar/machine/serviceExecutionEnabled@ to @true@:
+
+{% highlight xml linenos %}
+<?xml version="1.0"?>
+<configuration>
+<blueCollar applicationName="Your Application Name">
+    <machine serviceExecutionEnabled="true"/>
+  </blueCollar>
+</configuration>
+{% endhighlight %}
+
+</section>
