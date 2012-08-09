@@ -44,7 +44,7 @@ Now add the @blueCollar@ section as a child of the root @<configuration/>@ eleme
 <blueCollar applicationName="Your Application Name"/>
 {% endhighlight %}
 
-Replace Your *Application Name* with a friendly application name. The system can accomodate multiple applications in the same database schema, so the application name you choose will also be used to partition this application's data.
+Replace *Your Application Name* with a friendly application name. The system can accomodate multiple applications in the same database schema, so the application name you choose will also be used to partition this application's data.
 
 Finally, register the web management dashboard handler. By default, the handler is configured for registration at @~/collar@, so that's where we'll register it under @<system.webServer/>@:
 

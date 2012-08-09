@@ -9,7 +9,7 @@ h1. Notes on SQLite
 
 </div>
 
-"SQLite":http://www.sqlite.org/ is a widespread, easy-to-use disk-based database. Besides being fast, SQLite databases are easy to transport, easy to reason about, and easy to set up. .NET enjoys a mature set of open source bindings to the SQLite C API, in the form of "System.Data.SQLite.dll":http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki.
+"SQLite":http://www.sqlite.org/ is a widespread, easy-to-use, disk-based database. Besides being fast, SQLite databases are easy to transport, easy to reason about, and easy to set up. .NET enjoys a mature set of open source bindings to the SQLite C API, in the form of "System.Data.SQLite.dll":http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki.
 
 However, there are caveats.
 

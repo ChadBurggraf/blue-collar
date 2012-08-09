@@ -46,7 +46,7 @@ In order to modify the default configuration, you must first register the @blueC
   </configSections>
 
   <!-- Now you can define blueCollar as a child of the root
-	   configuration element. -->
+       configuration element. -->
   <blueCollar applicationName="Your Application Name"/>
 </configuration>
 {% endhighlight %}
@@ -56,6 +56,8 @@ In order to modify the default configuration, you must first register the @blueC
 <section id="root-section">
 
 h2. Root Section
+
+The following attributes are available on the root @<blueCollar/>@ section element, and control global behavior:
 
 table(table table-bordered table-striped).
 |_. Attribute|_. Data Type|_. Default|_. Description|
@@ -69,6 +71,8 @@ table(table table-bordered table-striped).
 
 h2. Dashboard Element
 
+The following attributes are availble on the @blueCollar/dashboard@ element, and control web management dashboard behavior:
+
 table(table table-bordered table-striped).
 |_. Attribute|_. Data Type|_. Default|_. Description|
 |cachingEnabled|bool|true|A value indicating whether caching of HTTP responses is enabled.|
@@ -80,6 +84,8 @@ table(table table-bordered table-striped).
 <section id="machine-element">
 
 h2. Machine Element
+
+The following attributes are available on the @blueCollar/machine@ element, and control machine behavior:
 
 table(table table-bordered table-striped).
 |_. Attribute|_. Data Type|_. Default|_. Description|
@@ -93,6 +99,8 @@ table(table table-bordered table-striped).
 
 h2. Repository Element
 
+The following attributes are available on the @blueCollar/repository@ element, and control repository behavior:
+
 table(table table-bordered table-striped).
 |_. Attribute|_. Data Type|_. Default|_. Description|
 |connectionStringName|string|BlueCollar|The name of the connection string to use when initializing the repository, if applicable. Both @<connectionStrings/>@ and @<appSettings/>@ will be searched if necessary.|
@@ -104,11 +112,11 @@ table(table table-bordered table-striped).
 
 h2. Web Management Dashboard Handler Registration
 
-There are a number of ways to register HTTP handlers for ASP.NET. We will go over two here: IIS7-only (the simplest), and "universal" (IIS 5.5+, plus the Visual Studio built-in web server Cassini). Feel free to mix and match to suit your application's needs.
+There are a number of ways to register HTTP handlers for ASP.NET. We will go over two here: IIS7+ only (the simplest), and "universal" (IIS 5.5+, plus the Visual Studio built-in web server Cassini). Feel free to mix and match to suit your application's needs.
 
-h4. IIS7 Only
+h4. IIS7+ Only
 
-If you only care about IIS7, you can leave the default Blue Collar @handlerUrl@ value alone, and add a new item to the @configuration/system.webServer/handlers@ collection:
+If you only care about IIS7+, you can leave the default Blue Collar @handlerUrl@ value alone, and add a new item to the @configuration/system.webServer/handlers@ collection:
 
 {% highlight xml linenos %}
 <configuration>
@@ -119,6 +127,8 @@ If you only care about IIS7, you can leave the default Blue Collar @handlerUrl@ 
   </system.webServer>
 </configuration>
 {% endhighlight %}
+
+Using the above configuration, you can visit the web management dashboard by navigating to @~/collar@.
 
 h4. Universal
 
@@ -152,6 +162,8 @@ Now, we're going to register the handler using a @<location/>@ element:
   </location>
 </configuration>
 {% endhighlight %}
+
+Using the above configuration, you can visit the web management dashboard by navigating to @~/collar.ashx@.
 
 h4. ASP.NET MVC
 

@@ -27,7 +27,7 @@ h2. Microsoft SQL Server
 
 The Microsoft SQL Server repository implementation ships as part of @BlueCollar.dll@. To get started, first create a database that you want to use to store job data. The database can be dedicated to Blue Collar, or you can use your application's existing database.
 
-Next, you must create the "Blue Collar schema":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar/SqlServer.Schema.sql (a copy is also in the Schemas folder of your installation directory). The schema consists of five tables:
+Next, you must create the "Blue Collar schema":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar/SqlServer.Schema.sql (a copy is also available in the Schemas folder of your installation directory). The schema consists of six tables:
 
 # BlueCollarHistory
 # BlueCollarQueue
@@ -45,18 +45,18 @@ Finally, configure your application to use Microsoft SQL Server. As an example, 
 {% highlight xml linenos %}
 <?xml version="1.0"?>
 <configuration>
-	<configSections>
-		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
-	</configSections>
+  <configSections>
+    <section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+  </configSections>
 
-	<blueCollar applicationName="Your Application Name">
-		<repository connectionStringName="LocalSqlServer" type="BlueCollar.SqlServerRepository, BlueCollar"/>
-	</blueCollar>
+  <blueCollar applicationName="Your Application Name">
+    <repository connectionStringName="LocalSqlServer" type="BlueCollar.SqlServerRepository, BlueCollar"/>
+  </blueCollar>
 
-	<connectionStrings>
-		<remove name="LocalSqlServer"/>
-		<add name="LocalSqlServer" connectionString="data source=(local);initial catalog=BlueCollar;integrated security=SSPI"/>
-	</connectionStrings>
+  <connectionStrings>
+    <remove name="LocalSqlServer"/>
+    <add name="LocalSqlServer" connectionString="data source=(local);initial catalog=BlueCollar;integrated security=SSPI"/>
+  </connectionStrings>
 </configuration>
 {% endhighlight %}
 
@@ -66,29 +66,29 @@ Finally, configure your application to use Microsoft SQL Server. As an example, 
 
 h2. SQLite
 
-"Please read the Notes on SQLite for some working with SQLite on Windows.":notes-on-sqlite.html
+"Read the Notes on SQLite for some tips on working with SQLite on Windows.":notes-on-sqlite.html
 
-The SQLite repository implementation ships in @BlueCollar.SQLiteRepository.dll@. To get started, simply add a reference to the DLL to your application, or install it in the GAC.
+The SQLite repository implementation ships in @BlueCollar.SQLiteRepository.dll@. To get started, add a reference to the DLL to your application, or install it in the GAC.
 
 The SQLite database will be created on-demand by default, at @~/App_Data/BlueCollar.sqlite@. You can override that location by defining a custom connection string called @BlueCollar@. Alternatively, you can configure a different connection string name by overriding the @<repository/>@ element:
 
 {% highlight xml linenos %}
 <?xml version="1.0"?>
 <configuration>
-	<configSections>
-		<section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
-	</configSections>
+  <configSections>
+    <section name="blueCollar" type="BlueCollar.BlueCollarSection, BlueCollar" allowDefinition="Everywhere" allowLocation="true" requirePermission="false"/>
+  </configSections>
 
-	<blueCollar applicationName="Your Application Name">
-		<repository connectionStringName="SQLite" type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository"/>
-	</blueCollar>
+  <blueCollar applicationName="Your Application Name">
+    <repository connectionStringName="BlueCollarSQLite" type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository"/>
+  </blueCollar>
 
-	<connectionStrings>
-		<add name="SQLite" connectionString="..."/>
-	</connectionStrings>
+  <connectionStrings>
+    <add name="BlueCollarSQLite" connectionString="data source=|DataDirectory|BlueCollar.sqlite;journal mode=Off;synchronous=Off;version=3;"/>
+  </connectionStrings>
 </configuration>
 {% endhighlight %}
 
-If you would like to store Blue Collar data in an existing SQLite database, "download the schema":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar.SQLiteRepository/SQLite.Schema.sql (a copy is also in the Schemas folder of your installation directory) and execute it against your database. The update the configuration accordingly.
+If you would like to store Blue Collar data in an existing SQLite database, "download the schema":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar.SQLiteRepository/SQLite.Schema.sql (a copy is also available in the Schemas folder of your installation directory) and execute it against your database. Then update the configuration accordingly.
 
 </section>
