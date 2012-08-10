@@ -10,16 +10,16 @@ cat-assets:
 bootstrap:
 	rm -rf bootstrap/bootstrap
 	cd bootstrap; make bootstrap
-	cp bootstrap/bootstrap/css/bootstrap.min.css css/bootstrap.css
-	cp bootstrap/bootstrap/css/bootstrap-responsive.min.css css/bootstrap-responsive.css
+	cp bootstrap/bootstrap/css/bootstrap.min.css css/src/bootstrap.css
+	cp bootstrap/bootstrap/css/bootstrap-responsive.min.css css/src/bootstrap-responsive.css
 	cp bootstrap/bootstrap/img/*.png img
-	cp bootstrap/bootstrap/js/bootstrap.min.js js/bootstrap.js
+	cp bootstrap/bootstrap/js/bootstrap.min.js js/src/bootstrap.js
 	rm -rf bootstrap/bootstrap
 
 jekyll:
 	jekyll --no-server --no-auto
 
 watch:
-	watchr -e "watch('css/src/.*\.css|js/src/.*\.js') { system 'make cat-assets' }"
+	watchr -e "watch('css/src/.*\.css|js/src/.*\.js') { system 'make cat-assets; jekyll --no-auto --no-server' }"
 
 .PHONY: build cat-assets bootstrap jekyll watch

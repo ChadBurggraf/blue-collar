@@ -1,4 +1,4 @@
-auto: true
+auto: false
 blueCollarVersion: 1.0.0
 exclude: 
   - bootstrap
