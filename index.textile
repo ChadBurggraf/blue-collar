@@ -6,3 +6,42 @@ layout: landing
 h2. Hey Johnny, let me do the heavy lifting for you.
 
 p(byline). Blue Collar is a system for creating, managing, and executing background work in .NET applications.
+
+<notextile>
+<div class="row row-features">
+	<div class="span6 span-feature">
+		<i class="icon-browser"></i>
+		<h3>Embedded web-based management interface</h3>
+		<p>Manage machines, workers, schedules and more. Embedded right into <code>BlueCollar.dll</code> and implemented as a standard <a href="http://msdn.microsoft.com/en-us/library/system.web.ihttphandlerfactory.aspx"><code>IHttpHandlerFactory</code></a>.
+	</div>
+	<div class="span6 span-feature">
+		<i class="icon-process"></i>
+		<h3>Scale to suit your needs</h3>
+		<p>Perform work for multiple applications on one server, or perform work for one application on multiple servers, or any combination in between.
+	</div>
+</div>
+<div class="row row-features">
+	<div class="span6 span-feature">
+		<i class="icon-copy"></i>
+		<h3>Single assembly deployment</h3>
+		<p>All dependencies are merged into <code>BlueCollar.dll</code> for easy deployment.
+	</div>
+	<div class="span6 span-feature">
+		<i class="icon-cargo"></i>
+		<h3>Jobs are simple .NET objects</h3>
+		<p>Just implement <code>string Name { get; }</code> and <code>void Execute();</code>. You can convert time- or process-consuming code into Blue Collar jobs in no time.
+	</div>
+</div>
+<div class="row row-features">
+	<div class="span6 span-feature">
+		<i class="icon-check-circle"></i>
+		<h3>Sensible defaults</h3>
+		<p>Blue Collar has lots of configurability and extensibility, but the defaults are sensible and allow you to get up and running quickly.</p>
+	</div>
+	<div class="span6 span-feature">
+		<i class="icon-edit"></i>
+		<h3>Free and open source</h3>
+		<p>Licensed under the <a href="http://opensource.org/licenses/mit-license.php/">MIT license</a> and developed on <a href="https://github.com/ChadBurggraf/blue-collar">GitHub</a>.
+	</div>
+</div>
+</notextile>

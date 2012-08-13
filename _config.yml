@@ -1,4 +1,5 @@
-auto: false
+auto: true
+baseurl: /
 blueCollarVersion: 1.0.0
 exclude: 
   - bootstrap

@@ -118,19 +118,6 @@ section {
 	text-shadow: 0 -1px 0 rgba(0,0,0,.35);
 }
 
-.highlight pre {
-	position: relative;
-	padding: 8px 8px 8px 48px;
-	background-color: #f7f7f9;
-	border: solid 1px #e1e1e8;
-	word-wrap: normal;
-	white-space: pre;
-	overflow: auto;
-	-webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
-	-moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
-	box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
-}
-
 .hero-unit .download {
 	margin: 64px 0 0;
 }
@@ -144,6 +131,17 @@ section {
 	border-color: rgba(0,0,0,.5);
 }
 
+.hero-unit .more-info {
+	margin-top: 10px;
+	font-size: 24px;
+}
+
+.hero-unit .more-info a,
+.hero-unit .more-info a:hover,
+.hero-unit .more-info a:visited {
+	color: #87B5F5;
+}
+
 .hero-unit .shine {
 	height: 419px;
 	background: -webkit-gradient(radial, center bottom, 0, center bottom, 419, from(rgba(255,255,255,.3)), to(rgba(255,255,255,0)), color-stop(50%, rgba(255,255,255,0)));
@@ -152,6 +150,19 @@ section {
 	background: -ms-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
 	background: -o-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
 	border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+.highlight pre {
+	position: relative;
+	padding: 8px 8px 8px 48px;
+	background-color: #f7f7f9;
+	border: solid 1px #e1e1e8;
+	word-wrap: normal;
+	white-space: pre;
+	overflow: auto;
+	-webkit-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	-moz-box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
+	box-shadow: inset 40px 0 0 #fbfbfc, inset 41px 0 0 #ececf0;
 }
 
 .highlight .lineno {
@@ -169,8 +180,15 @@ section {
 	text-align: center;
 }
 
+.landing h3 {
+	margin: 0 10px 4px 98px;
+	font-size: 22px;
+	font-weight: 400;
+	line-height: 1.2;
+}
+
 .landing .byline {
-	margin: -27px 0 36px;
+	margin: -27px 0 60px;
 	font-size: 18px;
 	font-weight: 300;
 	line-height: 24px;
@@ -220,6 +238,49 @@ section {
 
 .page-header-subnav .subnav {
 	margin: 22px 0 0;
+}
+
+.row-features i {
+	float: left;
+	margin: 0 10px 10px;
+	width: 70px;
+	height: 70px;
+	border-radius: 80px;
+	background-color: #f5f5f5;
+	background: url('../img/landing-icons.png') no-repeat #f5f5f5;
+}
+
+.row-features i.icon-browser {
+	background-position: 0 0;
+}
+
+.row-features i.icon-copy {
+	background-position: 0 -70px;
+}
+
+.row-features i.icon-process {
+	background-position: 0 -140px;
+}
+
+.row-features i.icon-cargo {
+	background-position: 0 -210px;
+}
+
+.row-features i.icon-check-circle {
+	background-position: 0 -280px;
+}
+
+.row-features i.icon-edit {
+	background-position: 0 -350px;
+}
+
+.row-features p {
+	margin-right: 10px;
+	margin-left: 98px;
+}
+
+.row-features .span-feature {
+	margin-bottom: 60px;
 }
 
 .sidebar {
@@ -346,11 +407,11 @@ section {
 }
 
 @media (max-width: 979px) {
-	.span6.hero-title {
+	.span6.span-hero-title {
 		width: 744px;
 	}
 
-	.span6.hero-screenshots {
+	.span6.span-hero-screenshots {
 		display: none;
 	}
 }

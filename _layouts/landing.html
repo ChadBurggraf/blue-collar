@@ -8,7 +8,7 @@
 				<div class="shine">
 					<div class="container">
 						<div class="row">
-							<div class="span6 hero-title">
+							<div class="span6 span-hero-title">
 								<h1>
 									Blue Collar
 									<small>Background jobs and scheduled work for .NET.</small>
@@ -24,10 +24,14 @@
 										Download binaries
 									</a>
 								</p>
+
+								<p class="more-info">
+									<a href="{{ site.baseurl }}quick-start.html">View the docs <i clas="icon-arrow-right icon-white"></i></a>
+								</p>
 							</div>
 
-							<div class="span6 hero-screenshots">
-								<img src="img/screenshots.png" width="554" height="419" alt="">
+							<div class="span6 span-hero-screenshots">
+								<img src="{{ site.baseurl }}img/screenshots.png" width="554" height="419" alt="">
 							</div>
 						</div>
 					</div>
@@ -39,6 +43,6 @@
 			{{ content }}
 		</div>
 
-		<script src="js/app.js"></script>
+		<script src="{{ site.baseurl }}js/app.js"></script>
 	</body>
 </html>
