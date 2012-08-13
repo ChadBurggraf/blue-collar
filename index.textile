@@ -45,3 +45,5 @@ p(byline). Blue Collar is a system for creating, managing, and executing backgro
 	</div>
 </div>
 </notextile>
+
+h2(bottom). Get started with the "documentation":{{ site.baseurl }}quick-start.html.

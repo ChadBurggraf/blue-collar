@@ -1,6 +1,6 @@
 {% include header.html %}
 
-	<body class="landing" data-spy="scroll" data-target=".subnav" data-offset="80">
+	<body class="landing">
 		<div class="fork"><a href="https://github.com/ChadBurggraf/blue-collar">Fork me on GitHub</a></div>
 
 		<div class="container container-landing">
@@ -13,7 +13,7 @@
 									<li>
 										<a class="btn" href="{{ site.baseurl }}quick-start.html">
 											Docs
-											<i class="icon-arrow-right"></i>
+											<i class="icon-arrow-right icon-white"></i>
 										</a>
 									</li>
 								</ul>
@@ -52,6 +52,8 @@
 
 		<div class="container">
 			{{ content }}
+
+			{% include footer.html %}
 		</div>
 
 		<script src="{{ site.baseurl }}js/app.js"></script>
