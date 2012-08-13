@@ -1,6 +1,7 @@
 auto: true
 baseurl: /
 blueCollarVersion: 1.0.0
+docsVersion: 1.0
 exclude: 
   - bootstrap
   - static
