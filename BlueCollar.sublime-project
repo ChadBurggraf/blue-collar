@@ -4,7 +4,7 @@
 		{
 			"path": "./../BlueCollar",
 			"folder_exclude_patterns": ["_site"],
-			"file_exclude_patterns": ["*.sublime-project", "*.sublime-workspace"]
+			"file_exclude_patterns": ["*.jar", "*.sublime-project", "*.sublime-workspace"]
 		}
 	]
 }

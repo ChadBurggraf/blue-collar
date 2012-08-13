@@ -99,7 +99,7 @@ section {
 }
 
 .hero-unit h1 {
-	margin-top: 100px;
+	margin-top: 60px;
 	font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-weight: 900;
 	letter-spacing: -1px;
@@ -129,17 +129,6 @@ section {
 .hero-unit .download .btn-success {
 	margin-right: 10px;
 	border-color: rgba(0,0,0,.5);
-}
-
-.hero-unit .more-info {
-	margin-top: 10px;
-	font-size: 24px;
-}
-
-.hero-unit .more-info a,
-.hero-unit .more-info a:hover,
-.hero-unit .more-info a:visited {
-	color: #87B5F5;
 }
 
 .hero-unit .shine {
@@ -194,6 +183,47 @@ section {
 	line-height: 24px;
 	color: #999;
 	text-align: center;
+}
+
+.navbar {
+	margin-bottom: 0;
+}
+
+.navbar-inner {
+	padding-left: 0;
+	padding-right: 0;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	background-color: transparent;
+	background-image: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none
+}
+
+.navbar .nav > li > a {
+	display: block;
+	padding: 7px 10px;
+	margin: 5px 10px 0 0;
+	font-size: 13px;
+	line-height: 18px;
+}
+
+.navbar .nav > li > a.brand {
+	width: 32px;
+	height: 32px;
+	padding: 1px 0;
+}
+
+.navbar .nav > li > a.btn {
+	color: #333;
+	border-color: rgba(0,0,0,.6);
+}
+
+.navbar .nav > li > a.btn:hover {
+  background-color: #e6e6e6;
+  *background-color: #d9d9d9;
 }
 
 .page-header {
@@ -369,6 +399,14 @@ section {
 
 .table ul {
 	margin-bottom: 0;
+}
+
+@media(min-width: 1200px) {
+	.navbar .container {
+		width: 1170px;
+		margin-right: auto;
+		margin-left: auto;
+	}
 }
 
 @media (min-width: 980px) {
