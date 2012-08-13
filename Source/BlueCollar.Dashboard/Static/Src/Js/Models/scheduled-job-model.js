@@ -20,11 +20,6 @@ var ScheduledJobModel = CollarModel.extend({
     initialize: function(attributes, options) {
         CollarModel.prototype.initialize.call(this, attributes, options);
         this.setScheduleId(options.scheduleId);
-
-        this.bind('change:Data', function() {
-            console.log(this.get('Data'));
-            console.trace();
-        }, this);
     },
 
     /**
