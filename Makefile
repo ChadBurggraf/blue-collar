@@ -1,15 +1,15 @@
-VERSION = 1.0
+VERSION = 1.1
 CSS = css/app-${VERSION}.css
 JS = js/app-${VERSION}.js
 
 build: bootstrap
-	cat static/css/bootstrap.css static/css/bootstrap-responsive.css static/css/syntax.css static/css/collar.css | java -jar yuicompressor-2.4.7.jar --type css > ${CSS}
-	cat static/js/jquery.js static/js/bootstrap.js static/js/collar.js | python compile-js.py > ${JS}
+	cat static/css/bootstrap.css static/css/bootstrap-responsive.css static/css/syntax.css static/css/fancybox.css static/css/collar.css | java -jar yuicompressor-2.4.7.jar --type css > ${CSS}
+	cat static/js/jquery.js static/js/bootstrap.js static/js/fancybox.js static/js/collar.js | python compile-js.py > ${JS}
 	jekyll --no-server --no-auto
 
 cat-assets:
-	cat static/css/bootstrap.css static/css/bootstrap-responsive.css static/css/syntax.css static/css/collar.css > ${CSS}
-	cat static/js/jquery.js static/js/bootstrap.js static/js/collar.js > ${JS}
+	cat static/css/bootstrap.css static/css/bootstrap-responsive.css static/css/syntax.css static/css/fancybox.css static/css/collar.css > ${CSS}
+	cat static/js/jquery.js static/js/bootstrap.js static/js/fancybox.js static/js/collar.js > ${JS}
 
 bootstrap:
 	rm -rf bootstrap/bootstrap

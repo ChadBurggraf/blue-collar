@@ -103,4 +103,5 @@
 
     new Sidebar($('.sidebar'));
     new Subnav($('.subnav'));
+    $('.fancybox').fancybox({title:null});
 })(jQuery);

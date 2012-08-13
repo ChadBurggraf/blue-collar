@@ -1,0 +1,41 @@
+---
+title: Managing Workers
+layout: default
+---
+
+<div class="page-header page-header-subnav">
+
+h1. Managing Workers
+
+<notextile>
+<div class="subnav">
+	<ul class="nav nav-pills">
+		<li><a href="#default-worker">Default Worker</a></li>
+	</ul>
+</div>
+</notextile>
+</div>
+
+Blue Collar workers are managed via the built-in web-based management interface.
+
+<section id="default-worker">
+
+h2. Default Worker
+
+When Blue Collar begins executing, the first thing it does is check the "repository":data-stores-(repositories).html for worker(s) for the current machine. If no workers are found for the current machine (and if "ensureDefaultWorker":configuration.html#machine-element has not been disabled), a worker called _Default_ is created.
+
+The _Default_ worker will be set to start automatically and process all jobs, regardless of queue:
+
+<notextile>
+<div class="figure">
+	<p>
+		<a class="fancybox" href="img/managing-workers-fig1-b.png"><img src="img/managing-workers-fig1-s.png" width="500" height="102" alt="" title="Click to view full size"></a>
+	</p>
+	<p>
+		<span>Figure 1.</span>
+		The web management dashboard <strong>Workers</strong> tab, showing the default worker.
+	</p>
+</div>
+</notextile>
+
+</section>
