@@ -43,77 +43,12 @@ section {
 	color: #555;
 }
 
-.fork {
+.forkme {
+	display: block;
 	position: absolute;
 	right: 0;
-	height: 149px;
 	width: 149px;
-	overflow: hidden;
-	padding: 0;
-	margin: 0;
-}
-
-.fork a {
-	z-index: 1040;
-	display: block;
-	width: 190px;
-	font-size: 13px;
-	font-weight: bold;
-	background-color: #333;
-	color: #fff;
-	word-spacing: 2px;
-	text-decoration: none;
-	padding: 5px 15px 5px 25px;
-	position: relative;
-	left: 20px;
-	top: -37px;
-	text-align: center;
-	-moz-transform-origin: 0 0;
-	-moz-transform: rotate(45deg);
-	-moz-box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
-	-webkit-transform-origin: 0 0;	
-	-webkit-transform: rotate(45deg);
-	-webkit-box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
-	-ms-transform-origin: 0 0;	
-	-ms-transform: rotate(45deg);
-	-ms-box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
-	transform-origin: 0 0;	
-	transform:rotate(45deg);
-	box-shadow: 1px 1px 5px 1px rgba(0,0,0,.35);
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.03, #222222),
-		color-stop(0.05, #ffffff),
-		color-stop(0.07, #222222),
-		color-stop(0.93, #555555),
-		color-stop(0.95, #ffffff),
-		color-stop(0.97, #555555));
-	background-image: linear-gradient(bottom, #222222 3%, #ffffff 5%, #222222 7%, #555555 93%, #ffffff 95%, #555555 97%);
-	background-image: -o-linear-gradient(bottom, #222222 3%, #ffffff 5%, #222222 7%, #555555 93%, #ffffff 95%, #555555 97%);
-	background-image: -moz-linear-gradient(bottom, #222222 3%, #ffffff 5%, #222222 7%, #555555 93%, #ffffff 95%, #555555 97%);
-	background-image: -webkit-linear-gradient(bottom, #222222 3%, #ffffff 5%, #222222 7%, #555555 93%, #ffffff 95%, #555555 97%);
-	background-image: -ms-linear-gradient(bottom, #222222 3%, #ffffff 5%, #222222 7%, #555555 93%, #ffffff 95%, #555555 97%);
-}
-
-.landing .fork a {
-	color: #303030;
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.03, #e6e6e6),
-		color-stop(0.05, #303030),
-		color-stop(0.07, #e6e6e6),
-		color-stop(0.93, #ffffff),
-		color-stop(0.95, #303030),
-		color-stop(0.97, #ffffff));
-	background-image: linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #ffffff 93%, #303030 95%, #ffffff 97%);
-	background-image: -o-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #ffffff 93%, #303030 95%, #ffffff 97%);
-	background-image: -moz-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #ffffff 93%, #303030 95%, #ffffff 97%);
-	background-image: -webkit-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #ffffff 93%, #303030 95%, #ffffff 97%);
-	background-image: -ms-linear-gradient(bottom, #e6e6e6 3%, #303030 5%, #e6e6e6 7%, #ffffff 93%, #303030 95%, #ffffff 97%);
+	height: 149px;
 }
 
 .hero-unit {
@@ -238,6 +173,7 @@ section {
 	border-radius: 0;
 	background-color: transparent;
 	background-image: none;
+	filter: none;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none
