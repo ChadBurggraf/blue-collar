@@ -11,12 +11,14 @@ h1. Managing Workers
 <div class="subnav">
 	<ul class="nav nav-pills">
 		<li><a href="#default-worker">Default Worker</a></li>
+		<li><a href="#workers-machines-and-machine-identification">Machine Identification</a></li>
+		<li><a href="#work-queues">Work Queues</a></li>
 	</ul>
 </div>
 </notextile>
 </div>
 
-Blue Collar workers are managed via the built-in web-based management interface.
+Blue Collar workers are managed via the built-in web-based management interface. From here, workers can be started and stopped, created, updated, and deleted.
 
 <section id="default-worker">
 
@@ -34,6 +36,54 @@ The _Default_ worker will be set to start automatically and process all jobs, re
 	<p>
 		<span>Figure 1.</span>
 		The web management dashboard <strong>Workers</strong> tab, showing the default worker.
+	</p>
+</div>
+</notextile>
+
+You can disable default worker creation by updating your application's "configuration":configuration.html#machine-element.
+
+</section>
+
+<section id="workers-machines-and-machine-identification">
+
+h2. Workers, Machines, and Machine Identification
+
+Blue Collar assumes that only one @Machine@ instance will be created for an application on a single computer. Therefore, it is important to ensure this is the case. It shouldn't be a problem to avoid this scenario in practice; you may just want to make sure you're not running two instances of your application on the same computer with workers running "in-process":quick-start.html#creating-a-machine-in-process.
+
+A @Machine@ attempts to identify itself by using the computer's name and IP address. However, a @Machine@ will also manage workers that identify a matching computer name if the IP address is omitted. Therefore, if you feel your computer name is unique enough for your environment and your IP address may change, you can update your worker records to remove their IP addresses:
+
+<notextile>
+<div class="figure">
+	<p>
+		<a class="fancybox" href="img/managing-workers-fig2-b.png"><img src="img/managing-workers-fig2-s.png" width="370" height="216" alt="" title="Click to view full size"></a>
+	</p>
+	<p>
+		<span>Figure 1.</span>
+		Editing a worker record to remove the machine IP address.
+	</p>
+</div>
+</notextile>
+
+</section>
+
+<section id="work-queues">
+
+h2. Work Queues
+
+It is often convenient, or necessary, to split up work among multiple queues. For instance, you could have a queue to handle all scheduled work and a separate queue to handle all on-demand work. Blue Collar allows you to do define your queues on-the-fly, and assign one or more workers to work on any combination of queues.
+
+By default, workers will eat anything they find for your application on a first-come, first-served basis (a standard "FIFO queue":http://en.wikipedia.org/wiki/FIFO). You can change this behavior by whitelisting or blacklisting the queues a worker should process. You can then build up as many workers as necessary in order to process your work in an effecient and predictable manner.
+
+Jobs can be placed on a specific queue by using the @void Enqueue(string queueName);@ method overload on the @Job@ class. Just like with workers, this can be any name you'd like, and can be changed on the fly.
+
+<notextile>
+<div class="figure">
+	<p>
+		<a class="fancybox" href="img/managing-workers-fig3-b.png"><img src="img/managing-workers-fig3-s.png" width="500" height="102" alt="" title="Click to view full size"></a>
+	</p>
+	<p>
+		<span>Figure 1.</span>
+		Two workers are configured to separate scheduled from on-demand jobs.
 	</p>
 </div>
 </notextile>

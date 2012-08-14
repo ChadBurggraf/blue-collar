@@ -19,7 +19,7 @@ p. Repositories Of Job Data
 </notextile>
 </div>
 
-The data storage layer is pluggable in Blue Collar, and is defined in the "configuration":configuration.html#repository-element. Repositories implement the @IRepository@ interface, and can optionally accept a connection string as a constructor argument.
+The data storage layer is pluggable in Blue Collar, and is defined in the "configuration":configuration.html#repository-element. Repositories implement the "@IRepository@":https://github.com/ChadBurggraf/blue-collar/blob/master/Source/BlueCollar/IRepository.cs interface, and can optionally accept a connection string as a constructor argument.
 
 <section id="microsoft-sql-server">
 

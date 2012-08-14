@@ -34,7 +34,7 @@ Additionally, the service will automatically detect changes to your application 
 
 h2. Installation
 
-The service is installed and started by default during the initial installation of Blue Collar. By default, it is installed at @C:\Program Files (x86)\Blue Collar\Service@. The installation directory layout looks as follows:
+The service is installed and started during the initial installation of Blue Collar. By default, it is installed at @C:\Program Files (x86)\Blue Collar\Service@. The installation directory layout looks as follows:
 
 bc. Service
 +-- AnyCPU
@@ -67,7 +67,7 @@ Things to note for future reference:
 
 h2. Configuration
 
-Registering applications for execution by the service involves adding one line of configuration to @CollarService.exe@:
+Registering applications for execution by the service involves adding one line of configuration to @CollarService.exe.config@:
 
 {% highlight xml linenos %}
 <configuration>
@@ -81,10 +81,10 @@ Each @<add/>@ element has the following schema:
 
 table(table table-bordered table-striped).
 |_. Attribute|_. Data Type|_. Default|_. Description|
-|applicationPath|string||The path to the application root.|
-|applicationConfigPath|string||The path to the application's configuration file, if it is not in one of the default locations.|
+|applicationPath|string||The path to the target application's root directory.|
+|applicationConfigPath|string||The path to the target application's configuration file (this is only necessary if you want to use a different configuration file than the default one for your application).|
 |framework|<ul><li>3.5</li><li>4.0</li></ul>|4.0|The framework version to host the application in.|
-|force32Bit|bool|false|A value indicating whether to force the application to run as 32-bit, even on a 64-bit machine.|
+|force32Bit|bool|false|A value indicating whether to force the application to run as 32-bit, even on a 64-bit machine (similar to IIS' _Enable 32-Bit Applications_ flag).|
 
 Note that changes to the service configuration are detected by @CollarService.exe@, therefore *restarting the service is not necessary*.
 

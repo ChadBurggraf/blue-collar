@@ -30,7 +30,7 @@ h1. Configuration
 </notextile>
 </div>
 
-Blue Collar is configured using the standard .NET configuration system. Typically, the @blueCollar@ section will be registered and defined in the same @.config@ file (e.g., @Web.config@ or @App.config@).
+Blue Collar is configured using the standard .NET configuration system. Just like any other custom configuration section, you first need to register it in your application's @.config@ file (usually @Web.config@ or @App.config@). Once registered, you can update the configurable properties to suit your needs.
 
 <section id="section-registration">
 
@@ -112,7 +112,7 @@ table(table table-bordered table-striped).
 
 h2. Web Management Dashboard Handler Registration
 
-There are a number of ways to register HTTP handlers for ASP.NET. We will go over two here: IIS7+ only (the simplest), and "universal" (IIS 5.5+, plus the Visual Studio built-in web server Cassini). Feel free to mix and match to suit your application's needs.
+There are a number of ways to register HTTP handlers in ASP.NET. We will go over two here: IIS7+ only (the simplest), and "universal" (IIS 5.5+, plus the Visual Studio built-in web server Cassini). Feel free to mix and match to suit your application's needs.
 
 h4. IIS7+ Only
 

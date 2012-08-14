@@ -1,3 +1,7 @@
+a code {
+	border-color: #d14;
+}
+
 section {
 	padding-top: 40px;
 }
@@ -10,19 +14,19 @@ section {
 	display: inline-block;
 	padding: 11px;
 	margin-bottom: 11px;
-	background-color: #f5f5f5;
-	border: 1px solid #e5e5e5;
+	background-color: #fcfcfc;
+	border: 1px solid #f5f5f5;
 }
 
 .figure p {
 	margin: 0;
-	color: #999;
+	color: #aaa;
 	font-size: 13px;
 	line-height: 20px;
 }
 
 .figure p span {
-	color: #666;
+	color: #888;
 }
 
 .figure img {
@@ -71,7 +75,7 @@ section {
 }
 
 .hero-unit h1 {
-	margin-top: 60px;
+	margin-top: 100px;
 	font-family: 'Chivo', 'Helvetica Neue', Helvetica, Arial, serif;
 	font-weight: 900;
 	letter-spacing: -1px;
@@ -91,7 +95,9 @@ section {
 }
 
 .hero-unit .download {
+	float: left;
 	margin: 64px 0 0;
+	text-align: center;
 }
 
 .hero-unit .download .btn {
@@ -103,6 +109,20 @@ section {
 	border-color: rgba(0,0,0,.5);
 }
 
+.hero-unit .download .btn-docs {
+	padding: 3px 10px;
+	margin-top: 10px;
+	background: transparent;
+	color: #E5F0FF;
+	border: solid 4px #87B5F5;
+	font-size: 13px;
+	line-height: 18px;
+	text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.246094);
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
+
 .hero-unit .shine {
 	height: 419px;
 	background: -webkit-gradient(radial, center bottom, 0, center bottom, 419, from(rgba(255,255,255,.3)), to(rgba(255,255,255,0)), color-stop(50%, rgba(255,255,255,0)));
@@ -111,6 +131,10 @@ section {
 	background: -ms-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
 	background: -o-radial-gradient(center 100%, circle cover, rgba(255,255,255,.3), rgba(255,255,255,0) 50%);
 	border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+.hero-unit .span-hero-screenshots {
+	margin-top: 40px;
 }
 
 .highlight pre {
@@ -165,6 +189,10 @@ section {
 	margin-bottom: 0;
 }
 
+.navbar .container {
+	width: 940px;
+}
+
 .navbar-inner {
 	padding-left: 0;
 	padding-right: 0;
@@ -177,30 +205,6 @@ section {
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none
-}
-
-.navbar .nav > li > a {
-	display: block;
-	padding: 7px 10px;
-	margin: 5px 10px 0 0;
-	font-size: 13px;
-	line-height: 18px;
-}
-
-.navbar .nav > li > a.brand {
-	width: 32px;
-	height: 32px;
-	padding: 1px 0;
-}
-
-.navbar .nav > li > a.btn {
-	padding: 3px 10px;
-	background: transparent;
-	color: #E5F0FF;
-	border: solid 4px #87B5F5;
-	-webkit-box-shadow: none;
-	-moz-box-shadow: none;
-	box-shadow: none;
 }
 
 .page-header {
