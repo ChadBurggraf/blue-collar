@@ -11,7 +11,7 @@
   </appSettings>
 
   <blueCollar applicationName="BlueCollar" schedulerEnabled="false">
-    <dashboard handlerUrl="collar" mode="LocalOnly"/>
+    <dashboard handlerUrl="~/collar" mode="LocalOnly"/>
     <machine serviceExecutionEnabled="false"/>
     <repository type="BlueCollar.SQLiteRepository, BlueCollar.SQLiteRepository" connectionStringName="BlueCollarSQLite"/>
   </blueCollar>
