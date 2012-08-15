@@ -14,9 +14,13 @@
       * 1.0.0 - Initial release.
     </releaseNotes>
     <copyright>Copyright 2012 Chad Burggraf</copyright>
-    <tags>background jobs threading</tags>
+    <tags>background jobs workers threading</tags>
+    <dependencies>
+      <dependency id="System.Data.SQLite" version="1.0.81.1"/>
+    </dependencies>
   </metadata>
   <files>
+    <file src="Build\README.txt" target=""/>
     <file src="Build\Reference Assemblies\Net35\*.*" target="lib\net35"/>
     <file src="Build\Reference Assemblies\Net40\*.*" target="lib\net40-full"/>
   </files>
