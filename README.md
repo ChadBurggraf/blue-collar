@@ -12,6 +12,10 @@ Some cool features include:
   * Sensible defaults make getting up and running a breeze
   * Free and open source
 
+## Documentation
+
+The docs can be found at <http://bluecollardotnet.org/>. They are a work in progress, so please get in touch if you need answers about something that is not covered.
+
 ## The "Just Let Me Play With It" Setup
 
 For the quick setup, we'll use [SQLite](http://www.sqlite.org/) as our data store. [System.Data.SQLite](http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki) is included as a dependency in the [NuGet package](http://nuget.org/packages/BlueCollar), so fire up the package manager console and execute the following:
