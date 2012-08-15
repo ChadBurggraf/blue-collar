@@ -99,6 +99,7 @@
     <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
     <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
     <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\NuGet\BlueCollar.Examples.NuGet\bin"/>
+    <CallTarget Targets="PackageExamples"/>
     
     <!-- Copy over the README and LICENSE. -->
     <Copy SourceFiles="$(RootDir)\README.md" DestinationFiles="$(BuildDir)\README.txt"/>
@@ -157,9 +158,10 @@
     <Delete Files="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg"/>
   </Target>
 
-  <Target Name="Package" DependsOnTargets="Clean;Help;Build;PackageExamples;SetPackageVersion">
+  <Target Name="Package" DependsOnTargets="Clean;Help;Build;SetPackageVersion">
     <ItemGroup>
       <BuildFiles Include="$(BuildDir)\**\*"/>
+      <BuildFiles Remove="$(BuildDir)\Examples.zip"/>
       <InstallerFiles Include="$(SourceDir)\Installer\**\*"/>
     </ItemGroup>
 
