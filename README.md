@@ -1,21 +1,28 @@
 # Blue Collar
 #### Background jobs and scheduled work for .NET.
 
-Blue Collar is a system for creating, managing, and executing background work in .NET applications. It is ideal for use in web applications, but can be set up for any environment where background work needs to be done.
+Blue Collar is a system for creating, managing, and executing background work in .NET applications.
 
 Some cool features include:
 
-  * Simple, single-assembly deployment, with no external dependencies.
-  * Embedded web-based management interface.
-  * Easily perform work for multiple applications on one machine, or perform work for one application on multiple machines, or any combination in between.
-  * Jobs are simple .NET objects, implementing `string Name { get; }` and `void Execute()`.
-  * Sensible defaults make getting up and running quickly a breeze.
+  * Embedded web-based management interface
+  * Single assembly deployment
+  * Easily perform work for multiple applications on one server, or perform work for one application on multiple servers, or any combination in between
+  * Jobs are simple .NET objects, implementing `string Name { get; }` and `void Execute()`
+  * Sensible defaults make getting up and running a breeze
+  * Free and open source
 
 ## The "Just Let Me Play With It" Setup
 
-For the quick setup, we'll use [SQLite](http://www.sqlite.org/) as our data store. Before starting, install the appropriate [System.Data.SQLite.dll](http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki). If you choose **not** to install `System.Data.SQLite` in the GAC, add a reference to the DLL to your project.
+For the quick setup, we'll use [SQLite](http://www.sqlite.org/) as our data store. [System.Data.SQLite](http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki) is included as a dependency in the [NuGet package](http://nuget.org/packages/BlueCollar), so fire up the package manager console and execute the following:
 
-Next, add references to `BlueCollar.dll` and `BlueCollar.SQLiteRepository.dll` to your project. Builds are provided for both .NET 3.5 and .NET 4.0 applications. Note that data store implementations are distributed as separate assemblies, except for Microsoft SQL Server, which is included in `BlueCollar.dll`.
+    PM> Install-Package BlueCollar
+
+NuGet will add three references to your project:
+
+  * `BlueCollar.dll`
+  * `BlueCollar.SQLiteRepository.dll`
+  * `System.Data.SQLite.dll`
 
 #### Configuration
 
