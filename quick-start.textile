@@ -20,9 +20,15 @@ p. The "Let Me Just Play With It" Setup
 </notextile>
 </div>
 
-For the quick setup, we'll use "SQLite":http://www.sqlite.org/ as our data store. Before starting, install the appropriate "System.Data.SQLite.dll":http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki. If you choose *not* to install @System.Data.SQLite@ in the GAC, add a reference to the DLL to your project.
+For the quick setup, we'll use "SQLite":http://www.sqlite.org/ as our data store. "System.Data.SQLite.dll":http://system.data.sqlite.org/index.html/doc/trunk/www/downloads.wiki is included as a dependency in the "NuGet package":http://nuget.org/packages/BlueCollar, so fire up the package manager console and execute the following:
 
-Next, add references to @BlueCollar.dll@ and @BlueCollar.SQLiteRepository.dll@ to your project. Builds are provided for both .NET 3.5 and .NET 4.0 applications. Note that data store implementations are distributed as separate assemblies, except for Microsoft SQL Server, which is included in @BlueCollar.dll@.
+<code class="nuget">PM> Install-Package BlueCollar</code>
+
+NuGet will add three references to your project:
+
+* @BlueCollar.dll@
+* @BlueCollar.SQLiteRepository.dll@
+* @System.Data.SQLite.dll@
 
 <section id="configuration">
 
