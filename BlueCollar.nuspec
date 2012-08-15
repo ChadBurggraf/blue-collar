@@ -7,7 +7,8 @@
     <authors>Chad Burggraf</authors>
     <owners>Chad Burggraf</owners>
     <licenseUrl>http://opensource.org/licenses/mit-license.php/</licenseUrl>
-    <projectUrl>https://github.com/ChadBurggraf/blue-collar</projectUrl>
+    <projectUrl>http://bluecollardotnet.org/</projectUrl>
+    <iconUrl>http://bluecollardotnet.org/img/package-icon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Background jobs and scheduled work for .NET.</description>
     <releaseNotes>

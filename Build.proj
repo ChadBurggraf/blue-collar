@@ -150,6 +150,12 @@
     <RemoveDir Directories="$(DocsStagingDir)"/>
   </Target>
 
+  <Target Name="NuGet" DependsOnTargets="GetVersion">
+    <Exec Command='NuGet Pack BlueCollar.nuspec'/>
+    <Copy SourceFiles="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg" DestinationFolder="$(BuildDir)"/>
+    <Delete Files="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg"/>
+  </Target>
+
   <Target Name="Package" DependsOnTargets="Clean;Help;Build;PackageExamples;SetPackageVersion">
     <ItemGroup>
       <BuildFiles Include="$(BuildDir)\**\*"/>
@@ -167,9 +173,7 @@
     <Copy SourceFiles="$(TempDir)\BlueCollar.msi" DestinationFolder="$(BuildDir)"/>
     <RemoveDir Directories="$(TempDir)"/>
 
-    <Exec Command='NuGet Pack BlueCollar.nuspec'/>
-    <Copy SourceFiles="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg" DestinationFolder="$(BuildDir)"/>
-    <Delete Files="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg"/>
+    <CallTarget Targets="NuGet"/>
   </Target>
 
   <Target Name="PackageExamples">
