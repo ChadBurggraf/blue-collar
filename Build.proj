@@ -98,6 +98,7 @@
     </ItemGroup>
     <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
     <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
+    <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\NuGet\BlueCollar.Examples.NuGet\bin"/>
     
     <!-- Copy over the README and LICENSE. -->
     <Copy SourceFiles="$(RootDir)\README.md" DestinationFiles="$(BuildDir)\README.txt"/>
@@ -188,8 +189,14 @@
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\*.csproj.user"/>
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\App_Data\**\*"/>
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\obj\**\*"/>
+      <ExamplesCleanFiles Include="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\**\*.*"/>
+      <ExamplesCleanFiles Remove="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\BlueCollar.Examples.dll"/>
+      <ExamplesCleanFiles Remove="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\BlueCollar.Examples.pdb"/>
+      <ExamplesCleanFiles Remove="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\BlueCollar.Examples.xml"/>
     </ItemGroup>
     <Delete Files="@(ExamplesCleanFiles)"/>
+    <RemoveDir Directories="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\x86"/>
+    <RemoveDir Directories="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\x64"/>
 
     <ItemGroup>
       <ExamplePackageFiles Include="$(BuildDir)\Examples\**\*"/>

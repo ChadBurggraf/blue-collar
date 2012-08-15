@@ -1,0 +1,451 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+    <assembly>
+        <name>BlueCollar.SQLiteRepository</name>
+    </assembly>
+    <members>
+        <member name="T:BlueCollar.SQLiteRepository">
+            <summary>
+            Implements <see cref="T:BlueCollar.IRepository" /> using SQLite.
+            </summary>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the SQLiteRepository class.
+            </summary>
+            <param name="connectionString">The connection string to use when connecting to the database.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.Finalize">
+            <summary>
+            Finalizes an instance of the SQLiteRepository class.
+            </summary>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.BeginTransaction">
+            <summary>
+            Begins a transaction.
+            </summary>
+            <returns>The transaction.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.BeginTransaction(System.Data.IsolationLevel)">
+            <summary>
+            Begins a transaction.
+            </summary>
+            <param name="level">The isolation level to use for the transaction.</param>
+            <returns>The transaction.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.ClearWorkingSignalPair(System.Int64,System.Nullable{System.Int64},System.Data.IDbTransaction)">
+            <summary>
+            Clears signals for the given worker and working job if applicable.
+            </summary>
+            <param name="workerId">The ID of the worker to clear the signal of.</param>
+            <param name="workingId">The ID of the working job to clear the signal of, if applicable.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateHistory(BlueCollar.HistoryRecord,System.Data.IDbTransaction)">
+            <summary>
+            Creates a history record.
+            </summary>
+            <param name="record">The record to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The created record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateQueued(BlueCollar.QueueRecord,System.Data.IDbTransaction)">
+            <summary>
+            Creates a queue record.
+            </summary>
+            <param name="record">The record to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The created record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateQueuedAndHistoryForSchedule(System.Int64,System.DateTime,System.Collections.Generic.IEnumerable{BlueCollar.QueueRecord},System.Collections.Generic.IEnumerable{BlueCollar.HistoryRecord},System.Data.IDbTransaction)">
+            <summary>
+            Creates the queue and history records for the given schedule.
+            </summary>
+            <param name="scheduleId">The ID of the schedule records are being created for.</param>
+            <param name="scheduleDate">The schedule date records are being created for.</param>
+            <param name="queued">The queued records to create.</param>
+            <param name="history">The history records to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The number of records created.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateSchedule(BlueCollar.ScheduleRecord,System.Data.IDbTransaction)">
+            <summary>
+            Creates a schedule record.
+            </summary>
+            <param name="record">The record to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The created record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateScheduledJob(BlueCollar.ScheduledJobRecord,System.Data.IDbTransaction)">
+            <summary>
+            Creates a scheduled job record.
+            </summary>
+            <param name="record">The record to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The created record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateWorker(BlueCollar.WorkerRecord,System.Data.IDbTransaction)">
+            <summary>
+            Creates a worker record.
+            </summary>
+            <param name="record">The record to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The created record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateWorking(BlueCollar.WorkingRecord,System.Data.IDbTransaction)">
+            <summary>
+            Creates a working record.
+            </summary>
+            <param name="record">The working record to create.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The created record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteAll(System.String,System.Data.IDbTransaction)">
+            <summary>
+            Deletes all data in the repository.
+            </summary>
+            <param name="applicationName">The name of the application to delete data for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteHistory(System.String,System.DateTime,System.Data.IDbTransaction)">
+            <summary>
+            Deletes history older than the given date.
+            </summary>
+            <param name="applicationName">The name of the application to delete data for.</param>
+            <param name="olderThan">The date to delete history older than.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteQueued(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Deletes the queued record with the given ID.
+            </summary>
+            <param name="id">The ID of the queued record to delete.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteSchedule(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Deletes the schedule record with the given ID.
+            </summary>
+            <param name="id">The ID of the schedule to delete.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteScheduledJob(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Deletes the scheduled job record with the given ID.
+            </summary>
+            <param name="id">The ID of the scheduled job to delete.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteWorker(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Deletes the worker record with the given ID.
+            </summary>
+            <param name="id">The ID of the worker to delete.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.DeleteWorking(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Deletes the working record with the given ID.
+            </summary>
+            <param name="id">The ID of the working record to delete.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.Dispose">
+            <summary>
+            Disposes of resoures used by this instance.
+            </summary>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetCounts(System.String,System.Data.IDbTransaction)">
+            <summary>
+            Gets a set of counts for the given application.
+            </summary>
+            <param name="applicationName">The name of the application to get counts for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A set of counts.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetHistoryDetails(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Gets a history details record.
+            </summary>
+            <param name="id">The ID of the record to get.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A history details record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetHistoryList(System.String,System.String,System.Int32,System.Int32,System.Data.IDbTransaction)">
+            <summary>
+            Gets a list of history records.
+            </summary>
+            <param name="applicationName">The name of the application to get the history list for.</param>
+            <param name="search">The search query to filter the collection with.</param>
+            <param name="limit">The paging limit to use.</param>
+            <param name="offset">The paging offset to use.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A list of history records.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetQueued(System.String,BlueCollar.QueueNameFilters,System.DateTime,System.Data.IDbTransaction)">
+            <summary>
+            Gets a queued record for the given application and queue names.
+            </summary>
+            <param name="applicationName">The name of the application to get the queued record for.</param>
+            <param name="queueFilters">The queue filters to use when filtering the queues to read from.</param>
+            <param name="queuedBefore">The date to filter on.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A queued record, or null if none was found.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetQueuedDetails(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Gets a queued details record.
+            </summary>
+            <param name="id">The ID of the record to get.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A queued details record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetQueuedList(System.String,System.String,System.Int32,System.Int32,System.Data.IDbTransaction)">
+            <summary>
+            Gets a list of queue records.
+            </summary>
+            <param name="applicationName">The name of the application to get the queue list for.</param>
+            <param name="search">The search query to filter the collection with.</param>
+            <param name="limit">The paging limit to use.</param>
+            <param name="offset">The paging offset to use.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of queue records.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetSchedule(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Gets the schedule with the given ID, NOT including its related scheduled jobs.
+            </summary>
+            <param name="id">The ID of the schedule to get.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The schedule, or null if none was found.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetScheduleDateExistsForSchedule(System.Int64,System.DateTime,System.Data.IDbTransaction)">
+            <summary>
+            Gets a value indicating whether data exists for the given schedule ID and calculated schedule date.
+            If it does, this indicates that jobs have already been enqueued for the schedule and should not
+            be enqueued again until the next calculated schedule date.
+            </summary>
+            <param name="scheduleId">The ID of the schedule to check data for.</param>
+            <param name="scheduleDate">The calcualted schedule date to check data for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>True if data already exists, false otherwise.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetScheduledJobList(System.String,System.Int64,System.String,System.Int32,System.Int32,System.Data.IDbTransaction)">
+            <summary>
+            Gets a schedule and its related scheduled jobs, filtered by the given list parameters.
+            </summary>
+            <param name="applicationName">The name of the application to get the scheduled job list for.</param>
+            <param name="id">The ID of the schedule to get.</param>
+            <param name="search">The search query to filtere the related job collection with.</param>
+            <param name="limit">The paging limit to use.</param>
+            <param name="offset">The paging offset to use.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A schedul, or null if none was found.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetScheduleEnqueueingLock(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Attempts to obtain the enqueueing lock for the given schedule ID.
+            </summary>
+            <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetScheduleList(System.String,System.String,System.Int32,System.Int32,System.Data.IDbTransaction)">
+            <summary>
+            Gets a list of schedule records.
+            </summary>
+            <param name="applicationName">The name of the application to get the schedule list for.</param>
+            <param name="search">The search query to filter the collection with.</param>
+            <param name="limit">The paging limit to use.</param>
+            <param name="offset">The paging offset to use.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of schedules.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetSchedules(System.String,System.Data.IDbTransaction)">
+            <summary>
+            Gets a collection of schedules and their related scheduled jobs for the given application name.
+            </summary>
+            <param name="applicationName">The name of the application to get schedules for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of schedules.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetStatistics(System.String,System.DateTime,System.DateTime,System.DateTime,System.Data.IDbTransaction)">
+            <summary>
+            Gets a set of system statistics for the given application name and date ranges.
+            </summary>
+            <param name="applicationName">The name of the application to get system statistics for.</param>
+            <param name="recentBeginDate">The begin date of the recent period to get statistics for.</param>
+            <param name="distantBeginDate">The begin date of the distant period to get statistics for.</param>
+            <param name="endDate">The end date of the distant period to get statistics for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A set of system statistics.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorker(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Gets the worker record with the given ID.
+            </summary>
+            <param name="id">The ID of the worker record to get.</param>
+            <param name="transaction">The transaction to use.</param>
+            <returns>A worker record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorkerList(System.String,System.String,System.Int32,System.Int32,System.Data.IDbTransaction)">
+            <summary>
+            Gets a list of worker records.
+            </summary>
+            <param name="applicationName">The application name to get records for.</param>
+            <param name="search">The search query to filter the collection with.</param>
+            <param name="limit">The paging limit to use.</param>
+            <param name="offset">The paging offset to use.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of worer records.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorkers(System.String,System.String,System.String,System.Data.IDbTransaction)">
+            <summary>
+            Gets the worker collection for the given machine.
+            </summary>
+            <param name="applicationName">The application name to get workers for.</param>
+            <param name="machineAddress">The address of the machine to get workers for.</param>
+            <param name="machineName">The name of the machine to get workers for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of worker records.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorking(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Gets the working record with the given ID.
+            </summary>
+            <param name="id">The ID of the record to get.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A working record, or null if none was found.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorkingDetails(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Gets a working details record.
+            </summary>
+            <param name="id">The ID of the record to get.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A working details record, or null if none was found.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorkingForWorker(System.Int64,System.Nullable{System.Int64},System.Data.IDbTransaction)">
+            <summary>
+            Gets a collection of working records that belong to the given worker ID.
+            </summary>
+            <param name="workerId">The ID of the worker to get working records for.</param>
+            <param name="excludingId">The ID of the working record to exclude, if applicable.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of working records.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorkingList(System.String,System.String,System.Int32,System.Int32,System.Data.IDbTransaction)">
+            <summary>
+            Gets a list of working records.
+            </summary>
+            <param name="applicationName">The application name to get records for.</param>
+            <param name="search">The search query to filter the collection with.</param>
+            <param name="limit">The paging limit to use.</param>
+            <param name="offset">The paging offset to use.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A collection of working records.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.GetWorkingSignals(System.Int64,System.Nullable{System.Int64},System.Data.IDbTransaction)">
+            <summary>
+            Gets the current signals set for a worker and a working job, if applicable.
+            </summary>
+            <param name="workerId">The ID of the worker to get a signal for.</param>
+            <param name="workingId">The ID of the working job to get a signal for, if applicable.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>A signals record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.ReleaseScheduleEnqueueingLock(System.Int64,System.Data.IDbTransaction)">
+            <summary>
+            Releases the enqueueing lock for the schedule with the given ID.
+            </summary>
+            <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.SignalWorkers(System.String,BlueCollar.WorkerSignal,System.Data.IDbTransaction)">
+            <summary>
+            Signals all workers for the given application name.
+            </summary>
+            <param name="applicationName">The application name to signal workers for.</param>
+            <param name="signal">The signal to set.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.UpdateSchedule(BlueCollar.ScheduleRecord,System.Data.IDbTransaction)">
+            <summary>
+            Updates the given schedule.
+            </summary>
+            <param name="record">The schedule record to update.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The updated record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.UpdateScheduledJob(BlueCollar.ScheduledJobRecord,System.Data.IDbTransaction)">
+            <summary>
+            Updates the given scheduled job.
+            </summary>
+            <param name="record">The scheduled job record to update.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The updated record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.UpdateScheduledJobOrder(BlueCollar.ScheduledJobOrderRecord,System.Data.IDbTransaction)">
+            <summary>
+            Updates the scheduled job's order number.
+            </summary>
+            <param name="record">The scheduled job order record identifying the scheduled job to update.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.UpdateWorker(BlueCollar.WorkerRecord,System.Data.IDbTransaction)">
+            <summary>
+            Updates the given worker.
+            </summary>
+            <param name="record">The worker record to update.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The updated worker.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.UpdateWorkerStatus(System.Int64,BlueCollar.WorkerStatus,System.Data.IDbTransaction)">
+            <summary>
+            Updates the status of the worker with the given ID.
+            </summary>
+            <param name="id">The ID of the worker to update status for.</param>
+            <param name="status">The status to update.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.UpdateWorking(BlueCollar.WorkingRecord,System.Data.IDbTransaction)">
+            <summary>
+            Updates the given working record.
+            </summary>
+            <param name="record">The working record to update.</param>
+            <param name="transaction">The transaction to use, if applicable.</param>
+            <returns>The updated working record.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.EnsureDatabase(System.String)">
+            <summary>
+            Ensures that the SQLite database at the given path exists, creating it if it doesn't.
+            </summary>
+            <param name="path">The path of the SQLite database to ensure.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.Dispose(System.Boolean)">
+            <summary>
+            Disposes of resources used by this instance.
+            </summary>
+            <param name="disposing">A value indicating whether to dispose of managed resources.</param>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateCounts(Dapper.SqlMapper.GridReader)">
+            <summary>
+            Creates a new <see cref="T:BlueCollar.CountsRecord" /> by reading from the given multi-mapped reader.
+            </summary>
+            <param name="multi">The multi-mapped reader to read from.</param>
+            <returns>A new <see cref="T:BlueCollar.CountsRecord" />.</returns>
+        </member>
+        <member name="M:BlueCollar.SQLiteRepository.CreateHistoryStatusCounts(Dapper.SqlMapper.GridReader)">
+            <summary>
+            Creates a new <see cref="T:BlueCollar.HistoryStatusCountsRecord" /> by reading from the given multi-mapped reader.
+            </summary>
+            <param name="multi">The multi-mapped reader to read from.</param>
+            <returns>A new <see cref="T:BlueCollar.HistoryStatusCountsRecord" />.</returns>
+        </member>
+        <member name="P:BlueCollar.SQLiteRepository.ConnectionString">
+            <summary>
+            Gets the connection string used to connect to this instance's database.
+            </summary>
+        </member>
+    </members>
+</doc>

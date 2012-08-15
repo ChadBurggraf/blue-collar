@@ -1,0 +1,37 @@
+﻿.date-time 
+{
+    white-space: nowrap;
+}
+
+.date-time > .date,
+.date-time > .time 
+{
+    display: block;
+}
+
+.date-time > .time 
+{
+    font-size: 11px;
+    color: gray;
+}
+
+pre.plain 
+{
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
+
+.validation-summary-errors > span 
+{
+    display: block;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: bold;
+}
+
+.validation-summary-errors > ul 
+{
+    margin-bottom: 0;
+}
