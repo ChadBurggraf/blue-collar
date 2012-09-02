@@ -22,7 +22,7 @@ Although painful up front, I've found that the easiest way to deal with this is 
 * 32-bit for .NET v4.0
 * 64-bit for .NET v4.0
 
-*Be careful about installtion paths* if you plan to do this as well. The installer remembers the last path used and will therefore try to overwrite the previous installations. I'd recommend installing into the following corresponding directories:
+*Be careful about installation paths* if you plan to do this as well. The installer remembers the last path used and will therefore try to overwrite the previous installations. I'd recommend installing into the following corresponding directories:
 
 * C:\Program Files (x86)\System.Data.SQLite\2008
 * C:\Program Files\System.Data.SQLite\2008

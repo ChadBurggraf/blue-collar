@@ -70,9 +70,9 @@ A @Machine@ attempts to identify itself by using the computer's name and IP addr
 
 h2. Work Queues
 
-It is often convenient, or necessary, to split up work among multiple queues. For instance, you could have a queue to handle all scheduled work and a separate queue to handle all on-demand work. Blue Collar allows you to do define your queues on-the-fly, and assign one or more workers to work on any combination of queues.
+It is often convenient, or necessary, to split up work among multiple queues. For instance, you could have a queue to handle all scheduled work and a separate queue to handle all on-demand work. Blue Collar allows you to define your queues on-the-fly, and assign one or more workers to work on any combination of queues.
 
-By default, workers will eat anything they find for your application on a first-come, first-served basis (a standard "FIFO queue":http://en.wikipedia.org/wiki/FIFO). You can change this behavior by whitelisting or blacklisting the queues a worker should process. You can then build up as many workers as necessary in order to process your work in an effecient and predictable manner.
+By default, workers will eat anything they find for your application on a first-come, first-served basis (a standard "FIFO queue":http://en.wikipedia.org/wiki/FIFO). You can change this behavior by whitelisting or blacklisting the queues a worker should process. You can then build up as many workers as necessary in order to process your work in an efficient and predictable manner.
 
 Jobs can be placed on a specific queue by using the @void Enqueue(string queueName);@ method overload on the @Job@ class. Just like with workers, this can be any name you'd like, and can be changed on the fly.
 
