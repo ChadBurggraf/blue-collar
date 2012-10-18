@@ -4,7 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E900DE04-06E0-4428-9670-59DD16B8EC66}"
 	ProjectSection(SolutionItems) = preProject
 		BlueCollar.Net35.vsmdi = BlueCollar.Net35.vsmdi
-		..\BlueCollar.nuspec = ..\BlueCollar.nuspec
 		..\BlueCollar.targets = ..\BlueCollar.targets
 		..\BlueCollar.watchr = ..\BlueCollar.watchr
 		..\Build.proj = ..\Build.proj
