@@ -38,7 +38,7 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Creates a valid example applciation structure in a random destination directory
+        /// Creates a valid example application structure in a random destination directory
         /// and returns the path to the directory.
         /// </summary>
         /// <returns>The path to the created valid example application directory.</returns>

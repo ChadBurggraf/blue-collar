@@ -1,0 +1,23 @@
+<StyleCopSettings Version="105">
+  <GlobalSettings>
+    <CollectionProperty Name="RecognizedWords">
+      <Value>Dequeue</Value>
+      <Value>dequeued</Value>
+      <Value>dequeues</Value>
+      <Value>Dequeues</Value>
+      <Value>enqueue</Value>
+      <Value>enqueueing</Value>
+      <Value>enum</Value>
+      <Value>implementors</Value>
+      <Value>js</Value>
+      <Value>Json</Value>
+      <Value>Linq</Value>
+      <Value>mixin</Value>
+      <Value>nullable</Value>
+      <Value>Pullup</Value>
+      <Value>Sql</Value>
+      <Value>stylesheet</Value>
+      <Value>xslt</Value>
+    </CollectionProperty>
+  </GlobalSettings>
+</StyleCopSettings>

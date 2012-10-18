@@ -15,7 +15,7 @@ namespace BlueCollar
     public sealed class EventLogger : MarshalByRefObject, ILogger
     {
         /// <summary>
-        /// Event raised when a log event occurrs.
+        /// Event raised when a log event occurs.
         /// </summary>
         public event EventHandler<EventLoggerEventArgs> Log;
 

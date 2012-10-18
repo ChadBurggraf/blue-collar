@@ -9,7 +9,7 @@ namespace BlueCollar
     using System;
 
     /// <summary>
-    /// Represents a job record used for enqueuing jobs.
+    /// Represents a job record used for enqueueing jobs.
     /// </summary>
     public sealed class EnqueueJobRecord
     {

@@ -1168,7 +1168,7 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Get schedule tsts.
+        /// Get schedule tests.
         /// </summary>
         protected void GetSchedule()
         {
@@ -1284,8 +1284,32 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateSchedule(scheduleRecord, null);
 
-                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
-                Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Get schedule enqueueing lock forced tests.
+        /// </summary>
+        protected void GetScheduleEnqueueingLockForced()
+        {
+            if (this.Repository != null)
+            {
+                ScheduleRecord scheduleRecord = new ScheduleRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Name = "Nightly",
+                    QueueName = "schedules",
+                    RepeatType = ScheduleRepeatType.Days,
+                    RepeatValue = 1,
+                    StartOn = DateTime.UtcNow.FloorWithSeconds()
+                };
+
+                this.Repository.CreateSchedule(scheduleRecord, null);
+
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
             }
         }
 
@@ -2135,12 +2159,12 @@ namespace BlueCollar.Test
                 };
 
                 this.Repository.CreateSchedule(scheduleRecord, null);
-                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
 
-                Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                Assert.IsFalse(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
 
                 this.Repository.ReleaseScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
-                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, null));
+                Assert.IsTrue(this.Repository.GetScheduleEnqueueingLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
             }
         }
 

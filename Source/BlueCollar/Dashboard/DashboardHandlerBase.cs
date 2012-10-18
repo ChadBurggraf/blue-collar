@@ -93,7 +93,7 @@ namespace BlueCollar.Dashboard
         }
 
         /// <summary>
-        /// Gets or sets the HTTP verb of the request being processesed.
+        /// Gets or sets the HTTP verb of the request being processed.
         /// </summary>
         public string Verb { get; set; }
 

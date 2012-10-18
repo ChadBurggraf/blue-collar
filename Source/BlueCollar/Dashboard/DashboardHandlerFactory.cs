@@ -272,7 +272,7 @@ namespace BlueCollar.Dashboard
         /// </summary>
         /// <param name="handlerUrl">The URL of the handler to resolve.</param>
         /// <param name="httpContext">The HTTP context to use when resolving the URL.</param>
-        /// <param name="configPath">The filesystem path of the configuration file to use when resolving the URL.</param>
+        /// <param name="configPath">The file system path of the configuration file to use when resolving the URL.</param>
         /// <returns>The resolved handler URL.</returns>
         internal static string ResolveHandlerUrl(string handlerUrl, HttpContextBase httpContext, string configPath)
         {
@@ -285,7 +285,7 @@ namespace BlueCollar.Dashboard
         /// <param name="handlerUrl">The URL of the handler to resolve.</param>
         /// <param name="baseDirectory">The base directory of the application to resolve the handler for.</param>
         /// <param name="applicationPath">The URL path of the application to resolve the handler for.</param>
-        /// <param name="configPath">The filesystem path of the configuration file to use when resolving the URL.</param>
+        /// <param name="configPath">The file system path of the configuration file to use when resolving the URL.</param>
         /// <returns>The resolved handler URL.</returns>
         internal static string ResolveHandlerUrl(string handlerUrl, string baseDirectory, string applicationPath, string configPath)
         {

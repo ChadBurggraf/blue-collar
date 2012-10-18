@@ -35,7 +35,7 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// Gets the confiured dashboard enabled mode.
+        /// Gets the configured dashboard enabled mode.
         /// </summary>
         [ConfigurationProperty("mode", IsRequired = false, DefaultValue = DashboardEnabledMode.LocalOnly)]
         public DashboardEnabledMode Mode

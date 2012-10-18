@@ -120,7 +120,7 @@ namespace BlueCollar.Dashboard
         public string LogoHeaderUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the Undersocre.js templates as a string.
+        /// Gets or sets the Underscore.js templates as a string.
         /// </summary>
         public string TemplatesHtml { get; set; }
 

@@ -9,7 +9,7 @@ namespace BlueCollar
     using System;
 
     /// <summary>
-    /// Represents additonal details not contained in a <see cref="HistoryListRecord"/>
+    /// Represents additional details not contained in a <see cref="HistoryListRecord"/>
     /// about a job's history entry.
     /// </summary>
     public sealed class HistoryDetailsRecord

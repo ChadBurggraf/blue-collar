@@ -22,7 +22,7 @@
         <xsl:text disable-output-escaping="yes">&lt;![endif]--&gt;</xsl:text>
       </head>
       <body>
-        <div class="navbar">
+        <div class="navbar navbar-inverse">
           <div class="navbar-inner">
             <div class="container">
               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">

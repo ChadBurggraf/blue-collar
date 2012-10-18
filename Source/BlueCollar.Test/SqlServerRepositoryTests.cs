@@ -295,6 +295,16 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule enqueueing lock forced tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
+        public void SqlServerRepositoryGetScheduleEnqueueingLockForced()
+        {
+            GetScheduleEnqueueingLockForced();
+        }
+
+        /// <summary>
         /// Get schedule list tests.
         /// </summary>
         [TestMethod]

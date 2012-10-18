@@ -45,7 +45,7 @@ namespace BlueCollar.Dashboard
         QueryString QueryString { get; set; }
 
         /// <summary>
-        /// Gets or sets the HTTP verb of the request being processesed.
+        /// Gets or sets the HTTP verb of the request being processed.
         /// </summary>
         string Verb { get; set; }
     }

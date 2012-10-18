@@ -71,7 +71,7 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// Gets the date the scheduler last performed an equeue operation.
+        /// Gets the date the scheduler last performed an enqueue operation.
         /// </summary>
         public DateTime? LastEnqueuedOn { get; private set; }
 
@@ -245,7 +245,7 @@ namespace BlueCollar
                     {
                         try
                         {
-                            hasEnqueueingLock = repository.GetScheduleEnqueueingLock(schedule.Id.Value, transaction);
+                            hasEnqueueingLock = repository.GetScheduleEnqueueingLock(schedule.Id.Value, DateTime.UtcNow.AddSeconds(-50), transaction);
                             transaction.Commit();
                         }
                         catch

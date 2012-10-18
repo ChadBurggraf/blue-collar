@@ -1,5 +1,5 @@
 /**!
- * @preserve Blue Collar v1.0.0
+ * @preserve Blue Collar v1.0.1
  *
  * @author Chad Burggraf
  * @copyright Copyright (c) 2012 Chad Burggraf

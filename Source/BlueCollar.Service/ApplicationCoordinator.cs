@@ -19,6 +19,7 @@ namespace BlueCollar.Service
     /// <summary>
     /// Coordinates a set of <see cref="ApplicationProcess"/>es.
     /// </summary>
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", MessageId = "es", Justification = "Reviewed.")]
     public sealed class ApplicationCoordinator : IDisposable
     {
         private readonly object locker = new object();

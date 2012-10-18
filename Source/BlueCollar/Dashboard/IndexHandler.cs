@@ -10,7 +10,7 @@ namespace BlueCollar.Dashboard
     using System.Web;
 
     /// <summary>
-    /// Extens <see cref="StaticFileHandler"/> to handle requests for the index page.
+    /// Extends <see cref="StaticFileHandler"/> to handle requests for the index page.
     /// </summary>
     public sealed class IndexHandler : StaticFileHandler
     {

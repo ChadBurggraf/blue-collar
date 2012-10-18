@@ -222,7 +222,7 @@ namespace BlueCollar
         /// be enqueued again until the next calculated schedule date.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to check data for.</param>
-        /// <param name="scheduleDate">The calcualted schedule date to check data for.</param>
+        /// <param name="scheduleDate">The calculated schedule date to check data for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if data already exists, false otherwise.</returns>
         bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction);
@@ -231,21 +231,23 @@ namespace BlueCollar
         /// Attempts to obtain the enqueueing lock for the given schedule ID.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the enqueue lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);
+        bool GetScheduleEnqueueingLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction);
 
         /// <summary>
         /// Gets a schedule and its related scheduled jobs, filtered by the given list parameters.
         /// </summary>
         /// <param name="applicationName">The name of the application to get the scheduled job list for.</param>
         /// <param name="id">The ID of the schedule to get.</param>
-        /// <param name="search">The search query to filtere the related job collection with.</param>
+        /// <param name="search">The search query to filter the related job collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>A schedul, or null if none was found.</returns>
+        /// <returns>A schedule, or null if none was found.</returns>
         ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset, IDbTransaction transaction);
 
         /// <summary>
@@ -294,7 +296,7 @@ namespace BlueCollar
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>A collection of worer records.</returns>
+        /// <returns>A collection of worker records.</returns>
         RecordList<WorkerRecord> GetWorkerList(string applicationName, string search, int limit, int offset, IDbTransaction transaction);
 
         /// <summary>
@@ -355,7 +357,7 @@ namespace BlueCollar
         /// <summary>
         /// Releases the enqueueing lock for the schedule with the given ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
+        /// <param name="scheduleId">The ID of the schedule to release the enqueueing lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);

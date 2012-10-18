@@ -167,7 +167,7 @@ namespace BlueCollar.Console
         }
 
         /// <summary>
-        /// Attempts a Pullup() operation on the bootstraps instance indefinately until it succeeds.
+        /// Attempts a Pullup() operation on the bootstraps instance indefinitely until it succeeds.
         /// </summary>
         private static void PullupBootstraps()
         {

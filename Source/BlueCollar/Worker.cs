@@ -153,7 +153,7 @@ namespace BlueCollar
         public WorkerStatus Status { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this isntance's loop threads are alive.
+        /// Gets a value indicating whether this instance's loop threads are alive.
         /// </summary>
         internal bool LoopThreadsAreAlive
         {
@@ -688,6 +688,8 @@ namespace BlueCollar
         {
             while (true)
             {
+                Thread.Sleep(this.heartbeat.Randomize());
+
                 try
                 {
                     // Prun any orphans that were abandoned for any reason.
@@ -806,8 +808,6 @@ namespace BlueCollar
                 {
                     this.logger.Error(ex, "Exception thrown during the signal loop for worker {0} ({1}).", this.name, this.id);
                 }
-
-                Thread.Sleep(this.heartbeat.Randomize());
             }
         }
 

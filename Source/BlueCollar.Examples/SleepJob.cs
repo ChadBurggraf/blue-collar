@@ -42,7 +42,7 @@ namespace BlueCollar.Examples
         }
 
         /// <summary>
-        /// Gets the maximum timeout, in miliseconds, this job is allowed to run in.
+        /// Gets the maximum timeout, in milliseconds, this job is allowed to run in.
         /// </summary>
         public override int Timeout
         {

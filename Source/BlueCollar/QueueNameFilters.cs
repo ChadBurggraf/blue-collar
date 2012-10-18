@@ -33,7 +33,7 @@ namespace BlueCollar
         /// <summary>
         /// Initializes a new instance of the QueueNameFilters class.
         /// </summary>
-        /// <param name="include">A collection of queue name inludes.</param>
+        /// <param name="include">A collection of queue name includes.</param>
         /// <param name="exclude">A collection of queue name excludes.</param>
         public QueueNameFilters(IEnumerable<string> include, IEnumerable<string> exclude)
         {
@@ -47,7 +47,7 @@ namespace BlueCollar
         public ReadOnlyCollection<string> Exclude { get; private set; }
 
         /// <summary>
-        /// Gets the queue name include list. Will be empty if there are no inclues; will contain
+        /// Gets the queue name include list. Will be empty if there are no includes; will contain
         /// only "*" if all queue names are included and there are no excludes.
         /// </summary>
         public ReadOnlyCollection<string> Include { get; private set; }
@@ -147,7 +147,7 @@ namespace BlueCollar
         /// Splits the given queue names string into a collection of include+exclude tokens.
         /// </summary>
         /// <param name="queueNames">The queue names string to split.</param>
-        /// <returns>A collection of inclue+exclude tokens.</returns>
+        /// <returns>A collection of include + exclude tokens.</returns>
         public static IEnumerable<string> SplitQueueNames(string queueNames)
         {
             queueNames = (queueNames ?? string.Empty).Trim();

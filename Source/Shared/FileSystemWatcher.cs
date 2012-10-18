@@ -80,17 +80,17 @@ namespace BlueCollar
         #region Events
 
         /// <summary>
-        /// Occurrs when a file or directory in the specified <see cref="Path"/> is changed.
+        /// Occurs when a file or directory in the specified <see cref="Path"/> is changed.
         /// </summary>
         public event FileSystemEventHandler Changed;
 
         /// <summary>
-        /// Occurrs when a file or directory in the specified <see cref="Path"/> is created.
+        /// Occurs when a file or directory in the specified <see cref="Path"/> is created.
         /// </summary>
         public event FileSystemEventHandler Created;
 
         /// <summary>
-        /// Occurrs when a file or directory in the specified <see cref="Path"/> is deleted.
+        /// Occurs when a file or directory in the specified <see cref="Path"/> is deleted.
         /// </summary>
         public event FileSystemEventHandler Deleted;
 
@@ -207,9 +207,9 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// Gets or sets the threashold, in miliseconds, that determins the window
+        /// Gets or sets the threshold, in milliseconds, that determines the window
         /// in which a file system event can be thought of as a "single" event.
-        /// Defaults to 500ms, so all changes happening with 500ms of each other count
+        /// Defaults to 500, so all changes happening with 500 milliseconds of each other count
         /// as a single event.
         /// </summary>
         public int Threshold

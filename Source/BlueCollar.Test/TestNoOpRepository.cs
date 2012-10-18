@@ -310,7 +310,7 @@ namespace BlueCollar.Test
         /// be enqueued again until the next calculated schedule date.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to check data for.</param>
-        /// <param name="scheduleDate">The calcualted schedule date to check data for.</param>
+        /// <param name="scheduleDate">The calculated schedule date to check data for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if data already exists, false otherwise.</returns>
         public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction)
@@ -323,11 +323,11 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="applicationName">The name of the application to get the scheduled job list for.</param>
         /// <param name="id">The ID of the schedule to get.</param>
-        /// <param name="search">The search query to filtere the related job collection with.</param>
+        /// <param name="search">The search query to filter the related job collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>A schedul, or null if none was found.</returns>
+        /// <returns>A schedule, or null if none was found.</returns>
         public ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset, IDbTransaction transaction)
         {
             throw new NotImplementedException();
@@ -337,9 +337,11 @@ namespace BlueCollar.Test
         /// Attempts to obtain the enqueueing lock for the given schedule ID.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the enqueue lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
-        public bool GetScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
+        public bool GetScheduleEnqueueingLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
         {
             throw new NotImplementedException();
         }
@@ -402,7 +404,7 @@ namespace BlueCollar.Test
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>A collection of worer records.</returns>
+        /// <returns>A collection of worker records.</returns>
         public RecordList<WorkerRecord> GetWorkerList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
         {
             throw new NotImplementedException();
@@ -484,7 +486,7 @@ namespace BlueCollar.Test
         /// <summary>
         /// Releases the enqueueing lock for the schedule with the given ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to release the enqueuing lock for.</param>
+        /// <param name="scheduleId">The ID of the schedule to release the enqueueing lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         public void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
         {

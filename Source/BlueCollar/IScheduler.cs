@@ -15,7 +15,7 @@ namespace BlueCollar
     public interface IScheduler
     {
         /// <summary>
-        /// Gets the date the scheduler last performed an equeue operation.
+        /// Gets the date the scheduler last performed an enqueue operation.
         /// </summary>
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling is correct.")]
         DateTime? LastEnqueuedOn { get; }

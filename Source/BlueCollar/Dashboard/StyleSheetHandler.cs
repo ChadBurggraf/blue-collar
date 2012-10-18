@@ -14,7 +14,7 @@ namespace BlueCollar.Dashboard
     using System.Web;
 
     /// <summary>
-    /// Extens <see cref="StaticFileHandler"/> to handle requests for style sheets.
+    /// Extends <see cref="StaticFileHandler"/> to handle requests for style sheets.
     /// </summary>
     public sealed class StyleSheetHandler : StaticFileHandler
     {

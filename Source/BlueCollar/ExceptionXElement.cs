@@ -14,7 +14,7 @@ namespace BlueCollar
     using System.Xml.Linq;
 
     /// <summary>
-    /// Creates an XML-Linq XElement from an Exception instance.
+    /// Creates an XML Linq XElement from an Exception instance.
     /// </summary>
     internal class ExceptionXElement : XElement
     {

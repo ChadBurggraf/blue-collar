@@ -20,7 +20,7 @@ namespace BlueCollar
         #region Public Instance Properties
 
         /// <summary>
-        /// Gets a value indicating whether the colleciton is read only.
+        /// Gets a value indicating whether the collection is read only.
         /// </summary>
         public virtual new bool IsReadOnly
         {

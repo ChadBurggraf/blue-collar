@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BlueCollar</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Blue Collar</title>
     <authors>Chad Burggraf</authors>
     <owners>Chad Burggraf</owners>
@@ -12,13 +12,15 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Background jobs and scheduled work for .NET.</description>
     <releaseNotes>
+      * 1.0.1 - Upgrade to bootstrap v2.1.1.
+              - Add timeout to schedule locking.
+              - Randominze start of worker signal loop.
+              - Remove SQLite dependency (must manually add SQLite if using BlueCollar.SQLiteRepository).
+              
       * 1.0.0 - Initial release.
     </releaseNotes>
     <copyright>Copyright 2012 Chad Burggraf</copyright>
     <tags>background jobs workers threading</tags>
-    <dependencies>
-      <dependency id="System.Data.SQLite" version="1.0.81.1"/>
-    </dependencies>
   </metadata>
   <files>
     <file src="Build\README.txt" target=""/>

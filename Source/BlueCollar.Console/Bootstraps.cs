@@ -33,7 +33,7 @@ namespace BlueCollar.Console
         /// </summary>
         /// <param name="applicationPath">The application path.</param>
         /// <param name="configPath">The configuration file path, if applicable.</param>
-        /// <param name="threshold">The threshold, in milliseconds, to compress filesystem events into.</param>
+        /// <param name="threshold">The threshold, in milliseconds, to compress file system events into.</param>
         public Bootstraps(string applicationPath, string configPath, int threshold)
         {
             if (string.IsNullOrEmpty(applicationPath))
@@ -92,7 +92,7 @@ namespace BlueCollar.Console
         public bool IsLoaded { get; private set; }
 
         /// <summary>
-        /// Gets the threshold, in milliseconds, to compress filesystem events into.
+        /// Gets the threshold, in milliseconds, to compress file system events into.
         /// </summary>
         public int Threshold { get; private set; }
 
