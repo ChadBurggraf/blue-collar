@@ -136,16 +136,18 @@
         <ReplacementValue>$(Major).$(Minor).$(Build)</ReplacementValue>
       </CssTokens>
     </ItemGroup>
-    <Exec Command='recess --compile "$(StaticDir)\Src\Less\collar.less" > "$(StaticDir)\Src\Css\collar.css"'/>
-    <Exec Command='recess --compile "$(StaticDir)\Src\Less\test.less" > "$(StaticDir)\Src\Css\test.css"'/>
+    <Exec Command='recess --compile "$(StaticDir)\Src\Less\collar.less" > "$(StaticDir)\Src\Css\collar.css"' WorkingDirectory="$(StaticDir)\Src\Less" />
+    <Exec Command='recess --compile "$(StaticDir)\Src\Less\test.less" > "$(StaticDir)\Src\Css\test.css"' WorkingDirectory="$(StaticDir)\Src\Less" />
     <TemplateFile Template="$(RootDir)\Source\Copyright.css.template" OutputFilename="$(StaticDir)\Src\Css\copyright.css" Tokens="@(CssTokens)" />
     <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\Css.jspack" /actions:$(CompressAssets)'/>
+    <Exec Command='recess --compress "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"' WorkingDirectory="$(BootstrapDir)\less" Condition="'$(CompressAssets)' == 'true'" />
+    <Exec Command='recess --compress "$(BootstrapDir)\less\responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"' WorkingDirectory="$(BootstrapDir)\less" Condition="'$(CompressAssets)' == 'true'" />
   </Target>
 
   <Target Name="LessBootstrap">
     <MakeDir Directories="$(StaticDir)\Css"/>
-    <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"'/>
-    <Exec Command='recess --compile "$(BootstrapDir)\less\responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"'/>
+    <Exec Command='recess --compile "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"' WorkingDirectory="$(BootstrapDir)\less" />
+    <Exec Command='recess --compile "$(BootstrapDir)\less\responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"' WorkingDirectory="$(BootstrapDir)\less" />
     <ItemGroup>
       <BootstrapCssFiles Include="$(StaticDir)\Src\Css\bootstrap.css"/>
       <BootstrapCssFiles Include="$(StaticDir)\Src\Css\bootstrap-responsive.css"/>

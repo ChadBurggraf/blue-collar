@@ -68,6 +68,8 @@ namespace BlueCollar.Dashboard
             this.ApplicationName = applicationName;
             this.file = file;
 
+            this.BootstrapResponsiveUrl = StaticFile.Create(this.file.UrlRoot, "css/bootstrap-responsive.css").Url;
+            this.BootstrapUrl = StaticFile.Create(this.file.UrlRoot, "css/bootstrap.css").Url;
             this.CountsJson = JsonConvert.SerializeObject(counts);
             this.CssUrl = StaticFile.Create(this.file.UrlRoot, "css/collar.css").Url;
             this.Html5JSUrl = StaticFile.Create(this.file.UrlRoot, "js/html5.js").Url;
@@ -83,6 +85,18 @@ namespace BlueCollar.Dashboard
         /// Gets or sets the name of the current application.
         /// </summary>
         public string ApplicationName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL to the bootstrap responsive CSS file.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
+        public string BootstrapResponsiveUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the URL to the bootstrap CSS file.
+        /// </summary>
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Easier format to deal with for this use case.")]
+        public string BootstrapUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the JSON string representing the current system counts.

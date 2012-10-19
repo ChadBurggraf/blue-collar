@@ -5,6 +5,8 @@
                 exclude-result-prefixes="msxsl">
   <xsl:output method="html" indent="yes" encoding="utf-8"/>
 
+  <xsl:variable name="BootstrapUrl" select="/Index/BootstrapUrl"/>
+  <xsl:variable name="BootstrapResponsiveUrl" select="/Index/BootstrapResponsiveUrl"/>
   <xsl:variable name="CssUrl" select="/Index/CssUrl"/>
   <xsl:variable name="Html5JSUrl" select="/Index/Html5JSUrl"/>
   <xsl:variable name="JSUrl" select="/Index/JSUrl"/>
@@ -16,6 +18,8 @@
       <head>
         <title>Blue Collar v<xsl:value-of select="Version"/></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="{$BootstrapUrl}"/>
+        <link rel="stylesheet" href="{$BootstrapResponsiveUrl}"/>
         <link rel="stylesheet" href="{$CssUrl}"/>
         <xsl:text disable-output-escaping="yes">&lt;!--[if lt IE 9]&gt;</xsl:text>
         <script src="{$Html5JSUrl}"></script>
