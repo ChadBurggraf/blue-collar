@@ -1,6 +1,7 @@
 <StyleCopSettings Version="105">
   <GlobalSettings>
     <CollectionProperty Name="RecognizedWords">
+      <Value>dequeue</Value>
       <Value>Dequeue</Value>
       <Value>dequeued</Value>
       <Value>dequeues</Value>
