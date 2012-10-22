@@ -47,6 +47,10 @@
       <HintPath>bin\BlueCollar.SQLiteRepository.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.SQLite, Version=1.0.81.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -93,6 +97,8 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="x64\SQLite.Interop.dll" />
+    <Content Include="x86\SQLite.Interop.dll" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Index.cshtml" />

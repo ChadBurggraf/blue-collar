@@ -52,11 +52,6 @@
       <HintPath>..\..\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Data.SQLite, Version=1.0.80.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Program Files\System.Data.SQLite\2010\GAC\System.Data.SQLite.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -235,6 +230,8 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="x64\SQLite.Interop.dll" />
+    <Content Include="x86\SQLite.Interop.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -300,6 +297,8 @@
   </PropertyGroup>
   <Import Project="..\..\BlueCollar.targets" />
   <Target Name="BeforeBuild">
+    <Copy SourceFiles="$(RootDir)\Lib\x86\SQLite.Interop.dll" DestinationFolder="x86" />
+    <Copy SourceFiles="$(RootDir)\Lib\x64\SQLite.Interop.dll" DestinationFolder="x64" />
     <Copy SourceFiles="Web.config.template" DestinationFiles="Web.config" Condition="!Exists('Web.config')" />
     <CallTarget Targets="Img;Js;Less" />
     <CallTarget Targets="Templates" />

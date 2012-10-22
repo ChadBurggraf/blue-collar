@@ -15,6 +15,8 @@ namespace BlueCollar.Test
     /// Repository factory tests.
     /// </summary>
     [TestClass]
+    [DeploymentItem(@"x86\SQLite.Interop.dll", "x86")]
+    [DeploymentItem(@"x64\SQLite.Interop.dll", "x64")]
     public sealed class RepositoryFactoryTests
     {
         /// <summary>

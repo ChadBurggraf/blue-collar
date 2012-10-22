@@ -18,6 +18,8 @@ namespace BlueCollar.Test
     /// SQLiteRepository tests.
     /// </summary>
     [TestClass]
+    [DeploymentItem(@"x86\SQLite.Interop.dll", "x86")]
+    [DeploymentItem(@"x64\SQLite.Interop.dll", "x64")]
     [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
     public sealed class SQLiteRepositoryTests : RepositoryTests
     {

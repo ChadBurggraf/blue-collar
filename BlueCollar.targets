@@ -140,8 +140,6 @@
     <Exec Command='recess --compile "$(StaticDir)\Src\Less\test.less" > "$(StaticDir)\Src\Css\test.css"' WorkingDirectory="$(StaticDir)\Src\Less" />
     <TemplateFile Template="$(RootDir)\Source\Copyright.css.template" OutputFilename="$(StaticDir)\Src\Css\copyright.css" Tokens="@(CssTokens)" />
     <Exec Command='"$(RootDir)\Tools\JSPack\JSPack.exe" /map:"$(RootDir)\Source\Css.jspack" /actions:$(CompressAssets)'/>
-    <Exec Command='recess --compress "$(BootstrapDir)\less\bootstrap.less" > "$(StaticDir)\Src\Css\bootstrap.css"' WorkingDirectory="$(BootstrapDir)\less" Condition="'$(CompressAssets)' == 'true'" />
-    <Exec Command='recess --compress "$(BootstrapDir)\less\responsive.less" > "$(StaticDir)\Src\Css\bootstrap-responsive.css"' WorkingDirectory="$(BootstrapDir)\less" Condition="'$(CompressAssets)' == 'true'" />
   </Target>
 
   <Target Name="LessBootstrap">
@@ -153,6 +151,7 @@
       <BootstrapCssFiles Include="$(StaticDir)\Src\Css\bootstrap-responsive.css"/>
     </ItemGroup>
     <Copy SourceFiles="@(BootstrapCssFiles)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\assets\css"/>
+    <Copy SourceFiles="@(BootstrapCssFiles)" DestinationFolder="$(ExamplesDir)\Webpages\BlueCollar.Examples.Webpages\assets\css"/>
   </Target>
 
   <Target Name="MergeConsole" Condition="'$(MergedConsoleOutputPath)' != ''">

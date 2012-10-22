@@ -56,6 +56,12 @@ namespace BlueCollar.Test
                 File.Copy(assembly, Path.Combine(path, Path.GetFileName(assembly)));
             }
 
+            Directory.CreateDirectory(Path.Combine(path, "x86"));
+            File.Copy(Path.GetFullPath(@"x86\SQLite.Interop.dll"), Path.Combine(Path.Combine(path, "x86"), "SQLite.Interop.dll"));
+
+            Directory.CreateDirectory(Path.Combine(path, "x64"));
+            File.Copy(Path.GetFullPath(@"x64\SQLite.Interop.dll"), Path.Combine(Path.Combine(path, "x64"), "SQLite.Interop.dll"));
+
             return path;
         }
 
@@ -81,6 +87,12 @@ namespace BlueCollar.Test
                 File.Copy(assembly, Path.Combine(binPath, Path.GetFileName(assembly)));
             }
 
+            Directory.CreateDirectory(Path.Combine(path, "x86"));
+            File.Copy(Path.GetFullPath(@"x86\SQLite.Interop.dll"), Path.Combine(Path.Combine(path, "x86"), "SQLite.Interop.dll"));
+
+            Directory.CreateDirectory(Path.Combine(path, "x64"));
+            File.Copy(Path.GetFullPath(@"x64\SQLite.Interop.dll"), Path.Combine(Path.Combine(path, "x64"), "SQLite.Interop.dll"));
+
             CopyEmbeddedResourceToPath("Web.config", Path.Combine(path, "Web.config"));
 
             return path;
@@ -100,7 +112,8 @@ namespace BlueCollar.Test
                     Path.GetFullPath("BlueCollar.SQLiteRepository.dll"),
                     Path.GetFullPath("Dapper.dll"),
                     Path.GetFullPath("Newtonsoft.Json.dll"),
-                    Path.GetFullPath("NLog.dll")
+                    Path.GetFullPath("NLog.dll"),
+                    Path.GetFullPath("System.Data.SQLite.dll")
                 });
         }
     }

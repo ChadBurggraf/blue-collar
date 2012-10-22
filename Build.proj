@@ -91,14 +91,23 @@
     </ItemGroup>
     <Copy SourceFiles="@(Schemas)" DestinationFolder="$(BuildDir)\Schemas"/>
     
-    <!-- Copy build products to example projects. -->
+    <!-- .NET 4.0 examples. -->
     <MSBuild Projects="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.csproj" Properties="Configuration=Debug"/>
     <ItemGroup>
-      <Examples Include="$(SourceDir)\BlueCollar.Examples\bin\Debug\BlueCollar.Examples.*"/>
+      <ExamplesNet40 Include="$(SourceDir)\BlueCollar.Examples\bin\Debug\BlueCollar.Examples.*"/>
     </ItemGroup>
     <Copy SourceFiles="@(ExampleReferenceNet40)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
-    <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
-    <Copy SourceFiles="@(Examples)" DestinationFolder="$(ExamplesDir)\NuGet\BlueCollar.Examples.NuGet\bin"/>
+    <Copy SourceFiles="@(ExamplesNet40)" DestinationFolder="$(ExamplesDir)\Mvc\BlueCollar.Examples.Mvc\bin"/>
+
+    <!-- .NET 3.5 examples. -->
+    <MSBuild Projects="$(SourceDir)\BlueCollar.Examples\BlueCollar.Examples.Net35.csproj" Properties="Configuration=Debug"/>
+    <ItemGroup>
+      <ExamplesNet35 Include="$(SourceDir)\BlueCollar.Examples\bin\Debug\BlueCollar.Examples.*"/>
+    </ItemGroup>
+    <Copy SourceFiles="@(ExampleReferenceNet35)" DestinationFolder="$(ExamplesDir)\Webpages\BlueCollar.Examples.Webpages\bin"/>
+    <Copy SourceFiles="@(ExamplesNet35)" DestinationFolder="$(ExamplesDir)\Webpages\BlueCollar.Examples.Webpages\bin"/>
+    
+    <!-- Package the example projects. -->
     <CallTarget Targets="PackageExamples"/>
     
     <!-- Copy over the README and LICENSE. -->
@@ -190,15 +199,10 @@
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\*.suo"/>
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\*.csproj.user"/>
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\App_Data\**\*"/>
+      <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\bin\System.Data.SQLite.*"/>
       <ExamplesCleanFiles Include="$(BuildDir)\Examples\**\obj\**\*"/>
-      <ExamplesCleanFiles Include="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\**\*.*"/>
-      <ExamplesCleanFiles Remove="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\BlueCollar.Examples.dll"/>
-      <ExamplesCleanFiles Remove="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\BlueCollar.Examples.pdb"/>
-      <ExamplesCleanFiles Remove="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\BlueCollar.Examples.xml"/>
     </ItemGroup>
     <Delete Files="@(ExamplesCleanFiles)"/>
-    <RemoveDir Directories="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\x86"/>
-    <RemoveDir Directories="$(BuildDir)\Examples\NuGet\BlueCollar.Examples.NuGet\bin\x64"/>
 
     <ItemGroup>
       <ExamplePackageFiles Include="$(BuildDir)\Examples\**\*"/>

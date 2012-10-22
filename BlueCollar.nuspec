@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BlueCollar</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <title>Blue Collar</title>
     <authors>Chad Burggraf</authors>
     <owners>Chad Burggraf</owners>
@@ -12,7 +12,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Background jobs and scheduled work for .NET.</description>
     <releaseNotes>
+      * 1.0.3 - More YUI compressor related CSS fixes.
+              - Move to bin-deployed SQLite.
+              
       * 1.0.2 - Fix bootstrap responsive issues with YUI compressor.
+      
       * 1.0.1 - Upgrade to bootstrap v2.1.1.
               - Add timeout to schedule locking.
               - Randominze start of worker signal loop.

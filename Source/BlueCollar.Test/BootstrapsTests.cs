@@ -23,6 +23,8 @@ namespace BlueCollar.Test
     /// Bootstraps tests.
     /// </summary>
     [TestClass]
+    [DeploymentItem(@"x86\SQLite.Interop.dll", "x86")]
+    [DeploymentItem(@"x64\SQLite.Interop.dll", "x64")]
     [SecurityCritical]
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
     [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemands", Justification = "Appears to be an FxCop bug.")]

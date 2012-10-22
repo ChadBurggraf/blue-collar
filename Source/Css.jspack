@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <jspack src="BlueCollar.Dashboard\Static\Src\Css" target="BlueCollar.Dashboard\Static\Css" actions="false">
-  <outputAction name="MinifyCss" executable="java.exe" arguments="-jar ..\Tools\JSPack\yuicompressor-2.4.2.jar --type css" />
+  <outputAction name="MinifyCss" executable="java.exe" arguments="-jar ..\Tools\JSPack\yuicompressor-2.4.7.jar --type css" />
 
   <output path="collar.css">
     <action name="MinifyCss"/>
