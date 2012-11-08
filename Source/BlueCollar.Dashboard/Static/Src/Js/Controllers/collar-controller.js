@@ -85,7 +85,8 @@ _.extend(CollarController.prototype, Backbone.Events, {
     editDelete: function(sender, args) {
         args.Model.destroy({
             success: _.bind(this.success, this, args),
-            error: _.bind(this.error, this, args)
+            error: _.bind(this.error, this, args),
+            wait: true
         });
     },
 

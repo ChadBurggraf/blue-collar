@@ -10,12 +10,12 @@ test('FieldSerializerBasicInputs', function() {
 });
 
 test('FieldSerializerBooleans', function() {
-    var el = $('<form><input type="radio" name="Enabled" value="true" checked="checked"/><input type="radio" name="Enabled" value="false"/></form>'),
+    var el = $('<form><input type="radio" name="Enabled" value="true"/><input type="radio" name="Enabled" value="false" checked="checked"/></form>'),
         ser = new BooleanFieldSerializer(),
         result;
 
     result = ser.serialize(el.find('input'));
-    equal(true, result);
+    equal(false, result);
     
     ser.deserialize(false, el.find('input'));
     equal(el.find('input:checked').val(), 'false');

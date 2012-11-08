@@ -294,11 +294,12 @@ var BooleanFieldSerializer = FieldSerializer.extend({
      * @return {Object} The serialized primitive value.
      */
     serialize: function(el) {
-        var value;
+        var tagName,
+            type,
+            i,
+            n;
 
-        if (FormSerializer.isJQuery(el)) {
-            value = el.val().toUpperCase();
-
+        function canonical(value) {
             switch (value) {
                 case 'TRUE':
                 case 'YES':
@@ -310,7 +311,26 @@ var BooleanFieldSerializer = FieldSerializer.extend({
                     return false;
                 default:
                     break;
-            }      
+            }
+
+            return null;
+        }
+
+        if (FormSerializer.isJQuery(el)) {
+            tagName = (el[0].tagName || '').toUpperCase();
+            type = (el.attr('type') || '').toUpperCase();
+
+            if ((tagName === 'INPUT' && type === 'CHECKBOX')
+                || (tagName === 'INPUT' && type === 'RADIO')) {
+
+                for (i = 0, n = el.length; i < n; i++) {
+                    if (el[i].checked) {
+                        return canonical($(el[i]).val().toUpperCase());
+                    }
+                }
+            } else {
+                return canonical(el.val().toUpperCase());
+            }    
         }
 
         return null;

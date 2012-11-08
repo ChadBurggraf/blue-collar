@@ -101,9 +101,8 @@ var AreaView = Backbone.View.extend({
      * @param {Object} args The event arguments.
      */
     editDelete: function(sender, args) {
-        this.model.clearId();
-        sender.remove();
-        this.trigger('editDelete', this, args);
+        sender.showLoading();
+        this.trigger('editDelete', this, _.extend({}, args, {View: sender}));
     },
 
     /**
