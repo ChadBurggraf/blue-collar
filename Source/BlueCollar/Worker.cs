@@ -107,7 +107,7 @@ namespace BlueCollar
             this.repositoryFactory = repositoryFactory;
             this.logger = logger;
             this.queueFilters = queueFilters ?? QueueNameFilters.Any();
-            this.scheduler = scheduler ?? new Scheduler(id, applicationName, heartbeat, repositoryFactory, logger);
+            this.scheduler = scheduler ?? new Scheduler(id, applicationName, new QueueNameFilters(this.queueFilters.Include, this.queueFilters.Exclude), heartbeat, repositoryFactory, logger);
 
             this.signalThread = new Thread(this.SignalLoop);
             this.signalThread.Name = "BlueCollar Signal Thread";

@@ -47,7 +47,8 @@ namespace BlueCollar.Test
 
             Scheduler scheduler = new Scheduler(
                 1, 
-                BlueCollarSection.Section.ApplicationName, 
+                BlueCollarSection.Section.ApplicationName,
+                QueueNameFilters.Any(),
                 BlueCollarSection.Section.WorkerHeartbeat, 
                 factory.Object, 
                 logger.Object);
@@ -117,11 +118,82 @@ namespace BlueCollar.Test
 
             var logger = new Mock<ILogger>();
 
-            Scheduler scheduler = new Scheduler(1, BlueCollarSection.Section.ApplicationName, 1, factory.Object, logger.Object);
+            Scheduler scheduler = new Scheduler(1, BlueCollarSection.Section.ApplicationName, QueueNameFilters.Any(), 1, factory.Object, logger.Object);
             Assert.AreEqual(0, scheduler.Schedules.Count());
 
             scheduler.RefreshSchedules();
             Assert.AreEqual(1, scheduler.Schedules.Count());
+        }
+
+        /// <summary>
+        /// Refresh schedules limited by queue tests.
+        /// </summary>
+        [TestMethod]
+        public void SchedulerRefreshSchedulesLimitedByQueue()
+        {
+            DateTime now = DateTime.UtcNow.FloorWithSeconds();
+
+            ScheduleRecord schedule = new ScheduleRecord()
+            {
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
+                Enabled = true,
+                Id = 1,
+                Name = "Test",
+                QueueName = "first",
+                RepeatType = ScheduleRepeatType.Days,
+                RepeatValue = 1,
+                StartOn = now
+            };
+
+            ScheduledJobRecord scheduledJob = new ScheduledJobRecord()
+            {
+                Data = @"{""SleepDuration"":1000}",
+                Id = 1,
+                JobType = JobSerializer.GetTypeName(typeof(TestJob)),
+                Schedule = schedule,
+                ScheduleId = 1
+            };
+
+            schedule.ScheduledJobs.Add(scheduledJob);
+
+            ScheduleRecord schedule2 = new ScheduleRecord()
+            {
+                ApplicationName = BlueCollarSection.Section.ApplicationName,
+                Enabled = true,
+                Id = 2,
+                Name = "Test 2",
+                QueueName = "second",
+                RepeatType = ScheduleRepeatType.Days,
+                RepeatValue = 1,
+                StartOn = now
+            };
+
+            ScheduledJobRecord scheduledJob2 = new ScheduledJobRecord()
+            {
+                Data = @"{""SleepDuration"":1000}",
+                Id = 2,
+                JobType = JobSerializer.GetTypeName(typeof(TestJob)),
+                Schedule = schedule2,
+                ScheduleId = 2
+            };
+
+            var transaction = new Mock<IDbTransaction>();
+
+            var repository = new Mock<IRepository>();
+            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
+            repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName, It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule, schedule2 });
+
+            var factory = new Mock<IRepositoryFactory>();
+            factory.Setup(f => f.Create()).Returns(repository.Object);
+
+            var logger = new Mock<ILogger>();
+
+            Scheduler scheduler = new Scheduler(1, BlueCollarSection.Section.ApplicationName, QueueNameFilters.Parse("second"), 1, factory.Object, logger.Object);
+            Assert.AreEqual(0, scheduler.Schedules.Count());
+
+            scheduler.RefreshSchedules();
+            Assert.AreEqual(1, scheduler.Schedules.Count());
+            Assert.AreEqual("Test 2", scheduler.Schedules.First().Name);
         }
     }
 }

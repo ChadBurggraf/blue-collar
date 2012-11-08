@@ -31,10 +31,11 @@ namespace BlueCollar
         /// </summary>
         /// <param name="workerId">The ID of the worker the scheduler is scheduling for.</param>
         /// <param name="applicationName">The name of the application to schedule jobs for.</param>
+        /// <param name="queueFilters">The queues to process schedules for.</param>
         /// <param name="heartbeat">The heartbeat, in seconds, the system is polled for updates. Used to calculate scheduling windows.</param>
         /// <param name="repositoryFactory">The repository factory to use when accessing data.</param>
         /// <param name="logger">The logger to use when logging messages.</param>
-        public Scheduler(long workerId, string applicationName, int heartbeat, IRepositoryFactory repositoryFactory, ILogger logger)
+        public Scheduler(long workerId, string applicationName, QueueNameFilters queueFilters, int heartbeat, IRepositoryFactory repositoryFactory, ILogger logger)
         {
             if (workerId < 1)
             {
@@ -67,7 +68,7 @@ namespace BlueCollar
             this.repositoryFactory = repositoryFactory;
             this.logger = logger;
             this.schedules = new List<ScheduleRecord>();
-            this.queueFilters = new QueueNameFilters(null);
+            this.queueFilters = queueFilters ?? QueueNameFilters.Any();
         }
 
         /// <summary>
