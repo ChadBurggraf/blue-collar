@@ -1,6 +1,3 @@
-/*@import "../../../../../Bootstrap/less/variables.less";
-@import "../../../../../Bootstrap/less/mixins.less";*/
-
 /*!
  * Bootstrap v2.1.1
  *
@@ -10307,11 +10304,12 @@ a.badge:hover {
   font-family: "Arial Black", Arial, sans-serif;
   font-size: 18px;
   line-height: 20px;
-  color: #000;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 30px rgba(255, 255, 255, 0.125);
-  -webkit-transition: all .2s linear;
-     -moz-transition: all .2s linear;
-          transition: all .2s linear;
+  /*color: #000;
+        text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.125);
+        -webkit-transition: all .2s linear;
+        -moz-transition: all .2s linear;
+        transition: all .2s linear;*/
+
 }
 
 .navbar .brand img {
@@ -10351,7 +10349,7 @@ a.badge:hover {
 }
 
 .pagination a {
-  line-height: 30px;
+  line-height: 28px;
   background-color: #fff;
 }
 
@@ -10367,7 +10365,6 @@ a.badge:hover {
   float: left;
   width: 40px;
   height: 20px;
-  margin-top: 1px;
   margin-bottom: 0;
   text-align: center;
 }
@@ -10384,25 +10381,14 @@ a.badge:hover {
 .pagination label span {
   float: left;
   padding: 0 14px;
-  margin-top: -1px;
   font-weight: bold;
-  line-height: 32px;
-}
-
-.pagination label ~ a {
-  border-left-width: 1px;
-  -webkit-border-radius: 3px 0 0 3px;
-  -webkit-border-radius: 3px 0 0 3px;
-     -moz-border-radius: 3px 0 0 3px;
-     -moz-border-radius: 3px 0 0 3px;
-          border-radius: 3px 0 0 3px;
-  border-radius: 3px 0 0 3px;
+  line-height: 30px;
 }
 
 .pagination li > span {
   float: left;
   padding: 0 14px;
-  line-height: 30px;
+  line-height: 28px;
   color: #999;
   border: solid 1px #ddd;
   -webkit-border-radius: 3px 0 0 3px;
@@ -10415,6 +10401,21 @@ a.badge:hover {
 
 .pagination ul {
   box-shadow: none;
+}
+
+.pagination ul > li > a,
+.pagination ul > li > span {
+  line-height: 28px;
+}
+
+.pagination ul > li > label ~ a {
+  border-left-width: 1px;
+  -webkit-border-radius: 3px 0 0 3px;
+  -webkit-border-radius: 3px 0 0 3px;
+     -moz-border-radius: 3px 0 0 3px;
+     -moz-border-radius: 3px 0 0 3px;
+          border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
 }
 
 .list-header,
