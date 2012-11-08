@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BlueCollar</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <title>Blue Collar</title>
     <authors>Chad Burggraf</authors>
     <owners>Chad Burggraf</owners>
@@ -12,6 +12,10 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Background jobs and scheduled work for .NET.</description>
     <releaseNotes>
+      * 1.0.4 - Fix boolean form serializer for radio buttons and checkboxes.
+              - Enforce queue filter limits for scheduling.
+              - Fix pager styling.
+              
       * 1.0.3 - More YUI compressor related CSS fixes.
               - Move to bin-deployed SQLite.
               
