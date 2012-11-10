@@ -228,6 +228,8 @@ namespace BlueCollar.Service
 
                     if (application != null)
                     {
+                        application.Exited += new EventHandler(this.ApplicationExited);
+
                         if (this.SetApplicationProperties(application, element))
                         {
                             existing.Add(application);

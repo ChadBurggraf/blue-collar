@@ -36,7 +36,7 @@ var WorkingController = CollarController.extend({
 
         NoticeView.create({
             className: 'alert-success',
-            model: {Title: 'Success!', Message: 'The job ' + model.get('Name') + ' was ' + args.Action + ' successfully.'}
+            model: {Title: 'Success!', Message: 'The job ' + model.get('JobName') + ' was ' + args.Action + ' successfully.'}
         });
     }
 });

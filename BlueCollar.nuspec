@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BlueCollar</id>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <title>Blue Collar</title>
     <authors>Chad Burggraf</authors>
     <owners>Chad Burggraf</owners>
@@ -12,6 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Background jobs and scheduled work for .NET.</description>
     <releaseNotes>
+      * 1.0.5 - Properly listen to application exited events in the service
+                application coordinator.
+                
       * 1.0.4 - Fix boolean form serializer for radio buttons and checkboxes.
               - Enforce queue filter limits for scheduling.
               - Fix pager styling.
