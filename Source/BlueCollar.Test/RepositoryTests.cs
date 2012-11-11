@@ -67,6 +67,56 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Acquire queued lock tests.
+        /// </summary>
+        protected void AcquireQueuedLock()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+
+                QueueRecord queueRecord = new QueueRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueuedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateQueued(queueRecord, null);
+
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Acquire queued lock forced tests.
+        /// </summary>
+        protected void AcquireQueuedLockForced()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+
+                QueueRecord queueRecord = new QueueRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueuedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateQueued(queueRecord, null);
+
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+            }
+        }
+
+        /// <summary>
         /// Acquire schedule lock tests.
         /// </summary>
         protected void AcquireScheduleLock()

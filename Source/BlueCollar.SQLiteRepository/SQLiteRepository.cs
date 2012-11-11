@@ -101,6 +101,36 @@ WHERE
         public string ConnectionString { get; private set; }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given record ID.
+        /// </summary>
+        /// <param name="id">The ID of the queued record to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if necessary.</param>
+        /// <returns>True if the lock was acquired, false otherwise.</returns>
+        public bool AcquireQueuedLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        {
+            const string Sql =
+@"UPDATE [BlueCollarQueue]
+SET
+    [Locked] = 1,
+    [LockedUpdatedOn] = @LockedUpdatedOn
+WHERE
+    [Id] = @Id
+    AND
+    (
+        [Locked] = 0
+        OR [LockedUpdatedOn] IS NULL
+        OR [LockedUpdatedOn] <= @ForceIfOlderThan
+    );";
+
+            return 0 < this.connection.Execute(
+                Sql,
+                new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
+                transaction);
+        }
+
+        /// <summary>
         /// Attempts to obtain the lock for the given schedule ID.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
@@ -244,8 +274,8 @@ SELECT last_insert_rowid();";
         public QueueRecord CreateQueued(QueueRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber])
-VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber);
+@"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[Locked],[LockedUpdatedOn])
+VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@Locked,@LockedUpdatedOn);
 SELECT last_insert_rowid();";
 
             record.Id = this.connection.Query<long>(

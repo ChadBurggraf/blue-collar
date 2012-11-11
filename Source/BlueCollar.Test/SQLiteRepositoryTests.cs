@@ -50,7 +50,27 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Get schedule enqueueing lock tests.
+        /// Acquire queued lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryAcquireQueuedLock()
+        {
+            AcquireQueuedLock();
+        }
+
+        /// <summary>
+        /// Acquire queued lock forced tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryAcquireQueuedLockForced()
+        {
+            AcquireQueuedLockForced();
+        }
+
+        /// <summary>
+        /// Acquire schedule lock tests.
         /// </summary>
         [TestMethod]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
@@ -60,7 +80,7 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Get schedule enqueueing lock forced tests.
+        /// Acquire schedule lock forced tests.
         /// </summary>
         [TestMethod]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]

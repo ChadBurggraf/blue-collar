@@ -30,6 +30,19 @@ namespace BlueCollar.Test
         public string ConnectionString { get; private set; }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given record ID.
+        /// </summary>
+        /// <param name="id">The ID of the queued record to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if necessary.</param>
+        /// <returns>True if the lock was acquired, false otherwise.</returns>
+        public bool AcquireQueuedLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Attempts to obtain the lock for the given schedule ID.
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>

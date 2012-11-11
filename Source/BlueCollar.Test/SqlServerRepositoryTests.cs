@@ -51,20 +51,36 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Get schedule enqueueing lock tests.
+        /// Acquire queued lock tests.
         /// </summary>
         [TestMethod]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
+        public void SqlServerRepositoryAcquireQueuedLock()
+        {
+            AcquireQueuedLock();
+        }
+
+        /// <summary>
+        /// Acquire queued lock forced tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryAcquireQueuedLockForced()
+        {
+            AcquireQueuedLockForced();
+        }
+
+        /// <summary>
+        /// Acquire schedule lock tests.
+        /// </summary>
+        [TestMethod]
         public void SqlServerRepositoryAcquireScheduleLock()
         {
             AcquireScheduleLock();
         }
 
         /// <summary>
-        /// Get schedule enqueueing lock forced tests.
+        /// Acquire schedule lock forced tests.
         /// </summary>
         [TestMethod]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
         public void SqlServerRepositoryAcquireScheduleLockForced()
         {
             AcquireScheduleLockForced();
