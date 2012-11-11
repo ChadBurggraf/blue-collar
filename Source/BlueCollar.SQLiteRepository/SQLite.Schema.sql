@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS [BlueCollarSchedule]
+CREATE TABLE IF NOT EXISTS [BlueCollarSchedule]
 (
 	[Id] INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	[ApplicationName] VARCHAR(64) NOT NULL,
@@ -9,8 +9,8 @@
 	[RepeatType] VARCHAR(12) NOT NULL,
 	[RepeatValue] INTEGER NULL,
 	[Enabled] BOOLEAN NOT NULL,
-	[Enqueueing] BOOLEAN NOT NULL,
-	[EnqueueingUpdatedOn] DATETIME NULL
+	[Locked] BOOLEAN NOT NULL,
+	[LockedUpdatedOn] DATETIME NULL
 );
 
 CREATE TABLE IF NOT EXISTS [BlueCollarScheduledJob]
@@ -32,7 +32,9 @@ CREATE TABLE IF NOT EXISTS [BlueCollarQueue]
 	[JobType] VARCHAR(256) NOT NULL,
 	[Data] TEXT NOT NULL,
 	[QueuedOn] DATETIME NOT NULL,
-	[TryNumber] INTEGER NOT NULL
+	[TryNumber] INTEGER NOT NULL,
+	[Locked] BOOLEAN NOT NULL,
+	[LockedUpdatedOn] DATETIME NULL
 );
 
 CREATE INDEX IF NOT EXISTS [IX_BlueCollarQueue_QueuedOn]
@@ -49,7 +51,9 @@ CREATE TABLE IF NOT EXISTS [BlueCollarWorker]
 	[Status] VARCHAR(12) NOT NULL,
 	[Signal] VARCHAR(24) NULL,
 	[Startup] VARCHAR(12) NOT NULL,
-	[UpdatedOn] DATETIME NOT NULL
+	[UpdatedOn] DATETIME NOT NULL,
+	[Locked] BOOLEAN NOT NULL,
+	[LockedUpdatedOn] DATETIME NULL
 );
 
 CREATE TABLE IF NOT EXISTS [BlueCollarWorking]
@@ -65,7 +69,9 @@ CREATE TABLE IF NOT EXISTS [BlueCollarWorking]
 	[QueuedOn] DATETIME NOT NULL,
 	[TryNumber] INTEGER NOT NULL,
 	[StartedOn] DATETIME NOT NULL,
-	[Signal] VARCHAR(12) NULL
+	[Signal] VARCHAR(12) NULL,
+	[Locked] BOOLEAN NOT NULL,
+	[LockedUpdatedOn] DATETIME NULL
 );
 
 CREATE TABLE IF NOT EXISTS [BlueCollarHistory]

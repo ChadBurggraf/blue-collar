@@ -33,8 +33,8 @@ CREATE TABLE [BlueCollarSchedule]
 	[RepeatType] varchar(12) NOT NULL,
 	[RepeatValue] bigint NULL,
 	[Enabled] bit NOT NULL,
-	[Enqueueing] bit NOT NULL,
-	[EnqueueingUpdatedOn] datetime NULL
+	[Locked] bit NOT NULL,
+	[LockedUpdatedOn] datetime NULL
 )
 GO
 
@@ -58,7 +58,9 @@ CREATE TABLE [BlueCollarQueue]
 	[JobType] varchar(256) NOT NULL,
 	[Data] text NOT NULL,
 	[QueuedOn] datetime NOT NULL,
-	[TryNumber] bigint NOT NULL
+	[TryNumber] bigint NOT NULL,
+	[Locked] bit NOT NULL,
+	[LockedUpdatedOn] datetime NULL
 )
 GO
 
@@ -73,7 +75,9 @@ CREATE TABLE [BlueCollarWorker]
 	[Status] varchar(12) NOT NULL,
 	[Signal] varchar(24) NULL,
 	[Startup] varchar(12) NOT NULL,
-	[UpdatedOn] datetime NOT NULL
+	[UpdatedOn] datetime NOT NULL,
+	[Locked] bit NOT NULL,
+	[LockedUpdatedOn] datetime NULL
 )
 GO
 
@@ -90,7 +94,9 @@ CREATE TABLE [BlueCollarWorking]
 	[QueuedOn] datetime NOT NULL,
 	[TryNumber] bigint NOT NULL,
 	[StartedOn] datetime NOT NULL,
-	[Signal] varchar(12) NULL
+	[Signal] varchar(12) NULL,
+	[Locked] bit NOT NULL,
+	[LockedUpdatedOn] datetime NULL
 )
 GO
 

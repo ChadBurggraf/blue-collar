@@ -71,6 +71,9 @@
       <Name>BlueCollar.Net35</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SQLite.Schema.1.1.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>

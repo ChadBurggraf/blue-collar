@@ -81,6 +81,9 @@
   <ItemGroup>
     <EmbeddedResource Include="SQLite.Schema.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SQLite.Schema.1.1.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\StyleCop\v4.7\StyleCop.Targets" />
   <PropertyGroup>
