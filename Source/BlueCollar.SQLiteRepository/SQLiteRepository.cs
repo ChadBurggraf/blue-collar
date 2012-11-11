@@ -101,6 +101,36 @@ WHERE
         public string ConnectionString { get; private set; }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given schedule ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the lock was obtained, false otherwise.</returns>
+        public bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
+        {
+            const string Sql =
+@"UPDATE [BlueCollarSchedule]
+SET
+    [Locked] = 1,
+    [LockedUpdatedOn] = @LockedUpdatedOn
+WHERE
+    [Id] = @Id
+    AND
+    (
+        [Locked] = 0
+        OR [LockedUpdatedOn] IS NULL
+        OR [LockedUpdatedOn] <= @ForceIfOlderThan
+    );";
+
+            return 0 < this.connection.Execute(
+                Sql,
+                new { Id = scheduleId, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
+                transaction);
+        }
+
+        /// <summary>
         /// Begins a transaction.
         /// </summary>
         /// <returns>The transaction.</returns>
@@ -304,8 +334,8 @@ VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Dat
         public ScheduleRecord CreateSchedule(ScheduleRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled],[Enqueueing],[EnqueueingUpdatedOn])
-VALUES(@ApplicationName,@QueueName,@Name,@StartOn,@EndOn,@RepeatTypeString,@RepeatValue,@Enabled,@Enqueueing,@EnqueueingUpdatedOn);
+@"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled],[Locked],[LockedUpdatedOn])
+VALUES(@ApplicationName,@QueueName,@Name,@StartOn,@EndOn,@RepeatTypeString,@RepeatValue,@Enabled,@Locked,@LockedUpdatedOn);
 SELECT last_insert_rowid();";
 
             record.Id = this.connection.Query<long>(
@@ -1013,78 +1043,6 @@ LIMIT @Limit OFFSET @Offset;");
         }
 
         /// <summary>
-        /// Attempts to obtain the enqueueing lock for the given schedule ID.
-        /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
-        /// <param name="forceIfOlderThan">A date to compare the enqueue lock's last updated date with. If
-        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
-        public bool GetScheduleEnqueueingLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
-        {
-            const string SelectSql =
-@"SELECT [Enqueueing], [EnqueueingUpdatedOn]
-FROM [BlueCollarSchedule] 
-WHERE 
-    [Id] = @Id;";
-
-            const string UpdateSql =
-@"UPDATE [BlueCollarSchedule] 
-SET 
-    [Enqueueing] = @Enqueueing,
-    [EnqueueingUpdatedOn] = @EnqueueingUpdatedOn
-WHERE 
-    [Id] = @Id;";
-
-            bool obtained = false, commitRollback = false;
-
-            if (transaction == null)
-            {
-                transaction = this.BeginTransaction(IsolationLevel.Serializable);
-                commitRollback = true;
-            }
-
-            try
-            {
-                EnqueueingRecord enqueueing = this.connection.Query<EnqueueingRecord>(
-                     SelectSql,
-                     new { Id = scheduleId },
-                     transaction,
-                     true,
-                     null,
-                     null).First();
-
-                if (!enqueueing.Enqueueing || enqueueing.EnqueueingUpdatedOn == null || enqueueing.EnqueueingUpdatedOn <= forceIfOlderThan)
-                {
-                    obtained = true;
-
-                    this.connection.Execute(
-                        UpdateSql,
-                        new { Id = scheduleId, Enqueueing = true, EnqueueingUpdatedOn = DateTime.UtcNow },
-                        transaction,
-                        null,
-                        null);
-                }
-
-                if (commitRollback)
-                {
-                    transaction.Commit();
-                }
-            }
-            catch
-            {
-                if (commitRollback)
-                {
-                    transaction.Rollback();
-                }
-
-                throw;
-            }
-
-            return obtained;
-        }
-
-        /// <summary>
         /// Gets a list of schedule records.
         /// </summary>
         /// <param name="applicationName">The name of the application to get the schedule list for.</param>
@@ -1776,9 +1734,7 @@ SET
     [EndOn] = @EndOn,
     [RepeatType] = @RepeatTypeString,
     [Repeatvalue] = @RepeatValue,
-    [Enabled] = @Enabled,
-    [Enqueueing] = @Enqueueing,
-    [EnqueueingUpdatedOn] = @EnqueueingUpdatedOn
+    [Enabled] = @Enabled
 WHERE
     [Id] = @Id;";
 

@@ -30,6 +30,19 @@ namespace BlueCollar.Test
         public string ConnectionString { get; private set; }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given schedule ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the lock was obtained, false otherwise.</returns>
+        public bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Begins a transaction.
         /// </summary>
         /// <returns>The transaction.</returns>
@@ -329,19 +342,6 @@ namespace BlueCollar.Test
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A schedule, or null if none was found.</returns>
         public ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset, IDbTransaction transaction)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Attempts to obtain the enqueueing lock for the given schedule ID.
-        /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
-        /// <param name="forceIfOlderThan">A date to compare the enqueue lock's last updated date with. If
-        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
-        public bool GetScheduleEnqueueingLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
         {
             throw new NotImplementedException();
         }

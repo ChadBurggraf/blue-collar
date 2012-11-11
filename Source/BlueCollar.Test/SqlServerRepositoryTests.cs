@@ -51,6 +51,26 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Get schedule enqueueing lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
+        public void SqlServerRepositoryAcquireScheduleLock()
+        {
+            AcquireScheduleLock();
+        }
+
+        /// <summary>
+        /// Get schedule enqueueing lock forced tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
+        public void SqlServerRepositoryAcquireScheduleLockForced()
+        {
+            AcquireScheduleLockForced();
+        }
+
+        /// <summary>
         /// Begin transaction tests.
         /// </summary>
         [TestMethod]
@@ -282,26 +302,6 @@ namespace BlueCollar.Test
         public void SqlServerRepositoryGetScheduledJobList()
         {
             GetScheduledJobList();
-        }
-
-        /// <summary>
-        /// Get schedule enqueueing lock tests.
-        /// </summary>
-        [TestMethod]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        public void SqlServerRepositoryGetScheduleEnqueueingLock()
-        {
-            GetScheduleEnqueueingLock();
-        }
-
-        /// <summary>
-        /// Get schedule enqueueing lock forced tests.
-        /// </summary>
-        [TestMethod]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        public void SqlServerRepositoryGetScheduleEnqueueingLockForced()
-        {
-            GetScheduleEnqueueingLockForced();
         }
 
         /// <summary>

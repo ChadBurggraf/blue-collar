@@ -246,7 +246,7 @@ namespace BlueCollar
                     {
                         try
                         {
-                            hasEnqueueingLock = repository.GetScheduleEnqueueingLock(schedule.Id.Value, DateTime.UtcNow.AddMinutes(-1), transaction);
+                            hasEnqueueingLock = repository.AcquireScheduleLock(schedule.Id.Value, DateTime.UtcNow.AddMinutes(-1), transaction);
                             transaction.Commit();
                         }
                         catch

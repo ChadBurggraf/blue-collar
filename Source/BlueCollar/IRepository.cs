@@ -23,6 +23,16 @@ namespace BlueCollar
         string ConnectionString { get; }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given schedule ID.
+        /// </summary>
+        /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the lock was obtained, false otherwise.</returns>
+        bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction);
+
+        /// <summary>
         /// Begins a transaction.
         /// </summary>
         /// <returns>The transaction.</returns>
@@ -226,17 +236,6 @@ namespace BlueCollar
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if data already exists, false otherwise.</returns>
         bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction);
-
-        /// <summary>
-        /// Attempts to obtain the enqueueing lock for the given schedule ID.
-        /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to obtain the schedule enqueueing lock for.</param>
-        /// <param name="forceIfOlderThan">A date to compare the enqueue lock's last updated date with. If
-        /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        /// <returns>True if the enqueueing lock was obtained, false otherwise.</returns>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        bool GetScheduleEnqueueingLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction);
 
         /// <summary>
         /// Gets a schedule and its related scheduled jobs, filtered by the given list parameters.
