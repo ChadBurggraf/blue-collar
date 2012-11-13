@@ -90,6 +90,26 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Acquire worker lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryAcquireWorkerLock()
+        {
+            AcquireWorkerLock();
+        }
+
+        /// <summary>
+        /// Acquire worker lock forced tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryAcquireWorkerLockForced()
+        {
+            AcquireWorkerLockForced();
+        }
+
+        /// <summary>
         /// Begin transaction tests.
         /// </summary>
         [TestMethod]

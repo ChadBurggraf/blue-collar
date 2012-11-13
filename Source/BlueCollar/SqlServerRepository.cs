@@ -251,6 +251,36 @@ WHERE
         }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given record ID.
+        /// </summary>
+        /// <param name="id">The ID of the worker record to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the give date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the lock was acquired, false otherwise.</returns>
+        public bool AcquireWorkerLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        {
+            const string Sql =
+@"UPDATE [BlueCollarWorker]
+SET
+    [Locked] = 1,
+    [LockedUpdatedOn] = @LockedUpdatedOn
+WHERE
+    [Id] = @Id
+    AND
+    (
+        [Locked] = 0
+        OR [LockedUpdatedOn] IS NULL
+        OR [LockedUpdatedOn] <= @ForceIfOlderThan
+    );";
+
+            return 0 < this.connection.Execute(
+                Sql,
+                new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
+                transaction);
+        }
+
+        /// <summary>
         /// Begins a transaction.
         /// </summary>
         /// <returns>The transaction.</returns>
@@ -490,8 +520,8 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         public WorkerRecord CreateWorker(WorkerRecord record, IDbTransaction transaction)
         {
             const string Sql =
-@"INSERT INTO [BlueCollarWorker]([ApplicationName],[Name],[MachineName],[MachineAddress],[QueueNames],[Status],[Signal],[Startup],[UpdatedOn])
-VALUES(@ApplicationName,@Name,@MachineName,@MachineAddress,@QueueNames,@StatusString,@SignalString,@StartupString,@UpdatedOn);
+@"INSERT INTO [BlueCollarWorker]([ApplicationName],[Name],[MachineName],[MachineAddress],[QueueNames],[Status],[Signal],[Startup],[UpdatedOn],[Locked],[LockedUpdatedOn])
+VALUES(@ApplicationName,@Name,@MachineName,@MachineAddress,@QueueNames,@StatusString,@SignalString,@StartupString,@UpdatedOn,@Locked,@LockedUpdatedOn);
 SELECT CAST(SCOPE_IDENTITY() AS bigint);";
 
             record.Id = this.connection.Query<long>(

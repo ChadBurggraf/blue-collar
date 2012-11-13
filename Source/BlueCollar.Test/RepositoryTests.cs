@@ -165,6 +165,60 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Acquire worker lock tests.
+        /// </summary>
+        protected void AcquireWorkerLock()
+        {
+            if (this.Repository != null)
+            {
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Acquire worker lock forced tests.
+        /// </summary>
+        protected void AcquireWorkerLockForced()
+        {
+            if (this.Repository != null)
+            {
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+            }
+        }
+
+        /// <summary>
         /// Begin transaction tests.
         /// </summary>
         protected void BeginTransaction()
