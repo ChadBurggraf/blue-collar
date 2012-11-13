@@ -69,6 +69,19 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Attempts to obtain the lock for the given record ID.
+        /// </summary>
+        /// <param name="id">The ID of the working job record to obtain the lock for.</param>
+        /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
+        /// the lock is older than the give date, then it will be forced and acquired by the caller.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        /// <returns>True if the lock was acquired, false otherwise.</returns>
+        public bool AcquireWorkingLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Begins a transaction.
         /// </summary>
         /// <returns>The transaction.</returns>

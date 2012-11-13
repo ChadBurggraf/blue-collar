@@ -219,6 +219,96 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Acquire working lock tests.
+        /// </summary>
+        protected void AcquireWorkingLock()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+
+                WorkingRecord workingRecord = new WorkingRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueueName = "*",
+                    QueuedOn = DateTime.UtcNow,
+                    Signal = WorkingSignal.Cancel,
+                    StartedOn = DateTime.UtcNow,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateWorking(workingRecord, null);
+
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Acquire working lock forced tests.
+        /// </summary>
+        protected void AcquireWorkingLockForced()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+
+                WorkingRecord workingRecord = new WorkingRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueueName = "*",
+                    QueuedOn = DateTime.UtcNow,
+                    Signal = WorkingSignal.Cancel,
+                    StartedOn = DateTime.UtcNow,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateWorking(workingRecord, null);
+
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+            }
+        }
+
+        /// <summary>
         /// Begin transaction tests.
         /// </summary>
         protected void BeginTransaction()

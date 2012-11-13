@@ -105,6 +105,24 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Acquire working lock tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryAcquireWorkingLock()
+        {
+            AcquireWorkingLock();
+        }
+
+        /// <summary>
+        /// Acquire working lock forced tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryAcquireWorkingLockForced()
+        {
+            AcquireWorkingLockForced();
+        }
+
+        /// <summary>
         /// Begin transaction tests.
         /// </summary>
         [TestMethod]
