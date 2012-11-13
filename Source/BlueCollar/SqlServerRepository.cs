@@ -444,8 +444,8 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
             try
             {
                 const string InsertQueuedSql =
-@"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber])
-VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber);";
+@"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[Locked],[LockedUpdatedOn])
+VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@Locked,@LockedUpdatedOn);";
 
                 const string InsertHistorySql =
 @"INSERT INTO [BlueCollarHistory]([ApplicationName],[WorkerId],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[StartedOn],[Status],[Exception],[FinishedOn])
