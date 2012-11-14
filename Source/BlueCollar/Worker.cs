@@ -272,24 +272,26 @@ namespace BlueCollar
                 lock (this.runLocker)
                 {
                     WorkingRecord record = this.currentRecord;
+                    this.currentRecord = null;
                     
                     using (IRepository repository = this.repositoryFactory.Create())
                     {
-                        using (IDbTransaction transaction = repository.BeginTransaction())
+                        if (record != null)
                         {
-                            if (record != null)
+                            bool acquired = this.AcquireWorkingLock(record.Id.Value, repository);
+
+                            if (!acquired && !force)
                             {
-                                HistoryRecord history = CreateHistory(record, HistoryStatus.Interrupted);
-                                repository.DeleteWorking(record.Id.Value, transaction);
-                                history = repository.CreateHistory(history, transaction);
+                                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the lock for working record {2} while stopping.", this.name, this.id, record.Id));
                             }
 
-                            this.SetStatus(WorkerStatus.Stopped, repository, transaction);
-                            transaction.Commit();
+                            HistoryRecord history = CreateHistory(record, HistoryStatus.Interrupted);
+                            history = repository.CreateHistory(history, null);
+                            repository.DeleteWorking(record.Id.Value, null);
                         }
-                    }
 
-                    this.currentRecord = null;
+                        this.SetStatus(WorkerStatus.Stopped, repository, null);
+                    }
                 }
             }
 
@@ -385,23 +387,22 @@ namespace BlueCollar
             lock (this.runLocker)
             {
                 this.KillRunThread();
+                WorkingRecord record = this.currentRecord;
+                this.currentRecord = null;
 
-                if (this.currentRecord != null)
+                if (record != null)
                 {
-                    this.logger.Info("Worker {0} ({1}) canceled '{2}'.", this.name, this.id, this.currentRecord.JobName);
-
                     using (IRepository repository = this.repositoryFactory.Create())
                     {
-                        using (IDbTransaction transaction = repository.BeginTransaction())
+                        if (!this.AcquireWorkingLock(record.Id.Value, repository))
                         {
-                            HistoryRecord history = CreateHistory(this.currentRecord, HistoryStatus.Canceled);
-                            repository.DeleteWorking(this.currentRecord.Id.Value, transaction);
-                            history = repository.CreateHistory(history, transaction);
-                            transaction.Commit();
+                            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the lock for working record {2} while canceling.", this.name, this.id, record.Id));
                         }
-                    }
 
-                    this.currentRecord = null;
+                        HistoryRecord history = CreateHistory(record, HistoryStatus.Canceled);
+                        history = repository.CreateHistory(history, null);
+                        repository.DeleteWorking(record.Id.Value, null);
+                    }
                 }
 
                 this.runThread = new Thread(this.RunLoop);
@@ -426,21 +427,15 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                using (IDbTransaction transaction = repository.BeginTransaction(IsolationLevel.RepeatableRead))
+                QueueRecord queued = repository.GetQueued(this.applicationName, queues, DateTime.UtcNow, null);
+
+                if (queued != null && repository.AcquireQueuedLock(queued.Id.Value, DateTime.UtcNow.AddMinutes(-1), null))
                 {
-                    QueueRecord queued = repository.GetQueued(this.applicationName, queues, DateTime.UtcNow, transaction);
-
-                    if (queued != null)
-                    {
-                        working = CreateWorking(queued, this.id, queued.ScheduleId, DateTime.UtcNow);
-
-                        repository.DeleteQueued(queued.Id.Value, transaction);
-                        working = repository.CreateWorking(working, transaction);
-
-                        this.logger.Info("Worker {0} ({1}) dequeued '{2}'.", this.name, this.id, queued.JobName);
-                    }
-
-                    transaction.Commit();
+                    working = CreateWorking(queued, this.id, queued.ScheduleId, DateTime.UtcNow);
+                    working = repository.CreateWorking(working, null);
+                    repository.DeleteQueued(queued.Id.Value, null);
+                    
+                    this.logger.Info("Worker {0} ({1}) dequeued '{2}'.", this.name, this.id, queued.JobName);
                 }
             }
 
@@ -490,6 +485,9 @@ namespace BlueCollar
         /// </summary>
         internal void PruneOrphans()
         {
+            ILogger logger = this.logger;
+            string workerName = this.name;
+            long workerId = this.Id;
             long? currentId = null;
 
             lock (this.runLocker)
@@ -499,19 +497,21 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                using (IDbTransaction transaction = repository.BeginTransaction())
+                foreach (WorkingRecord working in repository.GetWorkingForWorker(workerId, currentId, null))
                 {
-                    foreach (WorkingRecord working in repository.GetWorkingForWorker(this.Id, currentId, transaction))
+                    if (working.Id != currentId)
                     {
-                        if (working.Id != currentId)
+                        if (this.AcquireWorkingLock(working.Id.Value, repository))
                         {
                             HistoryRecord history = CreateHistory(working, HistoryStatus.Interrupted);
-                            repository.DeleteWorking(working.Id.Value, transaction);
-                            repository.CreateHistory(history, transaction);
+                            repository.CreateHistory(history, null);
+                            repository.DeleteWorking(working.Id.Value, null);
+                        }
+                        else
+                        {
+                            logger.Warn("Worker {0} ({1}) failed to acquire the lock for working record {2} during pruning.", workerName, workerId, working.Id);
                         }
                     }
-
-                    transaction.Commit();
                 }
             }
         }
@@ -524,6 +524,8 @@ namespace BlueCollar
         {
             while (true)
             {
+                string workerName = this.name;
+                long workerId = this.id;
                 bool working = false, needsRest = true;
                 WorkingRecord record = null;
                 IJob job = null;
@@ -549,12 +551,12 @@ namespace BlueCollar
                             try
                             {
                                 job = JobSerializer.Deserialize(record.JobType, record.Data);
-                                this.logger.Debug("Worker {0} ({1}) de-serialized a job instance for '{2}'.", this.name, this.id, record.JobType);
+                                this.logger.Debug("Worker {0} ({1}) de-serialized a job instance for '{2}'.", workerName, workerId, record.JobType);
                             }
                             catch (Exception sx)
                             {
                                 ex = sx;
-                                this.logger.Warn("Worker {0} ({1}) failed to de-serialize a job instane for '{2}'.", this.name, this.id, record.JobType);
+                                this.logger.Warn("Worker {0} ({1}) failed to de-serialize a job instance for '{2}'.", workerName, workerId, record.JobType);
                             }
 
                             // If we failed to de-serialize, fail the job.
@@ -569,11 +571,14 @@ namespace BlueCollar
 
                                 using (IRepository repository = this.repositoryFactory.Create())
                                 {
-                                    using (IDbTransaction transaction = repository.BeginTransaction())
+                                    if (this.AcquireWorkingLock(record.Id.Value, repository))
                                     {
-                                        repository.DeleteWorking(record.Id.Value, transaction);
-                                        history = repository.CreateHistory(history, transaction);
-                                        transaction.Commit();
+                                        history = repository.CreateHistory(history, null);
+                                        repository.DeleteWorking(record.Id.Value, null);
+                                    }
+                                    else
+                                    {
+                                        throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the working record lock for {2} during the run loop.", workerName, workerId, record.Id));
                                     }
                                 }
                             }
@@ -593,19 +598,20 @@ namespace BlueCollar
                                 // state to the history state, including the execution results.
                                 lock (this.runLocker)
                                 {
+                                    record = this.currentRecord;
                                     HistoryStatus status = HistoryStatus.Succeeded;
                                     string exceptionString = null;
 
                                     if (success)
                                     {
-                                        this.logger.Info("Worker {0} ({1}) executed '{2}' successfully.", this.name, this.id, this.currentRecord.JobName);
+                                        this.logger.Info("Worker {0} ({1}) executed '{2}' successfully.", workerName, workerId, record.JobName);
                                     }
                                     else
                                     {
                                         if (ex as TimeoutException != null)
                                         {
                                             status = HistoryStatus.TimedOut;
-                                            this.logger.Warn("Worker {0} ({1}) timed out '{2}'.", this.name, this.id, this.currentRecord.JobName);
+                                            this.logger.Warn("Worker {0} ({1}) timed out '{2}'.", workerName, workerId, record.JobName);
                                         }
                                         else
                                         {
@@ -616,7 +622,7 @@ namespace BlueCollar
                                                 exceptionString = new ExceptionXElement(ex).ToString();
                                             }
 
-                                            this.logger.Warn("Worker {0} ({1}) encountered an exception during execution of '{2}'.", this.name, this.id, this.currentRecord.JobName);
+                                            this.logger.Warn("Worker {0} ({1}) encountered an exception during execution of '{2}'.", workerName, workerId, record.JobName);
                                         }
                                     }
 
@@ -625,21 +631,23 @@ namespace BlueCollar
 
                                     using (IRepository repository = this.repositoryFactory.Create())
                                     {
-                                        using (IDbTransaction transaction = repository.BeginTransaction())
+                                        if (this.AcquireWorkingLock(record.Id.Value, repository))
                                         {
-                                            repository.DeleteWorking(this.currentRecord.Id.Value, transaction);
-                                            history = repository.CreateHistory(history, transaction);
+                                            history = repository.CreateHistory(history, null);
+                                            repository.DeleteWorking(record.Id.Value, null);
 
                                             // Re-try?
                                             if ((status == HistoryStatus.Failed
                                                 || status == HistoryStatus.Interrupted
                                                 || status == HistoryStatus.TimedOut)
-                                                && (job.Retries == 0 || job.Retries >= this.currentRecord.TryNumber))
+                                                && (job.Retries == 0 || job.Retries >= record.TryNumber))
                                             {
-                                                repository.CreateQueued(CreateQueueRetry(this.currentRecord), transaction);
+                                                repository.CreateQueued(CreateQueueRetry(record), null);
                                             }
-
-                                            transaction.Commit();
+                                        }
+                                        else
+                                        {
+                                            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the working record lock for {2} during the run loop.", workerName, workerId, record.Id));
                                         }
                                     }
 
@@ -661,7 +669,7 @@ namespace BlueCollar
                 }
                 catch (Exception rx)
                 {
-                    this.logger.Error(rx, "Exception thrown during the run loop for worker {0} ({1}).", this.name, this.id);
+                    this.logger.Error(rx, "Exception thrown during the run loop for worker {0} ({1}).", workerName, workerId);
                 }
 
                 if (working)
@@ -669,12 +677,12 @@ namespace BlueCollar
                     // Take a breather real quick.
                     if (needsRest)
                     {
-                        this.logger.Debug("Worker {0} ({1}) is resting before trying to de-queue another job.", this.name, this.id);
+                        this.logger.Debug("Worker {0} ({1}) is resting before trying to de-queue another job.", workerName, workerId);
                         Thread.Sleep(this.heartbeat.Randomize());
                     }
                     else
                     {
-                        this.logger.Debug("Worker {0} ({1}) will immediately try to de-queue another job.", this.name, this.id);
+                        this.logger.Debug("Worker {0} ({1}) will immediately try to de-queue another job.", workerName, workerId);
                     }
                 }
             }
@@ -716,18 +724,13 @@ namespace BlueCollar
                     // Load the current signals from the repository.
                     using (IRepository repository = this.repositoryFactory.Create())
                     {
-                        using (IDbTransaction transaction = repository.BeginTransaction())
+                        signals = repository.GetWorkingSignals(this.id, recordId, null);
+
+                        if (signals != null
+                            && (signals.WorkerSignal != WorkerSignal.None
+                            || signals.WorkingSignal != WorkingSignal.None))
                         {
-                            signals = repository.GetWorkingSignals(this.id, recordId, transaction);
-
-                            if (signals != null
-                                && (signals.WorkerSignal != WorkerSignal.None 
-                                || signals.WorkingSignal != WorkingSignal.None))
-                            {
-                                repository.ClearWorkingSignalPair(this.id, recordId, transaction);
-                            }
-
-                            transaction.Commit();
+                            repository.ClearWorkingSignalPair(this.id, recordId, null);
                         }
                     }
 
@@ -850,6 +853,32 @@ namespace BlueCollar
         #endregion
 
         #region Private Instance Methods
+
+        /// <summary>
+        /// Acquires the working record lock for the given ID.
+        /// </summary>
+        /// <param name="id">The ID of the working record to acquire the lock for.</param>
+        /// <param name="repository">The repository to use.</param>
+        /// <returns>True if the lock was acquired, false otherwise.</returns>
+        private bool AcquireWorkingLock(long id, IRepository repository)
+        {
+            bool acquired = false;
+            int tries = 10;
+
+            while (!(acquired = repository.AcquireWorkingLock(id, DateTime.UtcNow.AddMinutes(-1), null)))
+            {
+                if (--tries > 0)
+                {
+                    Thread.Sleep(100);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return acquired;
+        }
 
         /// <summary>
         /// Disposes of resources used by this instance.
