@@ -523,11 +523,41 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Releases the enqueueing lock for the schedule with the given ID.
+        /// Releases the lock for the given queued job ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to release the enqueueing lock for.</param>
+        /// <param name="id">The ID of the record to release the lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
+        public void ReleaseQueuedLock(long id, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Releases the lock for the given schedule ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseScheduleLock(long id, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Releases the lock for the given worker ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseWorkerLock(long id, IDbTransaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Releases the lock for the given working job ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseWorkingLock(long id, IDbTransaction transaction)
         {
             throw new NotImplementedException();
         }

@@ -35,12 +35,12 @@ namespace BlueCollar
         /// <summary>
         /// Attempts to obtain the lock for the given schedule ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
+        /// <param name="id">The ID of the schedule to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was obtained, false otherwise.</returns>
-        bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction);
+        bool AcquireScheduleLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction);
 
         /// <summary>
         /// Attempts to obtain the lock for the given record ID.
@@ -384,12 +384,32 @@ namespace BlueCollar
         SignalsRecord GetWorkingSignals(long workerId, long? workingId, IDbTransaction transaction);
 
         /// <summary>
-        /// Releases the enqueueing lock for the schedule with the given ID.
+        /// Releases the lock for the given queued job ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to release the enqueueing lock for.</param>
+        /// <param name="id">The ID of the record to release the lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction);
+        void ReleaseQueuedLock(long id, IDbTransaction transaction);
+
+        /// <summary>
+        /// Releases the lock for the given schedule ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        void ReleaseScheduleLock(long id, IDbTransaction transaction);
+
+        /// <summary>
+        /// Releases the lock for the given worker ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        void ReleaseWorkerLock(long id, IDbTransaction transaction);
+
+        /// <summary>
+        /// Releases the lock for the given working job ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        void ReleaseWorkingLock(long id, IDbTransaction transaction);
 
         /// <summary>
         /// Signals all workers for the given application name.

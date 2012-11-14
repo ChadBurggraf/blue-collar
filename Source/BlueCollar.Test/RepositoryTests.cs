@@ -2333,10 +2333,36 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Release schedule enqueueing lock tests.
+        /// Release queued lock tests.
         /// </summary>
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        protected void ReleaseScheduleEnqueueingLock()
+        protected void ReleaseQueuedLock()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+
+                QueueRecord queueRecord = new QueueRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueuedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateQueued(queueRecord, null);
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+
+                this.Repository.ReleaseQueuedLock(queueRecord.Id.Value, null);
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Release schedule lock tests.
+        /// </summary>
+        protected void ReleaseScheduleLock()
         {
             if (this.Repository != null)
             {
@@ -2353,11 +2379,86 @@ namespace BlueCollar.Test
 
                 this.Repository.CreateSchedule(scheduleRecord, null);
                 Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-
                 Assert.IsFalse(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
 
-                this.Repository.ReleaseScheduleEnqueueingLock(scheduleRecord.Id.Value, null);
+                this.Repository.ReleaseScheduleLock(scheduleRecord.Id.Value, null);
                 Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Release worker lock tests.
+        /// </summary>
+        protected void ReleaseWorkerLock()
+        {
+            if (this.Repository != null)
+            {
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+
+                this.Repository.ReleaseWorkerLock(workerRecord.Id.Value, null);
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+            }
+        }
+
+        /// <summary>
+        /// Release working lock tests.
+        /// </summary>
+        protected void ReleaseWorkingLock()
+        {
+            if (this.Repository != null)
+            {
+                IJob job = new TestJob() { Id = Guid.NewGuid() };
+
+                WorkerRecord workerRecord = new WorkerRecord()
+                {
+                    ApplicationName = BlueCollarSection.Section.ApplicationName,
+                    MachineAddress = Machine.Address,
+                    MachineName = Machine.Name,
+                    Name = "Test Worker",
+                    QueueNames = "*",
+                    Signal = WorkerSignal.Stop,
+                    Status = WorkerStatus.Working,
+                    Startup = WorkerStartupType.Automatic,
+                    UpdatedOn = DateTime.UtcNow
+                };
+
+                this.Repository.CreateWorker(workerRecord, null);
+
+                WorkingRecord workingRecord = new WorkingRecord()
+                {
+                    ApplicationName = workerRecord.ApplicationName,
+                    Data = JobSerializer.Serialize(job),
+                    JobName = job.Name,
+                    JobType = JobSerializer.GetTypeName(job),
+                    QueueName = "*",
+                    QueuedOn = DateTime.UtcNow,
+                    Signal = WorkingSignal.Cancel,
+                    StartedOn = DateTime.UtcNow,
+                    TryNumber = 1,
+                    WorkerId = workerRecord.Id.Value
+                };
+
+                this.Repository.CreateWorking(workingRecord, null);
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsFalse(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+
+                this.Repository.ReleaseWorkingLock(workingRecord.Id.Value, null);
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
             }
         }
 

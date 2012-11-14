@@ -338,7 +338,7 @@ namespace BlueCollar
                     {
                         using (IRepository repository = this.repositoryFactory.Create())
                         {
-                            repository.ReleaseScheduleEnqueueingLock(schedule.Id.Value, null);
+                            repository.ReleaseScheduleLock(schedule.Id.Value, null);
                         }
                     }
                 }

@@ -456,13 +456,39 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Release schedule enqueueing lock tests.
+        /// Release queued lock tests.
         /// </summary>
         [TestMethod]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Enqueueing", Justification = "The spelling is correct.")]
-        public void SqlServerRepositoryReleaseScheduleEnqueueingLock()
+        public void SqlServerRepositoryReleaseQueuedLock()
         {
-            ReleaseScheduleEnqueueingLock();
+            ReleaseQueuedLock();
+        }
+
+        /// <summary>
+        /// Release schedule lock tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryReleaseScheduleLock()
+        {
+            ReleaseScheduleLock();
+        }
+
+        /// <summary>
+        /// Release worker lock tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryReleaseWorkerLock()
+        {
+            ReleaseWorkerLock();
+        }
+
+        /// <summary>
+        /// Release working lock tests.
+        /// </summary>
+        [TestMethod]
+        public void SqlServerRepositoryReleaseWorkingLock()
+        {
+            ReleaseWorkingLock();
         }
 
         /// <summary>

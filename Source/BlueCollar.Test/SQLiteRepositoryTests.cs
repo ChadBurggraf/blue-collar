@@ -516,13 +516,43 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Release schedule enqueueing lock tests.
+        /// Release queued lock tests.
         /// </summary>
         [TestMethod]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
-        public void SQLiteRepositoryReleaseScheduleEnqueueingLock()
+        public void SQLiteRepositoryReleaseQueuedLock()
         {
-            ReleaseScheduleEnqueueingLock();
+            ReleaseQueuedLock();
+        }
+
+        /// <summary>
+        /// Release schedule lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryReleaseScheduleLock()
+        {
+            ReleaseScheduleLock();
+        }
+
+        /// <summary>
+        /// Release worker lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryReleaseWorkerLock()
+        {
+            ReleaseWorkerLock();
+        }
+
+        /// <summary>
+        /// Release working lock tests.
+        /// </summary>
+        [TestMethod]
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
+        public void SQLiteRepositoryReleaseWorkingLock()
+        {
+            ReleaseWorkingLock();
         }
 
         /// <summary>

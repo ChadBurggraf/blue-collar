@@ -217,18 +217,20 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction);
+                transaction,
+                null,
+                null);
         }
 
         /// <summary>
         /// Attempts to obtain the lock for the given schedule ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
+        /// <param name="id">The ID of the schedule to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was obtained, false otherwise.</returns>
-        public bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireScheduleLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
         {
             const string Sql =
 @"UPDATE [BlueCollarSchedule]
@@ -246,8 +248,10 @@ WHERE
 
             return 0 < this.connection.Execute(
                 Sql,
-                new { Id = scheduleId, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction);
+                new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
+                transaction,
+                null,
+                null);
         }
 
         /// <summary>
@@ -277,7 +281,9 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction);
+                transaction,
+                null,
+                null);
         }
 
         /// <summary>
@@ -307,7 +313,9 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction);
+                transaction,
+                null,
+                null);
         }
 
         /// <summary>
@@ -1868,26 +1876,43 @@ WHERE
         }
 
         /// <summary>
-        /// Releases the enqueueing lock for the schedule with the given ID.
+        /// Releases the lock for the given queued job ID.
         /// </summary>
-        /// <param name="scheduleId">The ID of the schedule to release the enqueueing lock for.</param>
+        /// <param name="id">The ID of the record to release the lock for.</param>
         /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseScheduleEnqueueingLock(long scheduleId, IDbTransaction transaction)
+        public void ReleaseQueuedLock(long id, IDbTransaction transaction)
         {
-            const string Sql =
-@"UPDATE [BlueCollarSchedule]
-SET
-    [Enqueueing] = @Enqueueing,
-    [EnqueueingUpdatedOn] = @EnqueueingUpdatedOn
-WHERE
-    [Id] = @Id;";
+            this.ReleaseLock(id, "BlueCollarQueue", transaction);
+        }
 
-            this.connection.Execute(
-                Sql,
-                new { Id = scheduleId, Enqueueing = false, EnqueueingUpdatedOn = DateTime.UtcNow },
-                transaction,
-                null,
-                null);
+        /// <summary>
+        /// Releases the lock for the given schedule ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseScheduleLock(long id, IDbTransaction transaction)
+        {
+            this.ReleaseLock(id, "BlueCollarSchedule", transaction);
+        }
+
+        /// <summary>
+        /// Releases the lock for the given worker ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseWorkerLock(long id, IDbTransaction transaction)
+        {
+            this.ReleaseLock(id, "BlueCollarWorker", transaction);
+        }
+
+        /// <summary>
+        /// Releases the lock for the given working job ID.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        public void ReleaseWorkingLock(long id, IDbTransaction transaction)
+        {
+            this.ReleaseLock(id, "BlueCollarWorking", transaction);
         }
 
         /// <summary>
@@ -2267,6 +2292,35 @@ ORDER BY [name];";
                 TimedOutCount = multi.Read<long>().First(),
                 InterruptedCount = multi.Read<long>().First()
             };
+        }
+
+        /// <summary>
+        /// Releases the lock for a record belonging to the given table.
+        /// </summary>
+        /// <param name="id">The ID of the record to release the lock for.</param>
+        /// <param name="tableName">The name of the table to release the record lock for.</param>
+        /// <param name="transaction">The transaction to use, if applicable.</param>
+        private void ReleaseLock(long id, string tableName, IDbTransaction transaction)
+        {
+            const string Sql =
+@"UPDATE [{0}]
+SET
+    [Locked] = 0,
+    [LockedUpdatedOn] = @LockedUpdatedOn
+WHERE
+    [Id] = @Id
+    AND
+    (
+        [Locked] = 1
+        OR [LockedUpdatedOn] IS NULL
+    );";
+
+            this.connection.Execute(
+                string.Format(CultureInfo.InvariantCulture, Sql, tableName),
+                new { Id = id, LockedUpdatedOn = DateTime.UtcNow },
+                transaction,
+                null,
+                null);
         }
     }
 }
