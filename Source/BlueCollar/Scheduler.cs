@@ -238,26 +238,14 @@ namespace BlueCollar
 
             foreach (ScheduleRecord schedule in this.Schedules)
             {
-                bool hasEnqueueingLock = false;
+                bool acquired = false;
 
                 using (IRepository repository = this.repositoryFactory.Create())
                 {
-                    using (IDbTransaction transaction = repository.BeginTransaction(IsolationLevel.RepeatableRead))
-                    {
-                        try
-                        {
-                            hasEnqueueingLock = repository.AcquireScheduleLock(schedule.Id.Value, DateTime.UtcNow.AddMinutes(-1), transaction);
-                            transaction.Commit();
-                        }
-                        catch
-                        {
-                            transaction.Rollback();
-                            throw;
-                        }
-                    }
+                    acquired = repository.AcquireScheduleLock(schedule.Id.Value, DateTime.UtcNow.AddMinutes(-1), null);
                 }
 
-                if (hasEnqueueingLock)
+                if (acquired)
                 {
                     DateTime? scheduleDate;
 
