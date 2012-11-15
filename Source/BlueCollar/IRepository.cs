@@ -63,19 +63,6 @@ namespace BlueCollar
         bool AcquireWorkingLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction);
 
         /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        /// <returns>The transaction.</returns>
-        IDbTransaction BeginTransaction();
-
-        /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        /// <param name="level">The isolation level to use for the transaction.</param>
-        /// <returns>The transaction.</returns>
-        IDbTransaction BeginTransaction(IsolationLevel level);
-
-        /// <summary>
         /// Clears signals for the given worker and working job if applicable.
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>

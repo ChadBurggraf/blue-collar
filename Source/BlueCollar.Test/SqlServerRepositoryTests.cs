@@ -123,15 +123,6 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Begin transaction tests.
-        /// </summary>
-        [TestMethod]
-        public void SqlServerRepositoryBeginTransaction()
-        {
-            BeginTransaction();
-        }
-
-        /// <summary>
         /// Clear working signal pair tests.
         /// </summary>
         [TestMethod]

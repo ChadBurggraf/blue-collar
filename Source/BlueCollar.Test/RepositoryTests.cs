@@ -309,25 +309,6 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Begin transaction tests.
-        /// </summary>
-        protected void BeginTransaction()
-        {
-            if (this.Repository != null)
-            {
-                using (var transaction = this.Repository.BeginTransaction())
-                {
-                    Assert.IsNotNull(transaction);
-                }
-
-                using (var transaction = this.Repository.BeginTransaction(IsolationLevel.RepeatableRead))
-                {
-                    Assert.IsNotNull(transaction);
-                }
-            }
-        }
-
-        /// <summary>
         /// Clear working signal pair tests.
         /// </summary>
         protected void ClearWorkingSignalPair()

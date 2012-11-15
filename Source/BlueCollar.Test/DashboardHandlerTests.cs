@@ -43,7 +43,6 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>();
 
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
             repository.Setup(r => r.GetCounts(It.IsAny<string>(), It.IsAny<IDbTransaction>())).Returns(record);
 
             var factory = new Mock<IRepositoryFactory>();
@@ -109,7 +108,6 @@ namespace BlueCollar.Test
 
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.AcquireScheduleLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
             repository.Setup(r => r.UpdateSchedule(It.IsAny<ScheduleRecord>(), It.IsAny<IDbTransaction>())).Returns(record);
             repository
                 .Setup(r => r.CreateSchedule(It.IsAny<ScheduleRecord>(), It.IsAny<IDbTransaction>()))

@@ -82,25 +82,6 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        /// <returns>The transaction.</returns>
-        public IDbTransaction BeginTransaction()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        /// <param name="level">The isolation level to use for the transaction.</param>
-        /// <returns>The transaction.</returns>
-        public IDbTransaction BeginTransaction(IsolationLevel level)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Clears signals for the given worker and working job if applicable.
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>

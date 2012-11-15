@@ -64,8 +64,6 @@ namespace BlueCollar.Test
             repository.Setup(r => r.AcquireQueuedLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
             repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
             repository.Setup(r => r.AcquireWorkingLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
-            repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns((WorkingRecord r, IDbTransaction t) => { r.Id = 1; return r; });
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
             repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>()))

@@ -319,25 +319,6 @@ WHERE
         }
 
         /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        /// <returns>The transaction.</returns>
-        public IDbTransaction BeginTransaction()
-        {
-            return this.connection.BeginTransaction();
-        }
-
-        /// <summary>
-        /// Begins a transaction.
-        /// </summary>
-        /// <param name="level">The isolation level to use for the transaction.</param>
-        /// <returns>The transaction.</returns>
-        public IDbTransaction BeginTransaction(IsolationLevel level)
-        {
-            return this.connection.BeginTransaction(level);
-        }
-
-        /// <summary>
         /// Clears signals for the given worker and working job if applicable.
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>
@@ -441,54 +422,23 @@ SELECT CAST(SCOPE_IDENTITY() AS bigint);";
         public int CreateQueuedAndHistoryForSchedule(long scheduleId, DateTime scheduleDate, IEnumerable<QueueRecord> queued, IEnumerable<HistoryRecord> history, IDbTransaction transaction)
         {
             int created = 0;
-            bool commitRollback = false;
 
-            if (transaction == null)
-            {
-                commitRollback = true;
-                transaction = this.BeginTransaction();
-            }
-
-            try
-            {
-                const string InsertQueuedSql =
+            const string InsertQueuedSql =
 @"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[Locked],[LockedUpdatedOn])
 VALUES(@ApplicationName,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@Locked,@LockedUpdatedOn);";
 
-                const string InsertHistorySql =
+            const string InsertHistorySql =
 @"INSERT INTO [BlueCollarHistory]([ApplicationName],[WorkerId],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[StartedOn],[Status],[Exception],[FinishedOn])
 VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Data,@QueuedOn,@TryNumber,@StartedOn,@StatusString,@Exception,@FinishedOn);";
 
-                if (queued != null && queued.Count() > 0)
-                {
-                    created += this.connection.Execute(InsertQueuedSql, queued, transaction, null, null);
-                }
-
-                if (history != null && history.Count() > 0)
-                {
-                    created += this.connection.Execute(InsertHistorySql, history, transaction, null, null);
-                }
-
-                if (commitRollback)
-                {
-                    transaction.Commit();
-                }
-            }
-            catch
+            if (queued != null && queued.Count() > 0)
             {
-                if (commitRollback)
-                {
-                    transaction.Rollback();
-                }
-
-                throw;
+                created += this.connection.Execute(InsertQueuedSql, queued, transaction, null, null);
             }
-            finally
+
+            if (history != null && history.Count() > 0)
             {
-                if (commitRollback)
-                {
-                    transaction.Dispose();
-                }
+                created += this.connection.Execute(InsertHistorySql, history, transaction, null, null);
             }
 
             return created;

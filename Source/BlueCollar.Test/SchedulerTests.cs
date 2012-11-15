@@ -110,7 +110,6 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>();
 
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
             repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName, It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule });
 
             var factory = new Mock<IRepositoryFactory>();
@@ -180,7 +179,6 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>();
 
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
             repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName, It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule, schedule2 });
 
             var factory = new Mock<IRepositoryFactory>();

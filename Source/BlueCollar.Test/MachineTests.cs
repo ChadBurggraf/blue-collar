@@ -39,7 +39,6 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>();
 
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
             repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();

@@ -130,16 +130,6 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
-        /// Begin transaction tests.
-        /// </summary>
-        [TestMethod]
-        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "The spelling and casing are correct according to convention.")]
-        public void SQLiteRepositoryBeginTransaction()
-        {
-            BeginTransaction();
-        }
-
-        /// <summary>
         /// Clear working signal pair tests.
         /// </summary>
         [TestMethod]
