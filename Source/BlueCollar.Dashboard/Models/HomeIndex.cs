@@ -53,7 +53,7 @@ namespace BlueCollar.Dashboard.Models
 
             if (success)
             {
-                this.CountsJson = JsonConvert.SerializeObject(repository.GetCounts(BlueCollarSection.Section.ApplicationName, null));
+                this.CountsJson = JsonConvert.SerializeObject(repository.GetCounts(BlueCollarSection.Section.ApplicationName));
             }
 
             return success;

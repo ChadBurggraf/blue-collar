@@ -56,8 +56,7 @@ namespace BlueCollar.Dashboard
                     this.Id,
                     QueryString["q"],
                     Helper.PageSize,
-                    Helper.PagingOffset(Helper.QueryIntValue("p")),
-                    null);
+                    Helper.PagingOffset(Helper.QueryIntValue("p")));
 
                 if (result != null && result.Id != null && result.Id > 0)
                 {

@@ -8,7 +8,6 @@ namespace BlueCollar
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
 
@@ -199,7 +198,7 @@ namespace BlueCollar
                 {
                     using (IRepository repository = this.repositoryFactory.Create())
                     {
-                        can = !repository.GetScheduleDateExistsForSchedule(schedule.Id.Value, scheduleDate.Value, null);
+                        can = !repository.GetScheduleDateExistsForSchedule(schedule.Id.Value, scheduleDate.Value);
                     }
 
                     if (can)
@@ -232,7 +231,7 @@ namespace BlueCollar
                 // Ensure the schedules have been loaded.
                 if (this.lastRefreshOn == null)
                 {
-                    this.RefreshSchedules(repository, null);
+                    this.RefreshSchedules(repository);
                 }
             }
 
@@ -242,7 +241,7 @@ namespace BlueCollar
 
                 using (IRepository repository = this.repositoryFactory.Create())
                 {
-                    acquired = repository.AcquireScheduleLock(schedule.Id.Value, DateTime.UtcNow.AddMinutes(-1), null);
+                    acquired = repository.AcquireScheduleLock(schedule.Id.Value, DateTime.UtcNow.AddMinutes(-1));
                 }
 
                 if (acquired)
@@ -315,7 +314,7 @@ namespace BlueCollar
                             {
                                 using (IRepository repository = this.repositoryFactory.Create())
                                 {
-                                    repository.CreateQueuedAndHistoryForSchedule(schedule.Id.Value, scheduleDate.Value, queues, histories, null);
+                                    repository.CreateQueuedAndHistoryForSchedule(schedule.Id.Value, scheduleDate.Value, queues, histories);
                                 }
 
                                 this.logger.Debug("Scheduler created {0} queued jobs and {1} failed history jobs for schedule '{2}'.", queues.Count, histories.Count, schedule.Name);
@@ -326,7 +325,7 @@ namespace BlueCollar
                     {
                         using (IRepository repository = this.repositoryFactory.Create())
                         {
-                            repository.ReleaseScheduleLock(schedule.Id.Value, null);
+                            repository.ReleaseScheduleLock(schedule.Id.Value);
                         }
                     }
                 }
@@ -340,7 +339,7 @@ namespace BlueCollar
         {
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                this.RefreshSchedules(repository, null);
+                this.RefreshSchedules(repository);
             }
 
             this.lastRefreshOn = DateTime.UtcNow;
@@ -350,10 +349,9 @@ namespace BlueCollar
         /// Refreshes this instance's schedules with the latest data from the repository.
         /// </summary>
         /// <param name="repository">The repository to use when accessing data.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        internal void RefreshSchedules(IRepository repository, IDbTransaction transaction)
+        internal void RefreshSchedules(IRepository repository)
         {
-            var sch = repository.GetSchedules(this.applicationName, transaction);
+            var sch = repository.GetSchedules(this.applicationName);
 
             lock (this.queueFilters)
             {

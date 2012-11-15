@@ -53,7 +53,7 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                QueueDetailsRecord record = Repository.GetQueuedDetails(this.Id, null);
+                QueueDetailsRecord record = Repository.GetQueuedDetails(this.Id);
                 
                 if (record != null)
                 {

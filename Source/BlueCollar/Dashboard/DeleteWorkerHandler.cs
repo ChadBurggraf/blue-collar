@@ -7,7 +7,6 @@
 namespace BlueCollar.Dashboard
 {
     using System;
-    using System.Data;
     using System.Web;
 
     /// <summary>
@@ -66,15 +65,15 @@ namespace BlueCollar.Dashboard
                 {
                     if (workerAcquired = AcquireWorkerLock(this.Id))
                     {
-                        foreach (WorkingRecord working in this.Repository.GetWorkingForWorker(this.Id, null, null))
+                        foreach (WorkingRecord working in this.Repository.GetWorkingForWorker(this.Id, null))
                         {
                             try
                             {
                                 if (workingAcquired = AcquireWorkingLock(working.Id.Value))
                                 {
                                     HistoryRecord history = Worker.CreateHistory(working, HistoryStatus.Interrupted);
-                                    this.Repository.DeleteWorking(working.Id.Value, null);
-                                    this.Repository.CreateHistory(history, null);
+                                    this.Repository.DeleteWorking(working.Id.Value);
+                                    this.Repository.CreateHistory(history);
                                     workingAcquired = false;
                                 }
                                 else
@@ -86,13 +85,13 @@ namespace BlueCollar.Dashboard
                             {
                                 if (workingAcquired)
                                 {
-                                    Repository.ReleaseWorkingLock(working.Id.Value, null);
+                                    Repository.ReleaseWorkingLock(working.Id.Value);
                                     workingAcquired = false;
                                 }
                             }
                         }
 
-                        Repository.DeleteWorker(this.Id, null);
+                        Repository.DeleteWorker(this.Id);
                     }
                     else
                     {
@@ -103,7 +102,7 @@ namespace BlueCollar.Dashboard
                 {
                     if (workerAcquired)
                     {
-                        Repository.ReleaseWorkerLock(this.Id, null);
+                        Repository.ReleaseWorkerLock(this.Id);
                     }
                 }
             }

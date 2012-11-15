@@ -8,7 +8,6 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using BlueCollar;
@@ -44,13 +43,11 @@ namespace BlueCollar.Test
                 TryNumber = 1
             };
 
-            var transaction = new Mock<IDbTransaction>(); 
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -63,9 +60,9 @@ namespace BlueCollar.Test
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.GetQueued(BlueCollarSection.Section.ApplicationName, It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>()));
-            repository.Verify(r => r.DeleteQueued(12, It.IsAny<IDbTransaction>()));
-            repository.Verify(r => r.CreateWorking(It.Is<WorkingRecord>(w => w.ApplicationName == BlueCollarSection.Section.ApplicationName && w.WorkerId == 1), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.GetQueued(BlueCollarSection.Section.ApplicationName, It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>()));
+            repository.Verify(r => r.DeleteQueued(12));
+            repository.Verify(r => r.CreateWorking(It.Is<WorkingRecord>(w => w.ApplicationName == BlueCollarSection.Section.ApplicationName && w.WorkerId == 1)));
         }
 
         /// <summary>
@@ -91,12 +88,10 @@ namespace BlueCollar.Test
                 TryNumber = 1
             };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -149,15 +144,13 @@ namespace BlueCollar.Test
             WorkingRecord working = Worker.CreateWorking(queued, 1, null, DateTime.UtcNow);
             working.Id = 13;
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>())).Returns(working);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -170,7 +163,7 @@ namespace BlueCollar.Test
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Succeeded), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Succeeded)));
         }
 
         /// <summary>
@@ -197,16 +190,14 @@ namespace BlueCollar.Test
             WorkingRecord working = Worker.CreateWorking(queued, 1, null, DateTime.UtcNow);
             working.Id = 13;
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.CreateHistory(It.IsAny<HistoryRecord>(), It.IsAny<IDbTransaction>())).Returns((HistoryRecord r, IDbTransaction t) => r);
-            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.CreateHistory(It.IsAny<HistoryRecord>())).Returns((HistoryRecord r) => r);
+            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>())).Returns(working);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
             
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -221,7 +212,7 @@ namespace BlueCollar.Test
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Canceled), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Canceled)));
         }
 
         /// <summary>
@@ -249,15 +240,13 @@ namespace BlueCollar.Test
             WorkingRecord working = Worker.CreateWorking(queued, 1, null, DateTime.UtcNow);
             working.Id = 13;
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>())).Returns(working);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -271,7 +260,7 @@ namespace BlueCollar.Test
                 Assert.AreEqual(WorkerStatus.Working, worker.Status);
             }
 
-            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Failed), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Failed)));
         }
 
         /// <summary>
@@ -299,15 +288,13 @@ namespace BlueCollar.Test
             WorkingRecord working = Worker.CreateWorking(queued, 1, null, DateTime.UtcNow);
             working.Id = 13;
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>())).Returns(working);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -321,8 +308,8 @@ namespace BlueCollar.Test
                 Assert.AreEqual(WorkerStatus.Working, worker.Status);
             }
 
-            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Failed), It.IsAny<IDbTransaction>()));
-            repository.Verify(r => r.CreateQueued(It.Is<QueueRecord>(q => q.TryNumber == 2), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.Failed)));
+            repository.Verify(r => r.CreateQueued(It.Is<QueueRecord>(q => q.TryNumber == 2)));
         }
 
         /// <summary>
@@ -349,15 +336,13 @@ namespace BlueCollar.Test
             WorkingRecord working = Worker.CreateWorking(queued, 1, null, DateTime.UtcNow);
             working.Id = 13;
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns(working);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(queued);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireQueuedLock(queued.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(working.Id.Value, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>())).Returns(working);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>())).Returns(queued);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -370,7 +355,7 @@ namespace BlueCollar.Test
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.TimedOut), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateHistory(It.Is<HistoryRecord>(h => h.Status == HistoryStatus.TimedOut)));
         }
 
         /// <summary>
@@ -381,11 +366,9 @@ namespace BlueCollar.Test
         {
             SignalsRecord signals = new SignalsRecord() { QueueNames = "*", WorkerSignal = WorkerSignal.None, WorkingSignal = WorkingSignal.None };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -409,9 +392,8 @@ namespace BlueCollar.Test
         [TestMethod]
         public void WorkerStart()
         {
-            var transaction = new Mock<IDbTransaction>(); 
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();
@@ -431,9 +413,8 @@ namespace BlueCollar.Test
         [TestMethod]
         public void WorkerStop()
         {
-            var transaction = new Mock<IDbTransaction>();
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
             var logger = new Mock<ILogger>();

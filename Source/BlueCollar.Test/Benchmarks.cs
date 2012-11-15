@@ -8,7 +8,6 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
@@ -58,15 +57,13 @@ namespace BlueCollar.Test
 
             SignalsRecord signals = new SignalsRecord() { QueueNames = "*", WorkerSignal = WorkerSignal.None, WorkingSignal = WorkingSignal.None };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireQueuedLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.AcquireWorkingLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns((WorkingRecord r, IDbTransaction t) => { r.Id = 1; return r; });
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
-            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>()))
+            repository.Setup(r => r.AcquireQueuedLock(It.IsAny<long>(), It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(It.IsAny<long>(), It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>())).Returns((WorkingRecord r) => { r.Id = 1; return r; });
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
+            repository.Setup(r => r.GetQueued(It.IsAny<string>(), It.IsAny<QueueNameFilters>(), It.IsAny<DateTime>()))
                 .Returns(
                     () =>
                     {

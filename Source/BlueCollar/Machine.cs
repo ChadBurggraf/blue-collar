@@ -8,7 +8,6 @@ namespace BlueCollar
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
@@ -286,7 +285,7 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                records = repository.GetWorkers(this.applicationName, this.address, this.name, null).ToList();
+                records = repository.GetWorkers(this.applicationName, this.address, this.name).ToList();
 
                 this.logger.Debug(
                     "Machine {0} ({1}) loaded {2} worker records from repository '{3}', using connection string '{4}'.",
@@ -430,7 +429,7 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                repository.CreateWorker(record, null);
+                repository.CreateWorker(record);
             }
 
             return new Worker(

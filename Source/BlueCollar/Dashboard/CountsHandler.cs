@@ -31,7 +31,7 @@ namespace BlueCollar.Dashboard
         /// <returns>The response to write.</returns>
         protected override byte[] PerformRequest(HttpContextBase context)
         {
-            return Json(Repository.GetCounts(ApplicationName, null));
+            return Json(Repository.GetCounts(ApplicationName));
         }
     }
 }

@@ -55,7 +55,7 @@ namespace BlueCollar.Dashboard
         /// <returns>The response to write.</returns>
         protected override byte[] PerformRequest(HttpContextBase context, StaticFile file)
         {
-            return EncodeString(new Index(ApplicationName, file, Repository.GetCounts(ApplicationName, null)).Transform());
+            return EncodeString(new Index(ApplicationName, file, Repository.GetCounts(ApplicationName)).Transform());
         }
 
         /// <summary>

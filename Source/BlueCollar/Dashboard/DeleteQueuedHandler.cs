@@ -59,7 +59,7 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                this.Repository.DeleteQueued(this.Id, null);
+                this.Repository.DeleteQueued(this.Id);
             }
             else
             {

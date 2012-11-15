@@ -110,8 +110,7 @@ namespace BlueCollar.Dashboard
                     QueuedOn = DateTime.UtcNow,
                     QueueName = model.QueueName,
                     TryNumber = 1
-                }, 
-                null);
+                });
 
             return new { Id = record.Id };
         }

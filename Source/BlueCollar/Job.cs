@@ -104,7 +104,7 @@ namespace BlueCollar
                 TryNumber = 1
             };
 
-            repository.CreateQueued(record, null);
+            repository.CreateQueued(record);
         }
 
         /// <summary>

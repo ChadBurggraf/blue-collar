@@ -8,7 +8,6 @@ namespace BlueCollar.Dashboard
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Web;
 
     /// <summary>
@@ -80,13 +79,13 @@ namespace BlueCollar.Dashboard
                     {
                         if (acquired = AcquireWorkerLock(this.Id))
                         {
-                            WorkerRecord worker = Repository.GetWorker(this.Id, null);
+                            WorkerRecord worker = Repository.GetWorker(this.Id);
 
                             if (worker != null && worker.ApplicationName == ApplicationName)
                             {
                                 worker.Signal = model.Signal;
                                 worker.UpdatedOn = DateTime.UtcNow;
-                                Repository.UpdateWorker(worker, null);
+                                Repository.UpdateWorker(worker);
                             }
                             else
                             {
@@ -102,7 +101,7 @@ namespace BlueCollar.Dashboard
                     {
                         if (acquired)
                         {
-                            Repository.ReleaseWorkerLock(this.Id, null);
+                            Repository.ReleaseWorkerLock(this.Id);
                         }
                     }
                 }

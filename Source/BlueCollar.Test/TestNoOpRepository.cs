@@ -8,8 +8,7 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
-
+    
     /// <summary>
     /// Empty implementation of <see cref="IRepository"/>.
     /// </summary>
@@ -35,9 +34,8 @@ namespace BlueCollar.Test
         /// <param name="id">The ID of the queued record to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if necessary.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        public bool AcquireQueuedLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireQueuedLock(long id, DateTime forceIfOlderThan)
         {
             throw new NotImplementedException();
         }
@@ -48,9 +46,8 @@ namespace BlueCollar.Test
         /// <param name="scheduleId">The ID of the schedule to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was obtained, false otherwise.</returns>
-        public bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireScheduleLock(long scheduleId, DateTime forceIfOlderThan)
         {
             throw new NotImplementedException();
         }
@@ -61,9 +58,8 @@ namespace BlueCollar.Test
         /// <param name="id">The ID of the worker record to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the give date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        public bool AcquireWorkerLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireWorkerLock(long id, DateTime forceIfOlderThan)
         {
             throw new NotImplementedException();
         }
@@ -74,9 +70,8 @@ namespace BlueCollar.Test
         /// <param name="id">The ID of the working job record to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the give date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        public bool AcquireWorkingLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireWorkingLock(long id, DateTime forceIfOlderThan)
         {
             throw new NotImplementedException();
         }
@@ -86,8 +81,7 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>
         /// <param name="workingId">The ID of the working job to clear the signal of, if applicable.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ClearWorkingSignalPair(long workerId, long? workingId, IDbTransaction transaction)
+        public void ClearWorkingSignalPair(long workerId, long? workingId)
         {
             throw new NotImplementedException();
         }
@@ -96,9 +90,8 @@ namespace BlueCollar.Test
         /// Creates a history record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
-        public HistoryRecord CreateHistory(HistoryRecord record, IDbTransaction transaction)
+        public HistoryRecord CreateHistory(HistoryRecord record)
         {
             throw new NotImplementedException();
         }
@@ -107,9 +100,8 @@ namespace BlueCollar.Test
         /// Creates a queue record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
-        public QueueRecord CreateQueued(QueueRecord record, IDbTransaction transaction)
+        public QueueRecord CreateQueued(QueueRecord record)
         {
             throw new NotImplementedException();
         }
@@ -123,9 +115,8 @@ namespace BlueCollar.Test
         /// <param name="scheduleDate">The schedule date records are being created for.</param>
         /// <param name="queued">The queued records to create.</param>
         /// <param name="history">The history records to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The number of records created.</returns>
-        public int CreateQueuedAndHistoryForSchedule(long scheduleId, DateTime scheduleDate, IEnumerable<QueueRecord> queued, IEnumerable<HistoryRecord> history, IDbTransaction transaction)
+        public int CreateQueuedAndHistoryForSchedule(long scheduleId, DateTime scheduleDate, IEnumerable<QueueRecord> queued, IEnumerable<HistoryRecord> history)
         {
             throw new NotImplementedException();
         }
@@ -134,9 +125,8 @@ namespace BlueCollar.Test
         /// Creates a schedule record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
-        public ScheduleRecord CreateSchedule(ScheduleRecord record, IDbTransaction transaction)
+        public ScheduleRecord CreateSchedule(ScheduleRecord record)
         {
             throw new NotImplementedException();
         }
@@ -145,9 +135,8 @@ namespace BlueCollar.Test
         /// Creates a scheduled job record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
-        public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
+        public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record)
         {
             throw new NotImplementedException();
         }
@@ -156,9 +145,8 @@ namespace BlueCollar.Test
         /// Creates a worker record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
-        public WorkerRecord CreateWorker(WorkerRecord record, IDbTransaction transaction)
+        public WorkerRecord CreateWorker(WorkerRecord record)
         {
             throw new NotImplementedException();
         }
@@ -167,9 +155,8 @@ namespace BlueCollar.Test
         /// Creates a working record.
         /// </summary>
         /// <param name="record">The working record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
-        public WorkingRecord CreateWorking(WorkingRecord record, IDbTransaction transaction)
+        public WorkingRecord CreateWorking(WorkingRecord record)
         {
             throw new NotImplementedException();
         }
@@ -178,8 +165,7 @@ namespace BlueCollar.Test
         /// Deletes all data in the repository.
         /// </summary>
         /// <param name="applicationName">The name of the application to delete data for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteAll(string applicationName, IDbTransaction transaction)
+        public void DeleteAll(string applicationName)
         {
             throw new NotImplementedException();
         }
@@ -189,8 +175,7 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="applicationName">The name of the application to delete data for.</param>
         /// <param name="olderThan">The date to delete history older than.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteHistory(string applicationName, DateTime olderThan, IDbTransaction transaction)
+        public void DeleteHistory(string applicationName, DateTime olderThan)
         {
             throw new NotImplementedException();
         }
@@ -199,8 +184,7 @@ namespace BlueCollar.Test
         /// Deletes the queued record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the queued record to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteQueued(long id, IDbTransaction transaction)
+        public void DeleteQueued(long id)
         {
             throw new NotImplementedException();
         }
@@ -209,8 +193,7 @@ namespace BlueCollar.Test
         /// Deletes the schedule record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the schedule to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteSchedule(long id, IDbTransaction transaction)
+        public void DeleteSchedule(long id)
         {
             throw new NotImplementedException();
         }
@@ -219,8 +202,7 @@ namespace BlueCollar.Test
         /// Deletes the scheduled job record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the scheduled job to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteScheduledJob(long id, IDbTransaction transaction)
+        public void DeleteScheduledJob(long id)
         {
             throw new NotImplementedException();
         }
@@ -229,8 +211,7 @@ namespace BlueCollar.Test
         /// Deletes the worker record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the worker to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteWorker(long id, IDbTransaction transaction)
+        public void DeleteWorker(long id)
         {
             throw new NotImplementedException();
         }
@@ -239,8 +220,7 @@ namespace BlueCollar.Test
         /// Deletes the working record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the working record to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteWorking(long id, IDbTransaction transaction)
+        public void DeleteWorking(long id)
         {
             throw new NotImplementedException();
         }
@@ -256,9 +236,8 @@ namespace BlueCollar.Test
         /// Gets a set of counts for the given application.
         /// </summary>
         /// <param name="applicationName">The name of the application to get counts for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A set of counts.</returns>
-        public CountsRecord GetCounts(string applicationName, IDbTransaction transaction)
+        public CountsRecord GetCounts(string applicationName)
         {
             throw new NotImplementedException();
         }
@@ -267,9 +246,8 @@ namespace BlueCollar.Test
         /// Gets a history details record.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A history details record.</returns>
-        public HistoryDetailsRecord GetHistoryDetails(long id, IDbTransaction transaction)
+        public HistoryDetailsRecord GetHistoryDetails(long id)
         {
             throw new NotImplementedException();
         }
@@ -281,9 +259,8 @@ namespace BlueCollar.Test
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A list of history records.</returns>
-        public RecordList<HistoryListRecord> GetHistoryList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<HistoryListRecord> GetHistoryList(string applicationName, string search, int limit, int offset)
         {
             throw new NotImplementedException();
         }
@@ -294,9 +271,8 @@ namespace BlueCollar.Test
         /// <param name="applicationName">The name of the application to get the queued record for.</param>
         /// <param name="queueFilters">The queue filters to use when filtering the queues to read from.</param>
         /// <param name="queuedBefore">The date to filter on.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A queued record, or null if none was found.</returns>
-        public QueueRecord GetQueued(string applicationName, QueueNameFilters queueFilters, DateTime queuedBefore, IDbTransaction transaction)
+        public QueueRecord GetQueued(string applicationName, QueueNameFilters queueFilters, DateTime queuedBefore)
         {
             throw new NotImplementedException();
         }
@@ -305,9 +281,8 @@ namespace BlueCollar.Test
         /// Gets a queued details record.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A queued details record.</returns>
-        public QueueDetailsRecord GetQueuedDetails(long id, IDbTransaction transaction)
+        public QueueDetailsRecord GetQueuedDetails(long id)
         {
             throw new NotImplementedException();
         }
@@ -319,9 +294,8 @@ namespace BlueCollar.Test
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of queue records.</returns>
-        public RecordList<QueueListRecord> GetQueuedList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<QueueListRecord> GetQueuedList(string applicationName, string search, int limit, int offset)
         {
             throw new NotImplementedException();
         }
@@ -330,9 +304,8 @@ namespace BlueCollar.Test
         /// Gets the schedule with the given ID, NOT including its related scheduled jobs.
         /// </summary>
         /// <param name="id">The ID of the schedule to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The schedule, or null if none was found.</returns>
-        public ScheduleRecord GetSchedule(long id, IDbTransaction transaction)
+        public ScheduleRecord GetSchedule(long id)
         {
             throw new NotImplementedException();
         }
@@ -344,9 +317,8 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to check data for.</param>
         /// <param name="scheduleDate">The calculated schedule date to check data for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if data already exists, false otherwise.</returns>
-        public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction)
+        public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate)
         {
             throw new NotImplementedException();
         }
@@ -359,9 +331,8 @@ namespace BlueCollar.Test
         /// <param name="search">The search query to filter the related job collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A schedule, or null if none was found.</returns>
-        public ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset, IDbTransaction transaction)
+        public ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset)
         {
             throw new NotImplementedException();
         }
@@ -373,9 +344,8 @@ namespace BlueCollar.Test
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of schedules.</returns>
-        public RecordList<ScheduleListRecord> GetScheduleList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<ScheduleListRecord> GetScheduleList(string applicationName, string search, int limit, int offset)
         {
             throw new NotImplementedException();
         }
@@ -384,9 +354,8 @@ namespace BlueCollar.Test
         /// Gets a collection of schedules and their related scheduled jobs for the given application name.
         /// </summary>
         /// <param name="applicationName">The name of the application to get schedules for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of schedules.</returns>
-        public IEnumerable<ScheduleRecord> GetSchedules(string applicationName, IDbTransaction transaction)
+        public IEnumerable<ScheduleRecord> GetSchedules(string applicationName)
         {
             throw new NotImplementedException();
         }
@@ -398,9 +367,8 @@ namespace BlueCollar.Test
         /// <param name="recentBeginDate">The begin date of the recent period to get statistics for.</param>
         /// <param name="distantBeginDate">The begin date of the distant period to get statistics for.</param>
         /// <param name="endDate">The end date of the distant period to get statistics for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A set of system statistics.</returns>
-        public StatisticsRecord GetStatistics(string applicationName, DateTime recentBeginDate, DateTime distantBeginDate, DateTime endDate, IDbTransaction transaction)
+        public StatisticsRecord GetStatistics(string applicationName, DateTime recentBeginDate, DateTime distantBeginDate, DateTime endDate)
         {
             throw new NotImplementedException();
         }
@@ -409,9 +377,8 @@ namespace BlueCollar.Test
         /// Gets the worker record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the worker record to get.</param>
-        /// <param name="transaction">The transaction to use.</param>
         /// <returns>A worker record.</returns>
-        public WorkerRecord GetWorker(long id, IDbTransaction transaction)
+        public WorkerRecord GetWorker(long id)
         {
             throw new NotImplementedException();
         }
@@ -423,9 +390,8 @@ namespace BlueCollar.Test
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of worker records.</returns>
-        public RecordList<WorkerRecord> GetWorkerList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<WorkerRecord> GetWorkerList(string applicationName, string search, int limit, int offset)
         {
             throw new NotImplementedException();
         }
@@ -436,9 +402,8 @@ namespace BlueCollar.Test
         /// <param name="applicationName">The application name to get workers for.</param>
         /// <param name="machineAddress">The address of the machine to get workers for.</param>
         /// <param name="machineName">The name of the machine to get workers for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of worker records.</returns>
-        public IEnumerable<WorkerRecord> GetWorkers(string applicationName, string machineAddress, string machineName, IDbTransaction transaction)
+        public IEnumerable<WorkerRecord> GetWorkers(string applicationName, string machineAddress, string machineName)
         {
             throw new NotImplementedException();
         }
@@ -447,9 +412,8 @@ namespace BlueCollar.Test
         /// Gets the working record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A working record, or null if none was found.</returns>
-        public WorkingRecord GetWorking(long id, IDbTransaction transaction)
+        public WorkingRecord GetWorking(long id)
         {
             throw new NotImplementedException();
         }
@@ -458,9 +422,8 @@ namespace BlueCollar.Test
         /// Gets a working details record.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A working details record, or null if none was found.</returns>
-        public WorkingDetailsRecord GetWorkingDetails(long id, IDbTransaction transaction)
+        public WorkingDetailsRecord GetWorkingDetails(long id)
         {
             throw new NotImplementedException();
         }
@@ -470,9 +433,8 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="workerId">The ID of the worker to get working records for.</param>
         /// <param name="excludingId">The ID of the working record to exclude, if applicable.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of working records.</returns>
-        public IEnumerable<WorkingRecord> GetWorkingForWorker(long workerId, long? excludingId, IDbTransaction transaction)
+        public IEnumerable<WorkingRecord> GetWorkingForWorker(long workerId, long? excludingId)
         {
             throw new NotImplementedException();
         }
@@ -484,9 +446,8 @@ namespace BlueCollar.Test
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of working records.</returns>
-        public RecordList<WorkingListRecord> GetWorkingList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<WorkingListRecord> GetWorkingList(string applicationName, string search, int limit, int offset)
         {
             throw new NotImplementedException();
         }
@@ -496,9 +457,8 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="workerId">The ID of the worker to get a signal for.</param>
         /// <param name="workingId">The ID of the working job to get a signal for, if applicable.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A signals record.</returns>
-        public SignalsRecord GetWorkingSignals(long workerId, long? workingId, IDbTransaction transaction)
+        public SignalsRecord GetWorkingSignals(long workerId, long? workingId)
         {
             throw new NotImplementedException();
         }
@@ -507,8 +467,7 @@ namespace BlueCollar.Test
         /// Releases the lock for the given queued job ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseQueuedLock(long id, IDbTransaction transaction)
+        public void ReleaseQueuedLock(long id)
         {
             throw new NotImplementedException();
         }
@@ -517,8 +476,7 @@ namespace BlueCollar.Test
         /// Releases the lock for the given schedule ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseScheduleLock(long id, IDbTransaction transaction)
+        public void ReleaseScheduleLock(long id)
         {
             throw new NotImplementedException();
         }
@@ -527,8 +485,7 @@ namespace BlueCollar.Test
         /// Releases the lock for the given worker ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseWorkerLock(long id, IDbTransaction transaction)
+        public void ReleaseWorkerLock(long id)
         {
             throw new NotImplementedException();
         }
@@ -537,8 +494,7 @@ namespace BlueCollar.Test
         /// Releases the lock for the given working job ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseWorkingLock(long id, IDbTransaction transaction)
+        public void ReleaseWorkingLock(long id)
         {
             throw new NotImplementedException();
         }
@@ -548,8 +504,7 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="applicationName">The application name to signal workers for.</param>
         /// <param name="signal">The signal to set.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void SignalWorkers(string applicationName, WorkerSignal signal, IDbTransaction transaction)
+        public void SignalWorkers(string applicationName, WorkerSignal signal)
         {
             throw new NotImplementedException();
         }
@@ -558,9 +513,8 @@ namespace BlueCollar.Test
         /// Updates the given schedule.
         /// </summary>
         /// <param name="record">The schedule record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated record.</returns>
-        public ScheduleRecord UpdateSchedule(ScheduleRecord record, IDbTransaction transaction)
+        public ScheduleRecord UpdateSchedule(ScheduleRecord record)
         {
             throw new NotImplementedException();
         }
@@ -569,9 +523,8 @@ namespace BlueCollar.Test
         /// Updates the given scheduled job.
         /// </summary>
         /// <param name="record">The scheduled job record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated record.</returns>
-        public ScheduledJobRecord UpdateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
+        public ScheduledJobRecord UpdateScheduledJob(ScheduledJobRecord record)
         {
             throw new NotImplementedException();
         }
@@ -580,8 +533,7 @@ namespace BlueCollar.Test
         /// Updates the scheduled job's order number.
         /// </summary>
         /// <param name="record">The scheduled job order record identifying the scheduled job to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void UpdateScheduledJobOrder(ScheduledJobOrderRecord record, IDbTransaction transaction)
+        public void UpdateScheduledJobOrder(ScheduledJobOrderRecord record)
         {
             throw new NotImplementedException();
         }
@@ -590,9 +542,8 @@ namespace BlueCollar.Test
         /// Updates the given worker.
         /// </summary>
         /// <param name="record">The worker record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated worker.</returns>
-        public WorkerRecord UpdateWorker(WorkerRecord record, IDbTransaction transaction)
+        public WorkerRecord UpdateWorker(WorkerRecord record)
         {
             throw new NotImplementedException();
         }
@@ -602,8 +553,7 @@ namespace BlueCollar.Test
         /// </summary>
         /// <param name="id">The ID of the worker to update status for.</param>
         /// <param name="status">The status to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void UpdateWorkerStatus(long id, WorkerStatus status, IDbTransaction transaction)
+        public void UpdateWorkerStatus(long id, WorkerStatus status)
         {
             throw new NotImplementedException();
         }
@@ -612,9 +562,8 @@ namespace BlueCollar.Test
         /// Updates the given working record.
         /// </summary>
         /// <param name="record">The working record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated working record.</returns>
-        public WorkingRecord UpdateWorking(WorkingRecord record, IDbTransaction transaction)
+        public WorkingRecord UpdateWorking(WorkingRecord record)
         {
             throw new NotImplementedException();
         }

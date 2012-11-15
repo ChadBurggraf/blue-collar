@@ -7,7 +7,6 @@
 namespace BlueCollar.Dashboard
 {
     using System;
-    using System.Data;
     using System.Web;
 
     /// <summary>
@@ -66,8 +65,8 @@ namespace BlueCollar.Dashboard
                 {
                     if (acquired = AcquireScheduleLock(this.Id))
                     {
-                        Repository.DeleteSchedule(this.Id, null);
-                        Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, null);
+                        Repository.DeleteSchedule(this.Id);
+                        Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules);
                         acquired = false;
                     }
                     else
@@ -79,7 +78,7 @@ namespace BlueCollar.Dashboard
                 {
                     if (acquired)
                     {
-                        Repository.ReleaseScheduleLock(this.Id, null);
+                        Repository.ReleaseScheduleLock(this.Id);
                     }
                 }
             }

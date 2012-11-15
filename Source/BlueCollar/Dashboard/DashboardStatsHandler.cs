@@ -35,7 +35,7 @@ namespace BlueCollar.Dashboard
             DateTime distant = now.AddDays(-14);
             DateTime recent = now.AddDays(-1);
 
-            return Json(Repository.GetStatistics(ApplicationName, recent, distant, now, null));
+            return Json(Repository.GetStatistics(ApplicationName, recent, distant, now));
         }
     }
 }

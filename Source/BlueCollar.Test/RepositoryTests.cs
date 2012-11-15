@@ -8,7 +8,6 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -62,7 +61,7 @@ namespace BlueCollar.Test
         {
             if (this.Repository != null)
             {
-                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName);
             }
         }
 
@@ -84,10 +83,10 @@ namespace BlueCollar.Test
                     QueuedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
 
-                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -109,10 +108,10 @@ namespace BlueCollar.Test
                     QueuedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
 
-                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddSeconds(1)));
             }
         }
 
@@ -133,10 +132,10 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
-                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -157,10 +156,10 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
-                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddSeconds(1)));
             }
         }
 
@@ -184,10 +183,10 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
-                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -211,10 +210,10 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
-                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddSeconds(1)));
             }
         }
 
@@ -240,7 +239,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -256,10 +255,10 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
-                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -285,7 +284,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -301,10 +300,10 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
-                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddSeconds(1), null));
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddSeconds(1)));
             }
         }
 
@@ -330,7 +329,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -346,20 +345,20 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
-                this.Repository.ClearWorkingSignalPair(workerRecord.Id.Value, workingRecord.Id, null);
+                this.Repository.CreateWorking(workingRecord);
+                this.Repository.ClearWorkingSignalPair(workerRecord.Id.Value, workingRecord.Id);
 
-                SignalsRecord signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, workingRecord.Id, null);
+                SignalsRecord signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, workingRecord.Id);
                 Assert.AreEqual(WorkerSignal.None, signals.WorkerSignal);
                 Assert.AreEqual(WorkingSignal.None, signals.WorkingSignal);
 
                 workerRecord.Id = null;
                 workerRecord.Name = "Test Worker 2";
 
-                this.Repository.CreateWorker(workerRecord, null);
-                this.Repository.ClearWorkingSignalPair(workerRecord.Id.Value, null, null);
+                this.Repository.CreateWorker(workerRecord);
+                this.Repository.ClearWorkingSignalPair(workerRecord.Id.Value, null);
 
-                signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, null, null);
+                signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, null);
                 Assert.AreEqual(WorkerSignal.None, signals.WorkerSignal);
                 Assert.AreEqual(WorkingSignal.None, signals.WorkingSignal);
             }
@@ -387,7 +386,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -403,7 +402,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
                 HistoryRecord historyRecord = new HistoryRecord()
                 {
@@ -420,7 +419,7 @@ namespace BlueCollar.Test
                     WorkerId = workingRecord.WorkerId
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
                 Assert.IsNotNull(historyRecord.Id);
             }
         }
@@ -447,7 +446,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -460,7 +459,7 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
                 Assert.IsNotNull(queueRecord.Id);
             }
         }
@@ -485,7 +484,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
@@ -497,7 +496,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 List<QueueRecord> queued = new List<QueueRecord>();
                 List<HistoryRecord> history = new List<HistoryRecord>();
@@ -544,7 +543,7 @@ namespace BlueCollar.Test
                         WorkerId = workerRecord.Id.Value
                     });
 
-                Assert.AreEqual(3, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history, null));
+                Assert.AreEqual(3, this.Repository.CreateQueuedAndHistoryForSchedule(scheduleRecord.Id.Value, scheduleRecord.StartOn, queued, history));
             }
         }
 
@@ -566,7 +565,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
                 Assert.IsNotNull(scheduleRecord.Id);
             }
         }
@@ -588,7 +587,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -597,7 +596,7 @@ namespace BlueCollar.Test
                     ScheduleId = scheduleRecord.Id.Value
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
                 Assert.IsNotNull(scheduledJobRecord.Id);
             }
         }
@@ -622,7 +621,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
                 Assert.IsNotNull(workerRecord.Id);
             }
         }
@@ -649,7 +648,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -665,7 +664,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
                 Assert.IsNotNull(workingRecord.Id);
             }
         }
@@ -690,8 +689,8 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
-                WorkerRecord compareRecord = this.Repository.GetWorker(workerRecord.Id.Value, null);
+                this.Repository.CreateWorker(workerRecord);
+                WorkerRecord compareRecord = this.Repository.GetWorker(workerRecord.Id.Value);
                 Assert.AreEqual(workerRecord.UpdatedOn, compareRecord.UpdatedOn);
             }
         }
@@ -718,7 +717,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -731,7 +730,7 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
 
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
@@ -742,7 +741,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -750,7 +749,7 @@ namespace BlueCollar.Test
                     ScheduleId = scheduleRecord.Id.Value
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -766,7 +765,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
                 HistoryRecord historyRecord = new HistoryRecord()
                 {
@@ -783,16 +782,16 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
-                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName);
 
-                Assert.AreEqual(0, this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetWorkingList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetWorkerList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetQueuedList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetScheduledJobList(workerRecord.ApplicationName, scheduleRecord.Id.Value, null, 0, 100, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetScheduleList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetWorkingList(workerRecord.ApplicationName, null, 100, 0).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetWorkerList(workerRecord.ApplicationName, null, 100, 0).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetQueuedList(workerRecord.ApplicationName, null, 100, 0).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetScheduledJobList(workerRecord.ApplicationName, scheduleRecord.Id.Value, null, 0, 100).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetScheduleList(workerRecord.ApplicationName, null, 100, 0).TotalCount);
             }
         }
 
@@ -819,7 +818,7 @@ namespace BlueCollar.Test
                     UpdatedOn = now
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 HistoryRecord historyRecord = new HistoryRecord()
                 {
@@ -836,7 +835,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
                 historyRecord = new HistoryRecord()
                 {
@@ -853,11 +852,11 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
-                Assert.AreEqual(2, this.Repository.GetHistoryList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).Records.Count);
+                this.Repository.CreateHistory(historyRecord);
+                Assert.AreEqual(2, this.Repository.GetHistoryList(BlueCollarSection.Section.ApplicationName, null, 100, 0).Records.Count);
 
-                this.Repository.DeleteHistory(BlueCollarSection.Section.ApplicationName, now.AddDays(-1), null);
-                Assert.AreEqual(1, this.Repository.GetHistoryList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).Records.Count);
+                this.Repository.DeleteHistory(BlueCollarSection.Section.ApplicationName, now.AddDays(-1));
+                Assert.AreEqual(1, this.Repository.GetHistoryList(BlueCollarSection.Section.ApplicationName, null, 100, 0).Records.Count);
             }
         }
 
@@ -883,7 +882,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -896,10 +895,10 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
-                this.Repository.DeleteQueued(queueRecord.Id.Value, null);
+                this.Repository.CreateQueued(queueRecord);
+                this.Repository.DeleteQueued(queueRecord.Id.Value);
 
-                Assert.IsNull(this.Repository.GetQueued(queueRecord.ApplicationName, QueueNameFilters.Any(), DateTime.UtcNow, null));
+                Assert.IsNull(this.Repository.GetQueued(queueRecord.ApplicationName, QueueNameFilters.Any(), DateTime.UtcNow));
             }
         }
 
@@ -919,10 +918,10 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
-                this.Repository.DeleteSchedule(scheduleRecord.Id.Value, null);
+                this.Repository.CreateSchedule(scheduleRecord);
+                this.Repository.DeleteSchedule(scheduleRecord.Id.Value);
 
-                Assert.IsNull(this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 1, 0, null).Id);
+                Assert.IsNull(this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 1, 0).Id);
             }
         }
 
@@ -942,7 +941,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -951,9 +950,9 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
-                this.Repository.DeleteScheduledJob(scheduledJobRecord.Id.Value, null);
-                Assert.AreEqual(0, this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null).TotalCount);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
+                this.Repository.DeleteScheduledJob(scheduledJobRecord.Id.Value);
+                Assert.AreEqual(0, this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0).TotalCount);
             }
         }
 
@@ -977,9 +976,9 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
-                this.Repository.DeleteWorker(workerRecord.Id.Value, null);
-                Assert.AreEqual(0, this.Repository.GetWorkerList(workerRecord.ApplicationName, null, 100, 0, null).TotalCount);
+                this.Repository.CreateWorker(workerRecord);
+                this.Repository.DeleteWorker(workerRecord.Id.Value);
+                Assert.AreEqual(0, this.Repository.GetWorkerList(workerRecord.ApplicationName, null, 100, 0).TotalCount);
             }
         }
 
@@ -1005,7 +1004,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -1021,8 +1020,8 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
-                this.Repository.DeleteWorking(workingRecord.Id.Value, null);
+                this.Repository.CreateWorking(workingRecord);
+                this.Repository.DeleteWorking(workingRecord.Id.Value);
             }
         }
 
@@ -1056,7 +1055,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -1069,7 +1068,7 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -1088,7 +1087,7 @@ namespace BlueCollar.Test
                         WorkerId = workerRecord.Id.Value
                     };
 
-                    this.Repository.CreateHistory(historyRecord, null);
+                    this.Repository.CreateHistory(historyRecord);
                 }
 
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
@@ -1100,13 +1099,13 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 scheduleRecord.Id = null;
                 scheduleRecord.Name = "Test Schedule 2";
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
-                CountsRecord counts = this.Repository.GetCounts(workerRecord.ApplicationName, null);
+                CountsRecord counts = this.Repository.GetCounts(workerRecord.ApplicationName);
                 Assert.IsNotNull(counts);
                 Assert.AreEqual(10, counts.HistoryCount);
                 Assert.AreEqual(1, counts.QueueCount);
@@ -1139,7 +1138,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 HistoryRecord historyRecord = new HistoryRecord()
                 {
@@ -1156,9 +1155,9 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
-                HistoryDetailsRecord historyDetailsRecord = this.Repository.GetHistoryDetails(historyRecord.Id.Value, null);
+                HistoryDetailsRecord historyDetailsRecord = this.Repository.GetHistoryDetails(historyRecord.Id.Value);
                 Assert.IsNotNull(historyDetailsRecord);
                 Assert.AreEqual(historyDetailsRecord.Id, historyRecord.Id);
                 Assert.IsFalse(string.IsNullOrEmpty(historyDetailsRecord.Data));
@@ -1191,7 +1190,7 @@ namespace BlueCollar.Test
                     UpdatedOn = now
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 HistoryRecord historyRecord = new HistoryRecord()
                 {
@@ -1207,14 +1206,14 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
-                var list = this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0, null);
+                var list = this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(1, list.TotalCount);
                 Assert.AreEqual(1, list.Records.Count);
 
-                list = this.Repository.GetHistoryList(workerRecord.ApplicationName, "boo", 100, 0, null);
+                list = this.Repository.GetHistoryList(workerRecord.ApplicationName, "boo", 100, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(0, list.TotalCount);
                 Assert.AreEqual(0, list.Records.Count);
@@ -1229,7 +1228,7 @@ namespace BlueCollar.Test
                     StartOn = now
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 historyRecord = new HistoryRecord()
                 {
@@ -1246,9 +1245,9 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
-                list = this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0, null);
+                list = this.Repository.GetHistoryList(workerRecord.ApplicationName, null, 100, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(2, list.TotalCount);
                 Assert.AreEqual(2, list.Records.Count);
@@ -1279,7 +1278,7 @@ namespace BlueCollar.Test
                     UpdatedOn = now
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -1292,8 +1291,8 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
-                Assert.IsNotNull(this.Repository.GetQueued(workerRecord.ApplicationName, QueueNameFilters.Any(), DateTime.UtcNow, null));
+                this.Repository.CreateQueued(queueRecord);
+                Assert.IsNotNull(this.Repository.GetQueued(workerRecord.ApplicationName, QueueNameFilters.Any(), DateTime.UtcNow));
             }
         }
 
@@ -1319,7 +1318,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -1332,9 +1331,9 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
 
-                QueueDetailsRecord queueDetailsRecord = this.Repository.GetQueuedDetails(queueRecord.Id.Value, null);
+                QueueDetailsRecord queueDetailsRecord = this.Repository.GetQueuedDetails(queueRecord.Id.Value);
                 Assert.IsNotNull(queueDetailsRecord);
                 Assert.AreEqual(queueRecord.Id, queueDetailsRecord.Id);
                 Assert.IsFalse(string.IsNullOrEmpty(queueDetailsRecord.Data));
@@ -1363,7 +1362,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -1376,14 +1375,14 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
+                this.Repository.CreateQueued(queueRecord);
 
-                var list = this.Repository.GetQueuedList(workerRecord.ApplicationName, null, 100, 0, null);
+                var list = this.Repository.GetQueuedList(workerRecord.ApplicationName, null, 100, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(1, list.TotalCount);
                 Assert.AreEqual(1, list.Records.Count);
 
-                list = this.Repository.GetQueuedList(workerRecord.ApplicationName, "boo", 100, 0, null);
+                list = this.Repository.GetQueuedList(workerRecord.ApplicationName, "boo", 100, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(0, list.TotalCount);
                 Assert.AreEqual(0, list.Records.Count);
@@ -1397,7 +1396,7 @@ namespace BlueCollar.Test
         {
             if (this.Repository != null)
             {
-                Assert.IsNull(this.Repository.GetSchedule(12, null));
+                Assert.IsNull(this.Repository.GetSchedule(12));
 
                 ScheduleRecord scheduleRecord = new ScheduleRecord()
                 {
@@ -1408,8 +1407,8 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
-                Assert.IsNotNull(this.Repository.GetSchedule(scheduleRecord.Id.Value, null));
+                this.Repository.CreateSchedule(scheduleRecord);
+                Assert.IsNotNull(this.Repository.GetSchedule(scheduleRecord.Id.Value));
             }
         }
 
@@ -1432,7 +1431,7 @@ namespace BlueCollar.Test
                     StartOn = now.AddDays(-1)
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1440,8 +1439,8 @@ namespace BlueCollar.Test
                     ScheduleId = scheduleRecord.Id.Value
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
-                Assert.IsFalse(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now, null));
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
+                Assert.IsFalse(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now));
 
                 QueueRecord queueRecord = new QueueRecord()
                 {
@@ -1454,8 +1453,8 @@ namespace BlueCollar.Test
                     TryNumber = 1
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
-                Assert.IsTrue(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now, null));
+                this.Repository.CreateQueued(queueRecord);
+                Assert.IsTrue(this.Repository.GetScheduleDateExistsForSchedule(scheduleRecord.Id.Value, now));
             }
         }
 
@@ -1475,13 +1474,13 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
-                ScheduledJobRecordList list = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 1, 0, null);
+                ScheduledJobRecordList list = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 1, 0);
                 Assert.IsNotNull(list.Id);
                 Assert.AreEqual(0, list.Records.Count);
 
-                list = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, "boo", 50, 0, null);
+                list = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, "boo", 50, 0);
                 Assert.IsNotNull(list.Id);
                 Assert.AreEqual(0, list.Records.Count);
             }
@@ -1504,7 +1503,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1513,12 +1512,12 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
                 scheduleRecord.Id = null;
                 scheduleRecord.Name = "Weekly";
                 scheduleRecord.RepeatType = ScheduleRepeatType.Weeks;
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1527,7 +1526,7 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
                 scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1536,9 +1535,9 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
-                RecordList<ScheduleListRecord> schedules = this.Repository.GetScheduleList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null);
+                RecordList<ScheduleListRecord> schedules = this.Repository.GetScheduleList(BlueCollarSection.Section.ApplicationName, null, 100, 0);
                 Assert.IsNotNull(schedules);
                 Assert.AreEqual(2, schedules.TotalCount);
                 Assert.AreEqual(2, schedules.Records.Count);
@@ -1566,7 +1565,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1575,12 +1574,12 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
                 scheduleRecord.Id = null;
                 scheduleRecord.Name = "Weekly";
                 scheduleRecord.RepeatType = ScheduleRepeatType.Weeks;
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1589,7 +1588,7 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
                 scheduledJobRecord = new ScheduledJobRecord()
                 {
@@ -1598,9 +1597,9 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(scheduledJobRecord, null);
+                this.Repository.CreateScheduledJob(scheduledJobRecord);
 
-                var schedules = this.Repository.GetSchedules(scheduleRecord.ApplicationName, null);
+                var schedules = this.Repository.GetSchedules(scheduleRecord.ApplicationName);
                 Assert.AreEqual(2, schedules.Count());
                 Assert.AreEqual(1, schedules.ElementAt(0).ScheduledJobs.Count);
                 Assert.AreEqual(2, schedules.ElementAt(1).ScheduledJobs.Count);
@@ -1634,9 +1633,9 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
-                StatisticsRecord stats = this.Repository.GetStatistics(workerRecord.ApplicationName, date.AddDays(-1), date.AddDays(-14), date, null);
+                StatisticsRecord stats = this.Repository.GetStatistics(workerRecord.ApplicationName, date.AddDays(-1), date.AddDays(-14), date);
                 Assert.IsNotNull(stats);
 
                 /*
@@ -1666,12 +1665,12 @@ namespace BlueCollar.Test
                                 WorkerId = workerRecord.Id.Value
                             };
 
-                            this.Repository.CreateHistory(historyRecord, null);
+                            this.Repository.CreateHistory(historyRecord);
                         }
                     }
                 }
 
-                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, date.AddDays(13), date, date.AddDays(14), null);
+                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, date.AddDays(13), date, date.AddDays(14));
                 Assert.AreEqual(14, stats.JobsPerHourByDay.Count);
 
                 for (int i = 0; i < stats.JobsPerHourByDay.Count; i++)
@@ -1684,10 +1683,10 @@ namespace BlueCollar.Test
                  * Dequeued per hour by day - multiple queues.
                  */
 
-                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName);
 
                 workerRecord.Id = null;
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 historyRecord = new HistoryRecord()
                 {
@@ -1704,7 +1703,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
                 historyRecord = new HistoryRecord()
                 {
@@ -1721,7 +1720,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
                 historyRecord = new HistoryRecord()
                 {
@@ -1738,7 +1737,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
                 historyRecord = new HistoryRecord()
                 {
@@ -1755,9 +1754,9 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateHistory(historyRecord, null);
+                this.Repository.CreateHistory(historyRecord);
 
-                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddDays(-1), now.AddDays(-14), now, null);
+                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddDays(-1), now.AddDays(-14), now);
                 Assert.AreEqual(2, stats.JobsPerHourByDay.Count);
                 Assert.AreEqual("*", stats.JobsPerHourByDay[0].QueueName);
                 Assert.AreEqual(2L, stats.JobsPerHourByDay[0].JobsPerHour);
@@ -1768,7 +1767,7 @@ namespace BlueCollar.Test
                  * History status counts.
                  */
 
-                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName, null);
+                this.Repository.DeleteAll(BlueCollarSection.Section.ApplicationName);
 
                 Func<int, DateTime> getDate = (int i) =>
                 {
@@ -1837,10 +1836,10 @@ namespace BlueCollar.Test
                         WorkerId = workerRecord.Id.Value
                     };
 
-                    this.Repository.CreateHistory(historyRecord, null);
+                    this.Repository.CreateHistory(historyRecord);
                 }
 
-                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddHours(-24), now.AddDays(-14), now, null);
+                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddHours(-24), now.AddDays(-14), now);
                 Assert.IsNotNull(stats.HistoryStatusRecent);
                 Assert.AreEqual(10, stats.HistoryStatusRecent.SucceededCount);
                 Assert.AreEqual(10, stats.HistoryStatusRecent.FailedCount);
@@ -1857,7 +1856,7 @@ namespace BlueCollar.Test
                 Assert.AreEqual(20, stats.HistoryStatusDistant.InterruptedCount);
                 Assert.AreEqual(100, stats.HistoryStatusDistant.TotalCount);
 
-                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddDays(-31), now.AddDays(-60), now.AddDays(-30), null);
+                stats = this.Repository.GetStatistics(workerRecord.ApplicationName, now.AddDays(-31), now.AddDays(-60), now.AddDays(-30));
                 Assert.AreEqual(10, stats.HistoryStatusDistant.SucceededCount);
                 Assert.AreEqual(10, stats.HistoryStatusDistant.FailedCount);
                 Assert.AreEqual(10, stats.HistoryStatusDistant.CanceledCount);
@@ -1887,8 +1886,8 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
-                Assert.IsNotNull(this.Repository.GetWorker(workerRecord.Id.Value, null));
+                this.Repository.CreateWorker(workerRecord);
+                Assert.IsNotNull(this.Repository.GetWorker(workerRecord.Id.Value));
             }
         }
 
@@ -1912,13 +1911,13 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
-                RecordList<WorkerRecord> list = this.Repository.GetWorkerList(BlueCollarSection.Section.ApplicationName, null, 1, 0, null);
+                RecordList<WorkerRecord> list = this.Repository.GetWorkerList(BlueCollarSection.Section.ApplicationName, null, 1, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(1, list.Records.Count);
 
-                list = this.Repository.GetWorkerList(BlueCollarSection.Section.ApplicationName, "boo", 50, 0, null);
+                list = this.Repository.GetWorkerList(BlueCollarSection.Section.ApplicationName, "boo", 50, 0);
                 Assert.IsNotNull(list);
                 Assert.AreEqual(0, list.Records.Count);
             }
@@ -1996,14 +1995,14 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
-                this.Repository.CreateWorker(workerRecord2, null);
-                this.Repository.CreateWorker(workerRecord3, null);
-                this.Repository.CreateWorker(workerRecord4, null);
-                this.Repository.CreateWorker(workerRecord5, null);
+                this.Repository.CreateWorker(workerRecord);
+                this.Repository.CreateWorker(workerRecord2);
+                this.Repository.CreateWorker(workerRecord3);
+                this.Repository.CreateWorker(workerRecord4);
+                this.Repository.CreateWorker(workerRecord5);
 
-                Assert.AreEqual(2, this.Repository.GetWorkers(BlueCollarSection.Section.ApplicationName, Machine.Address, Machine.Name, null).Count());
-                Assert.AreEqual(3, this.Repository.GetWorkers(BlueCollarSection.Section.ApplicationName, "1.2.3.4.5", "DIFFERENTMACHINE", null).Count());
+                Assert.AreEqual(2, this.Repository.GetWorkers(BlueCollarSection.Section.ApplicationName, Machine.Address, Machine.Name).Count());
+                Assert.AreEqual(3, this.Repository.GetWorkers(BlueCollarSection.Section.ApplicationName, "1.2.3.4.5", "DIFFERENTMACHINE").Count());
             }
         }
 
@@ -2029,7 +2028,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -2045,8 +2044,8 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
-                Assert.IsNotNull(this.Repository.GetWorking(workingRecord.Id.Value, null));
+                this.Repository.CreateWorking(workingRecord);
+                Assert.IsNotNull(this.Repository.GetWorking(workingRecord.Id.Value));
             }
         }
 
@@ -2072,7 +2071,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -2088,9 +2087,9 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
-                WorkingDetailsRecord workingDetailsRecord = this.Repository.GetWorkingDetails(workingRecord.Id.Value, null);
+                WorkingDetailsRecord workingDetailsRecord = this.Repository.GetWorkingDetails(workingRecord.Id.Value);
                 Assert.IsNotNull(workingDetailsRecord);
                 Assert.IsFalse(string.IsNullOrEmpty(workingDetailsRecord.Data));
             }
@@ -2118,7 +2117,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -2134,7 +2133,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
                 WorkerRecord workerRecord2 = new WorkerRecord()
                 {
@@ -2149,7 +2148,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord2, null);
+                this.Repository.CreateWorker(workerRecord2);
 
                 WorkingRecord workingRecord2 = new WorkingRecord()
                 {
@@ -2165,7 +2164,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord2.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord2, null);
+                this.Repository.CreateWorking(workingRecord2);
 
                 WorkingRecord workingRecord3 = new WorkingRecord()
                 {
@@ -2181,18 +2180,18 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord2.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord3, null);
+                this.Repository.CreateWorking(workingRecord3);
 
-                var working = this.Repository.GetWorkingForWorker(workerRecord.Id.Value, null, null);
+                var working = this.Repository.GetWorkingForWorker(workerRecord.Id.Value, null);
                 Assert.AreEqual(1, working.Count());
                 Assert.AreEqual(workingRecord.Id, working.ElementAt(0).Id);
 
-                working = this.Repository.GetWorkingForWorker(workerRecord2.Id.Value, null, null);
+                working = this.Repository.GetWorkingForWorker(workerRecord2.Id.Value, null);
                 Assert.AreEqual(2, working.Count());
                 Assert.AreEqual(workingRecord2.Id, working.ElementAt(0).Id);
                 Assert.AreEqual(workingRecord3.Id, working.ElementAt(1).Id);
 
-                working = this.Repository.GetWorkingForWorker(workerRecord2.Id.Value, workingRecord2.Id, null);
+                working = this.Repository.GetWorkingForWorker(workerRecord2.Id.Value, workingRecord2.Id);
                 Assert.AreEqual(1, working.Count());
                 Assert.AreEqual(workingRecord3.Id, working.ElementAt(0).Id);
             }
@@ -2220,7 +2219,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -2236,10 +2235,10 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
-                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).TotalCount);
-                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, "TestJob", 100, 0, null).TotalCount);
-                Assert.AreEqual(0, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, "not found search", 100, 0, null).TotalCount);
+                this.Repository.CreateWorking(workingRecord);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 0).TotalCount);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, "TestJob", 100, 0).TotalCount);
+                Assert.AreEqual(0, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, "not found search", 100, 0).TotalCount);
 
                 WorkingRecord workingRecord2 = new WorkingRecord()
                 {
@@ -2255,10 +2254,10 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord2, null);
-                Assert.AreEqual(2, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 0, null).TotalCount);
-                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 1, 0, null).Records.Count);
-                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 1, null).Records.Count);
+                this.Repository.CreateWorking(workingRecord2);
+                Assert.AreEqual(2, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 0).TotalCount);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 1, 0).Records.Count);
+                Assert.AreEqual(1, this.Repository.GetWorkingList(BlueCollarSection.Section.ApplicationName, null, 100, 1).Records.Count);
             }
         }
 
@@ -2284,9 +2283,9 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
-                SignalsRecord signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, null, null);
+                SignalsRecord signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, null);
                 Assert.IsNotNull(signals);
                 Assert.IsFalse(string.IsNullOrEmpty(signals.QueueNames));
                 Assert.AreEqual(WorkingSignal.None, signals.WorkingSignal);
@@ -2305,9 +2304,9 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
-                signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, workingRecord.Id.Value, null);
+                signals = this.Repository.GetWorkingSignals(workerRecord.Id.Value, workingRecord.Id.Value);
                 Assert.IsNotNull(signals);
                 Assert.AreEqual(WorkingSignal.Cancel, signals.WorkingSignal);
             }
@@ -2331,12 +2330,12 @@ namespace BlueCollar.Test
                     QueuedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateQueued(queueRecord, null);
-                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.CreateQueued(queueRecord);
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
 
-                this.Repository.ReleaseQueuedLock(queueRecord.Id.Value, null);
-                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.ReleaseQueuedLock(queueRecord.Id.Value);
+                Assert.IsTrue(this.Repository.AcquireQueuedLock(queueRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -2358,12 +2357,12 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
-                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.CreateSchedule(scheduleRecord);
+                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
 
-                this.Repository.ReleaseScheduleLock(scheduleRecord.Id.Value, null);
-                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.ReleaseScheduleLock(scheduleRecord.Id.Value);
+                Assert.IsTrue(this.Repository.AcquireScheduleLock(scheduleRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -2387,12 +2386,12 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
-                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.CreateWorker(workerRecord);
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
 
-                this.Repository.ReleaseWorkerLock(workerRecord.Id.Value, null);
-                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.ReleaseWorkerLock(workerRecord.Id.Value);
+                Assert.IsTrue(this.Repository.AcquireWorkerLock(workerRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -2418,7 +2417,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -2434,12 +2433,12 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
-                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
-                Assert.IsFalse(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.CreateWorking(workingRecord);
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
+                Assert.IsFalse(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
 
-                this.Repository.ReleaseWorkingLock(workingRecord.Id.Value, null);
-                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1), null));
+                this.Repository.ReleaseWorkingLock(workingRecord.Id.Value);
+                Assert.IsTrue(this.Repository.AcquireWorkingLock(workingRecord.Id.Value, DateTime.UtcNow.AddMinutes(-1)));
             }
         }
 
@@ -2461,7 +2460,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 scheduleRecord.Enabled = true;
                 scheduleRecord.Name = "Bi-Weekly";
@@ -2469,9 +2468,9 @@ namespace BlueCollar.Test
                 scheduleRecord.RepeatType = ScheduleRepeatType.Weeks;
                 scheduleRecord.RepeatValue = 2;
                 scheduleRecord.StartOn = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-                this.Repository.UpdateSchedule(scheduleRecord, null);
+                this.Repository.UpdateSchedule(scheduleRecord);
 
-                ScheduleRecord updatedRecord = this.Repository.GetSchedules(BlueCollarSection.Section.ApplicationName, null).Where(s => s.Id == scheduleRecord.Id).First();
+                ScheduleRecord updatedRecord = this.Repository.GetSchedules(BlueCollarSection.Section.ApplicationName).Where(s => s.Id == scheduleRecord.Id).First();
 
                 Assert.AreEqual(scheduleRecord.Enabled, updatedRecord.Enabled);
                 Assert.AreEqual(scheduleRecord.Name, updatedRecord.Name);
@@ -2499,7 +2498,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord jobRecord = new ScheduledJobRecord()
                 {
@@ -2508,13 +2507,13 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(jobRecord, null);
+                this.Repository.CreateScheduledJob(jobRecord);
 
                 jobRecord.JobType = "BlueCollar.Test.UpdatedJob, BlueCollar.Test";
                 jobRecord.Data = "{\"One\":null, \"Two\":\"Three\"}";
-                this.Repository.UpdateScheduledJob(jobRecord, null);
+                this.Repository.UpdateScheduledJob(jobRecord);
 
-                ScheduledJobRecord updatedJob = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null).Records[0];
+                ScheduledJobRecord updatedJob = this.Repository.GetScheduledJobList(BlueCollarSection.Section.ApplicationName, scheduleRecord.Id.Value, null, 100, 0).Records[0];
                 Assert.AreEqual(jobRecord.JobType, updatedJob.JobType);
                 Assert.AreEqual(jobRecord.Data, updatedJob.Data);
             }
@@ -2537,7 +2536,7 @@ namespace BlueCollar.Test
                     StartOn = DateTime.UtcNow.FloorWithSeconds()
                 };
 
-                this.Repository.CreateSchedule(scheduleRecord, null);
+                this.Repository.CreateSchedule(scheduleRecord);
 
                 ScheduledJobRecord jobRecord1 = new ScheduledJobRecord()
                 {
@@ -2547,7 +2546,7 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(jobRecord1, null);
+                this.Repository.CreateScheduledJob(jobRecord1);
 
                 ScheduledJobRecord jobRecord2 = new ScheduledJobRecord()
                 {
@@ -2557,7 +2556,7 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(jobRecord2, null);
+                this.Repository.CreateScheduledJob(jobRecord2);
 
                 ScheduledJobRecord jobRecord3 = new ScheduledJobRecord()
                 {
@@ -2567,19 +2566,19 @@ namespace BlueCollar.Test
                     Data = "{}"
                 };
 
-                this.Repository.CreateScheduledJob(jobRecord3, null);
-                this.Repository.UpdateScheduledJobOrder(new ScheduledJobOrderRecord() { Id = jobRecord1.Id.Value, Number = 2, ScheduleId = scheduleRecord.Id.Value }, null);
+                this.Repository.CreateScheduledJob(jobRecord3);
+                this.Repository.UpdateScheduledJobOrder(new ScheduledJobOrderRecord() { Id = jobRecord1.Id.Value, Number = 2, ScheduleId = scheduleRecord.Id.Value });
 
-                ScheduledJobRecordList jobList = this.Repository.GetScheduledJobList(scheduleRecord.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null);
+                ScheduledJobRecordList jobList = this.Repository.GetScheduledJobList(scheduleRecord.ApplicationName, scheduleRecord.Id.Value, null, 100, 0);
                 Assert.IsNotNull(jobList);
                 Assert.AreEqual(3, jobList.Records.Count);
                 Assert.AreEqual(2, jobList.Records.First(j => j.Id == jobRecord1.Id).Number);
                 Assert.AreEqual(1, jobList.Records.First(j => j.Id == jobRecord2.Id).Number);
                 Assert.AreEqual(3, jobList.Records.First(j => j.Id == jobRecord3.Id).Number);
 
-                this.Repository.UpdateScheduledJobOrder(new ScheduledJobOrderRecord() { Id = jobRecord3.Id.Value, Number = 1, ScheduleId = scheduleRecord.Id.Value }, null);
+                this.Repository.UpdateScheduledJobOrder(new ScheduledJobOrderRecord() { Id = jobRecord3.Id.Value, Number = 1, ScheduleId = scheduleRecord.Id.Value });
 
-                jobList = this.Repository.GetScheduledJobList(scheduleRecord.ApplicationName, scheduleRecord.Id.Value, null, 100, 0, null);
+                jobList = this.Repository.GetScheduledJobList(scheduleRecord.ApplicationName, scheduleRecord.Id.Value, null, 100, 0);
                 Assert.IsNotNull(jobList);
                 Assert.AreEqual(3, jobList.Records.Count);
                 Assert.AreEqual(3, jobList.Records.First(j => j.Id == jobRecord1.Id).Number);
@@ -2608,7 +2607,7 @@ namespace BlueCollar.Test
                     UpdatedOn = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 workerRecord.MachineAddress = "0.0.0.0";
                 workerRecord.MachineName = "TEST";
@@ -2618,9 +2617,9 @@ namespace BlueCollar.Test
                 workerRecord.Status = WorkerStatus.Stopped;
                 workerRecord.Startup = WorkerStartupType.Manual;
                 workerRecord.UpdatedOn = DateTime.UtcNow.FloorWithSeconds();
-                this.Repository.UpdateWorker(workerRecord, null);
+                this.Repository.UpdateWorker(workerRecord);
 
-                WorkerRecord updated = this.Repository.GetWorker(workerRecord.Id.Value, null);
+                WorkerRecord updated = this.Repository.GetWorker(workerRecord.Id.Value);
                 Assert.AreEqual(workerRecord.MachineAddress, updated.MachineAddress);
                 Assert.AreEqual(workerRecord.MachineName, updated.MachineName);
                 Assert.AreEqual(workerRecord.Name, updated.Name);
@@ -2652,10 +2651,10 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
-                this.Repository.UpdateWorkerStatus(workerRecord.Id.Value, WorkerStatus.Stopped, null);
+                this.Repository.CreateWorker(workerRecord);
+                this.Repository.UpdateWorkerStatus(workerRecord.Id.Value, WorkerStatus.Stopped);
 
-                Assert.AreEqual(WorkerStatus.Stopped, this.Repository.GetWorker(workerRecord.Id.Value, null).Status);
+                Assert.AreEqual(WorkerStatus.Stopped, this.Repository.GetWorker(workerRecord.Id.Value).Status);
             }
         }
 
@@ -2681,7 +2680,7 @@ namespace BlueCollar.Test
                     UpdatedOn = DateTime.UtcNow
                 };
 
-                this.Repository.CreateWorker(workerRecord, null);
+                this.Repository.CreateWorker(workerRecord);
 
                 WorkingRecord workingRecord = new WorkingRecord()
                 {
@@ -2697,7 +2696,7 @@ namespace BlueCollar.Test
                     WorkerId = workerRecord.Id.Value
                 };
 
-                this.Repository.CreateWorking(workingRecord, null);
+                this.Repository.CreateWorking(workingRecord);
 
                 job = new TestJob() { Id = Guid.NewGuid() };
                 workingRecord.Data = JobSerializer.Serialize(job);
@@ -2708,9 +2707,9 @@ namespace BlueCollar.Test
                 workingRecord.Signal = WorkingSignal.None;
                 workingRecord.StartedOn = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                 workingRecord.TryNumber = 2;
-                this.Repository.UpdateWorking(workingRecord, null);
+                this.Repository.UpdateWorking(workingRecord);
 
-                WorkingRecord updated = this.Repository.GetWorking(workingRecord.Id.Value, null);
+                WorkingRecord updated = this.Repository.GetWorking(workingRecord.Id.Value);
                 Assert.AreEqual(workingRecord.Data, updated.Data);
                 Assert.AreEqual(workingRecord.JobName, updated.JobName);
                 Assert.AreEqual(workingRecord.JobType, updated.JobType);

@@ -7,7 +7,6 @@
 namespace BlueCollar.Test
 {
     using System;
-    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,7 +26,7 @@ namespace BlueCollar.Test
         public void SchedulerCanScheduleBeEnqueued()
         {
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.GetScheduleDateExistsForSchedule(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(false);
+            repository.Setup(r => r.GetScheduleDateExistsForSchedule(It.IsAny<long>(), It.IsAny<DateTime>())).Returns(false);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -107,10 +106,8 @@ namespace BlueCollar.Test
 
             schedule.ScheduledJobs.Add(scheduledJob);
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName, It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule });
+            repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName)).Returns(new ScheduleRecord[] { schedule });
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -176,10 +173,8 @@ namespace BlueCollar.Test
                 ScheduleId = 2
             };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName, It.IsAny<IDbTransaction>())).Returns(new ScheduleRecord[] { schedule, schedule2 });
+            repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName)).Returns(new ScheduleRecord[] { schedule, schedule2 });
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);

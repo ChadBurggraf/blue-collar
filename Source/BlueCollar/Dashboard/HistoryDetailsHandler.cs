@@ -53,7 +53,7 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                HistoryDetailsRecord record = Repository.GetHistoryDetails(this.Id, null);
+                HistoryDetailsRecord record = Repository.GetHistoryDetails(this.Id);
 
                 if (record != null)
                 {

@@ -246,7 +246,7 @@ namespace BlueCollar.Dashboard
             bool acquired = false;
             int tries = this.LockTryCount, timeout = -this.LockTimeout;
 
-            while (!(acquired = this.Repository.AcquireScheduleLock(id, DateTime.UtcNow.AddMilliseconds(timeout), null)))
+            while (!(acquired = this.Repository.AcquireScheduleLock(id, DateTime.UtcNow.AddMilliseconds(timeout))))
             {
                 if (--tries > 0)
                 {
@@ -271,7 +271,7 @@ namespace BlueCollar.Dashboard
             bool acquired = false;
             int tries = this.LockTryCount, timeout = -this.LockTimeout;
 
-            while (!(acquired = this.Repository.AcquireWorkerLock(id, DateTime.UtcNow.AddMilliseconds(timeout), null)))
+            while (!(acquired = this.Repository.AcquireWorkerLock(id, DateTime.UtcNow.AddMilliseconds(timeout))))
             {
                 if (--tries > 0)
                 {
@@ -296,7 +296,7 @@ namespace BlueCollar.Dashboard
             bool acquired = false;
             int tries = this.LockTryCount, timeout = -this.LockTimeout;
 
-            while (!(acquired = this.Repository.AcquireWorkingLock(id, DateTime.UtcNow.AddMilliseconds(timeout), null)))
+            while (!(acquired = this.Repository.AcquireWorkingLock(id, DateTime.UtcNow.AddMilliseconds(timeout))))
             {
                 if (--tries > 0)
                 {

@@ -106,9 +106,8 @@ WHERE
         /// <param name="id">The ID of the queued record to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if necessary.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        public bool AcquireQueuedLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireQueuedLock(long id, DateTime forceIfOlderThan)
         {
             const string Sql =
 @"UPDATE [BlueCollarQueue]
@@ -127,7 +126,7 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -138,9 +137,8 @@ WHERE
         /// <param name="id">The ID of the schedule to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the given date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was obtained, false otherwise.</returns>
-        public bool AcquireScheduleLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireScheduleLock(long id, DateTime forceIfOlderThan)
         {
             const string Sql =
 @"UPDATE [BlueCollarSchedule]
@@ -159,7 +157,7 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -170,9 +168,8 @@ WHERE
         /// <param name="id">The ID of the worker record to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the give date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        public bool AcquireWorkerLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireWorkerLock(long id, DateTime forceIfOlderThan)
         {
             const string Sql =
 @"UPDATE [BlueCollarWorker]
@@ -191,7 +188,7 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -202,9 +199,8 @@ WHERE
         /// <param name="id">The ID of the working job record to obtain the lock for.</param>
         /// <param name="forceIfOlderThan">A date to compare the lock's last updated date with. If
         /// the lock is older than the give date, then it will be forced and acquired by the caller.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        public bool AcquireWorkingLock(long id, DateTime forceIfOlderThan, IDbTransaction transaction)
+        public bool AcquireWorkingLock(long id, DateTime forceIfOlderThan)
         {
             const string Sql =
 @"UPDATE [BlueCollarWorking]
@@ -223,7 +219,7 @@ WHERE
             return 0 < this.connection.Execute(
                 Sql,
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow, ForceIfOlderThan = forceIfOlderThan },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -233,8 +229,7 @@ WHERE
         /// </summary>
         /// <param name="workerId">The ID of the worker to clear the signal of.</param>
         /// <param name="workingId">The ID of the working job to clear the signal of, if applicable.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ClearWorkingSignalPair(long workerId, long? workingId, IDbTransaction transaction)
+        public void ClearWorkingSignalPair(long workerId, long? workingId)
         {
             StringBuilder sb = new StringBuilder(
 @"UPDATE [BlueCollarWorker] 
@@ -265,7 +260,7 @@ WHERE
                     WorkingId = workingId,
                     WorkingSignal = WorkingSignal.None.ToString()
                 },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -274,10 +269,9 @@ WHERE
         /// Creates a history record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public HistoryRecord CreateHistory(HistoryRecord record, IDbTransaction transaction)
+        public HistoryRecord CreateHistory(HistoryRecord record)
         {
             const string Sql =
 @"INSERT INTO [BlueCollarHistory]([ApplicationName],[WorkerId],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[StartedOn],[Status],[Exception],[FinishedOn])
@@ -287,7 +281,7 @@ SELECT last_insert_rowid();";
             record.Id = this.connection.Query<long>(
                 Sql,
                 record,
-                transaction,
+                null,
                 true,
                 null,
                 null).First();
@@ -299,10 +293,9 @@ SELECT last_insert_rowid();";
         /// Creates a queue record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public QueueRecord CreateQueued(QueueRecord record, IDbTransaction transaction)
+        public QueueRecord CreateQueued(QueueRecord record)
         {
             const string Sql =
 @"INSERT INTO [BlueCollarQueue]([ApplicationName],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[Locked],[LockedUpdatedOn])
@@ -312,7 +305,7 @@ SELECT last_insert_rowid();";
             record.Id = this.connection.Query<long>(
                 Sql,
                 record,
-                transaction,
+                null,
                 true,
                 null,
                 null).First();
@@ -327,9 +320,8 @@ SELECT last_insert_rowid();";
         /// <param name="scheduleDate">The schedule date records are being created for.</param>
         /// <param name="queued">The queued records to create.</param>
         /// <param name="history">The history records to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The number of records created.</returns>
-        public int CreateQueuedAndHistoryForSchedule(long scheduleId, DateTime scheduleDate, IEnumerable<QueueRecord> queued, IEnumerable<HistoryRecord> history, IDbTransaction transaction)
+        public int CreateQueuedAndHistoryForSchedule(long scheduleId, DateTime scheduleDate, IEnumerable<QueueRecord> queued, IEnumerable<HistoryRecord> history)
         {
             int created = 0;
 
@@ -343,12 +335,12 @@ VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Dat
 
             if (queued != null && queued.Count() > 0)
             {
-                created += this.connection.Execute(InsertQueuedSql, queued, transaction, null, null);
+                created += this.connection.Execute(InsertQueuedSql, queued, null, null, null);
             }
 
             if (history != null && history.Count() > 0)
             {
-                created += this.connection.Execute(InsertHistorySql, history, transaction, null, null);
+                created += this.connection.Execute(InsertHistorySql, history, null, null, null);
             }
 
             return created;
@@ -358,10 +350,9 @@ VALUES (@ApplicationName,@WorkerId,@ScheduleId,@QueueName,@JobName,@JobType,@Dat
         /// Creates a schedule record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public ScheduleRecord CreateSchedule(ScheduleRecord record, IDbTransaction transaction)
+        public ScheduleRecord CreateSchedule(ScheduleRecord record)
         {
             const string Sql =
 @"INSERT INTO [BlueCollarSchedule]([ApplicationName],[QueueName],[Name],[StartOn],[EndOn],[RepeatType],[RepeatValue],[Enabled],[Locked],[LockedUpdatedOn])
@@ -371,7 +362,7 @@ SELECT last_insert_rowid();";
             record.Id = this.connection.Query<long>(
                 Sql,
                 record,
-                transaction,
+                null,
                 true,
                 null,
                 null).First();
@@ -383,10 +374,9 @@ SELECT last_insert_rowid();";
         /// Creates a scheduled job record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
+        public ScheduledJobRecord CreateScheduledJob(ScheduledJobRecord record)
         {
             const string Sql =
 @"INSERT INTO [BlueCollarScheduledJob]([ScheduleId],[Number],[JobType],[Data])
@@ -400,7 +390,7 @@ SELECT last_insert_rowid();";
             record.Id = this.connection.Query<long>(
                 Sql,
                 record,
-                transaction,
+                null,
                 true,
                 null,
                 null).First();
@@ -412,10 +402,9 @@ SELECT last_insert_rowid();";
         /// Creates a worker record.
         /// </summary>
         /// <param name="record">The record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public WorkerRecord CreateWorker(WorkerRecord record, IDbTransaction transaction)
+        public WorkerRecord CreateWorker(WorkerRecord record)
         {
             const string Sql =
 @"INSERT INTO [BlueCollarWorker]([ApplicationName],[Name],[MachineName],[MachineAddress],[QueueNames],[Status],[Signal],[Startup],[UpdatedOn],[Locked],[LockedUpdatedOn])
@@ -425,7 +414,7 @@ SELECT last_insert_rowid();";
             record.Id = this.connection.Query<long>(
                 Sql,
                 record,
-                transaction,
+                null,
                 true,
                 null,
                 null).First();
@@ -437,10 +426,9 @@ SELECT last_insert_rowid();";
         /// Creates a working record.
         /// </summary>
         /// <param name="record">The working record to create.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The created record.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public WorkingRecord CreateWorking(WorkingRecord record, IDbTransaction transaction)
+        public WorkingRecord CreateWorking(WorkingRecord record)
         {
             const string Sql =
 @"INSERT INTO [BlueCollarWorking]([ApplicationName],[WorkerId],[ScheduleId],[QueueName],[JobName],[JobType],[Data],[QueuedOn],[TryNumber],[StartedOn],[Signal],[Locked],[LockedUpdatedOn])
@@ -450,7 +438,7 @@ SELECT last_insert_rowid();";
             record.Id = this.connection.Query<long>(
                 Sql,
                 record,
-                transaction,
+                null,
                 true,
                 null,
                 null).First();
@@ -462,8 +450,7 @@ SELECT last_insert_rowid();";
         /// Deletes all data in the repository.
         /// </summary>
         /// <param name="applicationName">The name of the application to delete data for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteAll(string applicationName, IDbTransaction transaction)
+        public void DeleteAll(string applicationName)
         {
             const string Sql =
 @"DELETE FROM [BlueCollarHistory] WHERE [ApplicationName] = @ApplicationName;
@@ -484,7 +471,7 @@ DELETE FROM [BlueCollarSchedule] WHERE [ApplicationName] = @ApplicationName;";
             this.connection.Execute(
                 Sql,
                 new { ApplicationName = applicationName },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -494,8 +481,7 @@ DELETE FROM [BlueCollarSchedule] WHERE [ApplicationName] = @ApplicationName;";
         /// </summary>
         /// <param name="applicationName">The name of the application to delete data for.</param>
         /// <param name="olderThan">The date to delete history older than.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteHistory(string applicationName, DateTime olderThan, IDbTransaction transaction)
+        public void DeleteHistory(string applicationName, DateTime olderThan)
         {
             const string Sql =
 @"DELETE FROM [BlueCollarHistory]
@@ -506,7 +492,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 new { ApplicationName = @applicationName, OlderThan = olderThan },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -515,13 +501,12 @@ WHERE
         /// Deletes the queued record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the queued record to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteQueued(long id, IDbTransaction transaction)
+        public void DeleteQueued(long id)
         {
             this.connection.Execute(
                 "DELETE FROM [BlueCollarQueue] WHERE [Id] = @Id;",
                 new { Id = id },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -530,8 +515,7 @@ WHERE
         /// Deletes the schedule record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the schedule to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteSchedule(long id, IDbTransaction transaction)
+        public void DeleteSchedule(long id)
         {
             const string Sql =
 @"UPDATE [BlueCollarQueue]
@@ -559,20 +543,19 @@ DELETE FROM [BlueCollarSchedule]
 WHERE
     [Id] = @Id;";
 
-            this.connection.Execute(Sql, new { Id = id }, transaction, null, null);
+            this.connection.Execute(Sql, new { Id = id }, null, null, null);
         }
 
         /// <summary>
         /// Deletes the scheduled job record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the scheduled job to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteScheduledJob(long id, IDbTransaction transaction)
+        public void DeleteScheduledJob(long id)
         {
             this.connection.Execute(
                 "DELETE FROM [BlueCollarScheduledJob] WHERE [Id] = @Id;",
                 new { Id = id },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -581,8 +564,7 @@ WHERE
         /// Deletes the worker record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the worker to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteWorker(long id, IDbTransaction transaction)
+        public void DeleteWorker(long id)
         {
             const string Sql =
 @"DELETE FROM [BlueCollarWorking]
@@ -600,7 +582,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 new { Id = id },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -609,13 +591,12 @@ WHERE
         /// Deletes the working record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the working record to delete.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void DeleteWorking(long id, IDbTransaction transaction)
+        public void DeleteWorking(long id)
         {
             this.connection.Execute(
                 "DELETE FROM [BlueCollarWorking] WHERE [Id] = @Id;",
                 new { Id = id },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -633,11 +614,10 @@ WHERE
         /// Gets a set of counts for the given application.
         /// </summary>
         /// <param name="applicationName">The name of the application to get counts for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A set of counts.</returns>
-        public CountsRecord GetCounts(string applicationName, IDbTransaction transaction)
+        public CountsRecord GetCounts(string applicationName)
         {
-            using (var multi = this.connection.QueryMultiple(CountsSql, new { ApplicationName = applicationName }, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(CountsSql, new { ApplicationName = applicationName }, null, null, null))
             {
                 return CreateCounts(multi);
             }
@@ -647,9 +627,8 @@ WHERE
         /// Gets a history details record.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A history details record.</returns>
-        public HistoryDetailsRecord GetHistoryDetails(long id, IDbTransaction transaction)
+        public HistoryDetailsRecord GetHistoryDetails(long id)
         {
             const string Sql =
 @"SELECT 
@@ -668,7 +647,7 @@ WHERE
             return this.connection.Query<HistoryDetailsRecord>(
                 Sql,
                 new { Id = id },
-                transaction,
+                null,
                 true,
                 null,
                 null).FirstOrDefault();
@@ -681,9 +660,8 @@ WHERE
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A list of history records.</returns>
-        public RecordList<HistoryListRecord> GetHistoryList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<HistoryListRecord> GetHistoryList(string applicationName, string search, int limit, int offset)
         {
             StringBuilder cb = new StringBuilder(
 @"SELECT CAST(COUNT(h.[Id]) AS bigint)
@@ -745,7 +723,7 @@ LIMIT @Limit OFFSET @Offset;");
 
             var list = new RecordList<HistoryListRecord>();
 
-            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, null, null, null))
             {
                 list.SetPaging(multi.Read<long>().First(), limit, offset);
 
@@ -766,10 +744,9 @@ LIMIT @Limit OFFSET @Offset;");
         /// <param name="applicationName">The name of the application to get the queued record for.</param>
         /// <param name="queueFilters">The queue filters to use when filtering the queues to read from.</param>
         /// <param name="queuedBefore">The date to filter on.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A queued record, or null if none was found.</returns>
         [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods", Justification = "IRepository methods are designed to be called by validated code paths only.")]
-        public QueueRecord GetQueued(string applicationName, QueueNameFilters queueFilters, DateTime queuedBefore, IDbTransaction transaction)
+        public QueueRecord GetQueued(string applicationName, QueueNameFilters queueFilters, DateTime queuedBefore)
         {
             StringBuilder sb = new StringBuilder(
 @"SELECT *
@@ -814,7 +791,7 @@ LIMIT 1;");
                     IncludeQueueNames = queueFilters.Include.ToArray(),
                     QueuedBefore = queuedBefore
                 },
-                transaction,
+                null,
                 true,
                 null,
                 null).FirstOrDefault();
@@ -824,9 +801,8 @@ LIMIT 1;");
         /// Gets a queued details record.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A queued details record.</returns>
-        public QueueDetailsRecord GetQueuedDetails(long id, IDbTransaction transaction)
+        public QueueDetailsRecord GetQueuedDetails(long id)
         {
             const string Sql =
 @"SELECT 
@@ -846,7 +822,7 @@ WHERE
             return this.connection.Query<QueueDetailsRecord>(
                 Sql,
                 new { Id = id },
-                transaction,
+                null,
                 true,
                 null,
                 null).FirstOrDefault();
@@ -859,9 +835,8 @@ WHERE
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of queue records.</returns>
-        public RecordList<QueueListRecord> GetQueuedList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<QueueListRecord> GetQueuedList(string applicationName, string search, int limit, int offset)
         {
             StringBuilder cb = new StringBuilder(
 @"SELECT CAST(COUNT(q.[Id]) AS bigint)
@@ -919,7 +894,7 @@ LIMIT @Limit OFFSET @Offset;");
 
             var list = new RecordList<QueueListRecord>();
 
-            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, null, null, null))
             {
                 list.SetPaging(multi.Read<long>().First(), limit, offset);
 
@@ -938,9 +913,8 @@ LIMIT @Limit OFFSET @Offset;");
         /// Gets the schedule with the given ID, NOT including its related scheduled jobs.
         /// </summary>
         /// <param name="id">The ID of the schedule to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The schedule, or null if none was found.</returns>
-        public ScheduleRecord GetSchedule(long id, IDbTransaction transaction)
+        public ScheduleRecord GetSchedule(long id)
         {
             const string Sql =
 @"SELECT *
@@ -951,7 +925,7 @@ WHERE
             return this.connection.Query<ScheduleRecord>(
                 Sql,
                 new { Id = id },
-                transaction,
+                null,
                 true,
                 null,
                 null).FirstOrDefault();
@@ -964,9 +938,8 @@ WHERE
         /// </summary>
         /// <param name="scheduleId">The ID of the schedule to check data for.</param>
         /// <param name="scheduleDate">The calculated schedule date to check data for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>True if data already exists, false otherwise.</returns>
-        public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate, IDbTransaction transaction)
+        public bool GetScheduleDateExistsForSchedule(long scheduleId, DateTime scheduleDate)
         {
             const string Sql = @"SELECT CAST(COUNT([Id]) AS bigint)
 FROM [BlueCollarHistory]
@@ -988,7 +961,7 @@ WHERE
 
             long count = 0;
 
-            using (var multi = this.connection.QueryMultiple(Sql, new { ScheduleId = scheduleId, ScheduleDate = scheduleDate }, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(Sql, new { ScheduleId = scheduleId, ScheduleDate = scheduleDate }, null, null, null))
             {
                 count = multi.Read<long>().First()
                     + multi.Read<long>().First()
@@ -1006,9 +979,8 @@ WHERE
         /// <param name="search">The search query to filter the related job collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A schedule, or null if none was found.</returns>
-        public ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset, IDbTransaction transaction)
+        public ScheduledJobRecordList GetScheduledJobList(string applicationName, long id, string search, int limit, int offset)
         {
             StringBuilder cb = new StringBuilder(
 @"SELECT CAST(COUNT(j.[Id]) AS bigint)
@@ -1048,7 +1020,7 @@ LIMIT @Limit OFFSET @Offset;");
 
             ScheduledJobRecordList list = new ScheduledJobRecordList();
 
-            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, null, null, null))
             {
                 bool readSchedule = false;
                 list.SetPaging(multi.Read<long>().First(), limit, offset);
@@ -1084,9 +1056,8 @@ LIMIT @Limit OFFSET @Offset;");
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of schedules.</returns>
-        public RecordList<ScheduleListRecord> GetScheduleList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<ScheduleListRecord> GetScheduleList(string applicationName, string search, int limit, int offset)
         {
             StringBuilder cb = new StringBuilder(
 @"SELECT CAST(COUNT(DISTINCT s.[Id]) AS bigint)
@@ -1143,7 +1114,7 @@ LIMIT @Limit OFFSET @Offset;");
 
             var list = new RecordList<ScheduleListRecord>();
 
-            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, null, null, null))
             {
                 list.SetPaging(multi.Read<long>().First(), limit, offset);
 
@@ -1162,9 +1133,8 @@ LIMIT @Limit OFFSET @Offset;");
         /// Gets a collection of schedules and their related scheduled jobs for the given application name.
         /// </summary>
         /// <param name="applicationName">The name of the application to get schedules for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of schedules.</returns>
-        public IEnumerable<ScheduleRecord> GetSchedules(string applicationName, IDbTransaction transaction)
+        public IEnumerable<ScheduleRecord> GetSchedules(string applicationName)
         {
             const string Sql =
 @"SELECT s.*, sj.*
@@ -1203,7 +1173,7 @@ ORDER BY sj.[Number];";
                     return schedule; 
                 },
                 new { ApplicationName = applicationName },
-                transaction,
+                null,
                 true,
                 "Id",
                 null,
@@ -1219,9 +1189,8 @@ ORDER BY sj.[Number];";
         /// <param name="recentBeginDate">The begin date of the recent period to get statistics for.</param>
         /// <param name="distantBeginDate">The begin date of the distant period to get statistics for.</param>
         /// <param name="endDate">The end date of the distant period to get statistics for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A set of system statistics.</returns>
-        public StatisticsRecord GetStatistics(string applicationName, DateTime recentBeginDate, DateTime distantBeginDate, DateTime endDate, IDbTransaction transaction)
+        public StatisticsRecord GetStatistics(string applicationName, DateTime recentBeginDate, DateTime distantBeginDate, DateTime endDate)
         {
             const string HistoryStatusSql =
 @"SELECT CAST(COUNT([Id]) AS bigint)
@@ -1347,7 +1316,7 @@ GROUP BY w.[Name], w.[MachineName], w.[MachineAddress];";
 
             StatisticsRecord stats = new StatisticsRecord();
 
-            using (var multi = this.connection.QueryMultiple(sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(sb.ToString(), p, null, null, null))
             {
                 stats.HistoryStatusDistant = CreateHistoryStatusCounts(multi);
                 stats.HistoryStatusRecent = CreateHistoryStatusCounts(multi);
@@ -1372,9 +1341,8 @@ GROUP BY w.[Name], w.[MachineName], w.[MachineAddress];";
         /// Gets the worker record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the worker record to get.</param>
-        /// <param name="transaction">The transaction to use.</param>
         /// <returns>A worker record.</returns>
-        public WorkerRecord GetWorker(long id, IDbTransaction transaction)
+        public WorkerRecord GetWorker(long id)
         {
             const string Sql =
 @"SELECT *
@@ -1384,11 +1352,7 @@ WHERE
 
             return this.connection.Query<WorkerRecord>(
                 Sql,
-                new { Id = id },
-                transaction,
-                true,
-                null,
-                null).FirstOrDefault();
+                new { Id = id }).FirstOrDefault();
         }
 
         /// <summary>
@@ -1398,9 +1362,8 @@ WHERE
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of worker records.</returns>
-        public RecordList<WorkerRecord> GetWorkerList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<WorkerRecord> GetWorkerList(string applicationName, string search, int limit, int offset)
         {
             StringBuilder cb = new StringBuilder(
 @"SELECT CAST(COUNT([Id]) AS bigint)
@@ -1452,7 +1415,7 @@ LIMIT @Limit OFFSET @Offset;");
 
             var list = new RecordList<WorkerRecord>();
 
-            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, null, null, null))
             {
                 list.SetPaging(multi.Read<long>().First(), limit, offset);
 
@@ -1473,9 +1436,8 @@ LIMIT @Limit OFFSET @Offset;");
         /// <param name="applicationName">The application name to get workers for.</param>
         /// <param name="machineAddress">The address of the machine to get workers for.</param>
         /// <param name="machineName">The name of the machine to get workers for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of worker records.</returns>
-        public IEnumerable<WorkerRecord> GetWorkers(string applicationName, string machineAddress, string machineName, IDbTransaction transaction)
+        public IEnumerable<WorkerRecord> GetWorkers(string applicationName, string machineAddress, string machineName)
         {
             const string Sql =
 @"SELECT *
@@ -1487,20 +1449,15 @@ WHERE
 
             return this.connection.Query<WorkerRecord>(
                 Sql,
-                new { ApplicationName = applicationName, MachineName = machineName, MachineAddress = machineAddress },
-                transaction,
-                true,
-                null,
-                null);
+                new { ApplicationName = applicationName, MachineName = machineName, MachineAddress = machineAddress });
         }
 
         /// <summary>
         /// Gets the working record with the given ID.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A working record, or null if none was found.</returns>
-        public WorkingRecord GetWorking(long id, IDbTransaction transaction)
+        public WorkingRecord GetWorking(long id)
         {
             const string Sql =
 @"SELECT *
@@ -1510,20 +1467,15 @@ WHERE
 
             return this.connection.Query<WorkingRecord>(
                 Sql,
-                new { Id = id },
-                transaction,
-                true,
-                null,
-                null).FirstOrDefault();
+                new { Id = id }).FirstOrDefault();
         }
 
         /// <summary>
         /// Gets a working details record.
         /// </summary>
         /// <param name="id">The ID of the record to get.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A working details record, or null if none was found.</returns>
-        public WorkingDetailsRecord GetWorkingDetails(long id, IDbTransaction transaction)
+        public WorkingDetailsRecord GetWorkingDetails(long id)
         {
             const string Sql =
 @"SELECT 
@@ -1548,11 +1500,7 @@ WHERE
 
             return this.connection.Query<WorkingDetailsRecord>(
                 Sql,
-                new { Id = id },
-                transaction,
-                true,
-                null,
-                null).FirstOrDefault();
+                new { Id = id }).FirstOrDefault();
         }
 
         /// <summary>
@@ -1560,9 +1508,8 @@ WHERE
         /// </summary>
         /// <param name="workerId">The ID of the worker to get working records for.</param>
         /// <param name="excludingId">The ID of the working record to exclude, if applicable.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of working records.</returns>
-        public IEnumerable<WorkingRecord> GetWorkingForWorker(long workerId, long? excludingId, IDbTransaction transaction)
+        public IEnumerable<WorkingRecord> GetWorkingForWorker(long workerId, long? excludingId)
         {
             StringBuilder sb = new StringBuilder(
 @"SELECT *
@@ -1579,11 +1526,7 @@ WHERE
 
             return this.connection.Query<WorkingRecord>(
                 sb.ToString(),
-                new { WorkerId = workerId, ExcludingId = excludingId },
-                transaction,
-                true,
-                null,
-                null);
+                new { WorkerId = workerId, ExcludingId = excludingId });
         }
 
         /// <summary>
@@ -1593,9 +1536,8 @@ WHERE
         /// <param name="search">The search query to filter the collection with.</param>
         /// <param name="limit">The paging limit to use.</param>
         /// <param name="offset">The paging offset to use.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A collection of working records.</returns>
-        public RecordList<WorkingListRecord> GetWorkingList(string applicationName, string search, int limit, int offset, IDbTransaction transaction)
+        public RecordList<WorkingListRecord> GetWorkingList(string applicationName, string search, int limit, int offset)
         {
             StringBuilder cb = new StringBuilder(
 @"SELECT CAST(COUNT(wg.[Id]) AS bigint)
@@ -1662,7 +1604,7 @@ LIMIT @Limit OFFSET @Offset;");
 
             var list = new RecordList<WorkingListRecord>();
 
-            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(cb.ToString() + sb.ToString(), p, null, null, null))
             {
                 list.SetPaging(multi.Read<long>().First(), limit, offset);
                 
@@ -1682,9 +1624,8 @@ LIMIT @Limit OFFSET @Offset;");
         /// </summary>
         /// <param name="workerId">The ID of the worker to get a signal for.</param>
         /// <param name="workingId">The ID of the working job to get a signal for, if applicable.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>A signals record.</returns>
-        public SignalsRecord GetWorkingSignals(long workerId, long? workingId, IDbTransaction transaction)
+        public SignalsRecord GetWorkingSignals(long workerId, long? workingId)
         {
             const string Sql =
 @"SELECT w.[Signal] AS [WorkerSignal], w.[QueueNames], wg.[Signal] AS [WorkingSignal]
@@ -1699,51 +1640,43 @@ WHERE
                 {
                     WorkerId = workerId,
                     WorkingId = workingId
-                },
-                transaction,
-                true,
-                null,
-                null).FirstOrDefault();
+                }).FirstOrDefault();
         }
 
         /// <summary>
         /// Releases the lock for the given queued job ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseQueuedLock(long id, IDbTransaction transaction)
+        public void ReleaseQueuedLock(long id)
         {
-            this.ReleaseLock(id, "BlueCollarQueue", transaction);
+            this.ReleaseLock(id, "BlueCollarQueue");
         }
 
         /// <summary>
         /// Releases the lock for the given schedule ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseScheduleLock(long id, IDbTransaction transaction)
+        public void ReleaseScheduleLock(long id)
         {
-            this.ReleaseLock(id, "BlueCollarSchedule", transaction);
+            this.ReleaseLock(id, "BlueCollarSchedule");
         }
 
         /// <summary>
         /// Releases the lock for the given worker ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseWorkerLock(long id, IDbTransaction transaction)
+        public void ReleaseWorkerLock(long id)
         {
-            this.ReleaseLock(id, "BlueCollarWorker", transaction);
+            this.ReleaseLock(id, "BlueCollarWorker");
         }
 
         /// <summary>
         /// Releases the lock for the given working job ID.
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void ReleaseWorkingLock(long id, IDbTransaction transaction)
+        public void ReleaseWorkingLock(long id)
         {
-            this.ReleaseLock(id, "BlueCollarWorking", transaction);
+            this.ReleaseLock(id, "BlueCollarWorking");
         }
 
         /// <summary>
@@ -1751,8 +1684,7 @@ WHERE
         /// </summary>
         /// <param name="applicationName">The application name to signal workers for.</param>
         /// <param name="signal">The signal to set.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void SignalWorkers(string applicationName, WorkerSignal signal, IDbTransaction transaction)
+        public void SignalWorkers(string applicationName, WorkerSignal signal)
         {
             const string Sql =
 @"UPDATE [BlueCollarWorker]
@@ -1764,7 +1696,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 new { ApplicationName = applicationName, Signal = signal.ToString() },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -1773,9 +1705,8 @@ WHERE
         /// Updates the given schedule.
         /// </summary>
         /// <param name="record">The schedule record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated record.</returns>
-        public ScheduleRecord UpdateSchedule(ScheduleRecord record, IDbTransaction transaction)
+        public ScheduleRecord UpdateSchedule(ScheduleRecord record)
         {
             const string Sql =
 @"UPDATE [BlueCollarSchedule]
@@ -1793,7 +1724,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 record,
-                transaction,
+                null,
                 null,
                 null);
 
@@ -1804,9 +1735,8 @@ WHERE
         /// Updates the given scheduled job.
         /// </summary>
         /// <param name="record">The scheduled job record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated record.</returns>
-        public ScheduledJobRecord UpdateScheduledJob(ScheduledJobRecord record, IDbTransaction transaction)
+        public ScheduledJobRecord UpdateScheduledJob(ScheduledJobRecord record)
         {
             const string Sql =
 @"UPDATE [BlueCollarScheduledJob]
@@ -1819,7 +1749,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 record,
-                transaction,
+                null,
                 null,
                 null);
 
@@ -1830,8 +1760,7 @@ WHERE
         /// Updates the scheduled job's order number.
         /// </summary>
         /// <param name="record">The scheduled job order record identifying the scheduled job to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void UpdateScheduledJobOrder(ScheduledJobOrderRecord record, IDbTransaction transaction)
+        public void UpdateScheduledJobOrder(ScheduledJobOrderRecord record)
         {
             const string QuerySql =
 @"SELECT [Number]
@@ -1880,7 +1809,7 @@ WHERE
 
             long number = record.Number, current, max;
 
-            using (var multi = this.connection.QueryMultiple(QuerySql, new { ScheduleId = record.ScheduleId, Id = record.Id }, transaction, null, null))
+            using (var multi = this.connection.QueryMultiple(QuerySql, new { ScheduleId = record.ScheduleId, Id = record.Id }, null, null, null))
             {
                 current = multi.Read<long>().FirstOrDefault();
                 max = multi.Read<long>().FirstOrDefault();
@@ -1916,7 +1845,7 @@ WHERE
                             Current = current,
                             Number = number
                         },
-                        transaction,
+                        null,
                         null,
                         null);
                 }
@@ -1927,9 +1856,8 @@ WHERE
         /// Updates the given worker.
         /// </summary>
         /// <param name="record">The worker record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated worker.</returns>
-        public WorkerRecord UpdateWorker(WorkerRecord record, IDbTransaction transaction)
+        public WorkerRecord UpdateWorker(WorkerRecord record)
         {
             const string Sql =
 @"UPDATE [BlueCollarWorker]
@@ -1948,7 +1876,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 record,
-                transaction,
+                null,
                 null,
                 null);
 
@@ -1960,8 +1888,7 @@ WHERE
         /// </summary>
         /// <param name="id">The ID of the worker to update status for.</param>
         /// <param name="status">The status to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        public void UpdateWorkerStatus(long id, WorkerStatus status, IDbTransaction transaction)
+        public void UpdateWorkerStatus(long id, WorkerStatus status)
         {
             const string Sql =
 @"UPDATE [BlueCollarWorker]
@@ -1979,7 +1906,7 @@ WHERE
                     Now = DateTime.UtcNow,
                     Status = status.ToString()
                 },
-                transaction,
+                null,
                 null,
                 null);
         }
@@ -1988,9 +1915,8 @@ WHERE
         /// Updates the given working record.
         /// </summary>
         /// <param name="record">The working record to update.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
         /// <returns>The updated working record.</returns>
-        public WorkingRecord UpdateWorking(WorkingRecord record, IDbTransaction transaction)
+        public WorkingRecord UpdateWorking(WorkingRecord record)
         {
             const string Sql =
 @"UPDATE [BlueCollarWorking]
@@ -2011,7 +1937,7 @@ WHERE
             this.connection.Execute(
                 Sql,
                 record,
-                transaction,
+                null,
                 null,
                 null);
 
@@ -2113,8 +2039,7 @@ WHERE
         /// </summary>
         /// <param name="id">The ID of the record to release the lock for.</param>
         /// <param name="tableName">The name of the table to release the record lock for.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        private void ReleaseLock(long id, string tableName, IDbTransaction transaction)
+        private void ReleaseLock(long id, string tableName)
         {
             const string Sql =
 @"UPDATE [{0}]
@@ -2132,7 +2057,7 @@ WHERE
             this.connection.Execute(
                 string.Format(CultureInfo.InvariantCulture, Sql, tableName),
                 new { Id = id, LockedUpdatedOn = DateTime.UtcNow },
-                transaction,
+                null,
                 null,
                 null);
         }

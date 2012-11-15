@@ -8,7 +8,6 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Specialized;
-    using System.Data;
     using System.IO;
     using System.Text;
     using System.Web;
@@ -40,10 +39,8 @@ namespace BlueCollar.Test
                 WorkingCount = 5
             };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.GetCounts(It.IsAny<string>(), It.IsAny<IDbTransaction>())).Returns(record);
+            repository.Setup(r => r.GetCounts(It.IsAny<string>())).Returns(record);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -104,13 +101,11 @@ namespace BlueCollar.Test
                 StartOn = new DateTime(2011, 1, 1, 0, 0, 0, DateTimeKind.Utc)
             };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.AcquireScheduleLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
-            repository.Setup(r => r.UpdateSchedule(It.IsAny<ScheduleRecord>(), It.IsAny<IDbTransaction>())).Returns(record);
+            repository.Setup(r => r.AcquireScheduleLock(It.IsAny<long>(), It.IsAny<DateTime>())).Returns(true);
+            repository.Setup(r => r.UpdateSchedule(It.IsAny<ScheduleRecord>())).Returns(record);
             repository
-                .Setup(r => r.CreateSchedule(It.IsAny<ScheduleRecord>(), It.IsAny<IDbTransaction>()))
+                .Setup(r => r.CreateSchedule(It.IsAny<ScheduleRecord>()))
                 .Returns(record)
                 .Callback(() => 
                 { 

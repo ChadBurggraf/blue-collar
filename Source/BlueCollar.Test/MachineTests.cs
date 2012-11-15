@@ -8,7 +8,6 @@ namespace BlueCollar.Test
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Threading;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Moq;
@@ -36,10 +35,8 @@ namespace BlueCollar.Test
         {
             SignalsRecord signals = new SignalsRecord() { QueueNames = "*", WorkerSignal = WorkerSignal.None, WorkingSignal = WorkingSignal.None };
 
-            var transaction = new Mock<IDbTransaction>();
-
             var repository = new Mock<IRepository>();
-            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>(), It.IsAny<IDbTransaction>())).Returns(signals);
+            repository.Setup(r => r.GetWorkingSignals(It.IsAny<long>(), It.IsAny<long?>())).Returns(signals);
 
             var factory = new Mock<IRepositoryFactory>();
             factory.Setup(f => f.Create()).Returns(repository.Object);
@@ -51,7 +48,7 @@ namespace BlueCollar.Test
                 Thread.Sleep(1500);
             }
 
-            repository.Verify(r => r.CreateWorker(It.Is<WorkerRecord>(w => w.ApplicationName == BlueCollarSection.Section.ApplicationName && w.Name == "Default" && w.MachineAddress == Machine.Address && w.MachineName == Machine.Name), It.IsAny<IDbTransaction>()));
+            repository.Verify(r => r.CreateWorker(It.Is<WorkerRecord>(w => w.ApplicationName == BlueCollarSection.Section.ApplicationName && w.Name == "Default" && w.MachineAddress == Machine.Address && w.MachineName == Machine.Name)));
         }
 
         /// <summary>

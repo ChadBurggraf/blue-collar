@@ -8,7 +8,6 @@ namespace BlueCollar.Dashboard
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Web;
 
     /// <summary>
@@ -109,7 +108,7 @@ namespace BlueCollar.Dashboard
                     {
                         if (acquired = AcquireScheduleLock(model.Id.Value))
                         {
-                            model = Repository.UpdateSchedule(model, null);
+                            model = Repository.UpdateSchedule(model);
                         }
                         else
                         {
@@ -123,12 +122,12 @@ namespace BlueCollar.Dashboard
                 }
                 else
                 {
-                    model = Repository.CreateSchedule(model, null);
+                    model = Repository.CreateSchedule(model);
                 }
 
                 if (acquired || (acquired = AcquireScheduleLock(model.Id.Value)))
                 {
-                    Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, null);
+                    Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules);
                 }
                 else
                 {
@@ -139,7 +138,7 @@ namespace BlueCollar.Dashboard
             {
                 if (acquired && model.Id != null && model.Id > 0)
                 {
-                    Repository.ReleaseScheduleLock(model.Id.Value, null);
+                    Repository.ReleaseScheduleLock(model.Id.Value);
                 }
             }
 

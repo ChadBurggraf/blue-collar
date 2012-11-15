@@ -8,7 +8,6 @@ namespace BlueCollar.Dashboard
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq;
     using System.Web;
 
@@ -101,7 +100,7 @@ namespace BlueCollar.Dashboard
                             foreach (ScheduledJobOrderRecord record in model.Numbers)
                             {
                                 record.ScheduleId = this.ScheduleId;
-                                Repository.UpdateScheduledJobOrder(record, null);
+                                Repository.UpdateScheduledJobOrder(record);
                             }
                         }
                         else
@@ -113,7 +112,7 @@ namespace BlueCollar.Dashboard
                     {
                         if (acquired)
                         {
-                            Repository.ReleaseScheduleLock(this.ScheduleId, null);
+                            Repository.ReleaseScheduleLock(this.ScheduleId);
                         }
                     }
                 }

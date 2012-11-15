@@ -59,7 +59,7 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                this.Repository.DeleteScheduledJob(this.Id, null);
+                this.Repository.DeleteScheduledJob(this.Id);
             }
             else
             {

@@ -36,8 +36,7 @@ namespace BlueCollar.Dashboard
                     ApplicationName,
                     QueryString["q"],
                     Helper.PageSize,
-                    Helper.PagingOffset(Helper.QueryIntValue("p")),
-                    null));
+                    Helper.PagingOffset(Helper.QueryIntValue("p"))));
         }
     }
 }

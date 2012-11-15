@@ -53,7 +53,7 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                WorkingDetailsRecord record = Repository.GetWorkingDetails(this.Id, null);
+                WorkingDetailsRecord record = Repository.GetWorkingDetails(this.Id);
 
                 if (record != null)
                 {

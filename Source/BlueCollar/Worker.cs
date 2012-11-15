@@ -8,7 +8,6 @@ namespace BlueCollar
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Linq;
@@ -293,20 +292,20 @@ namespace BlueCollar
                                 }
 
                                 HistoryRecord history = CreateHistory(record, HistoryStatus.Interrupted);
-                                history = repository.CreateHistory(history, null);
-                                repository.DeleteWorking(record.Id.Value, null);
+                                history = repository.CreateHistory(history);
+                                repository.DeleteWorking(record.Id.Value);
                                 record = null;
                             }
                             finally
                             {
                                 if (acquired && record != null)
                                 {
-                                    repository.ReleaseWorkingLock(record.Id.Value, null);
+                                    repository.ReleaseWorkingLock(record.Id.Value);
                                 }
                             }
                         }
 
-                        this.SetStatus(WorkerStatus.Stopped, repository, null);
+                        this.SetStatus(WorkerStatus.Stopped, repository);
                     }
                 }
             }
@@ -419,8 +418,8 @@ namespace BlueCollar
                             }
 
                             HistoryRecord history = CreateHistory(record, HistoryStatus.Canceled);
-                            history = repository.CreateHistory(history, null);
-                            repository.DeleteWorking(record.Id.Value, null);
+                            history = repository.CreateHistory(history);
+                            repository.DeleteWorking(record.Id.Value);
 
                             record = null;
                             this.currentRecord = null;
@@ -429,7 +428,7 @@ namespace BlueCollar
                         {
                             if (acquired && record != null)
                             {
-                                repository.ReleaseWorkingLock(record.Id.Value, null);
+                                repository.ReleaseWorkingLock(record.Id.Value);
                             }
                         }
                     }
@@ -459,17 +458,17 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                QueueRecord queued = repository.GetQueued(this.applicationName, queues, DateTime.UtcNow, null);
+                QueueRecord queued = repository.GetQueued(this.applicationName, queues, DateTime.UtcNow);
                 bool acquired = false;
 
                 try
                 {
-                    if (queued != null && (acquired = repository.AcquireQueuedLock(queued.Id.Value, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout), null)))
+                    if (queued != null && (acquired = repository.AcquireQueuedLock(queued.Id.Value, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout))))
                     {
                         working = CreateWorking(queued, this.id, queued.ScheduleId, DateTime.UtcNow);
-                        working = repository.CreateWorking(working, null);
+                        working = repository.CreateWorking(working);
 
-                        repository.DeleteQueued(queued.Id.Value, null);
+                        repository.DeleteQueued(queued.Id.Value);
                         string jobName = queued.JobName;
                         queued = null;
 
@@ -480,7 +479,7 @@ namespace BlueCollar
                 {
                     if (queued != null && acquired)
                     {
-                        repository.ReleaseQueuedLock(queued.Id.Value, null);
+                        repository.ReleaseQueuedLock(queued.Id.Value);
                     }
                 }
             }
@@ -543,7 +542,7 @@ namespace BlueCollar
 
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                foreach (WorkingRecord working in repository.GetWorkingForWorker(workerId, currentId, null))
+                foreach (WorkingRecord working in repository.GetWorkingForWorker(workerId, currentId))
                 {
                     if (working.Id != currentId)
                     {
@@ -555,8 +554,8 @@ namespace BlueCollar
                             if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
                             {
                                 HistoryRecord history = CreateHistory(record, HistoryStatus.Interrupted);
-                                repository.CreateHistory(history, null);
-                                repository.DeleteWorking(record.Id.Value, null);
+                                repository.CreateHistory(history);
+                                repository.DeleteWorking(record.Id.Value);
                                 record = null;
                             }
                             else
@@ -568,7 +567,7 @@ namespace BlueCollar
                         {
                             if (acquired && record != null)
                             {
-                                repository.ReleaseWorkingLock(record.Id.Value, null);
+                                repository.ReleaseWorkingLock(record.Id.Value);
                             }
                         }
                     }
@@ -637,8 +636,8 @@ namespace BlueCollar
                                     {
                                         if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
                                         {
-                                            history = repository.CreateHistory(history, null);
-                                            repository.DeleteWorking(record.Id.Value, null);
+                                            history = repository.CreateHistory(history);
+                                            repository.DeleteWorking(record.Id.Value);
                                             record = null;
                                         }
                                         else
@@ -650,7 +649,7 @@ namespace BlueCollar
                                     {
                                         if (acquired && record != null)
                                         {
-                                            repository.ReleaseWorkingLock(record.Id.Value, null);
+                                            repository.ReleaseWorkingLock(record.Id.Value);
                                         }
                                     }
                                 }
@@ -710,8 +709,8 @@ namespace BlueCollar
                                         {
                                             if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
                                             {
-                                                history = repository.CreateHistory(history, null);
-                                                repository.DeleteWorking(record.Id.Value, null);
+                                                history = repository.CreateHistory(history);
+                                                repository.DeleteWorking(record.Id.Value);
 
                                                 // Re-try?
                                                 if ((status == HistoryStatus.Failed
@@ -719,7 +718,7 @@ namespace BlueCollar
                                                     || status == HistoryStatus.TimedOut)
                                                     && (job.Retries == 0 || job.Retries >= record.TryNumber))
                                                 {
-                                                    repository.CreateQueued(CreateQueueRetry(record), null);
+                                                    repository.CreateQueued(CreateQueueRetry(record));
                                                 }
 
                                                 record = null;
@@ -733,7 +732,7 @@ namespace BlueCollar
                                         {
                                             if (acquired && record != null)
                                             {
-                                                repository.ReleaseWorkingLock(record.Id.Value, null);
+                                                repository.ReleaseWorkingLock(record.Id.Value);
                                             }
                                         }
                                     }
@@ -822,13 +821,13 @@ namespace BlueCollar
                                 && (recordId == null 
                                 || (acquiredWorking = this.AcquireWorkingLock(recordId.Value, repository))))
                             {
-                                signals = repository.GetWorkingSignals(this.id, recordId, null);
+                                signals = repository.GetWorkingSignals(this.id, recordId);
 
                                 if (signals != null
                                     && (signals.WorkerSignal != WorkerSignal.None
                                     || signals.WorkingSignal != WorkingSignal.None))
                                 {
-                                    repository.ClearWorkingSignalPair(this.id, recordId, null);
+                                    repository.ClearWorkingSignalPair(this.id, recordId);
                                 }
                             }
                             else 
@@ -840,13 +839,13 @@ namespace BlueCollar
                         {
                             if (this.hasWorkerLock)
                             {
-                                repository.ReleaseWorkerLock(workerId, null);
+                                repository.ReleaseWorkerLock(workerId);
                                 this.hasWorkerLock = false;
                             }
 
                             if (recordId != null && acquiredWorking)
                             {
-                                repository.ReleaseWorkingLock(recordId.Value, null);
+                                repository.ReleaseWorkingLock(recordId.Value);
                             }
                         }
                     }
@@ -939,7 +938,7 @@ namespace BlueCollar
         {
             using (IRepository repository = this.repositoryFactory.Create())
             {
-                this.SetStatus(status, repository, null);
+                this.SetStatus(status, repository);
             }
         }
 
@@ -948,8 +947,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="status">The status to set.</param>
         /// <param name="repository">The repository to use when accessing data.</param>
-        /// <param name="transaction">The transaction to use, if applicable.</param>
-        internal void SetStatus(WorkerStatus status, IRepository repository, IDbTransaction transaction)
+        internal void SetStatus(WorkerStatus status, IRepository repository)
         {
             WorkerStatus oldStatus;
             long workerId = this.id;
@@ -965,7 +963,7 @@ namespace BlueCollar
                     {
                         if (this.hasWorkerLock || (this.hasWorkerLock = this.AcquireWorkerLock(repository)))
                         {
-                            repository.UpdateWorkerStatus(workerId, status, transaction);
+                            repository.UpdateWorkerStatus(workerId, status);
                             this.Status = status;
                         }
                         else
@@ -977,7 +975,7 @@ namespace BlueCollar
                     {
                         if (this.hasWorkerLock)
                         {
-                            repository.ReleaseWorkerLock(workerId, null);
+                            repository.ReleaseWorkerLock(workerId);
                             this.hasWorkerLock = false;
                         }
                     }
@@ -1004,7 +1002,7 @@ namespace BlueCollar
 
             if (workerId > 0)
             {
-                while (!(acquired = repository.AcquireWorkerLock(workerId, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout), null)))
+                while (!(acquired = repository.AcquireWorkerLock(workerId, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout))))
                 {
                     if (--tries > 0)
                     {
@@ -1035,7 +1033,7 @@ namespace BlueCollar
             bool acquired = false;
             int tries = 10;
 
-            while (!(acquired = repository.AcquireWorkingLock(id, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout), null)))
+            while (!(acquired = repository.AcquireWorkingLock(id, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout))))
             {
                 if (--tries > 0)
                 {
@@ -1080,7 +1078,7 @@ namespace BlueCollar
                     {
                         using (IRepository repository = this.repositoryFactory.Create())
                         {
-                            repository.ReleaseWorkerLock(this.id, null);
+                            repository.ReleaseWorkerLock(this.id);
                             this.hasWorkerLock = false;
                         }
                     }
