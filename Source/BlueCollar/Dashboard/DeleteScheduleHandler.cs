@@ -60,18 +60,26 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                using (IDbTransaction transaction = Repository.BeginTransaction())
+                bool acquired = false;
+
+                try
                 {
-                    try
+                    if (acquired = AcquireScheduleLock(this.Id))
                     {
-                        Repository.DeleteSchedule(this.Id, transaction);
-                        Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, transaction);
-                        transaction.Commit();
+                        Repository.DeleteSchedule(this.Id, null);
+                        Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, null);
+                        acquired = false;
                     }
-                    catch
+                    else
                     {
-                        transaction.Rollback();
-                        throw;
+                        InternalServerError();
+                    }
+                }
+                finally
+                {
+                    if (acquired)
+                    {
+                        Repository.ReleaseScheduleLock(this.Id, null);
                     }
                 }
             }

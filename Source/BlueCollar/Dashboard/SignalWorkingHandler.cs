@@ -74,28 +74,34 @@ namespace BlueCollar.Dashboard
             {
                 if (model.Signal == WorkingSignal.Cancel)
                 {
-                    using (IDbTransaction transaction = Repository.BeginTransaction())
+                    bool acquired = false;
+
+                    try
                     {
-                        try
+                        if (acquired = AcquireWorkingLock(this.Id))
                         {
-                            WorkingRecord working = Repository.GetWorking(this.Id, transaction);
+                            WorkingRecord working = Repository.GetWorking(this.Id, null);
 
                             if (working != null && working.ApplicationName == ApplicationName)
                             {
                                 working.Signal = model.Signal;
-                                Repository.UpdateWorking(working, transaction);
+                                Repository.UpdateWorking(working, null);
                             }
                             else
                             {
                                 NotFound();
                             }
-
-                            transaction.Commit();
                         }
-                        catch
+                        else
                         {
-                            transaction.Rollback();
-                            throw;
+                            InternalServerError();
+                        }
+                    }
+                    finally
+                    {
+                        if (acquired)
+                        {
+                            Repository.ReleaseWorkingLock(this.Id, null);
                         }
                     }
                 }

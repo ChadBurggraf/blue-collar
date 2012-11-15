@@ -109,12 +109,13 @@ namespace BlueCollar.Dashboard
             if (this.ScheduleId > 0)
             {
                 model.ScheduleId = this.ScheduleId;
+                bool acquired = false;
 
-                using (IDbTransaction transaction = Repository.BeginTransaction())
+                try
                 {
-                    try
+                    if (acquired = AcquireScheduleLock(this.ScheduleId))
                     {
-                        ScheduleRecord schedule = Repository.GetSchedule(this.ScheduleId, transaction);
+                        ScheduleRecord schedule = Repository.GetSchedule(this.ScheduleId, null);
 
                         if (schedule != null)
                         {
@@ -124,7 +125,7 @@ namespace BlueCollar.Dashboard
 
                                 if (model.Id != null && model.Id > 0)
                                 {
-                                    model = Repository.UpdateScheduledJob(model, transaction);
+                                    model = Repository.UpdateScheduledJob(model, null);
                                 }
                                 else
                                 {
@@ -133,22 +134,26 @@ namespace BlueCollar.Dashboard
                             }
                             else
                             {
-                                model = Repository.CreateScheduledJob(model, transaction);
+                                model = Repository.CreateScheduledJob(model, null);
                             }
 
-                            Repository.SignalWorkers(schedule.ApplicationName, WorkerSignal.RefreshSchedules, transaction);
+                            Repository.SignalWorkers(schedule.ApplicationName, WorkerSignal.RefreshSchedules, null);
                         }
                         else
                         {
                             NotFound();
                         }
-
-                        transaction.Commit();
                     }
-                    catch
+                    else
                     {
-                        transaction.Rollback();
-                        throw;
+                        InternalServerError();
+                    }
+                }
+                finally
+                {
+                    if (acquired)
+                    {
+                        Repository.ReleaseScheduleLock(this.ScheduleId, null);
                     }
                 }
             }

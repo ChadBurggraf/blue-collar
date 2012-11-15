@@ -844,7 +844,12 @@ LIMIT @Limit OFFSET @Offset;");
 FROM [BlueCollarQueue]
 WHERE
     [ApplicationName] = @ApplicationName
-    AND [QueuedOn] <= @QueuedBefore");
+    AND [QueuedOn] <= @QueuedBefore
+    AND 
+    (
+        [Locked] = 0
+        OR [LockedUpdatedOn] IS NULL
+    )");
 
             if (!queueFilters.IncludesAllQueues)
             {

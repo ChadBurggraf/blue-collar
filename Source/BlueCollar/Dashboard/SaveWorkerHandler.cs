@@ -89,38 +89,44 @@ namespace BlueCollar.Dashboard
             model.QueueNames = QueueNameFilters.Parse(model.QueueNames).ToString();
             model.UpdatedOn = DateTime.UtcNow;
 
-            using (IDbTransaction transaction = Repository.BeginTransaction())
+            bool acquired = false;
+
+            try
             {
-                try
+                if ("PUT".Equals(this.Verb, StringComparison.OrdinalIgnoreCase))
                 {
-                    if ("PUT".Equals(this.Verb, StringComparison.OrdinalIgnoreCase))
+                    model.Id = Helper.RouteIntValue(0);
+
+                    if (model.Id != null && model.Id > 0)
                     {
-                        model.Id = Helper.RouteIntValue(0);
-                        
-                        if (model.Id != null && model.Id > 0)
+                        if (acquired = AcquireWorkerLock(model.Id.Value))
                         {
-                            WorkerRecord existing = Repository.GetWorker(model.Id.Value, transaction);
+                            WorkerRecord existing = Repository.GetWorker(model.Id.Value, null);
                             model.Signal = existing.Signal;
                             model.Status = existing.Status;
 
-                            model = Repository.UpdateWorker(model, transaction);
+                            model = Repository.UpdateWorker(model, null);
                         }
                         else
                         {
-                            BadRequest();
+                            InternalServerError();
                         }
                     }
                     else
                     {
-                        model = Repository.CreateWorker(model, transaction);
+                        BadRequest();
                     }
-
-                    transaction.Commit();
                 }
-                catch
+                else
                 {
-                    transaction.Rollback();
-                    throw;
+                    model = Repository.CreateWorker(model, null);
+                }
+            }
+            finally
+            {
+                if (acquired && model.Id != null && model.Id > 0)
+                {
+                    Repository.ReleaseWorkerLock(model.Id.Value, null);
                 }
             }
 

@@ -247,10 +247,10 @@ namespace BlueCollar
 
                 if (acquired)
                 {
-                    DateTime? scheduleDate;
-
                     try
                     {
+                        DateTime? scheduleDate;
+
                         if (this.CanScheduleBeEnqueued(schedule, begin, end, out scheduleDate))
                         {
                             List<QueueRecord> queues = new List<QueueRecord>();

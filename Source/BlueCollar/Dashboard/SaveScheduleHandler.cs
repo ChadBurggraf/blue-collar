@@ -97,36 +97,49 @@ namespace BlueCollar.Dashboard
             }
 
             model.ApplicationName = ApplicationName;
+            bool acquired = false;
 
-            using (IDbTransaction transaction = Repository.BeginTransaction())
+            try
             {
-                try
+                if ("PUT".Equals(this.Verb, StringComparison.OrdinalIgnoreCase))
                 {
-                    if ("PUT".Equals(this.Verb, StringComparison.OrdinalIgnoreCase))
-                    {
-                        model.Id = Helper.RouteIntValue(0);
+                    model.Id = Helper.RouteIntValue(0);
 
-                        if (model.Id != null && model.Id > 0)
+                    if (model.Id != null && model.Id > 0)
+                    {
+                        if (acquired = AcquireScheduleLock(model.Id.Value))
                         {
-                            model = Repository.UpdateSchedule(model, transaction);
+                            model = Repository.UpdateSchedule(model, null);
                         }
                         else
                         {
-                            BadRequest();
+                            InternalServerError();
                         }
                     }
                     else
                     {
-                        model = Repository.CreateSchedule(model, transaction);
+                        BadRequest();
                     }
-
-                    Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, transaction);
-                    transaction.Commit();
                 }
-                catch
+                else
                 {
-                    transaction.Rollback();
-                    throw;
+                    model = Repository.CreateSchedule(model, null);
+                }
+
+                if (acquired || (acquired = AcquireScheduleLock(model.Id.Value)))
+                {
+                    Repository.SignalWorkers(ApplicationName, WorkerSignal.RefreshSchedules, null);
+                }
+                else
+                {
+                    InternalServerError();
+                }
+            }
+            finally
+            {
+                if (acquired && model.Id != null && model.Id > 0)
+                {
+                    Repository.ReleaseScheduleLock(model.Id.Value, null);
                 }
             }
 

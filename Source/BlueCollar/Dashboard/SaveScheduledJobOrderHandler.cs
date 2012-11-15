@@ -92,22 +92,28 @@ namespace BlueCollar.Dashboard
             {
                 if (model.Numbers.Count > 0)
                 {
-                    using (IDbTransaction transaction = Repository.BeginTransaction())
+                    bool acquired = false;
+
+                    try
                     {
-                        try
+                        if (acquired = AcquireScheduleLock(this.ScheduleId))
                         {
                             foreach (ScheduledJobOrderRecord record in model.Numbers)
                             {
                                 record.ScheduleId = this.ScheduleId;
-                                Repository.UpdateScheduledJobOrder(record, transaction);
+                                Repository.UpdateScheduledJobOrder(record, null);
                             }
-
-                            transaction.Commit();
                         }
-                        catch
+                        else
                         {
-                            transaction.Rollback();
-                            throw;
+                            InternalServerError();
+                        }
+                    }
+                    finally
+                    {
+                        if (acquired)
+                        {
+                            Repository.ReleaseScheduleLock(this.ScheduleId, null);
                         }
                     }
                 }

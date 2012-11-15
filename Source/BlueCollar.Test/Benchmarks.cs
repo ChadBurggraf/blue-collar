@@ -61,6 +61,9 @@ namespace BlueCollar.Test
             var transaction = new Mock<IDbTransaction>();
 
             var repository = new Mock<IRepository>();
+            repository.Setup(r => r.AcquireQueuedLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkerLock(1, It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
+            repository.Setup(r => r.AcquireWorkingLock(It.IsAny<long>(), It.IsAny<DateTime>(), It.IsAny<IDbTransaction>())).Returns(true);
             repository.Setup(r => r.BeginTransaction()).Returns(transaction.Object);
             repository.Setup(r => r.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction.Object);
             repository.Setup(r => r.CreateWorking(It.IsAny<WorkingRecord>(), It.IsAny<IDbTransaction>())).Returns((WorkingRecord r, IDbTransaction t) => { r.Id = 1; return r; });

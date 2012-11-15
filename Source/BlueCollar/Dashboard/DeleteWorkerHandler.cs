@@ -60,17 +60,51 @@ namespace BlueCollar.Dashboard
         {
             if (this.Id > 0)
             {
-                using (IDbTransaction transaction = this.Repository.BeginTransaction())
-                {
-                    foreach (WorkingRecord working in this.Repository.GetWorkingForWorker(this.Id, null, transaction))
-                    {
-                        HistoryRecord history = Worker.CreateHistory(working, HistoryStatus.Interrupted);
-                        this.Repository.DeleteWorking(working.Id.Value, transaction);
-                        this.Repository.CreateHistory(history, transaction);
-                    }
+                bool workerAcquired = false, workingAcquired = false;
 
-                    this.Repository.DeleteWorker(this.Id, transaction);
-                    transaction.Commit();
+                try
+                {
+                    if (workerAcquired = AcquireWorkerLock(this.Id))
+                    {
+                        foreach (WorkingRecord working in this.Repository.GetWorkingForWorker(this.Id, null, null))
+                        {
+                            try
+                            {
+                                if (workingAcquired = AcquireWorkingLock(working.Id.Value))
+                                {
+                                    HistoryRecord history = Worker.CreateHistory(working, HistoryStatus.Interrupted);
+                                    this.Repository.DeleteWorking(working.Id.Value, null);
+                                    this.Repository.CreateHistory(history, null);
+                                    workingAcquired = false;
+                                }
+                                else
+                                {
+                                    InternalServerError();
+                                }
+                            }
+                            finally
+                            {
+                                if (workingAcquired)
+                                {
+                                    Repository.ReleaseWorkingLock(working.Id.Value, null);
+                                    workingAcquired = false;
+                                }
+                            }
+                        }
+
+                        Repository.DeleteWorker(this.Id, null);
+                    }
+                    else
+                    {
+                        InternalServerError();
+                    }
+                }
+                finally
+                {
+                    if (workerAcquired)
+                    {
+                        Repository.ReleaseWorkerLock(this.Id, null);
+                    }
                 }
             }
             else
