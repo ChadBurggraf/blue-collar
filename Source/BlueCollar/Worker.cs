@@ -832,7 +832,7 @@ namespace BlueCollar
                             }
                             else 
                             {
-                                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Woker {0} ({1}) failed to acquire the worker lock or the working record lock during the signal loop.", workerId, workerName));
+                                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the worker lock or the working record lock during the signal loop.", workerId, workerName));
                             }
                         }
                         finally
@@ -1025,15 +1025,15 @@ namespace BlueCollar
         /// <summary>
         /// Acquires the working record lock for the given ID.
         /// </summary>
-        /// <param name="id">The ID of the working record to acquire the lock for.</param>
+        /// <param name="recordId">The ID of the working record to acquire the lock for.</param>
         /// <param name="repository">The repository to use.</param>
         /// <returns>True if the lock was acquired, false otherwise.</returns>
-        private bool AcquireWorkingLock(long id, IRepository repository)
+        private bool AcquireWorkingLock(long recordId, IRepository repository)
         {
             bool acquired = false;
             int tries = 10;
 
-            while (!(acquired = repository.AcquireWorkingLock(id, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout))))
+            while (!(acquired = repository.AcquireWorkingLock(recordId, DateTime.UtcNow.AddMilliseconds(-this.lockTimeout))))
             {
                 if (--tries > 0)
                 {

@@ -7,10 +7,12 @@
 namespace BlueCollar.Console
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Defines the possible <see cref="Bootstraps.PullUp()"/> result types.
     /// </summary>
+    [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Pullup", Justification = "Reviewed.")]
     public enum BootstrapsPullupResultType
     {
         /// <summary>

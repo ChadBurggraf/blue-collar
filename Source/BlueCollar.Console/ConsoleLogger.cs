@@ -149,6 +149,11 @@ namespace BlueCollar.Console
         /// <param name="e">The event arguments.</param>
         public void Log(EventLoggerEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException("e", "e cannot be null.");
+            }
+
             switch (e.EventType)
             {
                 case EventLoggerEventType.Debug:

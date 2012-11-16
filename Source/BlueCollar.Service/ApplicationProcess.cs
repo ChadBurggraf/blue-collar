@@ -9,8 +9,11 @@ namespace BlueCollar.Service
     using System;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
+    using System.Security;
+    using System.Security.Permissions;
     using System.Text.RegularExpressions;
     using BlueCollar;
     using NLog;
@@ -18,6 +21,7 @@ namespace BlueCollar.Service
     /// <summary>
     /// Represents an application and its associated process.
     /// </summary>
+    [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemandsFxCopRule", Justification = "Conflicting recommendations.")]
     public sealed class ApplicationProcess : IDisposable
     {
         private static readonly Regex FrameworkExp = new Regex(@"^3\.5|4\.0$", RegexOptions.Compiled);
@@ -396,12 +400,12 @@ namespace BlueCollar.Service
                 if (force)
                 {
                     this.KillProcess();
-                    this.logger.Info("The application at '{0}' has been forced to exit.", this.Path);
+                    this.logger.Info(CultureInfo.InvariantCulture, "The application at '{0}' has been forced to exit.", this.Path);
                 }
                 else if (this.process != null)
                 {
                     this.process.StandardInput.WriteLine("exit");
-                    this.logger.Info("The application at '{0}' has been issued an exit command.", this.Path);
+                    this.logger.Info(CultureInfo.InvariantCulture, "The application at '{0}' has been issued an exit command.", this.Path);
                 }
             }
         }
@@ -521,7 +525,7 @@ namespace BlueCollar.Service
                     this.logger.Info(output);
                 }
 
-                this.logger.Info("The application at '{0}' has exited.", this.Path);
+                this.logger.Info(CultureInfo.InvariantCulture, "The application at '{0}' has exited.", this.Path);
             }
             else
             {
@@ -530,7 +534,7 @@ namespace BlueCollar.Service
                     this.logger.Error(output);
                 }
 
-                this.logger.Error("The application at '{0}' has exited with an error.", this.Path);
+                this.logger.Error(CultureInfo.InvariantCulture, "The application at '{0}' has exited with an error.", this.Path);
             }
 
             if (this.Exited != null)

@@ -8,6 +8,7 @@ namespace BlueCollar
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -23,33 +24,12 @@ namespace BlueCollar
         private static readonly Random Rand = new Random();
 
         /// <summary>
-        /// Adds a range of items to the list.
-        /// </summary>
-        /// <typeparam name="T">The type of items in the list.</typeparam>
-        /// <param name="list">The list to add to.</param>
-        /// <param name="collection">The collection of items to add.</param>
-        public static void AddRange<T>(this IList<T> list, IEnumerable<T> collection)
-        {
-            if (list == null)
-            {
-                throw new ArgumentNullException("list", "list cannot be null.");
-            }
-
-            if (collection != null)
-            {
-                foreach (T item in collection)
-                {
-                    list.Add(item);
-                }
-            }
-        }
-
-        /// <summary>
         /// Converts a string value into an enum.
         /// </summary>
         /// <typeparam name="T">The type of the enum to convert.</typeparam>
         /// <param name="value">The string value to convert.</param>
         /// <returns>The converted enum value.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static T AsEnum<T>(this string value) where T : struct
         {
             if (!string.IsNullOrEmpty(value))
@@ -68,6 +48,7 @@ namespace BlueCollar
         /// <param name="left">The left dictionary to compare.</param>
         /// <param name="right">The right dictionary to compare.</param>
         /// <returns>True if the dictionaries are sequence equal, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static bool DictionarySequenceEqual<TKey, TValue>(this IDictionary<TKey, TValue> left, IDictionary<TKey, TValue> right)
         {
             left = left ?? new Dictionary<TKey, TValue>();
@@ -104,6 +85,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="value">The value to get the floor value of.</param>
         /// <returns>The floor value.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static DateTime FloorWithSeconds(this DateTime value)
         {
             return ((DateTime?)value).FloorWithSeconds().Value;
@@ -114,6 +96,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="value">The value to get the floor value of.</param>
         /// <returns>The floor value.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static DateTime? FloorWithSeconds(this DateTime? value)
         {
             if (value != null)
@@ -200,6 +183,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>True if the type is a nullable type, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static bool IsNullable(this Type type)
         {
             if (type == null)
@@ -215,6 +199,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="value">The <see cref="DateTime"/> to normalize.</param>
         /// <returns>The normalized <see cref="DateTime"/>.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static DateTime NormalizeToUtc(this DateTime value)
         {
             return NormalizeToUtc(value as DateTime?).Value;
@@ -225,6 +210,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="value">The <see cref="DateTime"/> to normalize.</param>
         /// <returns>The normalized <see cref="DateTime"/>.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static DateTime? NormalizeToUtc(this DateTime? value)
         {
             if (value != null)
@@ -254,6 +240,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="value">The value to randomize.</param>
         /// <returns>A randomized value.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static int Randomize(this int value)
         {
             return value.Randomize(10);
@@ -267,6 +254,7 @@ namespace BlueCollar
         /// <param name="value">The value to randomize.</param>
         /// <param name="percent">The percentage of the value to randomize by.</param>
         /// <returns>A randomized value.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static int Randomize(this int value, int percent)
         {
             if (percent < 1 || percent > 100)
@@ -292,6 +280,7 @@ namespace BlueCollar
         /// </summary>
         /// <param name="resourceName">The name of the resource to read.</param>
         /// <returns>The contents of the resource.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static string ReadResourceContents(string resourceName)
         {
             Stream stream = null;
@@ -322,6 +311,7 @@ namespace BlueCollar
         /// <param name="value">The string to convert.</param>
         /// <param name="separator">The separator to use.</param>
         /// <returns>The converted string.</returns>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public static string ToLowercaseWithSeparator(this string value, char separator)
         {
             value = (value ?? string.Empty).Trim();

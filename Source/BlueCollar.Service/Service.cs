@@ -9,6 +9,8 @@ namespace BlueCollar.Service
     using System;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Security;
@@ -22,7 +24,8 @@ namespace BlueCollar.Service
     /// </summary>
     [SecurityCritical]
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-    [HostProtection(SecurityAction.Demand, SharedState = true, Synchronization = true, ExternalProcessMgmt = true, SelfAffectingProcessMgmt = true)]
+    //[HostProtection(SecurityAction.Demand, SharedState = true, Synchronization = true, ExternalProcessMgmt = true, SelfAffectingProcessMgmt = true)]
+    [SuppressMessage("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces", Justification = "Reviewed.")]
     public partial class Service : ServiceBase
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -195,7 +198,7 @@ namespace BlueCollar.Service
             {
                 if (this.isRunning)
                 {
-                    Logger.Info("A change was detected in the configuration file at '{0}'. Refreshing the application list.", BlueCollarServiceSection.Section.ElementInformation.Source);
+                    Logger.Info(CultureInfo.InvariantCulture, "A change was detected in the configuration file at '{0}'. Refreshing the application list.", BlueCollarServiceSection.Section.ElementInformation.Source);
                     this.coordinator.StartAndRefresh(GetApplicationElements());
                 }
             }

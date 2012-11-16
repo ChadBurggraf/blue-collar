@@ -87,7 +87,9 @@
     <MakeDir Directories="$(BuildDir)\Schemas"/>
     <ItemGroup>
       <Schemas Include="$(SourceDir)\BlueCollar\SqlServer.Schema.sql"/>
+      <Schemas Include="$(SourceDir)\BlueCollar\SqlServer.Upgrade.1.1.sql"/>
       <Schemas Include="$(SourceDir)\BlueCollar.SQLiteRepository\SQLite.Schema.sql"/>
+      <Schemas Include="$(SourceDir)\BlueCollar.SQLiteRepository\SQLite.Upgrade.1.1.sql"/>
     </ItemGroup>
     <Copy SourceFiles="@(Schemas)" DestinationFolder="$(BuildDir)\Schemas"/>
     

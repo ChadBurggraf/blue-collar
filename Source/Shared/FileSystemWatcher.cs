@@ -8,6 +8,7 @@ namespace BlueCollar
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -22,6 +23,7 @@ namespace BlueCollar
     /// </summary>
     [SecurityCritical]
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
+    [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemandsFxCopRule", Justification = "Conflicting recommendations.")]
     internal sealed class FileSystemWatcher : IDisposable
     {
         #region Private Fields
@@ -50,6 +52,7 @@ namespace BlueCollar
         /// Initializes a new instance of the FileSystemWatcher class.
         /// </summary>
         /// <param name="path">The directory to monitor, in standard or Universal Naming Convention (UNC) notation.</param>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally.")]
         public FileSystemWatcher(string path)
         {
             this.innerWatcher = new System.IO.FileSystemWatcher(path);
@@ -159,6 +162,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the filter string used to determine what files are monitored in a directory.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally,")]
         public string Filter
         {
             get { return this.innerWatcher.Filter; }
@@ -168,6 +172,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets a value indicating whether subdirectories within the specified path should be monitored.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally,")]
         public bool IncludeSubdirectories
         {
             get { return this.innerWatcher.IncludeSubdirectories; }
@@ -177,6 +182,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the size of the internal buffer.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally,")]
         public int InternalBufferSize
         {
             get { return this.innerWatcher.InternalBufferSize; }
@@ -191,6 +197,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the type of changes to watch for.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally,")]
         public NotifyFilters NotifyFilter
         {
             get { return this.innerWatcher.NotifyFilter; }
@@ -200,6 +207,7 @@ namespace BlueCollar
         /// <summary>
         /// Gets or sets the path of the directory to watch.
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Shared by multiple projects internally,")]
         public string Path
         {
             get { return this.innerWatcher.Path; }

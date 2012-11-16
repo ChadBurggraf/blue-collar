@@ -16,3 +16,7 @@ using System.Runtime.InteropServices;
 #if DEBUG
 [assembly: InternalsVisibleTo("BlueCollar.Test")]
 #endif
+
+[assembly: SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "BlueCollar.Dashboard", Justification = "MVC conventions.")]
+[assembly: SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "BlueCollar.Dashboard.Controllers", Justification = "MVC conventions.")]
+[assembly: SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "BlueCollar.Dashboard.Models", Justification = "MVC conventions.")]

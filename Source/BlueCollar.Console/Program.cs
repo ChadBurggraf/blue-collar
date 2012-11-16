@@ -21,6 +21,7 @@ namespace BlueCollar.Console
     /// </summary>
     [SecurityCritical]
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
+    [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemandsFxCopRule", Justification = "Conflicting recommendations.")]
     public static class Program
     {
         private static readonly object Locker = new object();

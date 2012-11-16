@@ -35,7 +35,9 @@
           <Directory Id="SchemasFolder" Name="Schemas">
             <Component Id="Schemas" Guid="6B8DB8CF-0F0E-4CC0-BB05-4E8D723B95D0">
               <File Id="SqlServerSchemaSql" Name="SqlServer.Schema.sql" DiskId="1" Source="Schemas\SqlServer.Schema.sql" KeyPath="yes" />
+              <File Id="SqlServerUpgrade11Sql" Name="SqlServer.Upgrade.1.1.sql" DiskId="1" Source="Schemas\SqlServer.Upgrade.1.1.sql" />
               <File Id="SQLiteSchemaSql" Name="SQLite.Schema.sql" DiskId="1" Source="Schemas\SQLite.Schema.sql" />
+              <File Id="SQLiteUpgrade11Sql" Name="SQLite.Upgrade.1.1.sql" DiskId="1" Source="Schemas\SQLite.Upgrade.1.1.sql" />
             </Component>
           </Directory>
           <Directory Id="ServiceFolder" Name="Service">

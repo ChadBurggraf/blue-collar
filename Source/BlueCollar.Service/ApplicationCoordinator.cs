@@ -10,8 +10,10 @@ namespace BlueCollar.Service
     using System.Collections.Generic;
     using System.Configuration;
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Security;
     using System.Security.Permissions;
     using System.Threading;
     using NLog;
@@ -102,6 +104,7 @@ namespace BlueCollar.Service
         /// Gets a collection of application paths currently being coordinated by this instance.
         /// </summary>
         /// <returns>A collection of application paths.</returns>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Performance.")]
         public IEnumerable<string> GetCoordinatedApplicationPaths()
         {
             lock (this.locker)
@@ -132,7 +135,7 @@ namespace BlueCollar.Service
                 apps = this.applications.ToArray();
             }
 
-            this.logger.Info("Starting {0} applications.", apps.Length);
+            this.logger.Info(CultureInfo.InvariantCulture, "Starting {0} applications.", apps.Length);
 
             foreach (ApplicationProcess application in apps)
             {
@@ -156,7 +159,7 @@ namespace BlueCollar.Service
         private void ApplicationExited(object sender, EventArgs e)
         {
             ApplicationProcess application = (ApplicationProcess)sender;
-            this.logger.Info("Application at '{0}' has exited and will be re-started.", application.Path);
+            this.logger.Info(CultureInfo.InvariantCulture, "Application at '{0}' has exited and will be re-started.", application.Path);
             this.StartApplication(sender);
         }
 
@@ -259,6 +262,7 @@ namespace BlueCollar.Service
         /// <param name="application">The application to initialize.</param>
         /// <param name="element">The configuration element to initialize the application from.</param>
         /// <returns>True if the application was initialized successfully, false otherwise.</returns>
+        [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "configPath", Justification = "Reviewed.")]
         private bool SetApplicationProperties(ApplicationProcess application, ApplicationElement element)
         {
             bool success = true;
@@ -333,7 +337,7 @@ namespace BlueCollar.Service
                 if (!this.IsRunning || disposing)
                 {
                     this.isRunning = false;
-                    this.logger.Info("Stopping {0} applications.", this.applications.Count);
+                    this.logger.Info(CultureInfo.InvariantCulture, "Stopping {0} applications.", this.applications.Count);
 
                     foreach (ApplicationProcess application in this.applications)
                     {
