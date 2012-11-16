@@ -7,8 +7,11 @@
 namespace BlueCollar.Test
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
+    using System.Security;
+    using System.Security.Permissions;
     using BlueCollar.Service;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using NLog;
@@ -17,6 +20,9 @@ namespace BlueCollar.Test
     /// Application coordinator tests.
     /// </summary>
     [TestClass]
+    [SecurityCritical]
+    [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
+    [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemandsFxCopRule", Justification = "Conflicting recommendations.")]
     public sealed class ApplicationCoordinatorTests
     {
         private static readonly Logger Logger = LogManager.CreateNullLogger();

@@ -621,124 +621,11 @@ namespace BlueCollar
                             // If we failed to de-serialize, fail the job.
                             if (job == null)
                             {
-                                HistoryRecord history = CreateHistory(record, HistoryStatus.Failed);
-
-                                if (ex != null)
-                                {
-                                    history.Exception = new ExceptionXElement(ex).ToString();
-                                }
-
-                                using (IRepository repository = this.repositoryFactory.Create())
-                                {
-                                    bool acquired = false;
-
-                                    try
-                                    {
-                                        if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
-                                        {
-                                            history = repository.CreateHistory(history);
-                                            repository.DeleteWorking(record.Id.Value);
-                                            record = null;
-                                        }
-                                        else
-                                        {
-                                            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the working record lock for {2} during the run loop.", workerName, workerId, record.Id));
-                                        }
-                                    }
-                                    finally
-                                    {
-                                        if (acquired && record != null)
-                                        {
-                                            repository.ReleaseWorkingLock(record.Id.Value);
-                                        }
-                                    }
-                                }
+                                this.FailNonSerializableJob(record, ex);
                             }
                             else
                             {
-                                // Update this instance's current record so we can interrupt
-                                // execution if necessary.
-                                lock (this.runLocker)
-                                {
-                                    this.currentRecord = record;
-                                }
-
-                                // Execute the job.
-                                bool success = this.ExecuteJob(job, out ex);
-
-                                // Acquire the run lock and move the job from the working
-                                // state to the history state, including the execution results.
-                                lock (this.runLocker)
-                                {
-                                    record = this.currentRecord;
-                                    HistoryStatus status = HistoryStatus.Succeeded;
-                                    string exceptionString = null;
-
-                                    if (success)
-                                    {
-                                        this.logger.Info("Worker {0} ({1}) executed '{2}' successfully.", workerName, workerId, record.JobName);
-                                    }
-                                    else
-                                    {
-                                        if (ex as TimeoutException != null)
-                                        {
-                                            status = HistoryStatus.TimedOut;
-                                            this.logger.Warn("Worker {0} ({1}) timed out '{2}'.", workerName, workerId, record.JobName);
-                                        }
-                                        else
-                                        {
-                                            status = HistoryStatus.Failed;
-
-                                            if (ex != null)
-                                            {
-                                                exceptionString = new ExceptionXElement(ex).ToString();
-                                            }
-
-                                            this.logger.Warn("Worker {0} ({1}) encountered an exception during execution of '{2}'.", workerName, workerId, record.JobName);
-                                        }
-                                    }
-
-                                    HistoryRecord history = CreateHistory(this.currentRecord, status);
-                                    history.Exception = exceptionString;
-
-                                    using (IRepository repository = this.repositoryFactory.Create())
-                                    {
-                                        bool acquired = false;
-
-                                        try
-                                        {
-                                            if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
-                                            {
-                                                history = repository.CreateHistory(history);
-                                                repository.DeleteWorking(record.Id.Value);
-
-                                                // Re-try?
-                                                if ((status == HistoryStatus.Failed
-                                                    || status == HistoryStatus.Interrupted
-                                                    || status == HistoryStatus.TimedOut)
-                                                    && (job.Retries == 0 || job.Retries >= record.TryNumber))
-                                                {
-                                                    repository.CreateQueued(CreateQueueRetry(record));
-                                                }
-
-                                                record = null;
-                                            }
-                                            else
-                                            {
-                                                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the working record lock for {2} during the run loop.", workerName, workerId, record.Id));
-                                            }
-                                        }
-                                        finally
-                                        {
-                                            if (acquired && record != null)
-                                            {
-                                                repository.ReleaseWorkingLock(record.Id.Value);
-                                            }
-                                        }
-                                    }
-
-                                    this.currentRecord = null;
-                                }
+                                this.ProcessJobExecution(record, job);
                             }
 
                             needsRest = false;
@@ -786,14 +673,12 @@ namespace BlueCollar
 
                 try
                 {
-                    // Prun any orphans that were abandoned for any reason.
+                    // Prune any orphans that were abandoned for any reason.
                     this.PruneOrphans();
 
                     WorkerStatus status;
                     long? recordId = null;
-                    long workerId = this.id;
-                    string workerName = this.name;
-
+                    
                     lock (this.statusLocker)
                     {
                         status = this.Status;
@@ -807,109 +692,11 @@ namespace BlueCollar
                         }
                     }
 
-                    SignalsRecord signals = null;
-
-                    // Load the current signals from the repository.
-                    using (IRepository repository = this.repositoryFactory.Create())
-                    {
-                        bool acquiredWorking = false;
-
-                        try
-                        {
-                            if ((this.hasWorkerLock 
-                                || (this.hasWorkerLock = this.AcquireWorkerLock(repository)))
-                                && (recordId == null 
-                                || (acquiredWorking = this.AcquireWorkingLock(recordId.Value, repository))))
-                            {
-                                signals = repository.GetWorkingSignals(this.id, recordId);
-
-                                if (signals != null
-                                    && (signals.WorkerSignal != WorkerSignal.None
-                                    || signals.WorkingSignal != WorkingSignal.None))
-                                {
-                                    repository.ClearWorkingSignalPair(this.id, recordId);
-                                }
-                            }
-                            else 
-                            {
-                                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the worker lock or the working record lock during the signal loop.", workerId, workerName));
-                            }
-                        }
-                        finally
-                        {
-                            if (this.hasWorkerLock)
-                            {
-                                repository.ReleaseWorkerLock(workerId);
-                                this.hasWorkerLock = false;
-                            }
-
-                            if (recordId != null && acquiredWorking)
-                            {
-                                repository.ReleaseWorkingLock(recordId.Value);
-                            }
-                        }
-                    }
+                    SignalsRecord signals = this.GetCurrentSignals(recordId);
 
                     if (signals != null)
                     {
-                        bool refreshQueues = false;
-
-                        // Refresh the queues we're processing.
-                        lock (this.runLocker)
-                        {
-                            QueueNameFilters filters = QueueNameFilters.Parse(signals.QueueNames);
-
-                            if (!this.queueFilters.Equals(filters))
-                            {
-                                this.queueFilters = QueueNameFilters.Parse(signals.QueueNames);
-                                refreshQueues = true;
-                            }
-                        }
-
-                        // Perform the signalled operation, if applicable.
-                        if (signals.WorkerSignal == WorkerSignal.Stop)
-                        {
-                            this.logger.Debug("Worker {0} ({1}) received a signal to stop.", this.name, this.id);
-                            this.Stop(false);
-                        }
-                        else
-                        {
-                            if (signals.WorkingSignal == WorkingSignal.Cancel)
-                            {
-                                this.logger.Debug("Worker {0} ({1}) received a signal to cancel its current job.", this.name, this.id);
-                                this.CancelCurrent();
-                            }
-
-                            if (signals.WorkerSignal == WorkerSignal.Start)
-                            {
-                                this.logger.Debug("Worker {0} ({1}) received a signal to start.", this.name, this.id);
-                                this.Start();
-                            }
-
-                            lock (this.statusLocker)
-                            {
-                                status = this.Status;
-                            }
-
-                            if (status == WorkerStatus.Working)
-                            {
-                                if (this.SchedulerEnabled)
-                                {
-                                    if (refreshQueues)
-                                    {
-                                        this.scheduler.QueueFilters = new QueueNameFilters(this.queueFilters.Include, this.queueFilters.Exclude);
-                                    }
-
-                                    if (signals.WorkerSignal == WorkerSignal.RefreshSchedules)
-                                    {
-                                        this.logger.Debug("Worker {0} ({1}) received a signal to refresh its schedules.", this.name, this.id);
-                                        this.scheduler.RefreshSchedules();
-                                    }
-
-                                    this.scheduler.EnqueueScheduledJobs();
-                                }
-                            }
-                        }
+                        this.ProcessSignals(signals, status);
                     }
                     else
                     {
@@ -1096,6 +883,103 @@ namespace BlueCollar
         }
 
         /// <summary>
+        /// Fails a job that failed to be materialized from the repository.
+        /// </summary>
+        /// <param name="record">The record representing the job being executed.</param>
+        /// <param name="ex">The exception that was raised during materialization.</param>
+        private void FailNonSerializableJob(WorkingRecord record, Exception ex)
+        {
+            long workerId = this.id;
+            string workerName = this.name;
+            HistoryRecord history = CreateHistory(record, HistoryStatus.Failed);
+
+            if (ex != null)
+            {
+                history.Exception = new ExceptionXElement(ex).ToString();
+            }
+
+            using (IRepository repository = this.repositoryFactory.Create())
+            {
+                bool acquired = false;
+
+                try
+                {
+                    if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
+                    {
+                        history = repository.CreateHistory(history);
+                        repository.DeleteWorking(record.Id.Value);
+                        record = null;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the working record lock for {2} during the run loop.", workerName, workerId, record.Id));
+                    }
+                }
+                finally
+                {
+                    if (acquired && record != null)
+                    {
+                        repository.ReleaseWorkingLock(record.Id.Value);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the current signals from the repository for this instance and the given working record ID.
+        /// </summary>
+        /// <param name="recordId">The current working record ID, if applicable.</param>
+        /// <returns>The current signals.</returns>
+        private SignalsRecord GetCurrentSignals(long? recordId)
+        {
+            SignalsRecord signals = null;
+            long workerId = this.id;
+            string workerName = this.name;
+
+            using (IRepository repository = this.repositoryFactory.Create())
+            {
+                bool acquiredWorking = false;
+
+                try
+                {
+                    if ((this.hasWorkerLock
+                        || (this.hasWorkerLock = this.AcquireWorkerLock(repository)))
+                        && (recordId == null
+                        || (acquiredWorking = this.AcquireWorkingLock(recordId.Value, repository))))
+                    {
+                        signals = repository.GetWorkingSignals(this.id, recordId);
+
+                        if (signals != null
+                            && (signals.WorkerSignal != WorkerSignal.None
+                            || signals.WorkingSignal != WorkingSignal.None))
+                        {
+                            repository.ClearWorkingSignalPair(this.id, recordId);
+                        }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the worker lock or the working record lock during the signal loop.", workerId, workerName));
+                    }
+                }
+                finally
+                {
+                    if (this.hasWorkerLock)
+                    {
+                        repository.ReleaseWorkerLock(workerId);
+                        this.hasWorkerLock = false;
+                    }
+
+                    if (recordId != null && acquiredWorking)
+                    {
+                        repository.ReleaseWorkingLock(recordId.Value);
+                    }
+                }
+            }
+
+            return signals;
+        }
+
+        /// <summary>
         /// Kills the run thread.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "We don't care if Thread.Abort() fails for any reason.")]
@@ -1132,6 +1016,171 @@ namespace BlueCollar
             catch (Exception ex)
             {
                 this.logger.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// Process the execution of a job.
+        /// </summary>
+        /// <param name="record">The record representing the job being executed.</param>
+        /// <param name="job">The job being executed.</param>
+        private void ProcessJobExecution(WorkingRecord record, IJob job)
+        {
+            Exception ex;
+            long workerId = this.id;
+            string workerName = this.name;
+
+            // Update this instance's current record so we can interrupt
+            // execution if necessary.
+            lock (this.runLocker)
+            {
+                this.currentRecord = record;
+            }
+
+            // Execute the job.
+            bool success = this.ExecuteJob(job, out ex);
+
+            // Acquire the run lock and move the job from the working
+            // state to the history state, including the execution results.
+            lock (this.runLocker)
+            {
+                record = this.currentRecord;
+                HistoryStatus status = HistoryStatus.Succeeded;
+                string exceptionString = null;
+
+                if (success)
+                {
+                    this.logger.Info("Worker {0} ({1}) executed '{2}' successfully.", workerName, workerId, record.JobName);
+                }
+                else
+                {
+                    if (ex as TimeoutException != null)
+                    {
+                        status = HistoryStatus.TimedOut;
+                        this.logger.Warn("Worker {0} ({1}) timed out '{2}'.", workerName, workerId, record.JobName);
+                    }
+                    else
+                    {
+                        status = HistoryStatus.Failed;
+
+                        if (ex != null)
+                        {
+                            exceptionString = new ExceptionXElement(ex).ToString();
+                        }
+
+                        this.logger.Warn("Worker {0} ({1}) encountered an exception during execution of '{2}'.", workerName, workerId, record.JobName);
+                    }
+                }
+
+                HistoryRecord history = CreateHistory(this.currentRecord, status);
+                history.Exception = exceptionString;
+
+                using (IRepository repository = this.repositoryFactory.Create())
+                {
+                    bool acquired = false;
+
+                    try
+                    {
+                        if (acquired = this.AcquireWorkingLock(record.Id.Value, repository))
+                        {
+                            history = repository.CreateHistory(history);
+                            repository.DeleteWorking(record.Id.Value);
+
+                            // Re-try?
+                            if ((status == HistoryStatus.Failed
+                                || status == HistoryStatus.Interrupted
+                                || status == HistoryStatus.TimedOut)
+                                && (job.Retries == 0 || job.Retries >= record.TryNumber))
+                            {
+                                repository.CreateQueued(CreateQueueRetry(record));
+                            }
+
+                            record = null;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Worker {0} ({1}) failed to acquire the working record lock for {2} during the run loop.", workerName, workerId, record.Id));
+                        }
+                    }
+                    finally
+                    {
+                        if (acquired && record != null)
+                        {
+                            repository.ReleaseWorkingLock(record.Id.Value);
+                        }
+                    }
+                }
+
+                this.currentRecord = null;
+            }
+        }
+
+        /// <summary>
+        /// Processes signals loaded during the signal loop.
+        /// </summary>
+        /// <param name="signals">The signals to process.</param>
+        /// <param name="status">The current worker status.</param>
+        private void ProcessSignals(SignalsRecord signals, WorkerStatus status)
+        {
+            bool refreshQueues = false;
+            long workerId = this.id;
+            string workerName = this.name;
+
+            // Refresh the queues we're processing.
+            lock (this.runLocker)
+            {
+                QueueNameFilters filters = QueueNameFilters.Parse(signals.QueueNames);
+
+                if (!this.queueFilters.Equals(filters))
+                {
+                    this.queueFilters = QueueNameFilters.Parse(signals.QueueNames);
+                    refreshQueues = true;
+                }
+            }
+
+            // Perform the signalled operation, if applicable.
+            if (signals.WorkerSignal == WorkerSignal.Stop)
+            {
+                this.logger.Debug("Worker {0} ({1}) received a signal to stop.", workerName, workerId);
+                this.Stop(false);
+            }
+            else
+            {
+                if (signals.WorkingSignal == WorkingSignal.Cancel)
+                {
+                    this.logger.Debug("Worker {0} ({1}) received a signal to cancel its current job.", workerName, workerId);
+                    this.CancelCurrent();
+                }
+
+                if (signals.WorkerSignal == WorkerSignal.Start)
+                {
+                    this.logger.Debug("Worker {0} ({1}) received a signal to start.", workerName, workerId);
+                    this.Start();
+                }
+
+                lock (this.statusLocker)
+                {
+                    status = this.Status;
+                }
+
+                if (status == WorkerStatus.Working)
+                {
+                    if (this.SchedulerEnabled)
+                    {
+                        if (refreshQueues)
+                        {
+                            this.scheduler.QueueFilters = new QueueNameFilters(this.queueFilters.Include, this.queueFilters.Exclude);
+                        }
+
+                        if (signals.WorkerSignal == WorkerSignal.RefreshSchedules)
+                        {
+                            this.logger.Debug("Worker {0} ({1}) received a signal to refresh its schedules.", workerName, workerId);
+                            this.scheduler.RefreshSchedules();
+                        }
+
+                        this.scheduler.EnqueueScheduledJobs();
+                    }
+                }
             }
         }
 

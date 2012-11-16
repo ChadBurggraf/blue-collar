@@ -173,6 +173,8 @@ namespace BlueCollar.Test
                 ScheduleId = 2
             };
 
+            schedule2.ScheduledJobs.Add(scheduledJob2);
+
             var repository = new Mock<IRepository>();
             repository.Setup(r => r.GetSchedules(BlueCollarSection.Section.ApplicationName)).Returns(new ScheduleRecord[] { schedule, schedule2 });
 

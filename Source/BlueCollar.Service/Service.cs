@@ -23,8 +23,6 @@ namespace BlueCollar.Service
     /// <see cref="ServiceBase"/> implementation of the Blue Collar service.
     /// </summary>
     [SecurityCritical]
-    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
-    //[HostProtection(SecurityAction.Demand, SharedState = true, Synchronization = true, ExternalProcessMgmt = true, SelfAffectingProcessMgmt = true)]
     [SuppressMessage("Microsoft.Naming", "CA1724:TypeNamesShouldNotMatchNamespaces", Justification = "Reviewed.")]
     public partial class Service : ServiceBase
     {
@@ -46,6 +44,7 @@ namespace BlueCollar.Service
         /// Disposes of resources used by this instance.
         /// </summary>
         /// <param name="disposing">A value indicating whether to dispose of managed resources.</param>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         protected override void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -77,6 +76,7 @@ namespace BlueCollar.Service
         /// Runs when a Continue command is sent to the service by the Service Control Manager (SCM). 
         /// Specifies actions to take when a service resumes normal functioning after being paused.
         /// </summary>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         protected override void OnContinue()
         {
             IEnumerable<ApplicationElement> applications = GetApplicationElements();
@@ -95,6 +95,7 @@ namespace BlueCollar.Service
         /// Executes when a Pause command is sent to the service by the Service Control Manager (SCM). 
         /// Specifies actions to take when a service pauses.
         /// </summary>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         protected override void OnPause()
         {
             lock (this.locker)
@@ -113,6 +114,7 @@ namespace BlueCollar.Service
         /// Specifies actions to take when the service starts.
         /// </summary>
         /// <param name="args">Data passed by the start command. </param>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         protected override void OnStart(string[] args)
         {
             IEnumerable<ApplicationElement> applications = GetApplicationElements();
@@ -129,6 +131,7 @@ namespace BlueCollar.Service
         /// Executes when a Stop command is sent to the service by the Service Control Manager (SCM). 
         /// Specifies actions to take when a service stops running.
         /// </summary>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         protected override void OnStop()
         {
             lock (this.locker)
@@ -164,6 +167,7 @@ namespace BlueCollar.Service
         /// <summary>
         /// Creates the <see cref="Diagnostics.FileSystemWatcher"/> to watch for configuration changes.
         /// </summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         private void CreateWatcher()
         {
             this.DestroyWatcher();
@@ -178,6 +182,7 @@ namespace BlueCollar.Service
         /// <summary>
         /// Destroys the <see cref="Diagnostics.FileSystemWatcher"/>.
         /// </summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         private void DestroyWatcher()
         {
             if (this.watcher != null)

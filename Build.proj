@@ -146,7 +146,7 @@
     </ItemGroup>
 
     <MakeDir Directories="$(ArtifactDir)"/>
-    <FxCop Assemblies="@(FxCopAssemblies)" Output="$(ArtifactDir)\FxCop.xml"/>
+    <FxCop Assemblies="@(FxCopAssemblies)" RuleSet="$(SourceDir)\BlueCollar.ruleset" Output="$(ArtifactDir)\FxCop.xml"/>
   </Target>
 
   <Target Name="Help">

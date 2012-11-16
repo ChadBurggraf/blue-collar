@@ -70,7 +70,6 @@
     <Compile Include="ApplicationProcess.cs" />
     <Compile Include="BlueCollarServiceSection.cs" />
     <Compile Include="ConfigurationElementCollection{T}.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>

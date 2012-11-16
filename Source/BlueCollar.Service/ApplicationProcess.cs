@@ -21,7 +21,7 @@ namespace BlueCollar.Service
     /// <summary>
     /// Represents an application and its associated process.
     /// </summary>
-    [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemandsFxCopRule", Justification = "Conflicting recommendations.")]
+    [SecurityCritical]
     public sealed class ApplicationProcess : IDisposable
     {
         private static readonly Regex FrameworkExp = new Regex(@"^3\.5|4\.0$", RegexOptions.Compiled);
@@ -268,6 +268,7 @@ namespace BlueCollar.Service
         /// </summary>
         private bool ProcessHasExited
         {
+            [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
             get
             {
                 if (this.process != null)
@@ -296,6 +297,7 @@ namespace BlueCollar.Service
         /// </summary>
         private ProcessStartInfo StartInfo
         {
+            [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
             get
             {
                 if (this.startInfo == null)
@@ -342,6 +344,7 @@ namespace BlueCollar.Service
         /// <summary>
         /// Disposes of resources used by this instance.
         /// </summary>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public void Dispose()
         {
             this.Dispose(true);
@@ -352,6 +355,7 @@ namespace BlueCollar.Service
         /// Starts this instance's application's process, if it is not started already.
         /// </summary>
         /// <returns>True if the process started successfully, false otherwise.</returns>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         public bool Start()
         {
             bool success = false;
@@ -393,6 +397,7 @@ namespace BlueCollar.Service
         /// Stops this instance's process.
         /// </summary>
         /// <param name="force">A value indicating whether to force the process to exit immediately.</param>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         public void Stop(bool force)
         {
             lock (this.locker)
@@ -430,6 +435,7 @@ namespace BlueCollar.Service
         /// <summary>
         /// Kills this instance's process.
         /// </summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         private void KillProcess()
         {
             lock (this.locker)

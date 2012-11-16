@@ -7,7 +7,10 @@
 namespace BlueCollar.Test
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
+    using System.Security;
+    using System.Security.Permissions;
     using System.Threading;
     using BlueCollar.Service;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,6 +20,9 @@ namespace BlueCollar.Test
     /// Application process tests.
     /// </summary>
     [TestClass]
+    [SecurityCritical]
+    [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
+    [SuppressMessage("Microsoft.Security", "CA2135:SecurityRuleSetLevel2MethodsShouldNotBeProtectedWithLinkDemandsFxCopRule", Justification = "Conflicting recommendations.")]
     public sealed class ApplicationProcessTests
     {
         private static readonly Logger Logger = LogManager.CreateNullLogger();

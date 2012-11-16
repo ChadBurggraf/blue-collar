@@ -21,6 +21,7 @@ namespace BlueCollar.Service
     /// <summary>
     /// Coordinates a set of <see cref="ApplicationProcess"/>es.
     /// </summary>
+    [SecurityCritical]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", MessageId = "es", Justification = "Reviewed.")]
     public sealed class ApplicationCoordinator : IDisposable
     {
@@ -94,6 +95,7 @@ namespace BlueCollar.Service
         /// <summary>
         /// Disposes of resources used by this instance.
         /// </summary>
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
         public void Dispose()
         {
             this.Dispose(true);
@@ -119,6 +121,7 @@ namespace BlueCollar.Service
         /// </summary>
         /// <param name="elements">The application element collection to use when building the
         /// application process list.</param>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         public void StartAndRefresh(IEnumerable<ApplicationElement> elements)
         {
             if (elements == null)
@@ -146,6 +149,7 @@ namespace BlueCollar.Service
         /// <summary>
         /// Stops all applications.
         /// </summary>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         public void Stop()
         {
             this.Stop(false);
@@ -169,6 +173,7 @@ namespace BlueCollar.Service
         /// </summary>
         /// <param name="elements">The <see cref="ApplicationElement"/> collection defining
         /// the current application list to manage.</param>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         [SuppressMessage("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "The application object is disposed or added to a containing collection along all exception paths before losing scope.")]
         private void CreateRefreshAndPruneApplications(IEnumerable<ApplicationElement> elements)
         {
@@ -262,6 +267,7 @@ namespace BlueCollar.Service
         /// <param name="application">The application to initialize.</param>
         /// <param name="element">The configuration element to initialize the application from.</param>
         /// <returns>True if the application was initialized successfully, false otherwise.</returns>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         [SuppressMessage("Microsoft.Naming", "CA2204:Literals should be spelled correctly", MessageId = "configPath", Justification = "Reviewed.")]
         private bool SetApplicationProperties(ApplicationProcess application, ApplicationElement element)
         {
@@ -330,6 +336,7 @@ namespace BlueCollar.Service
         /// Stops all applications.
         /// </summary>
         /// <param name="disposing">A value indicating whether to dispose of the stopped applications.</param>
+        [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
         private void Stop(bool disposing)
         {
             lock (this.locker)

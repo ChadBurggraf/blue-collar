@@ -51,7 +51,6 @@ WHERE
     [ApplicationName] = @ApplicationName;";
 
         private IDbConnection connection;
-        private IsolationLevel defaultIsolationLevel;
         private bool disposed;
 
         /// <summary>
@@ -73,15 +72,6 @@ WHERE
 
             EnsureDatabase(builder.DataSource);
             this.ConnectionString = builder.ConnectionString;
-
-            try
-            {
-                this.defaultIsolationLevel = builder.DefaultIsolationLevel;
-            }
-            catch (NullReferenceException)
-            {
-                this.defaultIsolationLevel = IsolationLevel.Serializable;
-            }
 
             this.connection = new SQLiteConnection(this.ConnectionString);
             this.connection.Open();
