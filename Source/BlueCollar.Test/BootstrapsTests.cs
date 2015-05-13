@@ -108,6 +108,38 @@ namespace BlueCollar.Test
         }
 
         /// <summary>
+        /// Pull up job host with an HttpApplication entry point.
+        /// </summary>
+        [TestMethod]
+        public void BootstrapsPullUpAndExcecuteJobWithHttpApplicationEntryPoint()
+        {
+            string path = ApplicationUtils.CreateValidExampleApplication();
+
+            using (Bootstraps bootstraps = new Bootstraps(path, null, 500))
+            {
+                Assert.AreEqual(BootstrapsPullupResultType.Success, bootstraps.PullUp(true).ResultType);
+
+                CreateFileJob job = new CreateFileJob()
+                {
+                    Path = Path.Combine(path, Path.GetRandomFileName())
+                };
+
+                Assert.IsFalse(File.Exists(job.Path));
+
+                using (IRepository repository = new SQLiteRepository(string.Format(CultureInfo.InvariantCulture, "data source={0};journal mode=Off;synchronous=Off;version=3", Path.Combine(path, "BlueCollar.sqlite"))))
+                {
+                    job.Enqueue("Default", null, repository);
+                }
+
+                Thread.Sleep(6000);
+                Assert.IsTrue(File.Exists("HttpApplicationStart"));
+
+                bootstraps.Pushdown(true);
+                Assert.IsTrue(File.Exists("HttpApplicationEnd"));
+            }
+        }
+
+        /// <summary>
         /// Pull up basic application tests.
         /// </summary>
         [TestMethod]
