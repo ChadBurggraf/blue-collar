@@ -162,7 +162,7 @@
   </Target>
 
   <Target Name="NuGet" DependsOnTargets="GetVersion">
-    <Exec Command='NuGet Pack BlueCollar.nuspec'/>
+    <Exec Command='"$(ToolsDir)\NuGet\nuget.exe" Pack BlueCollar.nuspec'/>
     <Copy SourceFiles="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg" DestinationFolder="$(BuildDir)"/>
     <Delete Files="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg"/>
   </Target>
