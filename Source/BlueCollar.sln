@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar", "BlueCollar\BlueCollar.csproj", "{1269260A-4785-4C26-A442-B87D94B1B6EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueCollar.Test", "BlueCollar.Test\BlueCollar.Test.csproj", "{996B312D-CED3-4AB0-A6EB-8403E2603BAD}"

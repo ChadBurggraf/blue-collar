@@ -8,6 +8,7 @@ StyleCop.Cache
 testimpactdata.sdf
 App_Data/
 Artifacts/
+Backup/
 bin/
 Build/
 obj/
