@@ -1,7 +1,6 @@
-auto: true
 baseurl: /
-blueCollarVersion: 1.0.5
-docsVersion: 1.4
+blueCollarVersion: 1.1.0
+docsVersion: 1.5
 exclude: 
   - bootstrap
   - static
@@ -13,5 +12,4 @@ exclude:
   - compile-js.py 
   - Makefile
   - yuicompressor-2.4.7.jar
-pygments: true
-server: true
+highlighter: pygments
