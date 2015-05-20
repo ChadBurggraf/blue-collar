@@ -9,9 +9,9 @@ namespace BlueCollar
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
-    using System.Text.RegularExpressions;
     using System.Web;
 
     /// <summary>
@@ -19,12 +19,13 @@ namespace BlueCollar
     /// </summary>
     public sealed class MachineProxy : MarshalByRefObject, IDisposable
     {
-        private static string[] assemblyBlackList = new string[] { "/^system/", "/^microsoft" };
-
+        private static readonly string[] AssemblyBlacklist = new string[] { "System.", "Microsoft." };
+        private static readonly string[] HttpApplicationEntryPoints = new[] { "Application_Start", "Application_OnStart" };
+        private static readonly string[] HttpApplicationExitPoints = new[] { "Application_End", "Application_OnEnd" };
+        private List<HttpApplication> httpApplications = new List<HttpApplication>();
         private Machine machine;
         private bool disposed;
-        private List<object> webApplications = new List<object>();
-
+        
         /// <summary>
         /// Initializes a new instance of the MachineProxy class.
         /// </summary>
@@ -44,7 +45,6 @@ namespace BlueCollar
             if (enabled)
             {
                 AppDomain.CurrentDomain.AssemblyLoad += this.AssemblyLoadEventHandler;
-
                 this.machine = new Machine(logger);
             }
         }
@@ -78,6 +78,38 @@ namespace BlueCollar
         }
 
         /// <summary>
+        /// Finds a method on the specified type that looks like an event handler.
+        /// I.e., signatures include Method(), Method(object), or Method(object, EventArgs).
+        /// </summary>
+        /// <param name="type">The type to find the method in.</param>
+        /// <param name="names">The names of methods to look for.</param>
+        /// <returns>The first, most specific, method found that looks like an event handler.</returns>
+        private static MethodInfo FindEventHandler(Type type, string[] names)
+        {
+            MethodInfo result = null;
+
+            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(m => names.Any(n => n.Equals(m.Name, StringComparison.OrdinalIgnoreCase)))
+                .Select(m => new { Args = m.GetParameters(), Method = m })
+                .Where(obj => obj.Args.Length == 0 || obj.Args[0].ParameterType == typeof(object))
+                .OrderByDescending(obj => obj.Args.Length);
+
+            foreach (var method in methods)
+            {
+                if ((method.Args.Length == 2
+                    && method.Args[1].ParameterType == typeof(EventArgs))
+                    || method.Args.Length == 1
+                    || method.Args.Length == 0)
+                {
+                    result = method.Method;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Disposes of resources used by this instance.
         /// </summary>
         /// <param name="force">A value indicating whether to force workers to stop.</param>
@@ -86,14 +118,18 @@ namespace BlueCollar
         {
             if (!this.disposed)
             {
+                AppDomain.CurrentDomain.AssemblyLoad -= this.AssemblyLoadEventHandler;
+
                 if (disposing)
                 {
-                    if (this.machine != null)
-                    {
-                        this.DisposeWebApplications();
-                        this.machine.Dispose(force);
+                    this.DisposeHttpApplications();
 
-                        this.machine = null;
+                    Machine m = this.machine;
+                    this.machine = null;
+
+                    if (m != null)
+                    {
+                        m.Dispose(force);
                     }
                 }
 
@@ -111,51 +147,66 @@ namespace BlueCollar
             Assembly assembly = args.LoadedAssembly;
             string assemblyName = assembly.GetName().Name;
 
-            if (MachineProxy.assemblyBlackList.Any(b => Regex.Match(assemblyName, b).Length != 0))
+            if (!MachineProxy.AssemblyBlacklist.Any(n => assemblyName.StartsWith(n, StringComparison.OrdinalIgnoreCase)))
             {
-                return;
-            }
+                IEnumerable<Type> types = assembly.GetTypes().Where(t => typeof(HttpApplication).IsAssignableFrom(t) && t != typeof(HttpApplication) && !t.IsAbstract);
 
-            Type type = typeof(HttpApplication);
-            string[] methods = { "Application_Start", "Application_OnStart" };
-
-            IEnumerable<Type> types = assembly.GetTypes().Where(t => type.IsAssignableFrom(t) && t != type && t.IsAbstract == false);
-            IEnumerable<object> apps = types.Select(t => Activator.CreateInstance(t));
-
-            foreach (object app in apps)
-            {
-                MethodInfo method = app.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Where(m => methods.Select(em => em.ToUpperInvariant()).Contains(m.Name.ToUpperInvariant()))
-                    .FirstOrDefault();
-
-                if (method != null)
+                foreach (Type type in types)
                 {
-                    this.webApplications.Add(app);
+                    MethodInfo method = MachineProxy.FindEventHandler(type, MachineProxy.HttpApplicationEntryPoints);
 
-                    method.Invoke(app, new object[] { this, EventArgs.Empty });
+                    if (method != null)
+                    {
+                        HttpApplication app = (HttpApplication)Activator.CreateInstance(type);
+                        this.httpApplications.Add(app);
+                        this.InvokeEventHandler(app, method);
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Disposes all web applications that were created as entry points.
+        /// Disposes all http applications that were created as entry points.
         /// </summary>
-        private void DisposeWebApplications()
+        private void DisposeHttpApplications()
         {
-            string[] methods = { "Application_End", "Application_OnEnd" };
-
-            foreach (object app in this.webApplications)
+            foreach (HttpApplication app in this.httpApplications)
             {
-                MethodInfo method = app.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-                    .Where(m => methods.Select(em => em.ToUpperInvariant()).Contains(m.Name.ToUpperInvariant()))
-                    .FirstOrDefault();
+                MethodInfo method = MachineProxy.FindEventHandler(app.GetType(), MachineProxy.HttpApplicationExitPoints);
 
                 if (method != null)
                 {
-                    method.Invoke(app, new object[] { this, EventArgs.Empty });
+                    this.InvokeEventHandler(app, method);
                 }
 
-                (app as HttpApplication).Dispose();
+                app.Dispose();
+            }
+
+            this.httpApplications.Clear();
+        }
+
+        /// <summary>
+        /// Invokes the event handler identified by the given method on the given instance.
+        /// </summary>
+        /// <param name="instance">The instance to invoke the event handler on.</param>
+        /// <param name="method">The method identifying the event handler to invoke.</param>
+        private void InvokeEventHandler(object instance, MethodInfo method)
+        {
+            ParameterInfo[] args = method.GetParameters();
+
+            switch (args.Length)
+            {
+                case 2:
+                    method.Invoke(instance, new object[] { this, new EventArgs() });
+                    break;
+                case 1:
+                    method.Invoke(instance, new object[] { this });
+                    break;
+                case 0:
+                    method.Invoke(instance, null);
+                    break;
+                default:
+                    throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, "The specified method was expected to have 0, 1, or 2 parameters: {0}", method.ToString()));
             }
         }
     }
