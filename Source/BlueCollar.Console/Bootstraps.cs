@@ -157,6 +157,7 @@ namespace BlueCollar.Console
                         {
                             // Use the bin directory if the target is a web application.
                             string binPath = Path.Combine(this.ApplicationPath, "bin");
+
                             bool web = Directory.Exists(binPath)
                                 && (string.IsNullOrEmpty(configPath)
                                 || (!string.IsNullOrEmpty(configPath)
@@ -176,6 +177,10 @@ namespace BlueCollar.Console
                             {
                                 setup.PrivateBinPath = binPath;
                             }
+                            else
+                            {
+                                binPath = this.ApplicationPath;
+                            }
 
                             this.domain = AppDomain.CreateDomain("Blue Collar Machine", AppDomain.CurrentDomain.Evidence, setup);
 
@@ -183,8 +188,8 @@ namespace BlueCollar.Console
                             this.logger.Log += new EventHandler<EventLoggerEventArgs>(this.LoggerLog);
 
                             object[] constructerArgs = forceMachine
-                                ? new object[] { this.logger, true }
-                                : new object[] { this.logger };
+                                ? new object[] { this.logger, binPath, true }
+                                : new object[] { this.logger, binPath };
 
 #if NET35
                         this.machineProxy = (MachineProxy)this.domain.CreateInstanceAndUnwrap(

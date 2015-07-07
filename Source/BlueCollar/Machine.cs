@@ -201,31 +201,39 @@ namespace BlueCollar
         /// <returns>The current machine's public IP address, or null if it could not be determined.</returns>
         internal static string GetPublicMachineAddress()
         {
+            string content = null, result = null;
             WebRequest request = WebRequest.Create("http://checkip.dyndns.org/");
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            string content = null;
 
-            if (response.StatusCode == HttpStatusCode.OK)
+            try
             {
-                Stream stream = null;
-
-                try
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    stream = response.GetResponseStream();
-
-                    using (StreamReader reader = new StreamReader(stream))
+                    if (response.StatusCode == HttpStatusCode.OK)
                     {
-                        stream = null;
-                        content = reader.ReadToEnd();
+                        Stream stream = null;
+
+                        try
+                        {
+                            stream = response.GetResponseStream();
+
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                stream = null;
+                                content = reader.ReadToEnd();
+                            }
+                        }
+                        finally
+                        {
+                            if (stream != null)
+                            {
+                                stream.Dispose();
+                            }
+                        }
                     }
                 }
-                finally
-                {
-                    if (stream != null)
-                    {
-                        stream.Dispose();
-                    }
-                }
+            }
+            catch (WebException)
+            {
             }
 
             if (!string.IsNullOrEmpty(content))
@@ -234,11 +242,11 @@ namespace BlueCollar
 
                 if (match.Success)
                 {
-                    return match.Value;
+                    result = match.Value;
                 }
             }
 
-            return null;
+            return result;
         }
 
         /// <summary>

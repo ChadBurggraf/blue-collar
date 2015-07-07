@@ -10,6 +10,7 @@ namespace BlueCollar
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Web;
@@ -19,9 +20,6 @@ namespace BlueCollar
     /// </summary>
     public sealed class MachineProxy : MarshalByRefObject, IDisposable
     {
-        private static readonly string[] AssemblyBlacklist = new string[] { "System.", "Microsoft." };
-        private static readonly string[] HttpApplicationEntryPoints = new[] { "Application_Start", "Application_OnStart" };
-        private static readonly string[] HttpApplicationExitPoints = new[] { "Application_End", "Application_OnEnd" };
         private List<HttpApplication> httpApplications = new List<HttpApplication>();
         private Machine machine;
         private bool disposed;
@@ -30,8 +28,9 @@ namespace BlueCollar
         /// Initializes a new instance of the MachineProxy class.
         /// </summary>
         /// <param name="logger">The logger to use when logging messages.</param>
-        public MachineProxy(ILogger logger)
-            : this(logger, BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
+        /// <param name="binPath">The path to use when probing for application assemblies.</param>
+        public MachineProxy(ILogger logger, string binPath)
+            : this(logger, binPath, BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
         {
         }
 
@@ -39,12 +38,13 @@ namespace BlueCollar
         /// Initializes a new instance of the MachineProxy class.
         /// </summary>
         /// <param name="logger">The logger to use when logging messages.</param>
+        /// <param name="binPath">The path to use when probing for application assemblies.</param>
         /// <param name="enabled">A value indicating whether the machine is enabled.</param>
-        public MachineProxy(ILogger logger, bool enabled)
+        public MachineProxy(ILogger logger, string binPath, bool enabled)
         {
             if (enabled)
             {
-                AppDomain.CurrentDomain.AssemblyLoad += this.AssemblyLoadEventHandler;
+                this.SetupandInvokeEntryPoints(logger, !string.IsNullOrEmpty(binPath) ? binPath : AppDomain.CurrentDomain.BaseDirectory);
                 this.machine = new Machine(logger);
             }
         }
@@ -78,38 +78,6 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// Finds a method on the specified type that looks like an event handler.
-        /// I.e., signatures include Method(), Method(object), or Method(object, EventArgs).
-        /// </summary>
-        /// <param name="type">The type to find the method in.</param>
-        /// <param name="names">The names of methods to look for.</param>
-        /// <returns>The first, most specific, method found that looks like an event handler.</returns>
-        private static MethodInfo FindEventHandler(Type type, string[] names)
-        {
-            MethodInfo result = null;
-
-            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(m => names.Any(n => n.Equals(m.Name, StringComparison.OrdinalIgnoreCase)))
-                .Select(m => new { Args = m.GetParameters(), Method = m })
-                .Where(obj => obj.Args.Length == 0 || obj.Args[0].ParameterType == typeof(object))
-                .OrderByDescending(obj => obj.Args.Length);
-
-            foreach (var method in methods)
-            {
-                if ((method.Args.Length == 2
-                    && method.Args[1].ParameterType == typeof(EventArgs))
-                    || method.Args.Length == 1
-                    || method.Args.Length == 0)
-                {
-                    result = method.Method;
-                    break;
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
         /// Disposes of resources used by this instance.
         /// </summary>
         /// <param name="force">A value indicating whether to force workers to stop.</param>
@@ -118,8 +86,6 @@ namespace BlueCollar
         {
             if (!this.disposed)
             {
-                AppDomain.CurrentDomain.AssemblyLoad -= this.AssemblyLoadEventHandler;
-
                 if (disposing)
                 {
                     this.DisposeHttpApplications();
@@ -138,48 +104,25 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// On assembly load, probe the assembly for a valid blue collar entry point and invoke it.
-        /// </summary>
-        /// <param name="sender">The event publisher.</param>
-        /// <param name="args">The event.</param>
-        private void AssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)
-        {
-            Assembly assembly = args.LoadedAssembly;
-            string assemblyName = assembly.GetName().Name;
-
-            if (!MachineProxy.AssemblyBlacklist.Any(n => assemblyName.StartsWith(n, StringComparison.OrdinalIgnoreCase)))
-            {
-                IEnumerable<Type> types = assembly.GetTypes().Where(t => typeof(HttpApplication).IsAssignableFrom(t) && t != typeof(HttpApplication) && !t.IsAbstract);
-
-                foreach (Type type in types)
-                {
-                    MethodInfo method = MachineProxy.FindEventHandler(type, MachineProxy.HttpApplicationEntryPoints);
-
-                    if (method != null)
-                    {
-                        HttpApplication app = (HttpApplication)Activator.CreateInstance(type);
-                        this.httpApplications.Add(app);
-                        this.InvokeEventHandler(app, method);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Disposes all http applications that were created as entry points.
         /// </summary>
         private void DisposeHttpApplications()
         {
             foreach (HttpApplication app in this.httpApplications)
             {
-                MethodInfo method = MachineProxy.FindEventHandler(app.GetType(), MachineProxy.HttpApplicationExitPoints);
-
-                if (method != null)
+                try
                 {
-                    this.InvokeEventHandler(app, method);
-                }
+                    MethodInfo method = HttpApplicationProbe.FindExitPoint(app.GetType());
 
-                app.Dispose();
+                    if (method != null)
+                    {
+                        this.InvokeEventHandler(app, method);
+                    }
+                }
+                finally
+                {
+                    app.Dispose();
+                }
             }
 
             this.httpApplications.Clear();
@@ -207,6 +150,46 @@ namespace BlueCollar
                     break;
                 default:
                     throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, "The specified method was expected to have 0, 1, or 2 parameters: {0}", method.ToString()));
+            }
+        }
+
+        /// <summary>
+        /// Sets up and invokes entry points on <see cref="HttpApplication"/> implementors found
+        /// by probing the given bin path.
+        /// </summary>
+        /// <param name="logger">The logger to use when probing.</param>
+        /// <param name="binPath">The bin path to probe.</param>
+        private void SetupandInvokeEntryPoints(ILogger logger, string binPath)
+        {
+            if (Directory.Exists(binPath))
+            {
+                HttpApplicationProbe probe = new HttpApplicationProbe(logger, binPath);
+                IEnumerable<Type> types = HttpApplicationProbe.FindApplicationTypes(probe.FindApplicationAssemblies());
+
+                foreach (Type type in types)
+                {
+                    HttpApplication app = (HttpApplication)Activator.CreateInstance(type);
+
+                    try
+                    {
+                        MethodInfo entryPoint = HttpApplicationProbe.FindEntryPoint(type);
+
+                        if (entryPoint != null)
+                        {
+                            this.InvokeEventHandler(app, entryPoint);
+                        }
+
+                        this.httpApplications.Add(app);
+                        app = null;
+                    }
+                    finally
+                    {
+                        if (app != null)
+                        {
+                            app.Dispose();
+                        }
+                    }
+                }
             }
         }
     }

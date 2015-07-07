@@ -125,6 +125,7 @@
     <Compile Include="EmptyLogger.cs" />
     <Compile Include="EnqueueingRecord.cs" />
     <Compile Include="EnqueueJobRecord.cs" />
+    <Compile Include="HttpApplicationProbe.cs" />
     <Compile Include="EventLogger.cs" />
     <Compile Include="EventLoggerEventArgs.cs" />
     <Compile Include="EventLoggerEventType.cs" />

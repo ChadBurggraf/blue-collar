@@ -89,6 +89,7 @@
     <Compile Include="ApplicationCoordinatorTests.cs" />
     <Compile Include="ApplicationProcessTests.cs" />
     <Compile Include="ApplicationUtils.cs" />
+    <Compile Include="HttpApplicationProbeTests.cs" />
     <Compile Include="Benchmarks.cs" />
     <Compile Include="BootstrapsTests.cs" />
     <Compile Include="DashboardFactoryTests.cs" />
