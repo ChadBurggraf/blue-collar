@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>BlueCollar</id>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <title>Blue Collar</title>
     <authors>Chad Burggraf</authors>
     <owners>Chad Burggraf</owners>
@@ -12,6 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Background jobs and scheduled work for .NET.</description>
     <releaseNotes>
+      * 1.2.0 - Eagerly (instead of lazily) invoke application entry/exit
+                points if the target application is a web application.
+                
       * 1.1.0 - Invoke application entry/exit points if the target application
                 is a web application (e.g., has a Global.asax or similar).
                 
