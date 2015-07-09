@@ -1,4 +1,4 @@
-VERSION = 1.5
+VERSION = 1.6
 CSS = css/app-${VERSION}.css
 JS = js/app-${VERSION}.js
 
