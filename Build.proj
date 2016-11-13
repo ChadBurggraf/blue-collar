@@ -11,7 +11,7 @@
     <ExamplesDir>$(MSBuildProjectDirectory)\Examples</ExamplesDir>
     <InstallerDir>$(MSBuildProjectDirectory)\Source\Installer</InstallerDir>
     <LibDir>$(MSBuildProjectDirectory)\Lib</LibDir>
-    <MsTestPath>$(MSBuildExtensionsPath32)\..\Microsoft Visual Studio 10.0\Common7\IDE\MSTest.exe</MsTestPath>
+    <MsTestPath>$(MSBuildExtensionsPath32)\..\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestPath>
     <SourceDir>$(MSBuildProjectDirectory)\Source</SourceDir>
     <TempDir>$(MSBuildProjectDirectory)\Temp</TempDir>
     <ToolsDir>$(MSBuildProjectDirectory)\Tools</ToolsDir>

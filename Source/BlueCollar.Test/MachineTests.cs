@@ -80,7 +80,7 @@ namespace BlueCollar.Test
         public void MachineName()
         {
             Assert.IsNotNull(Machine.Name);
-            Assert.IsTrue(0 < Machine.Name.Length);
+            Assert.IsTrue(Machine.Name.Length > 0);
         }
     }
 }

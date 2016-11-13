@@ -77,7 +77,7 @@ namespace BlueCollar.Test
             }
 
             Assert.IsNotNull(output);
-            Assert.IsTrue(0 < output.Length);
+            Assert.IsTrue(output.Length > 0);
 
             var outputRecord = JsonConvert.DeserializeObject<CountsRecord>(output);
             Assert.IsNotNull(outputRecord);
@@ -142,7 +142,7 @@ namespace BlueCollar.Test
                 }
 
                 Assert.IsNotNull(output);
-                Assert.IsTrue(0 < output.Length);
+                Assert.IsTrue(output.Length > 0);
 
                 var outputRecord = JsonConvert.DeserializeAnonymousType(output, new { Id = 0 });
                 Assert.IsNotNull(outputRecord);
@@ -161,7 +161,7 @@ namespace BlueCollar.Test
                 }
 
                 Assert.IsNotNull(output);
-                Assert.IsTrue(0 < output.Length);
+                Assert.IsTrue(output.Length > 0);
 
                 outputRecord = JsonConvert.DeserializeAnonymousType(output, new { Id = 0 });
                 Assert.IsNotNull(outputRecord);
