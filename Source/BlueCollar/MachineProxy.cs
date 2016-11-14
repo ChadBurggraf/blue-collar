@@ -20,7 +20,8 @@ namespace BlueCollar
     /// </summary>
     public sealed class MachineProxy : MarshalByRefObject, IDisposable
     {
-        private List<HttpApplication> httpApplications = new List<HttpApplication>();
+        private readonly ILogger logger;
+        private HttpApplication httpApplication;
         private Machine machine;
         private bool disposed;
         
@@ -30,7 +31,7 @@ namespace BlueCollar
         /// <param name="logger">The logger to use when logging messages.</param>
         /// <param name="binPath">The path to use when probing for application assemblies.</param>
         public MachineProxy(ILogger logger, string binPath)
-            : this(logger, binPath, BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
+            : this(logger, binPath, false)
         {
         }
 
@@ -39,12 +40,19 @@ namespace BlueCollar
         /// </summary>
         /// <param name="logger">The logger to use when logging messages.</param>
         /// <param name="binPath">The path to use when probing for application assemblies.</param>
-        /// <param name="enabled">A value indicating whether the machine is enabled.</param>
-        public MachineProxy(ILogger logger, string binPath, bool enabled)
+        /// <param name="force">A value indicating whether to force the machine, even if <see cref="MachineElement.ServiceExecutionEnabled"/> is false.</param>
+        public MachineProxy(ILogger logger, string binPath, bool force)
         {
-            if (enabled)
+            if (logger == null)
             {
-                this.SetupandInvokeEntryPoints(logger, !string.IsNullOrEmpty(binPath) ? binPath : AppDomain.CurrentDomain.BaseDirectory);
+                throw new ArgumentNullException("logger", "logger cannot be null.");
+            }
+
+            this.logger = logger;
+
+            if (force || BlueCollarSection.Section.Machine.ServiceExecutionEnabled)
+            {
+                this.SetupandInvokeEntryPoint(logger, !string.IsNullOrEmpty(binPath) ? binPath : AppDomain.CurrentDomain.BaseDirectory);
                 this.machine = new Machine(logger);
             }
         }
@@ -88,7 +96,7 @@ namespace BlueCollar
             {
                 if (disposing)
                 {
-                    this.DisposeHttpApplications();
+                    this.DisposeHttpApplication();
 
                     Machine m = this.machine;
                     this.machine = null;
@@ -104,28 +112,34 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// Disposes all http applications that were created as entry points.
+        /// Disposes of the HTTP applications that was created as an entry point.
         /// </summary>
-        private void DisposeHttpApplications()
+        private void DisposeHttpApplication()
         {
-            foreach (HttpApplication app in this.httpApplications)
+            HttpApplication httpApplication = this.httpApplication;
+            this.httpApplication = null;
+
+            if (httpApplication != null)
             {
                 try
                 {
-                    MethodInfo method = HttpApplicationProbe.FindExitPoint(app.GetType());
+                    MethodInfo method = HttpApplicationProbe.FindExitPoint(httpApplication.GetType());
 
                     if (method != null)
                     {
-                        this.InvokeEventHandler(app, method);
+                        this.logger.Info("Invoking exit point for HTTP application {0}.", httpApplication.GetType().FullName);
+                        this.InvokeEventHandler(httpApplication, method);
+                    }
+                    else
+                    {
+                        this.logger.Info("No exit point found for HTTP application {0}.", httpApplication.GetType().FullName);
                     }
                 }
                 finally
                 {
-                    app.Dispose();
+                    httpApplication.Dispose();
                 }
             }
-
-            this.httpApplications.Clear();
         }
 
         /// <summary>
@@ -154,39 +168,66 @@ namespace BlueCollar
         }
 
         /// <summary>
-        /// Sets up and invokes entry points on <see cref="HttpApplication"/> implementors found
+        /// Sets up and invokes an entry point on an <see cref="HttpApplication"/> implementer found
         /// by probing the given bin path.
         /// </summary>
         /// <param name="logger">The logger to use when probing.</param>
         /// <param name="binPath">The bin path to probe.</param>
-        private void SetupandInvokeEntryPoints(ILogger logger, string binPath)
+        private void SetupandInvokeEntryPoint(ILogger logger, string binPath)
         {
             if (Directory.Exists(binPath))
             {
                 HttpApplicationProbe probe = new HttpApplicationProbe(logger, binPath);
-                IEnumerable<Type> types = HttpApplicationProbe.FindApplicationTypes(probe.FindApplicationAssemblies());
+                Type type = HttpApplicationProbe.FindApplicationTypes(probe.FindApplicationAssemblies()).FirstOrDefault();
 
-                foreach (Type type in types)
+                if (type != null)
                 {
-                    HttpApplication app = (HttpApplication)Activator.CreateInstance(type);
+                    logger.Info("Found an HTTP application requiring startup: {0}.", type.FullName);
+                    HttpApplication httpApplication = null;
 
                     try
                     {
-                        MethodInfo entryPoint = HttpApplicationProbe.FindEntryPoint(type);
-
-                        if (entryPoint != null)
-                        {
-                            this.InvokeEventHandler(app, entryPoint);
-                        }
-
-                        this.httpApplications.Add(app);
-                        app = null;
+                        httpApplication = (HttpApplication)Activator.CreateInstance(type);
                     }
-                    finally
+                    catch (Exception ex)
                     {
-                        if (app != null)
+                        logger.Error(ex, "Failed to create an instance of the HTTP application {0}.", type.FullName);
+                    }
+
+                    if (httpApplication != null)
+                    {
+                        try
                         {
-                            app.Dispose();
+                            MethodInfo entryPoint = HttpApplicationProbe.FindEntryPoint(type);
+
+                            if (entryPoint != null)
+                            {
+                                logger.Info("Invoking entry point for HTTP application {0}.", type.FullName);
+                                this.InvokeEventHandler(httpApplication, entryPoint);
+                            }
+                            else
+                            {
+                                logger.Info("No entry point found for HTTP application {0}.", type.FullName);
+                            }
+
+                            this.httpApplication = httpApplication;
+                            httpApplication = null;
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.Error(ex, "Failed to invoke the entry point for HTTP application {0}.", type.FullName);
+
+                            if (ex.InnerException != null)
+                            {
+                                logger.Error(ex.InnerException);
+                            }
+                        }
+                        finally
+                        {
+                            if (httpApplication != null)
+                            {
+                                httpApplication.Dispose();
+                            }
                         }
                     }
                 }

@@ -105,7 +105,7 @@ namespace BlueCollar.Console
             GC.SuppressFinalize(this);
         }
 
-                /// <summary>
+        /// <summary>
         /// Pulls up this instance's app domain, if it is not already loaded.
         /// </summary>
         /// <returns>The result of the pull up operation.</returns>
@@ -187,9 +187,7 @@ namespace BlueCollar.Console
                             this.logger = new EventLogger();
                             this.logger.Log += new EventHandler<EventLoggerEventArgs>(this.LoggerLog);
 
-                            object[] constructerArgs = forceMachine
-                                ? new object[] { this.logger, binPath, true }
-                                : new object[] { this.logger, binPath };
+                            object[] constructerArgs = new object[] { this.logger, binPath, forceMachine };
 
 #if NET35
                         this.machineProxy = (MachineProxy)this.domain.CreateInstanceAndUnwrap(

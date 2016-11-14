@@ -29,7 +29,7 @@ namespace BlueCollar.Test
                     byte[] buffer = new byte[4096];
                     int count = 0;
 
-                    while (0 < (count = inputStream.Read(buffer, 0, buffer.Length)))
+                    while ((count = inputStream.Read(buffer, 0, buffer.Length)) > 0)
                     {
                         outputStream.Write(buffer, 0, count);
                     }

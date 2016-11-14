@@ -167,7 +167,7 @@
     <Delete Files="$(RootDir)\BlueCollar.$(Major).$(Minor).$(Build).nupkg"/>
   </Target>
 
-  <Target Name="Package" DependsOnTargets="Clean;Help;Build;SetPackageVersion">
+  <Target Name="Package" DependsOnTargets="Clean;Build;SetPackageVersion">
     <ItemGroup>
       <BuildFiles Include="$(BuildDir)\**\*"/>
       <BuildFiles Remove="$(BuildDir)\Examples.zip"/>

@@ -173,15 +173,26 @@ namespace BlueCollar
                         {
                             this.Logger.Error(ex);
                         }
+                        catch (ReflectionTypeLoadException ex)
+                        {
+                            this.Logger.Error(ex);
+                        }
                         catch (SecurityException ex)
                         {
                             this.Logger.Error(ex);
                         }
                     }
 
-                    if (assembly != null && assembly.GetTypes().Any(t => HttpApplicationProbe.IsHttpApplication(t)))
+                    try
                     {
-                        result.Add(assembly);
+                        if (assembly != null && assembly.GetTypes().Any(t => HttpApplicationProbe.IsHttpApplication(t)))
+                        {
+                            result.Add(assembly);
+                        }
+                    }
+                    catch (ReflectionTypeLoadException ex)
+                    {
+                        this.Logger.Error(ex);
                     }
                 }
             }

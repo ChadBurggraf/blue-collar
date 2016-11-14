@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <Product Name="Blue Collar 1.2" Id="F9268075-481D-4497-976D-BE9D1B6D2406" UpgradeCode="D2BB04C4-543A-4463-AC08-DECBF144FCE0" Language="1033" Codepage="1252" Version="1.2.0" Manufacturer="Tasty Codes">
+  <Product Name="Blue Collar 1.3" Id="F9268075-481D-4497-976D-BE9D1B6D2406" UpgradeCode="D2BB04C4-543A-4463-AC08-DECBF144FCE0" Language="1033" Codepage="1252" Version="1.3.0" Manufacturer="Tasty Codes">
     <Package Id="*" Description="Blue Collar Installer" InstallerVersion="100" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
     <Media Id="1" Cabinet="BlueCollar.cab" EmbedCab="yes" />
     <PropertyRef Id="NETFRAMEWORK35" />
@@ -85,9 +85,6 @@
               </Directory>
             </Directory>
           </Directory>
-          <Component Id="Help" Guid="574D2021-0A6B-49DB-8F51-79BC7D9C0242">
-            <File Id="BlueCollarChm" Name="BlueCollar.chm" DiskId="1" Source="BlueCollar.chm" KeyPath="yes" />
-          </Component>
           <Component Id="Readme" Guid="CF57F64E-C192-4265-A8F2-1CC920646D30">
             <File Id="ReadmeTxt" Name="README.txt" DiskId="1" Source="README.txt" KeyPath="yes" />
           </Component>
@@ -107,7 +104,6 @@
       <ComponentRef Id="ServiceAnyCPUNet40" />
       <ComponentRef Id="Servicex86Net35" />
       <ComponentRef Id="Servicex86Net40" />
-      <ComponentRef Id="Help" />
       <ComponentRef Id="Readme" />
       <ComponentRef Id="License" />
     </Feature>

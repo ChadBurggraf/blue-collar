@@ -116,7 +116,7 @@
       <Aliases>global</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\BlueCollar.Examples\BlueCollar.Examples.csproj">
-      <Project>{DB6B950F-FAEB-4434-A7A9-49FB00E5CFCE}</Project>
+      <Project>{db6b950f-faeb-4434-a7a9-49fb00e5cfce}</Project>
       <Name>BlueCollar.Examples</Name>
     </ProjectReference>
     <ProjectReference Include="..\BlueCollar.Service\BlueCollar.Service.csproj">
