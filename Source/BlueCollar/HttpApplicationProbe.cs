@@ -192,7 +192,14 @@ namespace BlueCollar
                     }
                     catch (ReflectionTypeLoadException ex)
                     {
-                        this.Logger.Error(ex);
+                        try
+                        {
+                            this.Logger.Error(ex);
+                        }
+                        catch
+                        {
+                            // This can fail for various reasons...
+                        }
                     }
                 }
             }
