@@ -12,4 +12,4 @@ exclude:
   - compile-js.py 
   - Makefile
   - yuicompressor-2.4.7.jar
-highlighter: pygments
+highlighter: rouge
